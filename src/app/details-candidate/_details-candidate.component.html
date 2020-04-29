@@ -1,0 +1,154 @@
+<header>
+  <h2>{{ givenName }} {{ surname }}</h2>
+  <h4>{{ party }}</h4>
+  <div class="candidate-number" 
+       [ngClass]="partyClassName">{{ number }}</div>
+  <mat-icon *ngIf="isFavourite == false"
+            (click)="setFavourite(true)"
+            title="Lisää muistilistalle"
+            aria-label="Lisää muistilistalle -ikoni"
+            class="candidate-favourite candidate-favourite--isNotFavourite">favorite_border</mat-icon>
+  <mat-icon *ngIf="isFavourite == true"
+            (click)="setFavourite(false)"
+            title="Poista muistilistalta"
+            aria-label="Poista muistilistalta -ikoni"
+            class="candidate-favourite candidate-favourite--isFavourite">favorite</mat-icon>
+</header>
+
+<mat-tab-group [(selectedIndex)]="lastOpenTab">
+  <mat-tab label="Perustiedot">
+    <img class="candidate-portrait" 
+         [src]="portraitUrl">
+    <dl>
+      <dt>Ikä</dt>
+      <dd [innerHtml]="age"></dd>
+      <dt>Sukupuoli</dt>
+      <dd [innerHtml]="gender"></dd>
+      <dt>Poliittinen kokemus</dt>
+      <dd [innerHtml]="politicalExperience"></dd>
+      <dt>Koulutus</dt>
+      <dd [innerHtml]="education"></dd>
+      <dt>Kielitaito</dt>
+      <dd [innerHtml]="languages"></dd>
+      <dt>Ehdokasnumero</dt>
+      <dd [innerHtml]="number"></dd>
+      <dt>Vaalipiiri</dt>
+      <dd [innerHtml]="precinct"></dd>
+      <dt>Vaalirahoitus</dt>
+      <dd [innerHtml]="fundingDescription"
+          class="candidate-funding"></dd>
+      <dt>Poliittinen esikuva</dt>
+      <dd>
+        <p [innerHtml]="politicalParagon"></p>
+        <p [innerHtml]="politicalParagonReason"></p>
+      </dd>
+    </dl>
+  </mat-tab>
+  <mat-tab label="Vaalilupaukset">
+    <h3>Miksi juuri ehdokas pitäisi valita eduskuntaan</h3>
+    <p>
+      {{ candidate.Q74 }}
+    </p>
+
+    <h3>Vaalilupaukset</h3>
+    <ol>
+      <li *ngIf="candidate.Q60">{{ candidate.Q60 }}</li>
+      <li *ngIf="candidate.Q61">{{ candidate.Q61 }}</li>
+      <li *ngIf="candidate.Q62">{{ candidate.Q62 }}</li>
+    </ol>
+
+    <h3>Valiokunnat, joissa haluaisi mieluiten vaikuttaa</h3>
+    <ol>
+      <li>{{ candidate.Q72 }}</li>
+      <li>{{ candidate.Q73 }}</li>
+    </ol>
+  </mat-tab>
+  <mat-tab label="Mielipiteet">
+    <div class="candidate-opinions">
+      <mat-accordion multi="true">
+        <mat-expansion-panel expanded="false"
+                             [disabled]="opinions.disagreed?.length === 0"
+                             class="candidate-opinions-disagreed">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <span [matBadge]="opinions.disagreed?.length" 
+                    matBadgeOverlap="false"
+                    matBadgeColor="warn"
+                    matBadgeSize="small">Eri mieltä kanssasi</span>
+            </mat-panel-title>
+            <mat-panel-description>
+              <mat-chip-list>
+                <mat-chip *ngFor="let question of opinions.disagreed"
+                          class="candidate-opinions-topicChip">
+                  {{ question.topic }}
+                </mat-chip>
+              </mat-chip-list>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <ng-container  *ngFor="let question of opinions.disagreed; first as first">
+            <mat-divider class="candidate-opinions-divider"
+                         *ngIf="!first"></mat-divider>
+            <app-candidate-answer [text]="question.text"
+                                  [voterAnswer]="getVoterAnswer(question.id)"
+                                  [candidateAnswer]="getCandidateAnswer(question.id)"
+                                  [candidateAnswerOpen]="getCandidateAnswerOpen(question.id)"
+                                  [category]="question.category"
+                                  [topic]="question.topic"
+                                  [showLegend]="first"></app-candidate-answer>
+          </ng-container>
+        </mat-expansion-panel>
+        <mat-expansion-panel [disabled]="opinions.agreed?.length === 0"
+                             class="candidate-opinions-agreed">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <span [matBadge]="opinions.agreed?.length" 
+                    matBadgeOverlap="false"
+                    matBadgeColor="primary"
+                    matBadgeSize="small">Samaa mieltä kanssasi</span>
+            </mat-panel-title>
+            <mat-panel-description>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <ng-container  *ngFor="let question of opinions.agreed; first as first">
+            <mat-divider class="candidate-opinions-divider"
+                         *ngIf="!first"></mat-divider>
+            <app-candidate-answer [text]="question.text"
+                                  [voterAnswer]="getVoterAnswer(question.id)"
+                                  [candidateAnswer]="getCandidateAnswer(question.id)"
+                                  [candidateAnswerOpen]="getCandidateAnswerOpen(question.id)"
+                                  [category]="question.category"
+                                  [topic]="question.topic"
+                                  [showLegend]="first"></app-candidate-answer>
+          </ng-container>
+        </mat-expansion-panel>
+        <mat-expansion-panel [disabled]="opinions.unanswered?.length === 0"
+                             class="candidate-opinions-unanswered">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <span [matBadge]="opinions.unanswered?.length" 
+                    matBadgeOverlap="false"
+                    matBadgeColor="accent"
+                    matBadgeSize="small">Mielipiteet kysymyksiin, joihin et vielä ole vastannut</span>
+            </mat-panel-title>
+            <mat-panel-description>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <ng-container  *ngFor="let question of opinions.unanswered; first as first">
+            <mat-divider class="candidate-opinions-divider"
+                         *ngIf="!first"></mat-divider>
+            <app-candidate-answer [text]="question.text"
+                                  [voterAnswer]="getVoterAnswer(question.id)"
+                                  [candidateAnswer]="getCandidateAnswer(question.id)"
+                                  [candidateAnswerOpen]="getCandidateAnswerOpen(question.id)"
+                                  [category]="question.category"
+                                  [topic]="question.topic"
+                                  [showLegend]="first"></app-candidate-answer>
+          </ng-container>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </mat-tab>
+</mat-tab-group>
+
+
+

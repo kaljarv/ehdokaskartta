@@ -1,1 +1,747 @@
-/* You can add global styles to this file, and also import other style files */
+/* Add application styles & imports to this file! */
+
+@use "sass:color"
+
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css'
+// @import '~@angular/material/theming'
+
+/* TODO: Use custom theme and move styles to components
+ * – basics in component.sass
+ * - theme-specific in component.sass-theme.sass
+ *
+ * => https://medium.com/@tomastrajan/the-complete-guide-to-angular-material-themes-4d165a9d24d1
+ *
+ * theme.sass 
+ * // define 3 theme color
+ * // mat-palette accepts $palette-name, main, lighter and darker variants
+ * $my-theme-primary: mat-palette($mat-indigo, 700, 300, 900);
+ * $my-theme-accent: mat-palette($mat-light-blue);
+ *  $my-theme-warn: mat-palette($mat-deep-orange, A200);
+ *
+ * // create theme (use mat-dark-theme for themes with dark backgrounds)
+ * $my-theme: mat-light-theme(
+ *    $my-theme-primary,
+ *   $my-theme-accent,
+ *   $my-theme-warn
+ * );
+ *
+ * /
+
+// Create a config with the default typography levels.
+// $config: mat-typography-config()
+// mat-font-size($config, headline)
+
+$fontIncrement-M: 120%
+
+$color-text: rgba(0, 0, 0, 0.87)
+$color-nega: rgba(255, 255, 255, 1.0)
+$color-primary: rgb(103, 58, 183) // mat-color($theme, primary)
+$color-primaryBg: color.mix(white, $color-primary, 80%)
+$color-accent: rgb(255, 215, 64)
+$color-accentBg: color.mix(white, $color-accent, 80%)
+$color-warn: rgb(244, 67, 54)
+$color-warnBg: color.mix(white, $color-warn, 80%)
+$color-secondary: grey
+$color-secondaryBg: color.mix(white, $color-secondary, 80%)
+$color-background: rgb(250,250,250)
+$alpha-overlay: 0.8
+
+$fontSize-XS: 0.7rem
+$fontSize-S: 0.8rem
+$fontSize-M: 1rem
+$fontSize-L: 1.2rem
+
+$lineHeight-S: 1.1
+
+$margin-XS: 0.25rem
+$margin-S: 0.5rem
+$margin-M: 1rem
+$margin-L: 1.5rem
+$margin-XL: 2.25rem
+
+$zIndex-10: 1000
+$zIndex-9: 900
+$zIndex-8: 800 // Tools
+$zIndex-7: 700 // Top bar
+$zIndex-6: 600 // Progress spinner
+$zIndex-5: 0   // Content
+$zIndex-4: -200
+$zIndex-0: -1000
+
+=verticalCenter
+  position: absolute
+  top: 0
+  transform: translateY(calc(50vh - 50%))
+
+*
+  font-family: Roboto, "Helvetica", sans-serif
+  box-sizing: border-box
+  hyphens: auto
+
+html
+  height: 100%
+
+body
+  height: 100%
+  margin: 0
+
+/*
+ * TYPOGRAPHY
+ */
+
+h1,
+h2,
+h3
+  line-height: 1.2 !important
+  hyphens: manual
+
+
+/*
+ * GLOBAL STYLES
+ */
+
+// Otherwise badges will be clipped out
+.mat-expansion-panel-header.hasMatBadge
+  span
+    overflow: visible
+
+/*
+ * MAIN ELEMENTS
+ */
+
+mat-sidenav-container
+  min-height: 100vh
+
+mat-sidenav
+  min-width: 10rem
+
+mat-sidenav-content
+  min-height: 100vh
+  overflow-y: visible !important
+  padding-bottom: 4 * $margin-M
+
+app-top-bar
+  display: block
+  margin: $margin-M
+  position: relative // Needed for z-index
+  z-index: $zIndex-7
+
+#topTools
+  position: relative
+  margin: $margin-M
+  z-index: $zIndex-8
+  hyphens: manual
+
+#filterButton
+  float: right
+
+#bottomTools
+  position: fixed
+  left: $margin-M
+  right: $margin-M
+  bottom:  $margin-M
+  z-index: $zIndex-8
+  // top: 100vh
+  // transform: translateY(calc(-100% - #{$margin-M}))
+  hyphens: manual
+
+#nextButton
+  float: right
+
+
+/*
+ * PRECINT-PICKER
+ */
+
+app-precinct-picker
+  display: block
+  padding: $margin-M
+  width: 100%
+  height: 6rem
+  overflow: visible
+  +verticalCenter
+
+  #precinctPicker-form
+    width: 100%
+
+    mat-form-field
+      display: block
+      font-size: $fontIncrement-M
+      margin: $margin-M auto 0 auto
+      max-width: 16rem
+  
+  #precinctInfo
+    // margin-top: 2.5rem
+    text-align: center
+    font-size: 82%
+    color: $color-secondary
+
+
+
+/*
+ * QUESTION-LIST
+ */
+
+
+app-question-list
+  .mat-chip-list-wrapper
+    display: flex
+    align-items: center
+    justify-content: center
+    padding: $margin-M
+
+.category-ilmastoJaYmpaeristoe
+  background-color: rgba(245, 166, 35, 0.35) !important
+
+.category-raha
+  background-color: rgba(255, 198, 29, 0.35) !important
+
+.category-terveys
+  background-color: rgba(58, 181, 155, 0.35) !important
+
+.category-perheJaKoulutus
+  background-color: rgba(24, 199, 238, 0.35) !important
+
+.category-maahanmuutto
+  background-color: rgba(183, 101, 255, 0.35) !important
+
+.category-turvallisuus
+  background-color: rgba(159, 160, 27, 0.35) !important
+
+.category-arvot
+  background-color: rgba(183, 23, 92, 0.35) !important
+
+.category-liikenne
+  background-color: rgba(58, 116, 184, 0.35) !important
+
+.mat-chip.answered
+  opacity: 0.3
+
+/*
+ * DETAILS-QUESTION
+ */
+
+mat-bottom-sheet-container
+  min-height: 50vh
+  position: relative // Needed for z-index
+  z-index: $zIndex-9
+
+  
+app-details-question
+  h4
+    .mat-icon
+      font-size: 120% !important
+      margin-bottom: -0.2rem
+      vertical-align: middle
+
+    margin-bottom: $margin-S
+
+  h2
+    margin-top: 0
+
+
+.likert
+  display: flex
+  align-items: flex-end
+
+.likert-option
+  flex-basis: 1
+  width: 20%
+  display: flex
+  flex-grow: 1
+  flex-direction: column
+  justify-items: center
+
+  // width: 20%
+
+.likert-option-label
+  display: block
+  text-align: center
+  hyphens: manual
+
+.likert-option
+
+  .mat-radio-container
+    margin: $margin-M auto
+  
+  .mat-radio-label-content
+    display: none
+
+app-details-question
+  .swgContainer
+    width: 100%
+    min-height: 15vh
+
+
+.party-elaeinoikeuspuolue
+  fill: rgba(250, 185, 43, 1.0)
+  background-color: rgba(250, 185, 43, 1.0)
+  color: $color-text
+
+.party-feministinenPuolue
+  fill: rgba(233, 71, 134, 1.0)
+  background-color: rgba(233, 71, 134, 1.0)
+  color: $color-nega
+
+.party-itsenaeisyyspuolue
+  fill: rgba(1, 123, 196, 1.0)
+  background-color: rgba(1, 123, 196, 1.0)
+  color: $color-nega
+
+.party-kansalaispuolue
+  fill: rgba(0, 86, 159, 1.0)
+  background-color: rgba(0, 86, 159, 1.0)
+  color: $color-nega
+
+.party-kansanliikeSuomenPuolesta
+  fill: rgba(38, 85, 233, 1.0)
+  background-color: rgba(38, 85, 233, 1.0)
+  color: $color-nega
+
+.party-keskusta
+  fill: rgba(1, 149, 75, 1.0)
+  background-color: rgba(1, 149, 75, 1.0)
+  color: $color-nega
+
+.party-kokoomus
+  fill: rgba(0, 98, 136, 1.0)
+  background-color: rgba(0, 98, 136, 1.0)
+  color: $color-nega
+
+.party-kommunistinenTyoevaeenpuolue
+  fill: rgba(218, 41, 27, 1.0)
+  background-color: rgba(218, 41, 27, 1.0)
+  color: $color-nega
+
+.party-kristillisdemokraatit
+  fill: rgba(24, 53, 155, 1.0)
+  background-color: rgba(24, 53, 155, 1.0)
+  color: $color-nega
+
+.party-liberaalipuolue
+  fill: rgba(243, 149, 1, 1.0)
+  background-color: rgba(243, 149, 1, 1.0)
+  color: $color-text
+
+.party-liikeNyt
+  fill: rgba(174, 35, 117, 1.0)
+  background-color: rgba(174, 35, 117, 1.0)
+  color: $color-nega
+
+.party-perussuomalaiset
+  fill: rgba(255, 213, 0, 1.0)
+  background-color: rgba(255, 213, 0, 1.0)
+  color: $color-text
+
+.party-piraattipuolue
+  fill: rgba(102, 0, 153, 1.0)
+  background-color: rgba(102, 0, 153, 1.0)
+  color: $color-nega
+
+.party-rkp
+  fill: rgba(255, 221, 147, 1.0)
+  background-color: rgba(255, 221, 147, 1.0)
+  color: $color-text
+
+.party-sdp
+  fill: rgba(225, 25, 49, 1.0)
+  background-color: rgba(225, 25, 49, 1.0)
+  color: $color-nega
+
+.party-seitsemaenTaehdenLiike
+  fill: rgba(35, 157, 172, 1.0)
+  background-color: rgba(35, 157, 172, 1.0)
+  color: $color-text
+
+.party-sininenTulevaisuus
+  fill: rgba(3, 31, 115, 1.0)
+  background-color: rgba(3, 31, 115, 1.0)
+  color: $color-nega
+
+.party-sitoutumaton
+  fill: rgba(90, 90, 90, 1.0)
+  background-color: rgba(90, 90, 90, 1.0)
+  color: $color-nega
+
+.party-suomenKansaEnsin
+  fill: rgba(19, 51, 129, 1.0)
+  background-color: rgba(19, 51, 129, 1.0)
+  color: $color-nega
+
+.party-suomenKommunistinenPuolue
+  fill: rgba(187, 0, 0, 1.0)
+  background-color: rgba(187, 0, 0, 1.0)
+  color: $color-nega
+
+.party-vasemmistoliitto
+  fill: rgba(191, 30, 36, 1.0)
+  background-color: rgba(191, 30, 36, 1.0)
+  color: $color-nega
+
+.party-vihreaet
+  fill: rgba(97, 191, 26, 1.0)
+  background-color: rgba(97, 191, 26, 1.0)
+  color: $color-text
+
+
+/*
+ * PROGRESS SPINNER
+ */
+
+app-progress-spinner
+  display: block
+  position: fixed
+  left: 0
+  top: 0
+  right: 0
+  bottom: 0
+  background-color: color.change($color-background, $alpha: $alpha-overlay)
+  z-index: $zIndex-6
+
+  .progressSpinner-container
+    text-align: center
+    +verticalCenter
+    width: 100%
+
+    mat-progress-spinner
+      margin: 0 auto
+
+/*
+ * MAP
+ */
+
+app-map
+  width: 100vw
+  height: 100vh
+  position: absolute
+  top: 0
+  left: 0
+
+  #map
+    width: 100vw
+    height: 100vh
+    // width: calc(100vw - #{2 * $margin-M})
+    // height: calc(100vw - #{2 * $margin-M})
+    position: fixed
+    left: 0
+    top: 0
+    // transform: translateY(calc(50vh - 50%))
+
+    .map-avatarG--candidate
+      cursor: pointer
+
+    .map-avatarG--candidate--filteredOut
+      cursor: default
+
+    .filteredOut
+      opacity: 0.2
+      fill: $color-secondary
+
+    .map-tooltip
+      font-size: $fontSize-S !important
+      padding: $margin-XS !important
+      // width: 3rem
+      hyphens: manual
+
+    #voter
+      path
+        transform: translate(- 8.208px, -47.775px) scale(0.3)
+
+/*
+ * CANDIDATE DETAILS
+ */
+
+app-details-candidate
+  display: block
+  margin-top: $margin-M
+
+  header
+    position: relative
+    min-height: 5rem
+
+    h2
+      margin-bottom: $margin-S
+
+    h2,
+    h4
+      padding-right: 4rem // greater than candidate-number width
+
+    .candidate-number
+      position: absolute
+      top: -0.5rem
+      right: 0
+      font-size: $fontIncrement-M
+      font-weight: bold
+      padding: 0.5rem
+      border-radius: 2rem
+      min-width: 3rem
+      text-align: center
+    
+    .candidate-favourite
+      position: absolute
+      top: 2.5rem
+      right: 0.5rem
+    
+    .candidate-favourite--isFavourite
+      color: $color-primary
+  
+  mat-tab-body
+    padding-top: $margin-M
+  
+section.candidate-data
+
+.candidate-portrait
+  height: 12rem
+  width: 12rem
+  max-height: 25vw
+  max-width: 25vw
+  object-fit: cover
+  border-radius: 50%
+  float: right
+  margin: 0 $margin-S $margin-L $margin-L
+
+.candidate-datum
+  margin-bottom: $margin-S * 1.2
+
+  label
+    color: $color-secondary
+    font-size: $fontSize-XS
+    font-weight: 500
+    text-transform: uppercase
+    letter-spacing: 0.02rem
+    hyphens: manual
+    line-height: 1.0
+
+  .content
+    display: block
+    font-weight: bold
+
+  .candidate-funding
+    font-weight: normal
+
+  .customExpander-title span
+    hyphens: manual
+
+.candidate-data--secondary
+  .candidate-datum
+    .content
+      font-weight: normal
+
+    .content-emphasis
+      font-weight: bold
+
+.missingData
+  font-weight: normal !important
+  font-style: italic
+  color: $color-secondary
+
+
+.candidate-opinions
+  padding: 3px // For the box shadows of the expansion panel to show
+
+.customExpander
+  margin-bottom: $margin-L
+
+.customExpander-subtitle-fadeOut
+  background-image: linear-gradient(to bottom, transparent, 35%, #{$color-nega})
+
+.candidate-opinions-unanswered.customExpander > header .mat-badge-content
+  background-color: $color-secondary
+
+.candidate-opinions-topicChip
+  font-size: $fontSize-S
+  padding: 0.2rem 0.5rem
+  min-height: 1.5rem
+
+.candidate-opinions-moreTopics,
+.candidate-opinions-noTopics
+  margin: 4px // This is inside mat-chip-list with a negative margin
+  font-size: $fontSize-S
+
+.candidate-opinions-noTopics
+  font-style: italic
+  color: $color-secondary
+
+.candidate-opinions-disagreed .candidate-opinions-topicChip
+  background-color: $color-warnBg
+
+.candidate-opinions-agreed .candidate-opinions-topicChip
+  background-color: $color-primaryBg
+
+.candidate-opinions-unanswered .candidate-opinions-topicChip
+  // background-color: $color-accentBg
+
+/*
+ * SINGLE ANSWERS WITHIN CAND DETAILS
+ */
+  
+app-candidate-answer
+  display: block
+  margin: $margin-S 0
+  padding: $margin-M 0
+
+h3.candidate-answer-question
+  font-weight: bold !important
+
+.candidate-answer-svg
+  margin-top: $margin-S
+  
+.candidate-answer-valueBg
+  fill: $color-secondaryBg  
+
+.candidate-answer-svg--disagree .candidate-answer-valueBg
+  fill: $color-warnBg
+
+.candidate-answer-svg--agree .candidate-answer-valueBg
+  fill: $color-primaryBg
+
+.candidate-answer-svg--hasLegend
+  // height: 7rem
+
+.candidate-answer-valueGroup
+    // transform: translateY(1.5rem)
+
+.candidate-answer-value
+
+.candidate-answer-value--1
+  // transform: translateX(10%)
+
+.candidate-answer-value--2
+
+.candidate-answer-value--3
+
+.candidate-answer-value--4
+
+.candidate-answer-value--5
+
+.candidate-answer-value--voter
+  fill: $color-text
+
+.candidate-answer-value--candidate
+  fill: $color-secondaryBg
+  stroke: $color-primary
+  stroke-width: 0.25rem
+
+.candidate-answer-value--both
+  fill: $color-text
+  stroke: $color-primary
+  stroke-width: 0.25rem
+
+.candidate-answer-value--none
+  fill: $color-secondary
+
+.candidate-answer-value--behindLine
+  fill: transparent
+
+.candidate-answer-value--candidate
+  fill: $color-nega
+  stroke: $color-primary
+  stroke-width: 0.25rem
+
+.candidate-answer-svg--disagree .candidate-answer-value--candidate
+  fill: $color-warnBg
+  stroke: $color-warn
+
+.candidate-answer-line
+  stroke: $color-warn
+  stroke-width: 0.15rem
+  stroke-linecap: round
+  stroke-dasharray: 0.01rem 0.3rem
+
+.candidate-answer-partyValue
+  stroke: $color-primary
+  stroke-width: 0.25rem
+  stroke-linecap: round
+
+.candidate-answer-svg--disagree .candidate-answer-partyValue
+  stroke: $color-warn
+
+.candidate-answer-partyTooltip
+  font-size: $fontSize-S !important
+  padding: $margin-XS !important
+  width: 10rem !important
+  hyphens: manual
+  text-align: center
+    
+  // .candidate-answer-line--length1
+  //  stroke-dasharray: calc(20% - 2rem)
+
+// NB. These are not inside the svg element
+.candidate-answer-titleDiv
+  position: relative
+  height: 2rem
+  width: 100%
+  // transform: translateY(1.5rem)
+
+.candidate-answer-title,
+.candidate-answer-partyTitle
+  color: $color-text
+  font-size: $fontSize-S
+  line-height: $lineHeight-S
+  text-transform: uppercase
+  text-align: center
+  width: 20%
+  position: absolute
+  top: 1rem
+
+.candidate-answer-title--1
+  left: 0%
+
+.candidate-answer-title--2
+  left: 20%
+
+.candidate-answer-title--3
+  left: 40%
+
+.candidate-answer-title--4
+  left: 60%
+
+.candidate-answer-title--5
+  left: 80%
+
+.candidate-answer-title--voter
+.candidate-answer-title--candidate
+.candidate-answer-title--candidateNoAnswer
+  top: 0.1rem
+.candidate-answer-title--both
+
+.candidate-answer-partyTitleDiv
+  position: relative
+  width: 100%
+  height: 1.5rem
+
+.candidate-answer-partyTitle
+  top: 0rem
+
+// NB. These are not inside the svg element
+.candidate-answer-legendDiv
+  color: $color-secondary
+  font-size: $fontSize-S
+  width: 100%
+  display: flex
+  flex-wrap: nowrap
+  justify-content: space-between
+  line-height: $lineHeight-S
+  margin-bottom: $margin-S
+
+.candidate-answer-legend
+  flex: 20% 0 0
+  text-align: center
+
+.candidate-answer-legend--1
+
+.candidate-answer-legend--3
+
+.candidate-answer-legend--5
+
+.candidate-answer-openAnswer
+
+  .app-fadeout-expander
+    background-color: $color-accentBg !important
+
+  mat-icon
+    float: left
+    margin-left: -1.85rem
+
+  .app-fadeout-expander-fadeout
+    background-image: linear-gradient(to bottom, transparent, 35%, #{$color-accentBg}) !important

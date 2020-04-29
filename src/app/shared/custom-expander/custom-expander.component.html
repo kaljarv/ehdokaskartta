@@ -1,0 +1,27 @@
+<div #container
+     class="customExpander"
+     [class.customExpander--expanded]="expanded"
+     [class.customExpander--disabled]="disabled">
+  <header (click)="toggle()">
+    <div class="customExpander-title">
+      <ng-content select="app-custom-expander-title"></ng-content>
+    </div>
+    <div #subtitle
+        [@toggleExpand]="expanded ? 'closed' : 'open'"
+        class="customExpander-subtitle"
+        [style.maxHeight]="subtitleMaxHeight">
+      <ng-content select="app-custom-expander-subtitle"></ng-content>
+      <div *ngIf="subtitleMaxHeight != 'none'"
+          class="customExpander-subtitle-fadeOut"></div>
+    </div>
+    <mat-icon *ngIf="!disabled"
+              [@toggleRotate]="expanded ? 'rotated' : 'normal'"
+              class="customExpander-expandIcon">expand_more</mat-icon>
+  </header>
+  <section #content
+           [@toggleExpand]="expanded ? 'open' : 'closed'"
+           (@toggleExpand.done)="onToggleExpand($event)"
+           class="customExpander-content">
+    <ng-content></ng-content>
+  </section>
+</div>

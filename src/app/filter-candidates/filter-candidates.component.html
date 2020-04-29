@@ -1,0 +1,109 @@
+<header>
+  <h2><mat-icon>filter_list</mat-icon> Suodata ehdokkaita</h2>
+</header>
+
+<section class="filters">
+
+  <form [formGroup]="filtersForm"
+        (ngSubmit)="onSubmit()">
+
+
+    <button [disabled]="!anyFilterActive"
+            (click)="clearAllFilters()"
+            type="button"
+            mat-button
+            class="clearAll">
+      <!-- type="button" is needed for the button to not submit the form -->
+      <mat-icon>highlight_off</mat-icon> Poista kaikki suodattimet käytöstä
+    </button>
+    
+    <mat-accordion formArrayName="all"
+                   multi="false">
+
+      <mat-expansion-panel *ngFor="let filter of filters; let i = index"
+                           class="filter"
+                           (opened)="onExpand(i)"
+                           [expanded]="doExpand(i)">
+        <mat-expansion-panel-header class="hasMatBadge">
+          <span [matBadgeHidden]="!filter.active"
+                matBadge="!"
+                matBadgeColor="warn">
+              {{ filter.description }}
+          </span>
+        </mat-expansion-panel-header>
+        <!--
+        <mat-panel-description>
+          Valitse alta tuloksiin sisältyvät vaihtoehdot
+        </mat-panel-description>
+        -->
+
+        <section [formArrayName]="i"
+                 class="filterOptions">
+          <ng-container *ngIf="filter.isRange">
+            <label *ngFor="let j of [0, 1]"
+                  class="sliderContainer">
+              <span [innerHtml]="getSliderValueExplained(i, j)"
+                    class="sliderExplanation"></span>
+              <mat-slider [min]="filter.getValueRange()[0]"
+                          [max]="filter.getValueRange()[1]"
+                          (change)="onSliderChange($event, i, j)"
+                          [formControlName]="j"
+                          [step]="filter.sliderStep"
+                          class="slider"
+                          thumbLabel></mat-slider>
+            </label>
+          </ng-container>
+          <ng-container *ngIf="!filter.isRange">
+            <mat-checkbox *ngFor="let value of filter.getValues(); let j = index"
+                          [formControlName]="j">
+              {{ value | ucFirst }}
+            </mat-checkbox>
+            <div *ngIf="filter.getValues().length > 5"
+                 (click)="toggleAll(i)"
+                 class="toggleAll">
+              <!--
+              <mat-icon *ngIf=" allTrue(i)">check_box</mat-icon>
+              <mat-icon *ngIf="!allTrue(i)">check_box_outline_blank</mat-icon>
+              -->
+              <mat-icon [@toggleRotate]="getToggleRotate(i)">autorenew</mat-icon>
+              Valitse tai poista valinta kaikista
+            </div>
+            <!--
+            <div class="selectButtons">
+              <button (click)="selectAll(i)"
+                      class="selectAll"
+                      type="button"
+                      mat-button>
+                <mat-icon>check_circle_outline</mat-icon> Valitse kaikki
+              </button>
+              <button (click)="deselectAll(i)"
+                      class="selectNone"
+                      type="button"
+                      mat-button>
+                <mat-icon>remove_circle_outline</mat-icon> Poista valinta kaikista
+              </button>
+            </div> 
+            -->
+          </ng-container>
+        </section>
+
+        <div *ngIf="!filtersForm.valid"
+             class="formError">
+          Valitse vähintään yksi vaihtoehdoista.
+        </div>
+
+        <mat-action-row class="filterButtons">
+          <button mat-button
+                  type="button"
+                  (click)="dismiss()">Peruuta</button>
+          <button mat-raised-button color="primary"
+                  type="submit" 
+                  [disabled]="!filtersForm.valid">Tallenna kaikki suodattimet</button>
+        </mat-action-row>
+
+      </mat-expansion-panel>
+
+    </mat-accordion>
+
+  </form>
+</section>

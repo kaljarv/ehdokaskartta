@@ -1,0 +1,253 @@
+<header>
+  <h2>{{ givenName }} {{ surname }}</h2>
+  <h4>{{ party }}</h4>
+  <div class="candidate-number" 
+       [ngClass]="partyClassName">{{ number }}</div>
+  <mat-icon *ngIf="isFavourite == false"
+            (click)="setFavourite(true)"
+            title="Lisää muistilistalle"
+            aria-label="Lisää muistilistalle -ikoni"
+            class="candidate-favourite candidate-favourite--isNotFavourite">favorite_border</mat-icon>
+  <mat-icon *ngIf="isFavourite == true"
+            (click)="setFavourite(false)"
+            title="Poista muistilistalta"
+            aria-label="Poista muistilistalta -ikoni"
+            class="candidate-favourite candidate-favourite--isFavourite">favorite</mat-icon>
+</header>
+
+<mat-tab-group [(selectedIndex)]="lastOpenTab">
+
+  <!----------------------------------------------
+      BASIC INFORMATION
+  ------------------------------------------------>
+
+  <mat-tab label="Perustiedot">
+    <section class="candidate-data candidate-data--primary">
+      <img class="candidate-portrait" 
+            [src]="portraitUrl" />
+      <div class="candidate-datum">
+        <label>Ikä</label>
+        <div class="content"
+              [innerHtml]="age"></div>
+      </div>
+      <div class="candidate-datum">
+        <label>Sukupuoli</label>
+        <div class="content"
+              [innerHtml]="gender"></div>
+      </div>
+      <div class="candidate-datum">
+        <label>Poliittinen kokemus</label>
+        <div class="content"
+              [innerHtml]="politicalExperience | fixList"></div>
+      </div>
+      <div class="candidate-datum">
+        <label>Koulutus</label>
+        <div class="content"
+             [innerHtml]="education | fixList"></div>
+      </div>
+      <div class="candidate-datum">
+        <label>Kielitaito</label>
+        <div class="content"
+              [innerHtml]="languages | fixList:'ja'"></div>
+      </div>
+      <div class="candidate-datum">
+        <label>Ehdokasnumero</label>
+        <div class="content"
+              [innerHtml]="number"></div>
+      </div>
+      <div class="candidate-datum">
+        <label>Vaalipiiri</label>
+        <div class="content"
+              [innerHtml]="precinct"></div>
+      </div>
+      <div class="candidate-datum">
+        <label>Vaalirahoitus</label>
+        <div class="content candidate-funding"
+             [innerHtml]="fundingDescription"></div>
+      </div>
+    </section>
+  </mat-tab>
+
+  <!----------------------------------------------
+    ADDITIONAL INFORMATION
+  ------------------------------------------------>
+
+  <mat-tab label="Linjaukset">
+    <section class="candidate-data candidate-data--secondary">
+      <div class="candidate-datum">
+        <label>Miksi minut pitäisi valita eduskuntaan</label>
+        <div class="content"
+             [innerHtml]="whyMe"></div>
+      </div>
+      <div class="candidate-datum">
+        <label>Vaalilupaukset</label>
+        <div *ngIf="promises.length > 0"
+             class="content">
+          <ol>
+            <li *ngFor="let promise of promises">{{ promise }}</li>
+          </ol>
+        </div>
+        <div *ngIf="promises.length == 0"
+             class="content"
+             [innerHtml]="missingDataInfo"></div>
+      </div>
+      <div class="candidate-datum">
+        <label>Valiokunnat, joissa haluaisin mieluiten vaikuttaa</label>
+        <div *ngIf="committees.length > 0"
+             class="content">
+          <ol>
+            <li *ngFor="let committee of committees">{{ committee | ucFirst }}</li>
+          </ol>
+        </div>
+        <div *ngIf="committees.length == 0"
+             class="content"
+             [innerHtml]="missingDataInfo"></div>
+      </div>
+      <div class="candidate-datum">
+        <label>Poliittinen esikuva</label>
+        <div class="content"
+             [innerHtml]="politicalParagonAndReason"></div>
+      </div>
+    </section>
+  </mat-tab>
+
+  <!----------------------------------------------
+    OPINIONS
+  ------------------------------------------------>
+
+  <mat-tab label="Mielipiteet">
+    <div class="candidate-opinions">
+
+      <!----------------------------------------------
+        DISAGREED
+      ------------------------------------------------>
+
+      <app-custom-expander #expanderDisagreed
+                           class="candidate-opinions-disagreed">
+        <app-custom-expander-title>
+          <span>Eri mieltä kanssasi</span>
+          <!-- <span [matBadge]="opinions.disagreed?.length" 
+                matBadgeOverlap="false"
+                matBadgeColor="warn"
+                matBadgeSize="small">Eri mieltä kanssasi</span> -->
+        </app-custom-expander-title>
+        <app-custom-expander-subtitle>
+          <mat-chip-list>
+            <mat-chip *ngFor="let question of excerpts.disagreed"
+                      (click)="expanderDisagreed.expandAndScrollTo('answer-' + question.id)"
+                      class="candidate-opinions-topicChip">
+              {{ question.topic }}
+            </mat-chip>
+            <span *ngIf="excerptMores.disagreed"
+                  class="candidate-opinions-moreTopics">
+              + {{ excerptMores.disagreed }} muuta
+            </span>
+            <span *ngIf="opinions.disagreed.length == 0"
+                  class="candidate-opinions-noTopics">
+              Ei mielipiteitä, joista olette eri mieltä
+            </span>
+          </mat-chip-list>
+        </app-custom-expander-subtitle>
+        <ng-container  *ngFor="let question of opinions.disagreed; first as first">
+          <mat-divider class="candidate-opinions-divider"
+                       *ngIf="!first"></mat-divider>
+          <app-candidate-answer [attr.id]="'answer-' + question.id"
+                                [question]="question"
+                                [voterAnswer]="getVoterAnswer(question.id)"
+                                [candidateAnswer]="getCandidateAnswer(question.id)"
+                                [candidateAnswerOpen]="getCandidateAnswerOpen(question.id)"
+                                [showLegend]="first"
+                                [partyAnswer]="getPartyAverage(question.id)"
+                                [partyTooltip]="partyAverageTooltip"></app-candidate-answer>
+        </ng-container>
+      </app-custom-expander>
+
+      <!----------------------------------------------
+        AGREED
+      ------------------------------------------------>
+
+      <app-custom-expander #expanderAgreed
+                           class="candidate-opinions-agreed">
+        <app-custom-expander-title>
+          <span>Samaa mieltä kanssasi</span>
+          <!-- <span [matBadge]="opinions.agreed?.length" 
+                matBadgeOverlap="false"
+                matBadgeColor="primary"
+                matBadgeSize="small">Samaa mieltä kanssasi</span> -->
+        </app-custom-expander-title>
+        <app-custom-expander-subtitle>
+          <mat-chip-list>
+            <mat-chip *ngFor="let question of excerpts.agreed"
+                      (click)="expanderAgreed.expandAndScrollTo('answer-' + question.id)"
+                      class="candidate-opinions-topicChip">
+              {{ question.topic }}
+            </mat-chip>
+            <span *ngIf="excerptMores.agreed"
+                  class="candidate-opinions-moreTopics">
+              + {{ excerptMores.agreed }} muuta
+            </span>
+            <span *ngIf="opinions.agreed.length == 0"
+                  class="candidate-opinions-noTopics">
+              Ei mielipiteitä, joista olette samaa mieltä
+            </span>
+          </mat-chip-list>
+        </app-custom-expander-subtitle>
+        <ng-container  *ngFor="let question of opinions.agreed; first as first">
+          <mat-divider class="candidate-opinions-divider"
+                       *ngIf="!first"></mat-divider>
+          <app-candidate-answer [attr.id]="'answer-' + question.id"
+                                [question]="question"
+                                [voterAnswer]="getVoterAnswer(question.id)"
+                                [candidateAnswer]="getCandidateAnswer(question.id)"
+                                [candidateAnswerOpen]="getCandidateAnswerOpen(question.id)"
+                                [showLegend]="first"
+                                [partyAnswer]="getPartyAverage(question.id)"
+                                [partyTooltip]="partyAverageTooltip"></app-candidate-answer>
+        </ng-container>
+      </app-custom-expander>
+
+      <!----------------------------------------------
+        UNANSWERED
+      ------------------------------------------------>
+
+      <app-custom-expander #expanderUnanswered
+                           class="candidate-opinions-unanswered">
+        <app-custom-expander-title>
+          <span>Mielipiteet kysymyksiin, joihin et vielä ole vastannut</span>
+          <!-- <span [matBadge]="opinions.unanswered?.length" 
+                matBadgeOverlap="false"
+                matBadgeSize="small">Mielipiteet kysymyksiin, joihin et vielä ole vastannut</span> -->
+        </app-custom-expander-title>
+        <app-custom-expander-subtitle>
+          <mat-chip-list>
+            <mat-chip *ngFor="let question of excerpts.unanswered"
+                      (click)="expanderUnanswered.expandAndScrollTo('answer-' + question.id)"
+                      class="candidate-opinions-topicChip">
+              {{ question.topic }}
+            </mat-chip>
+            <span *ngIf="excerptMores.unanswered"
+                class="candidate-opinions-moreTopics">
+              + {{ excerptMores.unanswered }} muuta
+            </span>
+            <span *ngIf="opinions.unanswered.length == 0"
+                  class="candidate-opinions-noTopics">
+              Ei kysymyksiä, joihin et ole vastannut
+            </span>
+          </mat-chip-list>
+        </app-custom-expander-subtitle>
+        <ng-container  *ngFor="let question of opinions.unanswered; first as first">
+          <mat-divider class="candidate-opinions-divider"
+                       *ngIf="!first"></mat-divider>
+          <app-candidate-answer [attr.id]="'answer-' + question.id"
+                                [question]="question"
+                                [voterAnswer]="getVoterAnswer(question.id)"
+                                [candidateAnswer]="getCandidateAnswer(question.id)"
+                                [candidateAnswerOpen]="getCandidateAnswerOpen(question.id)"
+                                [showLegend]="first"
+                                [partyAnswer]="getPartyAverage(question.id)"
+                                [partyTooltip]="partyAverageTooltip"></app-candidate-answer>
+        </ng-container>
+      </app-custom-expander>
+    </div>
+  </mat-tab>
+</mat-tab-group>

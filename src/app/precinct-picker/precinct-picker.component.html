@@ -1,0 +1,24 @@
+<form id="precinctPicker-form"
+      [formGroup]="municipalityForm" 
+      (ngSubmit)="goForward($event)">
+  <mat-form-field>
+    <input type="text" 
+          [placeholder]="precinctName ? precinctName : 'Valitse kotikuntasi'"
+          aria-label="Kotikuntasi"
+          matInput 
+          formControlName="voterMunicipality"
+          [matAutocomplete]="auto">
+  </mat-form-field>
+
+  <mat-autocomplete #auto="matAutocomplete"
+                    [displayWith]="displayMunicipality"
+                    (optionSelected)="goForward($event)">
+    <mat-option *ngFor="let m of filteredMunicipalities  | async" 
+                [value]="m">{{m.name}}</mat-option>
+  </mat-autocomplete>
+</form>
+
+<div *ngIf="precinctName"
+     id="precinctInfo">
+  Paina nappia ”Seuraava” edetäksesi.
+</div>
