@@ -1,0 +1,149 @@
+@import '~@angular/material/theming';
+
+// Typography
+// https://material.angular.io/guide/typography
+// Usage: @include mat-typography-level-to-styles($app-typography, title)
+$app-typography: mat-typography-config(
+  $font-family: "'DM Sans', sans-serif",
+  $headline: mat-typography-level(2rem, 1.2, 700)
+);
+
+// Custom palettes and theme
+// See http://mcg.mbitson.com/
+
+// Base colour: #0e03b7
+$app-primary: mat-palette((
+  50: #e2e1f6,
+  100: #b7b3e9,
+  200: #8781db,
+  300: #564fcd,
+  400: #3229c2,
+  500: #0e03b7,
+  600: #0c03b0,
+  700: #0a02a7,
+  800: #08029f,
+  900: #040190,
+  A100: #bcbcff,
+  A200: #8989ff,
+  A400: #5656ff,
+  A700: #3c3cff,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #ffffff,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #000000,
+    A400: #ffffff,
+    A700: #ffffff,
+  )
+));
+
+
+$accent:    mat-palette($mat-orange, A200, A100, A400);
+$warn:      mat-palette($mat-red, A200);
+
+// Base colour grey
+$secondary: mat-palette((
+    50: #f0f0f0,
+    100: #d9d9d9,
+    200: #c0c0c0,
+    300: #a6a6a6,
+    400: #939393,
+    500: #808080,
+    600: #787878,
+    700: #6d6d6d,
+    800: #636363,
+    900: #505050,
+    A100: #f8c0c0,
+    A200: #f39292,
+    A400: #ff5353,
+    A700: #ff3a3a,
+    contrast: (
+        50: #000000,
+        100: #000000,
+        200: #000000,
+        300: #000000,
+        400: #000000,
+        500: #000000,
+        600: #ffffff,
+        700: #ffffff,
+        800: #ffffff,
+        900: #ffffff,
+        A100: #000000,
+        A200: #000000,
+        A400: #000000,
+        A700: #ffffff,
+    )
+));
+
+$app-theme: mat-light-theme($app-primary, $accent, $warn);
+
+$foreground: map-get($app-theme, foreground);
+$background: map-get($app-theme, background);
+
+
+// Further custom variables
+// Partly based on the theme variables
+// These could be merged into theme, 
+// see: https://stackoverflow.com/questions/49642098/angular-material-global-color-variables
+
+$fontIncrement-M:   120%;
+
+$color-text:        map-get($foreground, text);
+$color-nega:        white;
+$color-primary:     mat-color($app-primary);
+$color-primaryBg:   mat-color($app-primary, 100); // color.mix(white, $color-primary, 80%)
+$color-accent:      mat-color($accent);
+$color-accentBg:    mat-color($accent, 100); // color.mix(white, $color-accent, 80%)
+$color-warn:        mat-color($warn);
+$color-warnBg:      mat-color($warn, 100); // color.mix(white, $color-warn, 80%)
+$color-secondary:   mat-color($secondary);
+$color-secondaryBg: mat-color($secondary, 50); // color.mix(white, $color-secondary, 80%)
+$color-background:  map-get($background, background);
+
+$alpha-overlay: 0.8;
+
+$fontSize-XS: 0.72rem;
+$fontSize-S:  mat-font-size($app-typography, caption);
+$fontSize-M:  mat-font-size($app-typography, body-1);
+$fontSize-L:  mat-font-size($app-typography, title);
+$fontSize-XL: mat-font-size($app-typography, headline);
+
+$fontSize-iconL: 32px;
+
+$lineHeight-S: 1.1;
+
+$border-M: 1px solid $color-secondary;
+
+$borderRadius-M: 4px;
+$borderRadius-XL: 1.5rem;
+
+$boxShadow-M: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+
+$margin-XS: 0.25rem;
+$margin-S: 0.5rem;
+$margin-M: 1rem;
+$margin-L: 1.5rem;
+$margin-XL: 2.25rem;
+
+$maxWidth-S: 25rem; // For Likert forms and displays
+$maxWidth-M: 38rem; // For body text
+$maxWidth-L: 40rem; // For overlays
+
+$transition-M: 225ms cubic-bezier(0.4, 0, 0.2, 1);
+
+$zIndex-10: 1000;
+$zIndex-9: 900;
+$zIndex-8: 800; // Tools
+$zIndex-7: 700; // Top bar
+$zIndex-6: 600; // Progress spinner
+$zIndex-5: 0;   // Content
+$zIndex-4: -200;
+$zIndex-0: -1000;

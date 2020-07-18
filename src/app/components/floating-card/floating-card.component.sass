@@ -1,0 +1,22 @@
+@import 'variables.scss' // This includes mat-theming providing mat-elevation
+
+/*
+ * SEE ALSO global styles defined in
+ * FloatingCardGlobalStylesComponent in floating-card.component.ts
+ */
+  
+:host
+  width: 100%
+
+.floatingCard
+  border-radius: $borderRadius-XL $borderRadius-XL 0px 0px
+  transition: border-radius $transition-M
+  @include mat-elevation(3)
+
+.maximised
+  height: 100vh
+  overflow-y: hidden // We'll handle scrolling within the inner component
+  border-radius: 0px
+
+.noTransition
+  transition: none

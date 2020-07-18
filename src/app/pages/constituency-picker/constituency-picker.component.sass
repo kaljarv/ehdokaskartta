@@ -1,0 +1,33 @@
+@import 'variables.scss'
+  
+:host
+  position: absolute
+  top: 0
+  left: 0
+  right: 0
+  bottom: 0
+  display: flex
+  padding: $margin-M
+  width: 100%
+  overflow: visible
+  flex-flow: column nowrap
+  justify-content: center
+  align-items: center
+
+#constituencyPicker-form
+  position: relative
+  width: 100%
+
+  mat-form-field
+    display: block
+    font-size: $fontIncrement-M
+    margin: $margin-M auto 0 auto
+    max-width: 16rem
+
+#submitInfo
+  position: absolute
+  top: 5rem
+  width: 100%
+  text-align: center
+  font-size: $fontSize-S
+  color: $color-secondary

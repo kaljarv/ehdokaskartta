@@ -1,0 +1,23 @@
+@use 'sass:color'
+
+@import 'variables.scss'
+
+
+:host
+  display: flex
+  position: fixed
+  left: 0
+  top: 0
+  right: 0
+  bottom: 0
+  background-color: color.change($color-background, $alpha: $alpha-overlay)
+  flex-flow: column nowrap
+  justify-content: center
+  align-items: center
+
+.progressSpinner-container
+  text-align: center
+  width: 100%
+
+mat-progress-spinner
+  margin: 0 auto 1rem

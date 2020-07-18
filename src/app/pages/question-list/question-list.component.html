@@ -1,0 +1,29 @@
+<!-- Spinner shown when loading -->
+
+<app-progress-spinner *ngIf="isLoading"
+                      title="Ladataan kysymyksiä…"
+                      @fadeInOut></app-progress-spinner>
+
+<!-- Question list -->
+
+<div *ngIf="!isLoading"
+     class="questionListContainer"
+     @fadeInOut>
+  <mat-chip-list>
+    <mat-chip *ngFor="let question of questions"
+              (click)="showQuestion(question)"
+              class="category-{{ question.category | toClassName }}"
+              [class.answered]="question.voterAnswer">
+      <!-- 
+        Didn't work of routerLink outlet clearing bug
+        [routerLink]="['', { outlets: { details: ['question', question.id] } }]" 
+      -->
+      {{ question.topic }}
+      <mat-icon *ngIf="isRecommended(question)"
+                matTooltip="Suositeltu seuraava kysymys"
+                matTooltipPosition="above"
+                class="recommendationIcon"
+                @buttonAppear>star</mat-icon>
+    </mat-chip>
+  </mat-chip-list>
+</div>

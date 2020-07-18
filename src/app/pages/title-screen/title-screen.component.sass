@@ -1,0 +1,82 @@
+@import 'variables.scss'
+
+:host
+  display: flex
+  padding: $margin-L
+  width: 100%
+  min-height: 100vh
+  background-color: $color-primary
+  color: $color-nega
+  text-align: center
+  // cursor: pointer
+  flex-flow: column nowrap
+  justify-content: space-between
+  align-items: center
+
+#menuButton
+  align-self: flex-start
+
+.clickableArea
+  cursor: pointer
+
+h1 
+  font-size: $fontSize-XL
+  font-weight: bold
+
+.content
+  margin: $margin-M
+
+#vignette
+  display: flex
+  flex-flow: row nowrap
+  justify-content: center
+  margin: $margin-XL auto
+
+  img
+    width: 100%
+    height: auto
+
+.info
+  font-size: $fontSize-S
+  margin-top: $margin-M
+
+  mat-icon
+    height: 16px
+    width: 16px
+    font-size: 16px
+    vertical-align: text-top
+
+.readMore
+  color: $color-nega
+
+#nextButton
+  border-color: $color-nega
+  color: $color-nega
+  font-size: $fontSize-L
+  // color: $color-primary
+  // background-color: $color-nega
+  margin-bottom: $margin-M
+
+.logos
+  // position: absolute
+  // text-align: center
+  // vertical-align: middle
+  // bottom: 0
+  // left: 0
+  // width: 100%
+  display: flex
+  flex-flow: row nowrap
+  justify-content: center
+  align-items: center
+
+  > *
+    margin: 0 0.75rem
+
+#logos-yle
+  height: 0.9 * 2.5rem
+
+#logos-aalto
+  height: 0.9 * 1.5rem
+
+#logos-kaljarv
+  height: 0.9 * 1.25rem

@@ -1,62 +1,196 @@
 <mat-sidenav-container>
+
   <mat-sidenav #sideNav 
                mode="push">
     <mat-nav-list>
-        <a mat-list-item routerLink="/" >Alkuun</a>
-        <a mat-list-item routerLink="/questions" >Kysymyksiin</a>
-        <a mat-list-item routerLink="/map" >Karttaan</a>
-        <a mat-list-item routerLink="/test" >Testi</a>
-        <a mat-list-item (click)="unsetVoterAnswers()" >Nollaa tallennetut vastaukset</a>
+        <a mat-list-item 
+           routerLink="/">
+          <!-- <mat-icon matListIcon>home</mat-icon> -->
+          Palaa alkuun
+        </a>
+
+        <a mat-list-item 
+           [routerLink]="paths.constituencyPicker">
+          <!-- <mat-icon matListIcon>place</mat-icon> -->
+          Siirry vaalipiirin valintaan
+        </a>
+
+        <a *ngIf="enableQuestions"
+           mat-list-item 
+           [routerLink]="paths.questions">
+           <!-- <mat-icon matListIcon>help</mat-icon> -->
+           Siirry kysymyksiin
+        </a>
+        <mat-list-item *ngIf="!enableQuestions"
+                       class="disabled"
+                       matTooltip="Vaalipiiri täytyy valita ennen kysymyksiin vastaamista"
+                       matTooltipPosition="right">
+           <!-- <mat-icon matListIcon>help</mat-icon> -->
+           Siirry kysymyksiin
+        </mat-list-item>
+
+        <a *ngIf="enableMap"
+           mat-list-item 
+           [routerLink]="paths.map">
+          <!-- <mat-icon matListIcon>map</mat-icon> -->
+          Siirry tuloksiin
+        </a>
+        <mat-list-item *ngIf="!enableMap"
+                       class="disabled"
+                       matTooltip="Kysymyksiin täytyy vastata ennen tulosten esittämistä"
+                       matTooltipPosition="right">
+          <!-- <mat-icon matListIcon>map</mat-icon> -->
+          Siirry tuloksiin
+        </mat-list-item>
+
+        <a *ngIf="enableQuestions"
+           mat-list-item 
+           [routerLink]="paths.browse">
+          <!-- <mat-icon matListIcon>map</mat-icon> -->
+          Selaa ehdokkaita vastaamatta kysymyksiin
+        </a>
+        <mat-list-item *ngIf="!enableQuestions"
+                       class="disabled"
+                       matTooltip="Vaalipiiri täytyy valita ennen ehdokkaiden selaamista"
+                       matTooltipPosition="right">
+          <!-- <mat-icon matListIcon>map</mat-icon> -->
+          Selaa ehdokkaita vastaamatta kysymyksiin
+        </mat-list-item>
+
+        <mat-divider></mat-divider>
+
+        <a *ngIf="enableMap || enableQuestions"
+           mat-list-item 
+           (click)="unsetVoterAnswers()">
+           <mat-icon matListIcon>highlight_off</mat-icon>
+           Nollaa tallennetut vastaukset
+        </a>
+        <mat-list-item *ngIf="!(enableMap || enableQuestions)"
+                       class="disabled">
+           <mat-icon matListIcon>highlight_off</mat-icon>
+           Nollaa tallennetut vastaukset
+        </mat-list-item>
+
+        <mat-divider></mat-divider>
+
+        <a mat-list-item 
+           [routerLink]="paths.about"
+           class="secondary">
+          <mat-icon matListIcon>info</mat-icon>
+          Tietoja palvelusta
+        </a>
+
     </mat-nav-list>
   </mat-sidenav>
+
   <mat-sidenav-content>
-    <app-top-bar [title]="title"
-                 [subtitle]="subtitle"></app-top-bar>
-    <div *ngIf="showTopTools"
+
+    <app-top-bar *ngIf="!hideTopBar"
+                 [title]="title"
+                 [content]="subtitle"></app-top-bar>
+
+    <div *ngIf="showMapTools"
          id="topTools">
-      <!--
-        <mat-menu #filterMenu="matMenu"
-                  yPosition="below"
-                  xPosition="before">
-          <h4>Suodata ehdokkaita</h4>
-          <button mat-menu-item [matMenuTriggerFor]="genderMenu">Sukupuolen mukaan</button>
-          <button mat-menu-item>Puolueen mukaan</button>
-          <button mat-menu-item>Tietyn kysymyksen mukaan</button>
-        </mat-menu>
-        <mat-menu #genderMenu="matMenu">
-          <button mat-menu-item>Suodata miehet</button>
-          <button mat-menu-item>Suodata naiset</button>
-          <button mat-menu-item>Suodata muut</button>
-          <button mat-menu-item>Suodata ne, jotka eivät ilmoittaneet sukupuoltaan</button>
-        </mat-menu>
-      -->
-      <button id="filterButton"
-              mat-mini-fab aria-label="Suodata ehdokkaita"
-              (click)="openCandidateFilters()"
-              matTooltip="Suodata ehdokkaita"
+      <div class="leftColumn">
+        <!-- Nothing here yet -->
+      </div>
+      <div class="rightColumn">
+        <button id="filterButton"
+                mat-mini-fab 
+                (click)="openCandidateFilters()"
+                #filterButtonTooltip="matTooltip"
+                matTooltip="Suodata ehdokkaita"
+                matTooltipClass="tools-tooltip"
+                matTooltipPosition="left"
+                [class.active]="hasActiveFilters"
+                @buttonAppear>
+          <mat-icon>filter_list</mat-icon>
+        </button>
+        <button id="partyButton"
+                mat-mini-fab 
+                (click)="toggleShowAllParties()"
+                #partyButtonTooltip="matTooltip"
+                [matTooltip]="showAllParties ? 'Älä näytä puolueita kartalla' : 'Näytä puolueet kartalla'"
+                matTooltipClass="tools-tooltip"
+                matTooltipPosition="left"
+                [class.active]="showAllParties"
+                @buttonAppear>
+          <mat-icon>flag</mat-icon>
+        </button>
+        <button *ngIf="hasFavourites"
+                id="favouritesButton"
+                (click)="openFavourites()"
+                mat-mini-fab 
+                #favouritesButtonTooltip="matTooltip"
+                matTooltip="Avaa muistilista"
+                matTooltipClass="tools-tooltip"
+                matTooltipPosition="left"
+                @buttonAppear>
+          <mat-icon>bookmarks</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <router-outlet></router-outlet>
+
+    <div *ngIf="showMapTools || showFeedbackButton"
+         [@bottomToolsShift]="bottomToolsShiftTrigger"
+         id="bottomTools">
+      <button *ngIf=" showFeedbackButton"
+              id="feedbackButton"
+              mat-mini-fab 
+              (click)="openFeedback()"
+              #locateButtonTooltip="matTooltip"
+              matTooltip="Anna palautetta"
               matTooltipClass="tools-tooltip"
-              matTooltipPosition="left">
-        <mat-icon>filter_list</mat-icon>
+              matTooltipPosition="left"
+              @buttonAppear>
+        <mat-icon>feedback</mat-icon>
+      </button>
+      <button *ngIf="showMapTools"
+              id="locateButton"
+              mat-mini-fab 
+              (click)="locateSelf()"
+              #locateButtonTooltip="matTooltip"
+              matTooltip="Palaa omaan sijaintiisi"
+              matTooltipClass="tools-tooltip"
+              matTooltipPosition="left"
+              @buttonAppear>
+        <mat-icon>near_me</mat-icon>
       </button>
     </div>
-    <router-outlet></router-outlet>
-    <div #bottomTools 
-         id="bottomTools">
-      <button #menuButton 
-              id="menuButton"
-              mat-mini-fab aria-label="Avaa valikko"
-              (click)="sideNav.toggle()">
-        <mat-icon>menu</mat-icon>
-      </button>
-      <button #nextButton 
-              id="nextButton"
+
+    <div *ngIf="showNextButtonBar"
+         #nextButtonBar
+         id="nextButtonBar"
+         @appearFromBottom>
+      <div class="spacer">
+        <!-- Needed for flex -->
+      </div>
+      <button id="nextButton"
               mat-raised-button 
               color="primary" 
-              disabled
               (click)="goForward()">
-        Seuraava
+        {{ nextButtonText }}
         <mat-icon>navigate_next</mat-icon>
       </button>
+      <!-- Optional progress indicator 
+           We include this element anyway for flex -->
+      <div class="nextProgress">
+        <ng-container *ngIf="showNextProgress">
+          <span class="nextProgressInfo">
+            {{ nextProgressText }}
+          </span>
+          <mat-progress-spinner color="primary"
+                                mode="determinate"
+                                diameter="30"
+                                strokeWidth="4"
+                                [value]="nextProgressValue">
+          </mat-progress-spinner>
+        </ng-container>
+      </div>
     </div>
+
   </mat-sidenav-content>
+
 </mat-sidenav-container>

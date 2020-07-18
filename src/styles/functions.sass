@@ -1,0 +1,104 @@
+/*
+ * Utilities
+ */
+
+@use 'sass:color'
+@use 'sass:selector'
+@use 'sass:math'
+
+// We need to implement the power function as angular uses sass 1.23 which doesn't support math.pow
+// See: https://css-tricks.com/snippets/sass/power-function/
+@function pow($number, $exponent)
+  @if (round($exponent) != $exponent)
+    @return exp($exponent * ln($number))
+    
+  $value: 1
+  
+  @if $exponent > 0
+    @for $i from 1 through $exponent
+      $value: $value * $number
+  @else if $exponent < 0
+    @for $i from 1 through -$exponent
+      $value: $value / $number
+
+
+  @return $value
+
+@function factorial($value)
+  $result: 1
+
+  @if $value == 0
+    @return $result
+  
+  @for $index from 1 through $value
+    $result: $result * $index
+  
+  @return $result
+
+@function summation($iteratee, $input, $initial: 0, $limit: 100)
+  $sum: 0
+  
+  @for $index from $initial to $limit
+    $sum: $sum + call(get-function($iteratee), $input, $index)
+  
+  @return $sum
+
+@function exp-maclaurin($x, $n)
+  @return (pow($x, $n) / factorial($n))
+
+@function exp($value)
+  @return summation('exp-maclaurin', $value, 0, 100)
+
+@function ln-maclaurin($x, $n)
+  @return (pow(-1, $n + 1) / $n) * (pow($x - 1, $n))
+
+@function ln($value)
+  $ten-exp: 1
+  $ln-ten: 2.30258509
+  
+  @while ($value > pow(10, $ten-exp))
+    $ten-exp: $ten-exp + 1
+  
+  @return summation(ln-maclaurin, $value / pow(10, $ten-exp), 1, 100) + $ten-exp * $ln-ten
+
+// End power function
+
+// Get relative lumincance for the color
+// See: https://www.w3.org/TR/WCAG20/#relativeluminancedef
+@function relative-luminance($color)
+
+  $r: color.red($color) / 255
+  $g: color.green($color) / 255
+  $b: color.blue($color) / 255
+
+  @if $r <= 0.03928
+    $r: $r / 12.92
+  @else 
+    $r: pow(($r + 0.055) / 1.055, 2.4)
+
+  @if $g <= 0.03928
+    $g: $g / 12.92
+  @else 
+    $g: pow(($g + 0.055) / 1.055, 2.4)
+
+  @if $b <= 0.03928
+    $b: $b / 12.92
+  @else 
+    $b: pow(($b + 0.055) / 1.055, 2.4)
+  
+  @return 0.2126 * $r + 0.7152 * $g + 0.0722 * $b
+
+// Get color contrast for two colours
+// See: https://www.w3.org/TR/WCAG20/#contrast-ratiodef
+@function color-contrast($dark-color, $light-color: #fff)
+  @return (relative-luminance($light-color) + 0.05) / (relative-luminance($dark-color) + 0.05)
+
+// Darken the colour until it matches the contrast threshold on the background
+// See: §1.4.3 at https://www.w3.org/TR/WCAG20/#visual-audio-contrast
+@function ensure-contrast($color, $contrast-ratio: 3.0, $background-color: #fff)
+  @while color-contrast($color, $background-color) < $contrast-ratio
+    $color: color.adjust($color, $lightness: -1%)
+  @return $color
+
+
+  

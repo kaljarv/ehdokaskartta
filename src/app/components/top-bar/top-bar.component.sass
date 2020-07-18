@@ -1,0 +1,48 @@
+// Includes mat-theming providing the functions used below
+@import 'variables.scss' 
+
+#container
+  background-color: $color-primary
+  color: $color-nega
+  padding: 0
+  @include mat-elevation-transition
+  @include mat-elevation(3)
+
+#container.expanded
+  @include mat-elevation(6)
+
+header
+  border-radius: inherit
+  cursor: pointer
+  padding: $margin-S
+  position: relative
+  min-height: 1.5rem
+  display: flex
+  flex-direction: row
+  flex-wrap: nowrap
+  align-items: center
+
+#menuButton
+  flex-grow: 0
+  flex-basis: 2rem
+
+.title
+  font-weight: bold
+  font-size: $fontSize-M
+  text-align: center
+  flex-grow: 1
+  transition: font-size $transition-M
+
+.active
+  .title
+    font-size: $fontSize-L
+
+
+.expandIcon
+  flex-grow: 0
+  flex-basis: 2rem
+
+.content
+  padding: $margin-S $margin-M $margin-M $margin-M
+  overflow: hidden
+  text-align: center

@@ -1,0 +1,91 @@
+@import 'variables.scss'
+
+:host
+  display: flex
+  padding: $margin-L
+  width: 100%
+  min-height: 100vh
+  background-color: $color-background
+  // text-align: center
+  // cursor: pointer
+  flex-flow: column nowrap
+  justify-content: space-between
+  align-items: center
+
+.buttons
+  display: flex
+  flex-flow: row nowrap
+  justify-content: space-between
+  align-self: stretch
+
+h1 
+  font-size: 2rem
+  font-weight: bold
+  text-align: center
+
+h2
+  margin-top: $margin-L
+
+mat-accordion
+  margin: $margin-M 0
+
+p
+  text-align: left
+
+.ingress
+  // font-size: $fontSize-L
+  font-weight: bold
+  hyphens: none
+  margin: $margin-L 0 $margin-M 0
+
+.content
+  display: flex
+  flex-flow: column nowrap
+  margin: $margin-M
+  max-width: $maxWidth-M
+  width: 100%
+
+.githubLink
+  display: flex
+  flex-flow: row nowrap
+  justify-content: center
+
+  img
+    height: 32px
+    width: auto
+
+ul
+  margin-bottom: $margin-M
+  padding-left: $margin-M
+
+  li
+    padding-left: $margin-M
+    margin-bottom: $margin-S
+
+  li:last-child
+    margin-bottom: 0
+
+#nextButton
+  // font-size: $fontSize-L
+  align-self: center
+  margin: $margin-M auto
+
+.logos
+  margin: $margin-L 0
+  display: flex
+  flex-flow: row nowrap
+  justify-content: center
+  align-items: center
+  max-width: $maxWidth-M
+
+  > *
+    margin: 0 0.75rem
+
+#logos-yle
+  height: 0.9 * 2.5rem
+
+#logos-aalto
+  height: 0.9 * 1.5rem
+
+#logos-kaljarv
+  height: 0.9 * 1.25rem

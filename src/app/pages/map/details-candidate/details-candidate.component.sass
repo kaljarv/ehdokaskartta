@@ -1,0 +1,228 @@
+@import 'variables.scss'
+
+
+:host
+  display: block
+  max-width: $maxWidth-L
+
+// Grab bar
+.grabBar
+  background-color: $color-secondary
+  border-radius: 2px
+  display: block
+  height: 4px
+  left: calc(50% - 0.75rem)
+  position: absolute
+  top: 8px
+  width: 1.5rem
+
+header
+  position: relative
+  min-height: 5rem
+  display: flex
+  flex-direction: column
+  justify-content: stretch
+  cursor: pointer
+  // Counter mat-card's padding so that the floating card can be grabbed at the top too
+  margin-top: -16px 
+  padding-top: 16px
+
+  .header-upperPart
+    display: flex
+    flex-direction: row
+
+    .header-tools
+      display: flex
+      flex-direction: column
+      flex-basis: 2rem
+      flex-grow: 0
+      align-items: center
+      padding-right: $margin-S
+
+    .header-titles
+      flex-grow: 1
+      padding-right: $margin-S
+    
+    .party
+      mat-icon
+        font-size: 20px
+        height: 20px
+        width: 20px
+        vertical-align: bottom
+
+    .candidate-expand
+      font-size: $fontSize-iconL
+      transform: rotate(-180deg)
+      margin-top: $margin-S
+
+    h2
+      margin-bottom: $margin-S
+
+    .candidate-number
+      font-size: $fontIncrement-M
+      font-weight: bold
+      padding: 0.5rem
+      border-radius: 2rem
+      min-width: 3rem
+      text-align: center
+    
+    .candidate-favourite
+      margin-top: $margin-XS
+
+    .candidate-favourite--isFavourite
+      color: $color-primary
+
+  .header-lowerPart
+    display: flex
+    flex-direction: column
+    padding-top: $margin-S
+
+    .customChipList
+      // Counter the 16px margin and padding
+      width: calc(100% + 32px)
+      display: flex
+      flex-direction: row
+      flex-wrap: nowrap
+      overflow-x: scroll
+      position: relative
+      padding-right: 16px
+      scrollbar-width: none
+
+    .customChipList::webkit-scrollbar
+      display: none
+
+    // .customChipList::after
+    //   content: ''
+    //   display: block !important
+    //   position: fixed
+    //   top: 0
+    //   right: 0
+    //   width: 16px
+    //   height: 100% 
+    //   background-image: linear-gradient(to right, transparent, 35%, #{$color-nega})
+
+    .customChip
+      display: block
+      // background-color: $color-accentBg
+      font-size: $fontSize-XS
+      flex-shrink: 0
+      font-weight: bold
+      border-radius: $fontSize-XS
+      padding: 0.15rem 0.4rem
+      min-height: 1.2rem
+      white-space: nowrap
+      overflow: hidden
+      text-overflow: ellipsis
+      display: inline-block
+      max-width: 20vw
+      margin-right: $fontSize-XS / 4
+      @media (max-width: 30rem)
+        max-width: 6rem
+    
+    label
+      font-size: $fontSize-XS
+      text-transform: uppercase
+      margin-top: $margin-S
+      // letter-spacing: $fontSize-XS / 10
+    
+    mat-icon
+      font-size: 20px
+      height: 20px
+      width: 20px
+      vertical-align: text-bottom
+
+
+.candidate-data
+  padding-top: $margin-M
+
+.candidate-portrait
+  height: 12rem
+  width: 12rem
+  max-height: 25vw
+  max-width: 25vw
+  object-fit: cover
+  border-radius: 50%
+  float: right
+  margin: 0 $margin-S $margin-L $margin-L
+
+.candidate-datum
+  margin-bottom: $margin-S * 1.2
+
+label
+  color: $color-secondary
+  font-size: $fontSize-XS
+  font-weight: 500
+  text-transform: uppercase
+  letter-spacing: 0.02rem
+  hyphens: manual
+  line-height: 1.0
+
+.content
+  display: block
+  font-weight: bold
+
+.missingWarning
+  mat-icon
+    float: left
+    margin-right: $margin-S
+
+.candidate-funding
+  font-weight: normal
+
+.customExpander-title span
+  hyphens: manual
+
+.candidate-data--secondary
+  .candidate-datum
+    .content
+      font-weight: normal
+
+    .content-emphasis
+      font-weight: bold
+
+.candidate-opinions-wrapper
+  padding: 3px // For the box shadows of the expansion panel to show
+
+.customExpander
+  margin-bottom: $margin-L
+
+.customExpander-subtitle-fadeOut
+  background-image: linear-gradient(to bottom, transparent, 35%, #{$color-nega})
+
+.candidate-opinions-unanswered.customExpander 
+  > header 
+    .mat-badge-content
+      background-color: $color-secondary
+
+.candidate-opinions-topicChip
+  font-size: $fontSize-S
+  padding: 0.2rem 0.5rem
+  min-height: 1.5rem
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis
+  display: inline-block
+  max-width: 25vw
+  @media (max-width: 32rem)
+    max-width: 8rem
+
+.candidate-opinions-moreTopics,
+.candidate-opinions-noTopics
+  margin: 4px // This is inside mat-chip-list with a negative margin
+  font-size: $fontSize-S
+
+.candidate-opinions-noTopics
+  font-style: italic
+  color: $color-secondary
+
+// .candidate-opinions-disagreed 
+//   .candidate-opinions-topicChip
+//     background-color: $color-warnBg
+
+// .candidate-opinions-agreed 
+//   .candidate-opinions-topicChip
+//     background-color: $color-primaryBg
+
+// .candidate-opinions-unanswered 
+//   .candidate-opinions-topicChip
+//     // background-color: $color-accentBg

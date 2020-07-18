@@ -1,0 +1,99 @@
+// Includes mat-theming providing the functions used below
+@import 'variables.scss'
+  
+mat-sidenav-container
+  min-height: 100vh
+
+mat-sidenav
+  min-width: 10rem
+
+  .disabled
+    cursor: not-allowed
+    opacity: 0.5
+
+  .secondary
+    font-style: italic
+
+mat-sidenav-content
+  min-height: 100vh
+  overflow-y: visible !important
+
+#topTools,
+#bottomTools
+  position: relative
+  margin: $margin-M
+  z-index: $zIndex-8
+  hyphens: manual
+  
+  .leftColumn,
+  .rightColumn
+    float: left
+    display: flex
+    flex-flow: column nowrap
+    align-items: center
+
+  .rightColumn
+    float: right
+  
+  button
+    background-color: $color-nega
+    color: $color-primary
+    margin-bottom: $margin-S + $margin-XS
+    transition: background-color $transition-M, color $transition-M
+
+  button.active
+    background-color: $color-primary
+    color: $color-nega
+
+#bottomTools
+  position: fixed
+  bottom: 0
+  right: 0
+  display: flex
+  flex-flow: column nowrap
+
+#locateButton
+  mat-icon
+    transform: scaleX(-1)
+
+
+#filterButton
+  float: right
+  
+// This could well be made its own component...
+#nextButtonBar
+  background-color: $color-nega
+  position: fixed
+  left: 0
+  right: 0
+  bottom: 0
+  padding: $margin-M
+  z-index: $zIndex-8
+  hyphens: manual
+  display: flex
+  flex-flow: row nowrap
+  justify-content: space-between
+  align-items: center 
+  @include mat-elevation-transition
+  @include mat-elevation(3)
+
+  .spacer
+    flex-basis: 9rem
+
+  #nextButton
+    min-width: 10rem
+    flex-basis: auto
+
+  .nextProgress
+    flex-basis: 9rem
+    display: flex
+    flex-flow: row nowrap
+    justify-content: flex-end
+    padding-right: 6px
+
+    .nextProgressInfo
+      color: $color-secondary
+      font-size: $fontSize-S
+      line-height: $lineHeight-S
+      text-align: right
+      padding-right: $margin-XS

@@ -1,0 +1,124 @@
+@import 'variables.scss'
+
+:host
+  display: flex
+  margin: $margin-S 0
+  padding: $margin-XL 0
+  border-top: $border-M
+  flex-flow: column nowrap
+  align-items: center
+  
+  &:first-of-type
+    margin-top: 0
+
+
+h4
+  display: inline-block
+  font-size: $fontSize-S
+  font-weight: 500
+  padding: 0.2rem 0.5rem
+  min-height: 1.5rem
+  border-radius: 1rem
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis
+  display: inline-block
+  max-width: 100%
+  margin: $margin-S auto
+
+h3
+  font-weight: bold !important
+  margin: 0 auto
+  text-align: center
+
+.likertBlock
+  width: 100%
+  max-width: $maxWidth-S
+
+.svgContainer
+  margin-top: $margin-S
+  
+.valueBg
+  fill: $color-secondaryBg  
+
+// Use the same bg colour regardless of agreement type
+
+// .stronglyDisagree 
+//   .valueBg
+//     fill: $color-warnBg
+
+// .agree,
+// .mostlyAgree  
+//   .valueBg
+//     fill: $color-primaryBg
+
+.valueDot
+  fill: $color-secondary
+
+.candidate,
+.missingCandidate
+  .body
+    fill: $color-secondary
+
+.party
+  .label
+    font-size: 9px
+    fill: $color-nega
+
+.tooltip
+  font-size: $fontSize-S !important
+  padding: $margin-XS !important
+  width: 10rem !important
+  hyphens: manual
+  text-align: center
+
+// NB. These are not inside the svg element
+.titles,
+.partyTitle
+  position: relative
+  height: 2rem
+  width: 100%
+
+  label
+    color: $color-text
+    font-size: $fontSize-S
+    line-height: $lineHeight-S
+    text-transform: uppercase
+    text-align: center
+    width: 20%
+    position: absolute
+    bottom: 0.1rem
+
+  label.coincident
+
+.partyTitle
+  height: 1.5rem
+
+.partyTitle
+  bottom: 0rem
+
+// NB. These are not inside the svg element
+.legend,
+.missingAnswerInfo
+  color: $color-secondary
+  font-size: $fontSize-S
+  width: 100%
+  line-height: $lineHeight-S
+  margin-bottom: $margin-S
+  display: flex
+  flex-wrap: nowrap
+  justify-content: space-between
+
+  label
+    flex: 20% 0 0
+    text-align: center
+
+.missingAnswerInfo
+  font-style: italic
+  display: block
+  text-align: center
+
+.openAnswer
+  mat-icon
+    float: left
+    margin-left: -1.85rem

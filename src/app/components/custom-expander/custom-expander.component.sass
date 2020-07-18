@@ -1,0 +1,49 @@
+@import 'variables.scss'
+
+
+
+.customExpander
+  box-sizing: content-box
+  display: block
+  border-radius: 4px
+  margin-bottom: $margin-L
+  overflow: hidden
+  box-shadow: $boxShadow-M
+
+.customExpander-content
+  padding: 0 $margin-L
+  overflow: hidden
+
+header
+  border-radius: inherit
+  cursor: pointer
+  padding: 0 4rem $margin-L 2rem
+  position: relative
+  min-height: $margin-L
+
+.customExpander--disabled
+  header
+    cursor: default
+
+.customExpander-title
+  font-weight: bold
+  overflow: visible
+  padding: $margin-L 0
+
+.customExpander-subtitle
+  overflow: hidden
+  position: relative
+
+.customExpander-subtitle-fadeOut
+  display: block
+  position: absolute
+  bottom: 0
+  left: 0
+  width: 100%
+  height: 1.25rem 
+  background-image: linear-gradient(to bottom, transparent, 35%, white)
+
+.customExpander-expandIcon
+  position: absolute
+  top: $margin-L
+  right: $margin-L

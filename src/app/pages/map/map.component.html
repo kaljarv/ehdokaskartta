@@ -1,0 +1,128 @@
+<!-- Spinner shown when loading -->
+
+<app-progress-spinner *ngIf="isLoading"
+                      title="Ladataan tuloksia…"
+                      [value]="progressValueEmitter | async"
+                      mode="determinate"
+                      @fadeInOut></app-progress-spinner>
+
+<!-- Menus -->
+
+<mat-menu #voterMenu="matMenu" 
+          yPosition="above">
+  <button mat-menu-item
+          (click)="goToQuestions()">
+    Muokkaa vastauksiasi kysymyksiin
+  </button>
+  <button mat-menu-item
+          (click)="showFavourites()">
+    Näytä muistilistasi
+  </button>
+</mat-menu>
+
+<mat-menu #partyMenu="matMenu">
+  <ng-template matMenuContent
+               let-party="party">
+    <button mat-menu-item
+            (click)="setPartyFilter(party)">Näytä vain tämän puolueen ehdokkaat</button>
+    <button mat-menu-item
+            [disabled]="isOnlyActivePartyFilter(party)"
+            (click)="setPartyFilter(party, true)">Piilota tämän puolueen ehdokkaat</button>
+    <button mat-menu-item
+            [disabled]="!partyFiltersActive"
+            (click)="setPartyFilter()">Näytä kaikkien puolueiden ehdokkaat</button>
+  </ng-template>
+</mat-menu>
+
+<!-- Map -->
+
+<svg #map 
+     id="map"
+     (click)="hideCandidate()">
+
+  <!-- The map proper -->
+
+  <svg:g #mapZoomContainer id="map-zoomContainer">
+
+    <ng-container *ngIf="!isLoading"
+                  @fadeInOut>
+
+       <!-- Filtered out candidates -->
+       
+       <svg:g>
+         
+              <svg:g *ngFor="let avatar of filteredOutAvatars"
+                     personAvatar="candidate"
+                     avatarState="filteredOut"
+                     [avatarX]="getX(avatar)"
+                     [avatarY]="getY(avatar)"
+                     [avatarScale]="getScale()"></svg:g>
+
+       </svg:g>
+
+       <!-- Filtered in candidates and the voter -->
+
+       <svg:g>
+
+              <ng-container *ngFor="let avatar of filteredInAvatars">
+
+                     <ng-container *ngIf="avatar.type == 'candidate'">
+                            <svg:g [personAvatar]="avatar.type"
+                                   [avatarState]="getAvatarState(avatar)"
+                                   [avatarX]="getX(avatar)"
+                                   [avatarY]="getY(avatar)"
+                                   [avatarScale]="getScale()"
+                                   avatarClass="party-{{ avatar.party | toClassName }}"
+                                   (click)="toggleCandidate(avatar, $event)"
+                                   [matTooltip]="getTooltip(avatar)"
+                                   matTooltipClass="avatar-tooltip"
+                                   matTooltipPosition="above"
+                                   class="avatarG--candidate"></svg:g>
+                            <svg:text *ngIf="showLabels()"
+                                      [attr.x]="getX(avatar)"
+                                      [attr.y]="getY(avatar) + textOffset()"
+                                      [@textAppear]="getTextAppearStagger()"
+                                      class="avatar-label">
+                             {{ avatar?.givenName | initials }} {{ avatar?.surname }}, {{ avatar?.party | abbreviate }}
+                         </svg:text>
+                     </ng-container>
+
+                     <ng-container *ngIf="avatar.type == 'voter'">
+                            <svg:g [personAvatar]="avatar.type"
+                                   [avatarX]="getX(avatar)"
+                                   [avatarY]="getY(avatar)"
+                                   [avatarScale]="getScale()"
+                                   [matMenuTriggerFor]="voterMenu"
+                                   (click)="$event.stopPropagation()"
+                                   #voterTooltip="matTooltip"
+                                   matTooltip="Olet tässä"
+                                   matTooltipClass="avatar-tooltip"
+                                   matTooltipPosition="above"
+                                   id="voter"></svg:g>
+                     </ng-container>
+
+                     <ng-container *ngIf="avatar.type == 'party'">
+                            <svg:g *ngIf="showPartyAvatar(avatar.name)"
+                                   [partyAvatar]="avatar.name | abbreviate"
+                                   [avatarX]="getX(avatar)"
+                                   [avatarY]="getY(avatar)"
+                                   [avatarScale]="getScale()"
+                                   avatarClass="party-{{ avatar.name | toClassName }}"
+                                   [matMenuTriggerFor]="partyMenu"
+                                   [matMenuTriggerData]="{party: avatar.name}"
+                                   (click)="$event.stopPropagation()"
+                                   matTooltip="{{avatar.name | genitive }} ehdokkaiden keskipiste"
+                                   matTooltipClass="avatar-tooltip"
+                                   matTooltipPosition="above"
+                                   class="avatarG--party"
+                                   @partyLeave></svg:g>
+                     </ng-container>
+
+              </ng-container>
+
+       </svg:g>
+
+    </ng-container>
+
+  </svg:g>
+</svg>

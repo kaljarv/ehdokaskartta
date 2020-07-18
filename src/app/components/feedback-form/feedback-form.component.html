@@ -1,0 +1,41 @@
+<h2 mat-dialog-title>
+  Anna palautetta
+</h2>
+<mat-dialog-content>
+  <mat-form-field class="feedbackTextarea"
+                  appearance="fill">
+    <mat-label>
+      Palautteesi
+    </mat-label>
+    <textarea [formControl]="feedbackText"
+              matInput>
+      Kirjoita palautteesi tähän
+    </textarea>
+    <mat-hint>
+      Palautteesi mukana tallentuu automaattisesti, missä näkymässä olet, 
+      joten sinun ei tarvitse kuvailla sitä tarkemmin
+    </mat-hint>
+  </mat-form-field>
+  <mat-form-field class="emailInput"
+                  appearance="standard">
+    <mat-label>
+      Sähköpostiosoitteesi
+    </mat-label>
+    <input [formControl]="email"
+           placeholder="Sähköpostiosoitteesi lisätietoja varten"
+           matInput>
+    <mat-hint>
+      Voit halutessasi antaa sähköpostiosoitteesi mahdollisia lisätietopyyntöjä varten
+    </mat-hint>
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button 
+          mat-dialog-close>
+    Peruuta
+  </button>
+  <button mat-button 
+          [mat-dialog-close]="true">
+    Lähetä palaute
+  </button>
+</mat-dialog-actions>

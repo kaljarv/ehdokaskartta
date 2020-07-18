@@ -1,0 +1,39 @@
+<header>
+  <h2><mat-icon>bookmarks</mat-icon> Ehdokkaat muistilistallasi</h2>
+</header>
+
+<mat-list class="candidates">
+
+  <mat-list-item *ngFor="let candidate of favourites"
+                 (click)="showCandidate(candidate)"
+                 class="candidate">
+    <img matListAvatar
+         [src]="getPortraitUrl(candidate)"
+         appFallbackImage
+         class="portrait">
+    <div mat-line
+         class="name">{{ candidate.givenName }} {{ candidate.surname }}</div>
+    <div mat-line
+         class="party">
+      <mat-icon class="party-{{ candidate.party | toClassName }}">flag</mat-icon>
+      {{ candidate.party }}
+    </div>
+    <div class="number party-{{ candidate.party | toClassName }}">
+      {{ candidate.number }}
+    </div>
+
+  </mat-list-item>  
+
+</mat-list>
+
+<section class="buttons">
+
+  <button mat-button 
+          (click)="clearFavourites()"
+          color="warn"
+          id="clearButton">
+    <mat-icon>highlight_off</mat-icon>
+    Tyhjennä muistilista
+  </button>
+
+</section>

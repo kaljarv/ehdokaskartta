@@ -1,0 +1,78 @@
+<button id="menuButton"
+        mat-icon-button 
+        aria-label="Avaa valikko"
+        (click)="toggleSideNav($event)">
+  <mat-icon>menu</mat-icon>
+</button>
+
+<section class="content">
+
+  <div class="clickableArea"
+       (click)="goForward()">
+
+    <h1>
+      Tervetuloa Ehdokaskartalle
+    </h1>
+
+    <div id="vignette">
+      <ng-lottie width="10rem"
+                 height="12.6866rem"
+                 [options]="animationOptions" 
+                 (animationCreated)="animationCreated($event)"
+                 (domLoaded)="animationDomLoaded()"
+                 (loopComplete)="animationLoopCompleted()"></ng-lottie>
+      <!--
+        <img src="assets/images/map-vignette.svg" />
+      -->
+    </div>
+
+  </div>
+
+  <button id="nextButton"
+          mat-stroked-button 
+          (click)="goForward()">
+    Aloita
+    <mat-icon>navigate_next</mat-icon>
+  </button>
+
+  <p class="info">
+    Ehdokaskartta tarjoaa toisenlaisen, kokeellisen näkymän Ylen Eduskuntavaalien 2019 Vaalikoneen tietoihin.<br> 
+    Mielipidekysymyksiin vastattuasi näet vaalipiirisi ehdokkaat järjestettynä kartalle, jolla voit rajata tuloksia entisestään.<br>
+    Kaikenlainen palaute on erittäin tervetullutta. Voit lähettää sitä 
+    <mat-icon>feedback</mat-icon>-painikkeella.
+    <br />
+    <a mat-button
+       [routerLink]="aboutPath"
+       class="readMore">
+      Lue lisää
+    </a>
+  </p>
+
+</section>
+
+<section class="logos">
+  <a mat-button
+     href="https://yle.fi/"
+     (click)="$event.stopPropagation()"
+     title="Yle"
+     target="_blank">
+    <img id="logos-yle"
+         src="assets/images/yle-logo-white.svg" />
+  </a>
+  <a mat-button
+     href="https://www.aalto.fi/fi"
+     (click)="$event.stopPropagation()"
+     title="Aalto-yliopisto"
+     target="_blank">
+    <img id="logos-aalto"
+        src="assets/images/aalto-logo-white.svg" />
+  </a>
+  <a mat-button
+     href="http://kaljarv.com/"
+     (click)="$event.stopPropagation()"
+     title="Kalle Järvenpää Design"
+     target="_blank">
+    <img id="logos-kaljarv"
+        src="assets/images/kaljarv-logo-white.svg" />
+  </a>
+</section>

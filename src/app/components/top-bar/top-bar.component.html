@@ -1,0 +1,25 @@
+<mat-card id="container"
+          [class.expanded]="expanded"
+          (click)="toggle()">
+  <header>
+    <button id="menuButton"
+            mat-icon-button 
+            aria-label="Avaa valikko"
+            (click)="onMenuButtonClick($event)">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <div class="title">
+      {{ title }}
+    </div>
+    <mat-icon [@toggleRotate]="expanded ? 'rotated' : 'normal'"
+              class="expandIcon">expand_more</mat-icon>
+  </header>
+  <section [@toggleExpand]="expanded ? 'open' : 'closed'"
+           class="content">
+    <ng-template  *ngIf="contentIsComponent"
+                  #contentTemplate></ng-template>
+    <ng-container *ngIf="!contentIsComponent">
+      {{ content }}
+    </ng-container>
+  </section>
+</mat-card>

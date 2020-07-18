@@ -1,0 +1,64 @@
+<app-details-question-global-styles></app-details-question-global-styles>
+
+<!-- <h4><mat-icon>help</mat-icon>{{ question.category }}</h4> -->
+
+<h2>{{ question.text }}</h2>
+
+<div class="options">
+
+  <div class="likert">
+
+    <mat-radio-group [(ngModel)]="voterAnswer"
+                     class="likert-group">
+      <mat-radio-button value="1"></mat-radio-button>
+      <mat-radio-button value="2"></mat-radio-button>
+      <mat-radio-button value="3"></mat-radio-button>
+      <mat-radio-button value="4"></mat-radio-button>
+      <mat-radio-button value="5"></mat-radio-button>
+    </mat-radio-group>
+
+    <div class="labels">
+      <label>Täysin eri mieltä</label>
+      <label class="labels-empty"></label>
+      <label>Neutraali</label>
+      <label class="labels-empty"></label>
+      <label>Täysin samaa mieltä</label>
+    </div> 
+
+    <button *ngIf="showDeleteButton"
+            (click)="deleteVoterAnswer()"
+            mat-button
+            color="warn"
+            class="likert-delete">
+      <mat-icon>highlight_off</mat-icon> Poista vastauksesi tähän kysymykseen
+    </button>
+
+  </div>
+
+  <div class="distribution {{ candidateSizingClass }}">
+
+    <div class="columns">
+
+      <div *ngFor="let value of values"
+          class="column"
+          #columns>
+        <div *ngFor="let candidate of candidates[value]"
+            [matTooltip]="getTooltip(candidate)"
+            matTooltipClass="candidate-tooltip"
+            matTooltipPosition="above"
+            class="candidate party-{{ candidate.party | toClassName }}">
+        </div>
+      </div>
+
+    </div>
+
+    <label>{{ constituencyName }}n ehdokkaiden vastausten jakauma</label>
+
+  </div>
+
+</div>
+<!--
+<distribution-chart
+  [question-id]="question.id"
+  padding-ratio="0.75"></distribution-chart>
+-->

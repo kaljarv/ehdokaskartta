@@ -1,0 +1,31 @@
+@import 'variables.scss'
+
+$fadeout-bgColor: $color-secondaryBg
+
+.app-fadeout-expander
+  // max-height: 6rem
+  width: 100%
+  margin-top: $margin-M
+  border-radius: 1rem
+  background-color: $fadeout-bgColor
+  position: relative
+
+.app-fadeout-expander.app-fadeout-expander--overflow
+  // max-height: none
+  overflow: hidden
+  cursor: pointer
+
+// .app-fadeout-expander.app-fadeout-expander--expanded
+//   Not used
+
+.app-fadeout-expander-wrapper
+  padding: $margin-M $margin-M $margin-M 2.5rem
+
+.app-fadeout-expander-fadeout
+  display: block !important
+  position: absolute
+  bottom: 0
+  left: 0
+  width: 100%
+  height: 1.25rem 
+  background-image: linear-gradient(to bottom, transparent, 35%, #{$fadeout-bgColor})

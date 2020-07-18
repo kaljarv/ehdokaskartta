@@ -1,0 +1,96 @@
+@import 'variables.scss'
+
+
+:host
+  display: block
+  max-width: $maxWidth-L
+
+// h4
+//   mat-icon
+//     vertical-align: bottom
+
+h2
+  margin: $margin-XL 0
+  text-align: center
+
+label
+  display: block
+  text-align: center
+  font-size: $fontSize-XS
+  text-transform: uppercase
+  line-height: $lineHeight-S
+  margin-top: $margin-S
+
+.options
+  max-width: $maxWidth-S
+  margin: 0 auto $margin-M auto
+
+.likert
+  margin: $margin-L 0 $margin-XL 0
+  text-align: center
+
+.labels
+  display: flex
+  flex-flow: row nowrap
+  align-items: flex-start
+
+  label
+    width: 20%
+    hyphens: manual
+
+.likert-group
+  background-color: $color-secondaryBg
+  border-radius: 2rem
+  display: flex
+  flex-flow: row nowrap
+  align-items: flex-end
+  margin: $margin-XS 0
+
+  mat-radio-button
+    width: 20%
+    flex-direction: column
+    justify-items: center
+
+.likert-delete
+  font-size: $fontSize-S
+  margin-top: $margin-S
+
+  mat-icon
+
+
+.distribution
+
+.columns
+  border-bottom: $border-M
+  margin-bottom: $margin-XS
+  padding-bottom: $margin-XS
+  display: flex
+  flex-flow: row nowrap
+  justify-content: space-around
+  align-items: flex-end
+
+.column
+  width: 15%
+  max-width: 5rem
+  display: flex
+  flex-flow: row wrap-reverse
+  align-items: flex-end
+  justify-content: center
+
+.candidate
+  border-radius: 50%
+  width: 5px
+  height: 5px
+  margin: 1.25px
+
+.candidateSize-small
+  .candidate
+    width: 4px
+    height: 4px
+    margin: 1px
+
+.candidateSize-large
+  .candidate
+    width: 6.5px
+    height: 6.5px
+    margin: 1.25px
