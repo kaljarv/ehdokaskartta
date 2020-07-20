@@ -10,6 +10,7 @@ import { FloatingCardConfig,
          FLOATING_CARD_DATA } from './floating-card.config';
 import { FloatingCardRef,
          ANIMATION_TIMING,
+         FLOATING_CARD_PANEL_CLASS,
          FLOATING_CARD_INITIALISED_CLASS } from './floating-card-ref';
 
 /*
@@ -19,13 +20,20 @@ import { FloatingCardRef,
  */ 
 
 /* 
- * A utility class to publish a transition style into the global ns 
+ * A utility component to publish a transition style into the global ns 
+ * as well as set the initial margin of the overlay panel so that it's hidden.
+ * Note that when the panel is initialized it's positioning strategy has already been set,
+ * so margin-top will be set by that.
  */
 @Component({
   selector: 'app-floating-card-global-styles',
   template: '',
   styles: [
-    `.${FLOATING_CARD_INITIALISED_CLASS} {
+    `.${FLOATING_CARD_PANEL_CLASS} {
+      margin-top: 100vh;
+    }
+    .${FLOATING_CARD_INITIALISED_CLASS} {
+      margin-top: unset;
       transition: margin-top ${ANIMATION_TIMING};
     }`
   ],

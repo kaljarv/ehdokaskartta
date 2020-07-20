@@ -11,7 +11,8 @@ import { FloatingCardConfig,
          FLOATING_CARD_DATA } from './floating-card.config';
 import { FloatingCardComponent } from './floating-card.component';
 import { FloatingCardRef,
-         FloatingCardState } from './floating-card-ref';
+         FloatingCardState,
+         FLOATING_CARD_PANEL_CLASS } from './floating-card-ref';
 
 /*
  * Allow opening of Google Maps-esque overlay cards with custom components.
@@ -28,7 +29,7 @@ const DEFAULT_OVERLAY_CONFIG: any = {
   backdropClass: 'floatingCard-backdrop', // NB. we don't have a backdrop by default, though
   disposeOnNavigation: true, 
   maxWidth: '42rem',
-  panelClass: 'floatingCard-panel', 
+  panelClass: FLOATING_CARD_PANEL_CLASS, 
   width: '100%',
 }
 
@@ -91,7 +92,7 @@ export class FloatingCardService {
       floatingCardRef.init();
       floatingCardRef.state = FloatingCardState.Peeking;
     }
-    
+
     return floatingCardRef;
   }
 }

@@ -15,8 +15,9 @@ import { FloatingCardPeekElementOptions,
 
 export const ANIMATION_DURATION_MS = 225;
 export const ANIMATION_TIMING = ANIMATION_DURATION_MS + 'ms cubic-bezier(0.4, 0, 0.2, 1)';
-export const FLOATING_CARD_INITIALISED_CLASS = 'floatingCard-panel--initialised';
-export const FLOATING_CARD_MAXIMISED_CLASS = 'floatingCard-panel--maximised';
+export const FLOATING_CARD_PANEL_CLASS = 'floatingCard-panel';
+export const FLOATING_CARD_INITIALISED_CLASS = FLOATING_CARD_PANEL_CLASS + '--initialised';
+export const FLOATING_CARD_MAXIMISED_CLASS = FLOATING_CARD_PANEL_CLASS + '--maximised';
 export const FLOATING_CARD_DEFAULT_PEEK_HEIGHT: string = '6rem';
 export const CLICK_CANCEL_DURATION = 300; // ms
 export const CLOSE_DELAY = 500; // ms to allow for transitioning at close before disposing overlay
