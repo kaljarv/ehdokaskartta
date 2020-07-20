@@ -106,7 +106,7 @@ export class QuestionListComponent implements OnInit, AfterViewInit, OnDestroy {
     // questionData includes voter answers
     this._subscriptions.push(this.matcher.questionDataUpdated.subscribe(() =>  this._updateData()));
     this._subscriptions.push(this.matcher.questionDataReady.subscribe(() => this._fetchQuestions()));
-    this._subscriptions.push(this.matcher.constituencyDataReady.subscribe(() => {
+    this._subscriptions.push(this.matcher.constituencyCookieRead.subscribe(() => {
       // Make sure the constituency is defined, as if not, questionDataReady will never fire
       if (this.matcher.constituencyId == null)
         this.router.navigate([PATHS.constituencyPicker]);

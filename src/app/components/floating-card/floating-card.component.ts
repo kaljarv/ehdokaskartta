@@ -43,12 +43,22 @@ export class FloatingCardGlobalStylesComponent {
   selector: 'app-floating-card',
   templateUrl: './floating-card.component.html',
   styleUrls: ['./floating-card.component.sass'],
+  host: {
+    '(window:resize)': 'onWindowResize()'
+  },
 })
 export class FloatingCardComponent implements OnInit {
   public contentPortal: ComponentPortal<any>;
 
   public get isMaximised(): boolean {
     return this.floatingCardRef.isMaximised;
+  }
+
+  /*
+   * Need to use this instead of 100vh because of mobile
+   */
+  public get height(): number {
+    return window.innerHeight;
   }
 
   constructor(
@@ -67,5 +77,9 @@ export class FloatingCardComponent implements OnInit {
 
     // Create content component
     this.contentPortal = new ComponentPortal(this.config.component, null, injector);
+  }
+
+  public onWindowResize(): void {
+    this.floatingCardRef.onWindowResize();
   }
 }

@@ -27,7 +27,7 @@ const DEFAULT_OVERLAY_CONFIG: any = {
   hasBackdrop: false,
   backdropClass: 'floatingCard-backdrop', // NB. we don't have a backdrop by default, though
   disposeOnNavigation: true, 
-  maxWidth: '60rem',
+  maxWidth: '42rem',
   panelClass: 'floatingCard-panel', 
   width: '100%',
 }
@@ -55,11 +55,13 @@ export class FloatingCardService {
       .global()
       .centerHorizontally();
     
-    // TODO These are redundantly defined here an implicitly in FloatingCardRef: move defs there and use those
+    // TODO These are redundantly defined here and implicitly in FloatingCardRef: move defs there and use those.
+    //      Actually, also check if most of this stuff with the overlayRef should actually be moved to within
+    //      the FloatingCardRef, because passing these refs to the constructor is messy.
     if (config.options.hiddenWhenOpened) {
-      positionStrategy = positionStrategy.top('100vh');
+      positionStrategy = positionStrategy.top(`${window.innerHeight}px`);
     } else {
-      positionStrategy = positionStrategy.top(`calc(100vh - ${config.options.minimizedHeight})`);
+      positionStrategy = positionStrategy.top(`calc(${window.innerHeight}px - ${config.options.minimizedHeight})`);
     }
     overlayConfig.positionStrategy = positionStrategy;
     overlayConfig.scrollStrategy = this.overlay.scrollStrategies.block();

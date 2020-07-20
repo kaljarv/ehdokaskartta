@@ -111,7 +111,7 @@ export class FloatingCardRef {
     if (!dontAnimate) {
 
       const closePos = this.overlayRef.getConfig().positionStrategy as GlobalPositionStrategy;
-      closePos.top('125vh'); // We go a bit overboard to counter possible easing
+      closePos.top('110vh'); // We go a bit overboard to counter possible easing
       this.overlayRef.updatePositionStrategy(closePos);
       // Need to update position manually, as the it's not called automatically because only the pos offset is changed, not the main method
       this.overlayRef.updatePosition();  
@@ -126,6 +126,15 @@ export class FloatingCardRef {
 
   public backdropClick(): Observable<MouseEvent> {
     return this.overlayRef.backdropClick();
+  }
+
+  /*
+   * This is called by the FloatingCardComponent's host listener
+   * If the window is resized we need to update the peeking position because it's based on window.innerHeight
+   */
+  public onWindowResize(): void {
+    if (this.isPeeking)
+      this._updatePeekPosition();
   }
 
   public toggle(): void {
@@ -160,16 +169,23 @@ export class FloatingCardRef {
       return;
     }
 
-    const position = this.overlayRef.getConfig().positionStrategy as GlobalPositionStrategy;
-    position.top(`calc(100vh - ${this.peekHeight} - ${this.peekElementOffset})`);
-    this.overlayRef.updatePositionStrategy(position);
-    // Need to update position manually, as the it's not called automatically because only the pos offset is changed, not the main method
-    this.overlayRef.updatePosition();
+    this._updatePeekPosition();
     this.overlayRef.removePanelClass(FLOATING_CARD_MAXIMISED_CLASS);
     this.overlayRef.updateScrollStrategy(this.overlay.scrollStrategies.block());
     this.state = FloatingCardState.Peeking;
 
     // this.dragRef.reset();
+  }
+
+  /*
+   * Update the peek position based on window.innerHeight and the peek element height
+   */
+  private _updatePeekPosition(): void {
+    const position = this.overlayRef.getConfig().positionStrategy as GlobalPositionStrategy;
+    position.top(`calc(${window.innerHeight}px - ${this.peekHeight} - ${this.peekElementOffset})`);
+    this.overlayRef.updatePositionStrategy(position);
+    // Need to update position manually, as the it's not called automatically because only the pos offset is changed, not the main method
+    this.overlayRef.updatePosition();
   }
 
   public setPeekElement(element: ElementRef<HTMLElement>, peekElementOptions: FloatingCardPeekElementOptions = {}): void {

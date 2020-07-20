@@ -79,7 +79,7 @@ export interface QuestionAverageDict {
 export enum DataStatus {
   NotReady,
   Ready,
-  Updated
+  Updated,
 }
 
 
@@ -188,21 +188,23 @@ export class MatcherService {
     [name: string]: CandidateFilter
   };
   public dataStatus = {
-    constituencies:  new BehaviorSubject<DataStatus>(DataStatus.NotReady),
-    questions:  new BehaviorSubject<DataStatus>(DataStatus.NotReady),
-    candidates: new BehaviorSubject<DataStatus>(DataStatus.NotReady),
-    tsne:       new BehaviorSubject<DataStatus>(DataStatus.NotReady),
-    filters:    new BehaviorSubject<DataStatus>(DataStatus.NotReady),
+    constituencies:     new BehaviorSubject<DataStatus>(DataStatus.NotReady),
+    questions:          new BehaviorSubject<DataStatus>(DataStatus.NotReady),
+    candidates:         new BehaviorSubject<DataStatus>(DataStatus.NotReady),
+    tsne:               new BehaviorSubject<DataStatus>(DataStatus.NotReady),
+    filters:            new BehaviorSubject<DataStatus>(DataStatus.NotReady),
+    constituencyCookie: new BehaviorSubject<DataStatus>(DataStatus.NotReady),
   };
   // Shorthands for the dataStatuses
-  public constituencyDataReady =    this.dataStatus.constituencies.pipe(filter(  t => t !== DataStatus.NotReady ));
-  public questionDataReady =    this.dataStatus.questions.pipe(filter(  t => t !== DataStatus.NotReady ));
-  public questionDataUpdated =  this.dataStatus.questions.pipe(filter(  t => t === DataStatus.Updated ));
-  public candidateDataReady =   this.dataStatus.candidates.pipe(filter( t => t !== DataStatus.NotReady ));
-  public tsneDataReady =        this.dataStatus.tsne.pipe(filter(       t => t !== DataStatus.NotReady ));
-  public filterDataReady =      this.dataStatus.filters.pipe(filter(    t => t !== DataStatus.NotReady ));
-  public filterDataUpdated =    this.dataStatus.filters.pipe(filter(    t => t === DataStatus.Updated ));
-  public progressChanged =      new EventEmitter<number>();
+  public constituencyDataReady =   this.dataStatus.constituencies.pipe(filter(     t => t !== DataStatus.NotReady ));
+  public questionDataReady =       this.dataStatus.questions.pipe(filter(          t => t !== DataStatus.NotReady ));
+  public questionDataUpdated =     this.dataStatus.questions.pipe(filter(          t => t === DataStatus.Updated ));
+  public candidateDataReady =      this.dataStatus.candidates.pipe(filter(         t => t !== DataStatus.NotReady ));
+  public tsneDataReady =           this.dataStatus.tsne.pipe(filter(               t => t !== DataStatus.NotReady ));
+  public filterDataReady =         this.dataStatus.filters.pipe(filter(            t => t !== DataStatus.NotReady ));
+  public filterDataUpdated =       this.dataStatus.filters.pipe(filter(            t => t === DataStatus.Updated ));
+  public constituencyCookieRead =  this.dataStatus.constituencyCookie.pipe(filter( t => t === DataStatus.Ready ));
+  public progressChanged =         new EventEmitter<number>();
 
   constructor(
     private cookie: CookieService,
@@ -728,10 +730,11 @@ export class MatcherService {
   }
 
   public async setMunicipalityFromCookie(): Promise<void> {
-    const municipality = this.readCookie(COOKIE_MUNICIPALITY)
+    const municipality = this.readCookie(COOKIE_MUNICIPALITY);
     if (municipality) {
       await this.setMunicipality(Number(municipality));
     }
+    this.dataStatus.constituencyCookie.next(DataStatus.Ready);
   }
 
   public setAnswersFromCookie(): void {

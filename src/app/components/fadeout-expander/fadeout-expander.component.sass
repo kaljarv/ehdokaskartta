@@ -1,4 +1,6 @@
+@use 'sass:color'
 @import 'variables.scss'
+
 
 $fadeout-bgColor: $color-secondaryBg
 
@@ -28,4 +30,4 @@ $fadeout-bgColor: $color-secondaryBg
   left: 0
   width: 100%
   height: 1.25rem 
-  background-image: linear-gradient(to bottom, transparent, 35%, #{$fadeout-bgColor})
+  background-image: linear-gradient(to bottom, #{color.change($fadeout-bgColor, $alpha: 0)}, 35%, #{$fadeout-bgColor})

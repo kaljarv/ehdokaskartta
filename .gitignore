@@ -47,6 +47,6 @@ testem.log
 Thumbs.db
 
 # Firebase files
-/src/environment/firebase.environment.ts
+firebase.environment.ts
 .firebaserc
 /.firebase

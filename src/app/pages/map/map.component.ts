@@ -1,4 +1,5 @@
 import { Component, 
+         HostBinding,
          OnInit, 
          ViewChild, 
          ElementRef,
@@ -131,6 +132,13 @@ export interface MapPositionBase {
   ],
 })
 export class MapComponent implements OnInit, OnDestroy {
+  /*
+   * Bind height to window innerHeight instead of setting it to 100vh which doesn't work as wanted on mobile
+   */
+  @HostBinding('style.height.px')
+  get height(): number {
+    return window.innerHeight;
+  }
   @ViewChild('map') mapSvg: ElementRef;
   @ViewChild('mapZoomContainer') mapZoomContainer: ElementRef;
   @ViewChild('voterTooltip') voterTooltip: MatTooltip;
@@ -210,7 +218,7 @@ export class MapComponent implements OnInit, OnDestroy {
     // Initialisation chain
     this._subscriptions.push(this.matcher.tsneDataReady.subscribe(() => this.initMap()));
     this._subscriptions.push(this.matcher.candidateDataReady.subscribe(() => this.initData()));
-    this._subscriptions.push(this.matcher.constituencyDataReady.subscribe(() => {
+    this._subscriptions.push(this.matcher.constituencyCookieRead.subscribe(() => {
       // Make sure the constituency is defined, as if not, candidateDataReady will never fire
       if (this.matcher.constituencyId == null)
         this.router.navigate([PATHS.constituencyPicker]);

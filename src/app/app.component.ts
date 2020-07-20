@@ -210,6 +210,19 @@ export class AppComponent {
     this.clearBottomSheet();
     this.clearDetailsCard();
     this.clearDialog();
+    this.scrollToTop();
+  }
+
+  public scrollToTop(): void {
+    if ('scrollBehavior' in document.documentElement.style) {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'smooth'
+      });
+    } else {
+      window.scrollTo(0, 0);
+    }
   }
 
   public clearForward(): void {
