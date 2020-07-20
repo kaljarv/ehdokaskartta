@@ -10,7 +10,7 @@ import { SharedService,
          PATHS } from '../../core/services/shared';
 
 // The delay in ms after animation has loaded to start playing it
-export const ANIMATION_DELAY: number = 1000;
+export const ANIMATION_DELAY: number = 250;
 export const ANIMATION_LOOP_START_FRAME: number = 157; // 156
 export const ANIMATION_PATH: string = 'assets/animations/map-vignette.json';
 
