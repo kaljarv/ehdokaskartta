@@ -10,9 +10,6 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 
 import { environment } from '../../../../environments/environment';
 
-import 'firebase/app';
-import 'firebase/firestore';
-
 import { DatabaseService } from './database.service';
 
 @NgModule({
