@@ -210,6 +210,11 @@ export class MatcherService {
     private cookie: CookieService,
     private database: DatabaseService,
   ) {
+    // Add subscriptions to take care of data status updates
+    // See also setConstituency(), which resets statuses
+    // QuestionDataUpdated is fired whenever the voter's answer change, so that annuls tsne, too
+    this.questionDataUpdated.subscribe( () => this.dataStatus.tsne.next(DataStatus.NotReady) );
+    // init
     this.initData();
   }
 
@@ -278,6 +283,8 @@ export class MatcherService {
     if (id === this._municipalityId && this.candidates && this.questions) {
       return;
     }
+
+    // Set municipality
     let m = this.municipalities[id];
     this._municipalityId = id;
     this._municipality = m.name;
@@ -288,6 +295,12 @@ export class MatcherService {
   }
 
   private async setConstituency(id: number): Promise<void> {
+
+    // Reset downstream data statuses
+    this.dataStatus.questions.next(DataStatus.NotReady);
+    this.dataStatus.candidates.next(DataStatus.NotReady);
+    this.dataStatus.tsne.next(DataStatus.NotReady);
+    this.dataStatus.filters.next(DataStatus.NotReady);
         
     // Import questions data
     this.questions = await this.database.getQuestions(id);
