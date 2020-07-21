@@ -1,7 +1,7 @@
 import { Component, 
          Input } from '@angular/core';
 
-export const ANIMATION_TIMING = "2225ms cubic-bezier(0.4, 0, 0.2, 1)";
+export const ANIMATION_TIMING = "225ms cubic-bezier(0.4, 0, 0.2, 1)";
 
 /*
  * The Avatar component base

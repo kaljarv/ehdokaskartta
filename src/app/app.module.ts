@@ -116,11 +116,7 @@ export class AppModule {}
 * 
 * TODO
 *
-* - Check Firebase.app initailize (env)
-* - IOS Safari
-*   - Fix fadeout gradient
-*   - Fix floating card peek glitch on OSX Safari
-*   - Fix peek glitch on iOS Safari
+* - Fix analytics
 *
 * - When closing About go to previous screen (and don't destroy component) -- Priority: 7
 * - Click on unanswered question to confirm to go back to questions with the relevant one opened -- Priority: 4
