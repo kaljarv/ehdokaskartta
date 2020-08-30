@@ -326,14 +326,20 @@ export class AppComponent {
   }
 
   /*
-   * Open snack bar with a possible email link
+   * Open snack bar with a possible email link or custom action
+   * NB. This is super messy
    */
   public showSnackBar(options: {
     message: string, 
     emailTitle?: string, 
     emailBody?: string, 
-    emailSubject?: string
+    emailSubject?: string,
+    actionTitle?: string,
+    actionFunction?: Function,
   }): void {
+    if (options.emailTitle && options.actionTitle) {
+      throw new Error("ShowSnackBar cannot be called with both an emailTitle and an actionTitle.");
+    }
 
     if (options.emailTitle) {
 
@@ -343,6 +349,16 @@ export class AppComponent {
       const url = `mailto:${ADMIN_EMAIL}?subject=${encodeURI(options.emailSubject ? options.emailSubject : '')}&body=${encodeURI(options.emailBody ? options.emailBody : '')}`;
       this._snackBarRef.onAction().subscribe(() => {
         window.open(url, '_blank');
+        this._snackBarRef = null;
+      });
+
+    } else if (options.actionTitle && options.actionFunction) {
+
+      this._snackBarRef = this.snackBar.open(options.message, options.actionTitle, {
+        duration: SNACK_BAR_DURATION_WITH_ACTION,
+      });
+      this._snackBarRef.onAction().subscribe(() => {
+        options.actionFunction();
         this._snackBarRef = null;
       });
 

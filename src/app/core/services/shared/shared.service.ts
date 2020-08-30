@@ -55,7 +55,9 @@ export class SharedService {
     message: string, 
     emailTitle?: string, 
     emailBody?: string, 
-    emailSubject?: string
+    emailSubject?: string,
+    actionTitle?: string,
+    actionFunction?: Function,
   }>();
   // A catch-all for all map interactions
   public mapInteraction = new EventEmitter<void>();

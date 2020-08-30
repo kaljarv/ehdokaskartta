@@ -1,11 +1,14 @@
 import { Component, 
-         NgZone, 
+         NgZone,
+         OnDestroy, 
          OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 import { AnimationItem } from 'lottie-web';
 import { AnimationOptions } from 'ngx-lottie';
 
+import { MatcherService } from '../../core';
 import { SharedService, 
          PATHS } from '../../core/services/shared';
 
@@ -22,7 +25,7 @@ export const ANIMATION_PATH: string = 'assets/animations/map-vignette.json';
   //   "(click)": "onBackgroundClick($event)"
   // },
 })
-export class TitleScreenComponent implements OnInit {
+export class TitleScreenComponent implements OnInit, OnDestroy {
   public aboutPath: string = PATHS.about;
   public animationOptions: AnimationOptions = {
     path: ANIMATION_PATH ,
@@ -30,9 +33,11 @@ export class TitleScreenComponent implements OnInit {
     loop: true,
   };
   private _animationItem: AnimationItem;
+  private _subscriptions: Subscription[] = [];
 
   constructor(
     private router: Router,
+    private matcher: MatcherService,
     private shared: SharedService,
     private ngZone: NgZone,
   ) {}
@@ -40,6 +45,12 @@ export class TitleScreenComponent implements OnInit {
   ngOnInit(): void {
     this.shared.hideTopBar.emit();
     this.shared.showFeedbackButton = false;
+    this._subscriptions.push(this.matcher.constituencyCookieRead.subscribe(() => this.showCookieSnackbar()));
+  }
+
+  ngOnDestroy(): void {
+    // Cancel subscriptions
+    this._subscriptions.forEach(s => s.unsubscribe());
   }
 
   animationCreated(animationItem: AnimationItem): void {
@@ -56,6 +67,16 @@ export class TitleScreenComponent implements OnInit {
     this.ngZone.runOutsideAngular(() =>
       this._animationItem.goToAndPlay(ANIMATION_LOOP_START_FRAME, true)
     );
+  }
+
+  public showCookieSnackbar(): void {
+    if (this.matcher.constituencyId != null) {
+      this.shared.showSnackBar.emit({
+        message: "Käytetään aiemmin syöttämisiä vastauksia pohjana.",
+        actionTitle: "Nollaa vastaukset",
+        actionFunction: () => { this.matcher.unsetVoterAnswers() },
+      });
+    }
   }
 
   public toggleSideNav(event: MouseEvent): void {
