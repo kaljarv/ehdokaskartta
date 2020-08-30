@@ -71,11 +71,14 @@
            Nollaa tallennetut vastaukset
         </mat-list-item>
 
-        <mat-divider></mat-divider>
+        <a mat-list-item 
+           (click)="openFeedback()">
+          <mat-icon matListIcon>feedback</mat-icon>
+          Lähetä palautetta
+        </a>
 
         <a mat-list-item 
-           [routerLink]="paths.about"
-           class="secondary">
+          [routerLink]="paths.about">
           <mat-icon matListIcon>info</mat-icon>
           Tietoja palvelusta
         </a>
