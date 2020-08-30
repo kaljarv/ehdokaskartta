@@ -1,6 +1,5 @@
 import { Component, 
          OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 
@@ -24,7 +23,6 @@ export class FeedbackFormComponent implements OnInit {
     private matcher: MatcherService,
     private shared: SharedService,
     private database: DatabaseService,
-    private route: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
