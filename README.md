@@ -2,14 +2,14 @@
 
 Ehdokaskartta (or Candidate Map) is a prototype web app that helps voters find a suitable electoral candidate. It uses open data from Election Compass (‘Vaalikone’) by Yle, the Finnish public broadcasting company, but offers a markedly different user experience.
 
-The service (as well as the data it uses) are in Finnish only but the code is (rather sloppily) documented in English. An instance of Ehdokaskartta with the 2018 Finnish parliamentary election data can be found at http://kaljarv.com/ehdokaskartta.
+The service (as well as the data it uses) is in Finnish only but the code is (rather sloppily) documented in English. An instance of Ehdokaskartta with the 2019 Finnish parliamentary election data can be found at https://ehdokaskartta.fi.
 
 
 ## Motivation
 
 Since Yle’s pioneering 1996 Election Compass, VAAs or Voting Advice Applications (as these are formally known) have come to play an important role in elections, especially in polities with a fragmented party system. Their main purpose is most often to try and match the voter with suitable candidates (or parties) based on an opinion questionnaire, which both the candidates and the voter fill.
 
-Ehdokaskartta prototypes novel solutions to a number of issues with VAA’s, especially:
+Ehdokaskartta prototypes novel solutions to a number of issues with VAAs, especially:
 
 * Presentation of candidates on a 2-dimensional map instead of a list based on matching scores
 * Less rigid and tedious inputting of the voter’s answers
