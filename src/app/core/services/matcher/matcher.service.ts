@@ -24,6 +24,7 @@ export const COOKIE_FAVOURITES = "Favourites";
 export const COOKIE_VALUE_SEPARATOR = ",";
 export const COOKIE_PATH = "/";
 export const COOKIE_DOMAIN = null;
+export const COOKIE_LIFE = 1000 * 60 * 60 * 24 * 1; // Cookie lifetime in millisecs (the last number is day)
 export const MAX_MISSING_VALS = -1; // Set to 0 or greater to cull candidates based on number of missing vals
 export const NONMISSING_CANDIDATE_MAX_MISSING_VALS = 9; // The max number of missing vals before a candidate is flagged as missing, set to -1 to mark none
 export const MIN_VALS_FOR_TSNE = 1; // We are enabling tSNE for the first answer
@@ -112,7 +113,6 @@ export class MatcherService {
     "Raha": 1,
     "Ilmasto ja ymp\u00e4rist\u00f6": 0
   };
-  public cookieLife = 1000 * 60 * 60 * 24 * 120; // Cookie lifetime in millisecs
   private tsne;
   public tsneOptions = {
     perplexity: 30,
@@ -719,7 +719,7 @@ export class MatcherService {
   public writeCookie(name: string, value: any): void {
     // Save in cookie
     let expiry = new Date();
-    expiry.setTime(expiry.getTime() + this.cookieLife);
+    expiry.setTime(expiry.getTime() + COOKIE_LIFE);
     // TODO Secure cookies don't currently work, maybe because of localhost?
     this.cookie.set(COOKIE_PREFIX + name, value.toString(), expiry, COOKIE_PATH, COOKIE_DOMAIN, false, 'Strict');
   }
