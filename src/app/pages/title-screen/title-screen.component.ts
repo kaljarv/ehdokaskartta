@@ -72,7 +72,7 @@ export class TitleScreenComponent implements OnInit, OnDestroy {
   public showCookieSnackbar(): void {
     if (this.matcher.constituencyId != null) {
       this.shared.showSnackBar.emit({
-        message: "Käytetään aiemmin syöttämisiä vastauksia pohjana.",
+        message: "Käytetään aiemmin syöttämiäsi vastauksia pohjana.",
         actionTitle: "Nollaa vastaukset",
         actionFunction: () => { this.matcher.unsetVoterAnswers() },
       });
