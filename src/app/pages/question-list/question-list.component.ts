@@ -143,7 +143,8 @@ export class QuestionListComponent implements OnInit, AfterViewInit, OnDestroy {
    * Check if this is the next recommend question. This is based crudely as the first question in the order
    */
   public isRecommended(question: Question): boolean {
-    return this.informationValueOrder[0].id === question.id;
+    return this.informationValueOrder && this.informationValueOrder.length && 
+           this.informationValueOrder[0].id === question.id;
   }
 
   private _fetchQuestions(): void {

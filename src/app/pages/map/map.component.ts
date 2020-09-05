@@ -184,7 +184,7 @@ export class MapComponent implements OnInit, OnDestroy {
   public dispersalMaxIterations: number = 10;
   public d3: any; // Shortcut to D3Service.d3
   // Track first interaction
-  private _userHasClicked: boolean = false;
+  private _userHasInteracted: boolean = false;
   // These will be cancelled onDestroy
   private _subscriptions: Subscription[] = [];
 
@@ -257,8 +257,8 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   public hideInfos(): void {
-    if (!this._userHasClicked) {
-      this._userHasClicked = true;
+    if (!this._userHasInteracted) {
+      this._userHasInteracted = true;
       this.shared.minimiseTopBar.emit();
       this.shared.hideMapTooltips.emit();
       if (this.voterTooltip != null)
@@ -537,6 +537,7 @@ export class MapComponent implements OnInit, OnDestroy {
     this.zoomElement = this.d3.select(this.mapSvg.nativeElement);
 
     const zoomed = () => {
+      this.hideInfos();
       const transform = this.d3.event.transform;
       this.posBase.zoomScale = transform.k;
       this.posBase.zoomXOffset = transform.x;
