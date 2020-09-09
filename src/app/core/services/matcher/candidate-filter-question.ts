@@ -18,12 +18,25 @@ export class CandidateFilterQuestion extends CandidateFilter {
   protected _voterAnswers: {
     [questionId: string]: number
   };
+  protected _valueGetter: () => Set<any>;
+  protected _isInitialized: boolean = false;
 
   constructor(...args) {
     super(...args);
+    this._isInitialized = true;
   }
 
   // Overrides
+
+  get _values(): Set<any> {
+    return this._valueGetter ? this._valueGetter() : new Set();
+  }
+  // We need this because the super constructor implicitly sets _values
+  set _values(_: Set<any>) {
+    if (this._isInitialized) {
+      throw new Error("Cannot set _values on CandidateFilterQuestion. Use setValueGetter instead.")
+    }
+  }
 
   get active(): boolean {
     for (let type in this._rules) {
@@ -52,6 +65,11 @@ export class CandidateFilterQuestion extends CandidateFilter {
   }
 
   // New methods
+
+  // We need to set a dynamic value getter as the voter's answers won't otherwise be added to values
+  public setValueGetter(getter: () => Set<any>): void {
+    this._valueGetter = getter;
+  }
 
   // We need to override apply as this filter works differently from the other,
   // taking also voterAnswers as argument, not using this.key and not using matchMultiple

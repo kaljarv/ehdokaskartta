@@ -972,7 +972,7 @@ export class MatcherService {
 
       // Extract unique values
       if (filterType === CandidateFilterQuestion) {
-        this.getVoterAnsweredQuestionIds().forEach( k => filter.addValue(k) );
+        filter.setValueGetter(() => new Set(this.getVoterAnsweredQuestionIds()));
       } else {
         for (let candidate in this.candidates) {
           filter.addValue(this.candidates[candidate][filter.key]);

@@ -153,7 +153,7 @@ export class FilterCandidatesComponent implements OnInit, OnDestroy {
 
       } else if (filter instanceof CandidateFilterQuestion) {
 
-        fa = this.fb.array([], atLeastOneUnchecked);
+        fa = this.fb.array([]);
         this.getSortedValues(filter).forEach(v => {
           let checked = filter.isRequiredMostlyAgree(v);
           let c = this.fb.control(checked);
