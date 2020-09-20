@@ -96,6 +96,7 @@ export class MatcherService {
   private _municipalityId: number;
   private _constituency: string;
   private _constituencyId: number;
+  private _voterDisabled: boolean = false;
   private questions: QuestionDict;
   private correlationMatrix: any;
   private candidates: CandidateDict;
@@ -248,6 +249,18 @@ export class MatcherService {
 
   get constituencyId(): number {
     return this._constituencyId;
+  }
+
+  get voterDisabled(): boolean {
+    return this._voterDisabled;
+  }
+
+  set voterDisabled(value: boolean) {
+    // If voterDisabled changes, we need to mark tsne as not ready
+    if (this.voterDisabled !== value) {
+      this._voterDisabled = value;
+      this.dataStatus.tsne.next(DataStatus.NotReady);
+    }
   }
 
   public getConstituencyNameByMunicipalityId(id: number): string {
@@ -774,10 +787,10 @@ export class MatcherService {
     this.deleteAllCookies();
   }
 
-  public initTsne(voterDisabled: boolean = false): void {
+  public initTsne(): void {
     // Prepare raw data for tSNE
     let tsneData = new Array<Array<number>>();
-    let tsneCols = voterDisabled ? 
+    let tsneCols = this.voterDisabled ? 
                    this.getLikertQuestionIds() :
                    this.getVoterAnsweredQuestionIds();
     this.tsneIds = new Array<string>();
@@ -788,7 +801,7 @@ export class MatcherService {
         let v = this.candidates[id][q];
         // Convert missing values to max distance from voter if we are using voter answers
         if (this.isMissing(v, true)) {
-          v = voterDisabled ? 
+          v = this.voterDisabled ? 
               this.neutralAnswer : 
               this.getInvertedVoterAnswer(q);
         }
@@ -803,7 +816,7 @@ export class MatcherService {
       this.tsneIds.push(id);
     }
     // Add the voter as the last item
-    if (!voterDisabled) {
+    if (!this.voterDisabled) {
       let voter = [];
       tsneCols.forEach( q => voter.push(Number(this.getVoterAnswer(q))) );
       tsneData.push(voter);
@@ -825,7 +838,7 @@ export class MatcherService {
         this.tsne.step();
         if (this.tsne.iter >= this.tsneOptions.maxChunks * this.tsneOptions.stepChunk) {
           clearInterval(this.tsneIntervalRef);
-          this.updateTsne(voterDisabled);
+          this.updateTsne();
         }
       }
     }, 1);
@@ -849,7 +862,7 @@ export class MatcherService {
     return [min, max];
   }
 
-  public updateTsne(voterDisabled: boolean = false): void {
+  public updateTsne(): void {
     // Get solution
     const solution: [number, number][] = this.tsne.getSolution();
 
@@ -862,7 +875,7 @@ export class MatcherService {
     let scale: number;
     let voter: [number, number]; // This will only be used if not voterDisabled
 
-    if (voterDisabled) {
+    if (this.voterDisabled) {
 
       // Check both dims (i) to find the one with the maximum spread
       for (let i = 0; i < 2; i++) {
@@ -896,7 +909,7 @@ export class MatcherService {
     // Set tSNE coordinates
     for (let i = 0; i < solution.length; i++) {
       
-      if (voterDisabled) {
+      if (this.voterDisabled) {
 
         // Scale and normalise by subtracting the dimension's lower bound
         // and center the smaller dimension: 
@@ -942,7 +955,7 @@ export class MatcherService {
         tsne2,
       };
     }
-
+    
     this.dataStatus.tsne.next(DataStatus.Ready);
   }
 

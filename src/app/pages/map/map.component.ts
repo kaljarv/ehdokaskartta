@@ -145,7 +145,6 @@ export class MapComponent implements OnInit, OnDestroy {
   public candidates = new Array<MapPlaceable>();
   public parties = new Array<MapPlaceable>();
   public avatars = new Array<MapPlaceable>(); // We'll conflate candidates and parties in this list for correct depth placement
-  public voterDisabled: boolean = false; // If we are browsing candidates, this will be true
   public voter: MapPlaceable; // We'll save the voter here
   public zoomScaleExtent: number[] = [0.8, 15]; // TODO Change to dynamically calculated one based on dims
   // How much further (on zoom level 1 dimensions) than the window size to allow zooming
@@ -197,15 +196,20 @@ export class MapComponent implements OnInit, OnDestroy {
   ) { 
     this.progressValueEmitter = this.matcher.progressChanged;
     this.d3 = this.d3s.d3;
-  }
-
-  ngOnInit() {
 
     // Check if we are browsing or not
     if (this.route.snapshot.data.voterDisabled) {
-      this.voterDisabled = true;
+      this.matcher.voterDisabled = true;
+    } else {
+      this.matcher.voterDisabled = false;
     }
-    
+  }
+
+  get voterDisabled(): boolean {
+    return this.matcher.voterDisabled;
+  }
+
+  ngOnInit() {
     // Topbar
     this.shared.title = this.voterDisabled ?
                         "Ehdokkaat" : // `${this.matcher.constituency}n ehdokkaat` : // NB. In order for this to work properly, we should do it in a subscription
@@ -274,7 +278,7 @@ export class MapComponent implements OnInit, OnDestroy {
     }
     // If this.voterDisabled is true, initTsne will use all questions, 
     // not the ones we have voter answers for
-    this.matcher.initTsne(this.voterDisabled);
+    this.matcher.initTsne();
   }
 
   public initMap(): void {
