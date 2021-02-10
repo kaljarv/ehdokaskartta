@@ -20,7 +20,6 @@ const ANIMATION_TIMING = "225ms cubic-bezier(0.4, 0, 0.2, 1)";
  * <app-top-bar>
  * @Input title is the main title text
  * @Input content is the content and can be either text or a component which is inserted dynamically
- *        Remember to add the component to the module's EntryComponents
  */
 @Component({
   selector: 'app-top-bar',

@@ -42,9 +42,5 @@ import { DetailsCandidateComponent,
     DetailsCandidateComponent,
     DetailsCandidateGlobalStylesComponent,
   ],
-  entryComponents: [
-    DetailsCandidateComponent,
-    DetailsCandidateGlobalStylesComponent,
-  ]
 })
 export class DetailsCandidateModule {}

@@ -32,8 +32,5 @@ import { DetailsQuestionModule } from './details-question';
     QuestionListComponent,
     QuestionListTopBarContentComponent,
   ],
-  entryComponents: [
-    QuestionListTopBarContentComponent,
-  ],
 })
 export class QuestionListModule {}

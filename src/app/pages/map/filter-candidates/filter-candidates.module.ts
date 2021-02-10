@@ -36,8 +36,5 @@ import { FilterCandidatesComponent } from './filter-candidates.component';
   declarations: [
     FilterCandidatesComponent,
   ],
-  entryComponents: [
-    FilterCandidatesComponent
-  ]
 })
 export class FilterCandidatesModule {}

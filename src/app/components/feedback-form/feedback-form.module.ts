@@ -35,8 +35,5 @@ import { FeedbackFormComponent } from './feedback-form.component';
   declarations: [
     FeedbackFormComponent,
   ],
-  entryComponents: [
-    FeedbackFormComponent,
-  ],
 })
 export class FeedbackFormModule {}

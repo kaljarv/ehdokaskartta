@@ -27,8 +27,5 @@ import { FloatingCardGlobalStylesComponent,
     FloatingCardComponent,
     FloatingCardGlobalStylesComponent,
   ],
-  entryComponents: [ 
-    FloatingCardComponent, 
-  ],
 })
 export class FloatingCardModule {}

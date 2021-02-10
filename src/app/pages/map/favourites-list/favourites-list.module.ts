@@ -27,8 +27,5 @@ import { FavouritesListComponent } from './favourites-list.component';
   declarations: [
     FavouritesListComponent,
   ],
-  entryComponents: [
-    FavouritesListComponent,
-  ]
 })
 export class FavouritesListModule {}

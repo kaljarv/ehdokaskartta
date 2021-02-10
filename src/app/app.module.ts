@@ -93,7 +93,6 @@ const paths = [
     QuestionListModule,
     TitleScreenModule
   ],
-  entryComponents: [],
   declarations: [ 
     AppComponent 
   ],

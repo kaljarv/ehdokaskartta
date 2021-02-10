@@ -34,7 +34,7 @@ export class CandidateFilter {
   public multipleValueLogicOperator: CandidateFilterLogicOperator = CandidateFilterLogicOperator.Or;
   public rulesChanged: EventEmitter<CandidateFilter> = new EventEmitter<CandidateFilter>();
   readonly isNumeric: boolean = true;
-  protected _values: Set<any> = new Set();
+  protected _valuesSet: Set<any> = new Set();
   protected _rules: { [name: string]: any } = {};
   protected _supressRulesChanged = false;
 
@@ -87,6 +87,15 @@ export class CandidateFilter {
   }
 
   // Other methods
+
+  // We need to clunkily use these accessors, as we'll override them in subclasses
+  get _values(): Set<any> {
+    return this._valuesSet;
+  }
+
+  set _values(values: Set<any>) {
+    this._valuesSet = values;
+  }
   
   public getValues(dontSort: boolean = false): any[] {
     return dontSort ? 
