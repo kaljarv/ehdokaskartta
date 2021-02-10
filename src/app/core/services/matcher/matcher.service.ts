@@ -339,7 +339,19 @@ export class MatcherService {
 
     // Import candidate data
     this.candidates = await this.database.getCandidates(id);
-    
+
+    // // DEBUG / TEST / REMOVE
+    // // Multiply candidates to test performance
+    // for (const candidate in this.candidates) {
+    //   console.log(candidate);
+    //   for (let i = 0; i < 10; i++) {
+    //     const c = {...this.candidates[candidate]};
+    //     const id = candidate + '_' + i;
+    //     this.candidates[id] = c;
+    //   }
+    // }
+    // console.log(this.candidates);
+
     // Cull candidates with too many missing values
     // and flag candidates with missing values above the threshold
     if (MAX_MISSING_VALS > -1 || 
