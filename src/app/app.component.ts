@@ -405,7 +405,7 @@ export class AppComponent {
   }
 
   get enableMap(): boolean {
-    return this.matcher.hasEnoughAnswersForTsne;
+    return this.matcher.hasEnoughAnswersForMapping;
   }
 
   get peekHeight(): string | null {

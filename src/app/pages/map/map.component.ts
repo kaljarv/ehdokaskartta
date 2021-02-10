@@ -53,8 +53,8 @@ export interface MapPlaceable {
   id?: string;
   type?: MapPlaceableType;
   filteredOut?: any;
-  tsne1?: number;
-  tsne2?: number;
+  projX?: number;
+  projY?: number;
   x?: number; // Proportional location [0,1] after dispersal
   y?: number;
 }
@@ -220,7 +220,7 @@ export class MapComponent implements OnInit, OnDestroy {
                            ) + " Voit lähentää tai loitontaa karttaa, rajata ehdokkaita vaikkapa iän perusteella tai näyttää puolueet kartalla.";
     
     // Initialisation chain
-    this._subscriptions.push(this.matcher.tsneDataReady.subscribe(() => this.initMap()));
+    this._subscriptions.push(this.matcher.mappingDataReady.subscribe(() => this.initMap()));
     this._subscriptions.push(this.matcher.candidateDataReady.subscribe(() => this.initData()));
     this._subscriptions.push(this.matcher.constituencyCookieRead.subscribe(() => {
       // Make sure the constituency is defined, as if not, candidateDataReady will never fire
@@ -271,14 +271,14 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   public initData(): void {
-    if (!this.matcher.hasEnoughAnswersForTsne && 
+    if (!this.matcher.hasEnoughAnswersForMapping && 
         !this.voterDisabled) {
       this.router.navigate([PATHS.questions]);
       return;
     }
-    // If this.voterDisabled is true, initTsne will use all questions, 
+    // If this.voterDisabled is true, initMapping will use all questions, 
     // not the ones we have voter answers for
-    this.matcher.initTsne();
+    this.matcher.initMapping();
   }
 
   public initMap(): void {
@@ -293,22 +293,22 @@ export class MapComponent implements OnInit, OnDestroy {
       this.voter = {
         type: 'voter',
         filteredOut: false,
-        tsne1: 0.5,
-        tsne2: 0.5,
+        projX: 0.5,
+        projY: 0.5,
       };
-      this.voter.x = this.voter.tsne1;
-      this.voter.y = this.voter.tsne2;
+      this.voter.x = this.voter.projX;
+      this.voter.y = this.voter.projY;
     }
 
     // Get party centroids
     this.parties = this.matcher.getPartiesAsList();
 
     // Set MapPlaceableType for them
-    // as well as x and y coordinates as the parties only have tsne1/2 set
+    // as well as x and y coordinates as the parties only have projX/2 set
     this.parties.forEach( p => {
       p.type = 'party';
-      p.x = p.tsne1;
-      p.y = p.tsne2;
+      p.x = p.projX;
+      p.y = p.projY;
     });
 
     // This is async so we need to wait
@@ -444,8 +444,8 @@ export class MapComponent implements OnInit, OnDestroy {
 
         // Scale the tsne values, as handing out values in the [0,1] range to the d3 simulation
         // doesn't work well
-        const x = a.tsne1 * scale;
-        const y = a.tsne2 * scale;
+        const x = a.projX * scale;
+        const y = a.projY * scale;
 
         // NB. The voter will not be included in the candidates array if this.voterDisabled == true
         if (a.type === 'voter') {
@@ -598,11 +598,11 @@ export class MapComponent implements OnInit, OnDestroy {
    */
 
   public getX(item: MapPlaceable): number {
-    return (('x' in item ? item.x : item.tsne1) * (1 - 2 * this.posBase.marginFraction) + this.posBase.marginFraction) * this.posBase.scale + this.posBase.xOffset;
+    return (('x' in item ? item.x : item.projX) * (1 - 2 * this.posBase.marginFraction) + this.posBase.marginFraction) * this.posBase.scale + this.posBase.xOffset;
   }
 
   public getY(item: MapPlaceable): number {
-    return (('y' in item ? item.y : item.tsne2) * (1 - 2 * this.posBase.marginFraction) + this.posBase.marginFraction) * this.posBase.scale + this.posBase.yOffset;
+    return (('y' in item ? item.y : item.projY) * (1 - 2 * this.posBase.marginFraction) + this.posBase.marginFraction) * this.posBase.scale + this.posBase.yOffset;
   }
 
   public getScale(): number {

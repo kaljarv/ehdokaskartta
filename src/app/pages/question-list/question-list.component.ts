@@ -165,7 +165,7 @@ export class QuestionListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private _checkEnableForward(): void {
-    if (this.matcher.hasEnoughAnswersForTsne) {
+    if (this.matcher.hasEnoughAnswersForMapping) {
       this.shared.enableForward.emit({
         path: [PATHS.map],
         title: 'Näytä tulokset',

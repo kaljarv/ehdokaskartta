@@ -4,9 +4,8 @@ import { CookieService } from 'ngx-cookie-service';
 import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
-import * as tsnejs from './tsne/tsne';
-
 import { DatabaseService } from '../database';
+import { TsneProjector } from './data-projector/';
 
 import { AgreementType,
          Likert } from './likert-utility';
@@ -27,7 +26,7 @@ export const COOKIE_DOMAIN = null;
 export const COOKIE_LIFE = 1000 * 60 * 60 * 24 * 7; // Cookie lifetime in millisecs (the last number is day)
 export const MAX_MISSING_VALS = -1; // Set to 0 or greater to cull candidates based on number of missing vals
 export const NONMISSING_CANDIDATE_MAX_MISSING_VALS = 9; // The max number of missing vals before a candidate is flagged as missing, set to -1 to mark none
-export const MIN_VALS_FOR_TSNE = 1; // We are enabling tSNE for the first answer
+export const MIN_VALS_FOR_MAPPING = 1; // We are enabling tSNE for the first answer
 export const PARTY_INDEPENDENT = "Sitoutumaton";
 export const QUESTION_LIKERT = "Likert";
 export const QUESTION_OPEN = "Open";
@@ -56,8 +55,8 @@ export interface Candidate {
   constituencyId: number,
   party: string,
   selected: number,
-  tsne1?: number,
-  tsne2?: number,
+  projX?: number,
+  projY?: number,
   filteredOut?: Set<any>,  // Will actually hold references to CandidateFilters
   missing?: boolean,       // Flag to mark candidates who didn't answer the questions but are still included
   [questionN: string]: any // Additionally has props Q1...Q209 corresponding to answers to questions
@@ -66,8 +65,8 @@ export type CandidateDict = { [id: string]: Candidate }
 
 export interface Party {
   name?: string,
-  tsne1?: number,
-  tsne2?: number,
+  projX?: number,
+  projY?: number,
 }
 export type PartyDict = { [name: string]: Party }
 
@@ -114,6 +113,7 @@ export class MatcherService {
     "Raha": 1,
     "Ilmasto ja ymp\u00e4rist\u00f6": 0
   };
+  // REM
   private tsne;
   public tsneOptions = {
     perplexity: 30,
@@ -123,6 +123,7 @@ export class MatcherService {
   };
   private tsneIds: string[]; // Holds the candidateIds matching the elements in the tsne data array
   private tsneIntervalRef;
+  // REM
   public filterOpts: {[name: string]: { type: any, opts: CandidateFilterOptions }} = {
     question: {
       type: CandidateFilterQuestion,
@@ -192,7 +193,7 @@ export class MatcherService {
     constituencies:     new BehaviorSubject<DataStatus>(DataStatus.NotReady),
     questions:          new BehaviorSubject<DataStatus>(DataStatus.NotReady),
     candidates:         new BehaviorSubject<DataStatus>(DataStatus.NotReady),
-    tsne:               new BehaviorSubject<DataStatus>(DataStatus.NotReady),
+    mapping:            new BehaviorSubject<DataStatus>(DataStatus.NotReady),
     filters:            new BehaviorSubject<DataStatus>(DataStatus.NotReady),
     constituencyCookie: new BehaviorSubject<DataStatus>(DataStatus.NotReady),
   };
@@ -201,7 +202,7 @@ export class MatcherService {
   public questionDataReady =       this.dataStatus.questions.pipe(filter(          t => t !== DataStatus.NotReady ));
   public questionDataUpdated =     this.dataStatus.questions.pipe(filter(          t => t === DataStatus.Updated ));
   public candidateDataReady =      this.dataStatus.candidates.pipe(filter(         t => t !== DataStatus.NotReady ));
-  public tsneDataReady =           this.dataStatus.tsne.pipe(filter(               t => t !== DataStatus.NotReady ));
+  public mappingDataReady =        this.dataStatus.mapping.pipe(filter(            t => t === DataStatus.Ready ));
   public filterDataReady =         this.dataStatus.filters.pipe(filter(            t => t !== DataStatus.NotReady ));
   public filterDataUpdated =       this.dataStatus.filters.pipe(filter(            t => t === DataStatus.Updated ));
   public constituencyCookieRead =  this.dataStatus.constituencyCookie.pipe(filter( t => t === DataStatus.Ready ));
@@ -214,7 +215,7 @@ export class MatcherService {
     // Add subscriptions to take care of data status updates
     // See also setConstituency(), which resets statuses
     // QuestionDataUpdated is fired whenever the voter's answer change, so that annuls tsne, too
-    this.questionDataUpdated.subscribe( () => this.dataStatus.tsne.next(DataStatus.NotReady) );
+    this.questionDataUpdated.subscribe( () => this.dataStatus.mapping.next(DataStatus.NotReady) );
     // init
     this.initData();
   }
@@ -259,7 +260,7 @@ export class MatcherService {
     // If voterDisabled changes, we need to mark tsne as not ready
     if (this.voterDisabled !== value) {
       this._voterDisabled = value;
-      this.dataStatus.tsne.next(DataStatus.NotReady);
+      this.dataStatus.mapping.next(DataStatus.NotReady);
     }
   }
 
@@ -312,7 +313,7 @@ export class MatcherService {
     // Reset downstream data statuses
     this.dataStatus.questions.next(DataStatus.NotReady);
     this.dataStatus.candidates.next(DataStatus.NotReady);
-    this.dataStatus.tsne.next(DataStatus.NotReady);
+    this.dataStatus.mapping.next(DataStatus.NotReady);
     this.dataStatus.filters.next(DataStatus.NotReady);
         
     // Import questions data
@@ -390,13 +391,11 @@ export class MatcherService {
     return (likert ? Likert : MissingValue).isMissing(value);
   }
 
-  /*
-  // We already filter these when fetching from Firebase
-  public isRelevantQuestion(q: Question): boolean {
-    return !q.dropped;
-           && (!q.constituencyId || q.constituencyId === this.constituencyId);
-  }
-  */
+  // // We already filter these when fetching from Firebase
+  // public isRelevantQuestion(q: Question): boolean {
+  //   return !q.dropped;
+  //          && (!q.constituencyId || q.constituencyId === this.constituencyId);
+  // }
 
   public getQuestionsByIds(ids: string[]): QuestionDict {
     if (! this.questions) {
@@ -738,8 +737,8 @@ export class MatcherService {
     }
   }
 
-  get hasEnoughAnswersForTsne(): boolean {
-    return this.countVoterAnswers() >= MIN_VALS_FOR_TSNE;
+  get hasEnoughAnswersForMapping(): boolean {
+    return this.countVoterAnswers() >= MIN_VALS_FOR_MAPPING;
   }
 
   public writeCookie(name: string, value: any): void {
@@ -799,17 +798,19 @@ export class MatcherService {
     this.deleteAllCookies();
   }
 
-  public initTsne(): void {
-    // Prepare raw data for tSNE
-    let tsneData = new Array<Array<number>>();
-    let tsneCols = this.voterDisabled ? 
-                   this.getLikertQuestionIds() :
-                   this.getVoterAnsweredQuestionIds();
-    this.tsneIds = new Array<string>();
+  public initMapping(): void {
 
+    // Prepare raw data for mapping
+    const data = new Array<Array<number>>();
+    const cols = this.voterDisabled ? 
+                 this.getLikertQuestionIds() :
+                 this.getVoterAnsweredQuestionIds();
+    const ids = new Array<string>();
+
+    // Treat values
     for (const id in this.candidates) {
       let d = [];
-      tsneCols.forEach( q => {
+      cols.forEach( q => {
         let v = this.candidates[id][q];
         // Convert missing values to max distance from voter if we are using voter answers
         if (this.isMissing(v, true)) {
@@ -817,131 +818,42 @@ export class MatcherService {
               this.neutralAnswer : 
               this.getInvertedVoterAnswer(q);
         }
-        // Normalize
-        // v = (v - 1) / 5;
         v = Number(v);
         if (isNaN(v))
-          throw new Error(`Tsne initiated with a NaN value: ${this.candidates[id][q]} • candidate: ${id} • question: ${q}!`)
+          throw new Error(`Mapping initiated with a NaN value: ${this.candidates[id][q]} • candidate: ${id} • question: ${q}!`)
         d.push(v);
       } );
-      tsneData.push(d);
-      this.tsneIds.push(id);
+      data.push(d);
+      ids.push(id);
     }
+
     // Add the voter as the last item
     if (!this.voterDisabled) {
-      let voter = [];
-      tsneCols.forEach( q => voter.push(Number(this.getVoterAnswer(q))) );
-      tsneData.push(voter);
+      const voter = [];
+      cols.forEach( q => voter.push(Number(this.getVoterAnswer(q))) );
+      data.push(voter);
     }
 
-    // Create tsne object and initialize
-    this.tsne = new tsnejs.tSNE(this.tsneOptions);
-    this.tsne.initDataRaw(tsneData);
-
-    // Start calculating
-    // TODO: make this nice and async instead of setInterval
-    //       couldn't make async work nicely with the spinner
-    // Once calculation is done, draw the map
-    this.tsneIntervalRef = setInterval( () => {
-      if (this.tsne.iter % 100 == 0) {
-        this.progressChanged.emit(this.getTsneProgress());
-      }
-      for (let i = 0; i < this.tsneOptions.stepChunk; i++) {
-        this.tsne.step();
-        if (this.tsne.iter >= this.tsneOptions.maxChunks * this.tsneOptions.stepChunk) {
-          clearInterval(this.tsneIntervalRef);
-          this.updateTsne();
-        }
-      }
-    }, 1);
+    // Call projector service
+    const projector = new TsneProjector();
+    projector.project(data, this.voterDisabled, (progress) => {
+      this.progressChanged.emit(progress);
+    }).then((coordinates) => {
+      this.setCandidateCoordinates(ids, coordinates);
+      this.placeParties();
+      this.dataStatus.mapping.next(DataStatus.Ready);
+    });
   }
 
-  // Get minimum and maximum values from the arrays
-  private _getBounds(vals: [number, number][], index: number = 0): number[] {
-    if (!vals.length) {
-      throw new Error("Argument vals cannot be empty");
+  public setCandidateCoordinates(ids: string[], coordinates: [number, number][]): void {
+    for (let i = 0; i < ids.length; i++) {
+      this.candidates[ids[i]].projX = coordinates[i][0];
+      this.candidates[ids[i]].projY = coordinates[i][1];
     }
-    let min: number = vals[0][index];
-    let max: number = min;
-    // Start from one as we already assigned [0]
-    for (let j = 1; j < vals.length; j++) {
-      if (vals[j][index] < min) {
-        min = vals[j][index];
-      } else if (vals[j][index] > max) {
-        max = vals[j][index];
-      }
-    }
-    return [min, max];
+    this.dataStatus.mapping.next(DataStatus.Updated);
   }
 
-  public updateTsne(): void {
-    // Get solution
-    const solution: [number, number][] = this.tsne.getSolution();
-
-    // Find out min and max dimensions to normalize tSNE coordinates 
-    const bounds: [number[], number[]] = [this._getBounds(solution, 0),
-                                          this._getBounds(solution, 1)];
-    
-    // Set normalization scale based on the maximum dimension
-    let max: number = 0;
-    let scale: number;
-    let voter: [number, number]; // This will only be used if not voterDisabled
-
-    if (this.voterDisabled) {
-
-      // Check both dims (i) to find the one with the maximum spread
-      for (let i = 0; i < 2; i++) {
-        let dist = bounds[i][1] - bounds[i][0];
-        if (dist > max)
-          max = dist;
-      }
-
-      scale = 1 / max;
-
-    } else {
-
-      // Set scale based on the greatest absolute distance from the voter in either direction
-      // The last item in the solution is the voter (can't use pop as the solver needs the solution)
-
-      voter = solution[solution.length - 1];
-
-      for (let i = 0; i < 2; i++) {
-        for (let j = 0; j < 2; j++) {
-          let dist = Math.abs(voter[i] - bounds[i][j]);
-          if (dist > max)
-            max = dist;
-        }
-      }
-
-      // We need to multiply max by two as it's the max distance from the voter in either direction on either axis
-      scale = 1 / (2 * max);
-
-    }
-    
-    // Set tSNE coordinates
-    for (let i = 0; i < solution.length; i++) {
-      
-      if (this.voterDisabled) {
-
-        // Scale and normalise by subtracting the dimension's lower bound
-        // and center the smaller dimension: 
-        // max - (bounds[0/1][1] - bounds[0/1][0]) goes to zero for the bigger dim
-        // and represents the difference for the smaller, of which we add half
-        this.candidates[this.tsneIds[i]].tsne1 = (solution[i][0] - bounds[0][0] + (max - (bounds[0][1] - bounds[0][0])) / 2) * scale;
-        this.candidates[this.tsneIds[i]].tsne2 = (solution[i][1] - bounds[1][0] + (max - (bounds[1][1] - bounds[1][0])) / 2) * scale;
-
-      } else {
-
-        // Skip the last one as that's the voter
-        if (i === solution.length - 1)
-          break;
-
-        // Scale and center on voter
-        this.candidates[this.tsneIds[i]].tsne1 = (solution[i][0] - voter[0]) * scale + 0.5;
-        this.candidates[this.tsneIds[i]].tsne2 = (solution[i][1] - voter[1]) * scale + 0.5;
-
-      }
-    }
+  public placeParties(): void {
 
     // Calculate party centroids
     let parties: any = {};
@@ -951,7 +863,7 @@ export class MatcherService {
       const cand = this.candidates[c];
       if (!(cand.party in parties))
         parties[cand.party] = new Array();
-      parties[cand.party].push([cand.tsne1, cand.tsne2]);
+      parties[cand.party].push([cand.projX, cand.projY]);
     }
 
     // Init/reset this.parties
@@ -959,25 +871,16 @@ export class MatcherService {
 
     // Calculate coordinate averages and save in the parties property
     for (let p in parties) {
-      const tsne1 = parties[p].reduce( (a, v) => a + v[0], 0 ) / parties[p].length;
-      const tsne2 = parties[p].reduce( (a, v) => a + v[1], 0 ) / parties[p].length;
+      const projX = parties[p].reduce( (a, v) => a + v[0], 0 ) / parties[p].length;
+      const projY = parties[p].reduce( (a, v) => a + v[1], 0 ) / parties[p].length;
       this.parties[p] = {
         name: p,
-        tsne1,
-        tsne2,
+        projX,
+        projY,
       };
     }
-    
-    this.dataStatus.tsne.next(DataStatus.Ready);
-  }
 
-  // From 0 to 100
-  public getTsneProgress(): number {
-    if (this.tsne) {
-      return Math.round(100 * this.tsne.iter / (this.tsneOptions.maxChunks * this.tsneOptions.stepChunk));
-    } else {
-      return 0;
-    }
+    this.dataStatus.mapping.next(DataStatus.Updated);
   }
 
   private initFilters(): void {
