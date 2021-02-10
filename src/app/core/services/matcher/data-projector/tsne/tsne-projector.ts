@@ -1,6 +1,6 @@
 import { DataProjector,
          ProjectorData,
-         ProjectedMapping } from '..';
+         ProjectedMapping } from '../data-projector';
 
 import * as tsnejs from './lib/tsne';
 

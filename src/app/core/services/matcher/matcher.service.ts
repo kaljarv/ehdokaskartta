@@ -5,7 +5,8 @@ import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 import { DatabaseService } from '../database';
-import { TsneProjector } from './data-projector/';
+import { PcaProjector } from './data-projector/';
+// import { TsneProjector } from './data-projector/';
 
 import { AgreementType,
          Likert } from './likert-utility';
@@ -834,8 +835,9 @@ export class MatcherService {
       data.push(voter);
     }
 
-    // Call projector service
-    const projector = new TsneProjector();
+    // Call projector service,
+    // NB. with PCA the progress emitter is not used
+    const projector = new PcaProjector();
     projector.project(data, this.voterDisabled, (progress) => {
       this.progressChanged.emit(progress);
     }).then((coordinates) => {
