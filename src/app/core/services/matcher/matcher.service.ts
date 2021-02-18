@@ -342,8 +342,8 @@ export class MatcherService {
     // Import candidate data
     this.candidates = await this.database.getCandidates(id);
 
-    // // DEBUG / TEST / REMOVE
-    // // Multiply candidates to test performance
+    // DEBUG / TEST / REMOVE
+    // Multiply candidates to test performance
     // for (const candidate in this.candidates) {
     //   console.log(candidate);
     //   for (let i = 0; i < 10; i++) {

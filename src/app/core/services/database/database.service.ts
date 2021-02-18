@@ -6,8 +6,7 @@ import { AngularFirestore,
          DocumentSnapshot,
          QuerySnapshot } from '@angular/fire/firestore';
 import { AngularFireAnalytics } from '@angular/fire/analytics';
-import * as firebase from 'firebase/app';
-import 'firebase/firestore';
+import firebase from 'firebase/app';
 
 import { FeedbackItem } from './feedback-item';
 
