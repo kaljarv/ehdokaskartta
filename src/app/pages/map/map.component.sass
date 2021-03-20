@@ -9,33 +9,14 @@
   top: 0
   left: 0
 
-#map
-  width: 100vw
-  height: 100vh
-  position: fixed
-  left: 0
-  top: 0
+.menuHeading
+  color: $color-text !important
+  font-weight: bold
 
-#map *:focus
-  outline: none
-
-.avatarG--candidate,
-.avatarG--party,
-#voter
-  cursor: pointer
-
-.avatar-tooltip
-  font-size: $fontSize-M !important
-  padding: $margin-XS !important
-  hyphens: manual
-
-.avatar-label
-  fill: $color-text !important
-  stroke: $color-background
-  stroke-width: 2px
-  stroke-linejoin: round
-  paint-order: stroke fill
-  line-height: 1
-  transform: translateY(#{$fontSize-XS * 1.2})
-  font-size: $fontSize-XS
-  text-anchor: middle
+#partyMenuTrigger,
+#voterMenuTrigger
+  display: block
+  position: absolute
+  visibility: hidden
+  width: 10px
+  height: 10px

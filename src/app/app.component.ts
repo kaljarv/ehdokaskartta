@@ -300,6 +300,9 @@ export class AppComponent {
     this.shared.showFavourites.emit();
   }
   
+  public toggleMapType(): void {
+    throw new Error("Not implemented!");
+  }
 
   public toggleShowAllParties(): void {
     this.shared.toggleAllParties.emit();
@@ -386,6 +389,11 @@ export class AppComponent {
 
   get showFeedbackButton(): boolean {
     return this.shared.showFeedbackButton;
+  }
+
+  get isAlternativeMap(): boolean {
+    // TODO
+    return false;
   }
   
   get showAllParties(): boolean {

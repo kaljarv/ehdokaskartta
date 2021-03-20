@@ -25,7 +25,7 @@ export const COOKIE_VALUE_SEPARATOR = ",";
 export const COOKIE_PATH = "/";
 export const COOKIE_DOMAIN = null;
 export const COOKIE_LIFE = 1000 * 60 * 60 * 24 * 7; // Cookie lifetime in millisecs (the last number is day)
-export const MAX_MISSING_VALS = -1; // Set to 0 or greater to cull candidates based on number of missing vals
+export const MAX_MISSING_VALS = 10; // Set to 0 or greater to cull candidates based on number of missing vals, use -1 to include all candidates
 export const NONMISSING_CANDIDATE_MAX_MISSING_VALS = 9; // The max number of missing vals before a candidate is flagged as missing, set to -1 to mark none
 export const MIN_VALS_FOR_MAPPING = 1; // We are enabling tSNE for the first answer
 export const PARTY_INDEPENDENT = "Sitoutumaton";
@@ -344,15 +344,45 @@ export class MatcherService {
 
     // DEBUG / TEST / REMOVE
     // Multiply candidates to test performance
-    // for (const candidate in this.candidates) {
-    //   console.log(candidate);
-    //   for (let i = 0; i < 10; i++) {
-    //     const c = {...this.candidates[candidate]};
-    //     const id = candidate + '_' + i;
-    //     this.candidates[id] = c;
-    //   }
-    // }
+    const likertIds = this.getLikertQuestionIds();
+    const perturbProb = 0.25; // 0.5;
+    const randomProb = 0.1;
+    const multiplierRange = [0.25, 6];
+    let multiplier = multiplierRange[0] + Math.random() * (multiplierRange[1] - multiplierRange[0]);
+    if (multiplier > 1) multiplier = Math.round(multiplier);
+    if (multiplier !== 1) {
+      for (const candidate in this.candidates) {
+        // Skip randomly if multiplier < 1
+        if (multiplier < 1 && Math.random() > multiplier) {
+          delete(this.candidates[candidate]);
+          continue;
+        }
+        // Otherwise create new objects
+        for (let i = 0; i < multiplier; i++) {
+          const c = {...this.candidates[candidate]};
+          const id = candidate + '_' + i;
+          // Create faux replies
+          likertIds.forEach(lid => {
+            const rand = Math.random();
+            if (rand < randomProb) {
+              // Full random
+              // Value should be 1, 2, 4 or 5
+              let val = Math.ceil(Math.random() * 4);
+              if (val >= 3) val++;
+              c[lid] = val;
+            } else if (rand < perturbProb) {
+              // Perturb by one pt
+              c[lid] += [1,4].includes(c[lid]) ? 1 : -1;
+            }
+          });
+          this.candidates[id] = c;
+        }
+      }
+    }
+    console.log("TEST: Added candidates for testing! Before culling, N = " + Object.keys(this.candidates).length);
+    
     // console.log(this.candidates);
+    // END: DEBUG / TEST / REMOVE
 
     // Cull candidates with too many missing values
     // and flag candidates with missing values above the threshold

@@ -98,6 +98,17 @@
         <!-- Nothing here yet -->
       </div>
       <div class="rightColumn">
+        <button id="mapTypeButton"
+                mat-mini-fab 
+                (click)="toggleMapType()"
+                #mapTypeButtonTooltip="matTooltip"
+                [matTooltip]="isAlternativeMap ? 'Vaihda kartta ehdokkaiden itse ilmoittamaan sijaintiin perustuvaan' : 'Palaa ehdokkaiden vastauksiin perustuvaan karttaan' "
+                matTooltipClass="tools-tooltip"
+                matTooltipPosition="left"
+                [class.active]="isAlternativeMap"
+                @buttonAppear>
+          <mat-icon>map</mat-icon>
+        </button>
         <button id="filterButton"
                 mat-mini-fab 
                 (click)="openCandidateFilters()"

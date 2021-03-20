@@ -27,7 +27,6 @@ export class SharedService {
   public subtitle: string | Type<any> = ''; // TODO use an Observable instead
   public lastOpenCandidateDetailsTab: number = 0; // For details-candidate tabs
   public lastOpenCandidateFilter: number = null; // For filter-candidates expansion panels
-  public activeCandidateId: string; // We use this to signal the map avatars
   public showMapTools: boolean = false;
   public showFeedbackButton: boolean = false;
   public showAllParties: boolean = false; // This will be set by MapComponent based on a subscription to toggleAllParties
@@ -37,6 +36,7 @@ export class SharedService {
   public showCandidate = new EventEmitter<string>();
   public toggleCandidate = new EventEmitter<string>();
   public hideCandidate = new EventEmitter<void>();
+  public activeCandidateChanged =  new EventEmitter<string | null>();
   public showCandidateFilters = new EventEmitter<void>();
   public showFavourites = new EventEmitter<void>();
   public toggleAllParties = new EventEmitter<string>();
@@ -62,21 +62,24 @@ export class SharedService {
   // A catch-all for all map interactions
   public mapInteraction = new EventEmitter<void>();
 
+  private _activeCandidateId: string = null;
+
   constructor(
     private database: DatabaseService,
   ) {
     // Set up mapInteraction
     this.showCandidate.subscribe( id => {
       this.mapInteraction.emit();
-      this.logEvent('candidate_show', {id});
     });
     this.toggleCandidate.subscribe( id => {
       this.mapInteraction.emit();
-      if (this.activeCandidateId !== id)
-        this.logEvent('candidate_show', {id});
     });
     this.hideCandidate.subscribe( () => {
       this.mapInteraction.emit();
+    });
+    this.activeCandidateChanged.subscribe( id => {
+      if (id != null)
+        this.logEvent('candidate_show', {id});
     });
     this.showCandidateFilters.subscribe( () => {
       this.mapInteraction.emit();
@@ -99,12 +102,22 @@ export class SharedService {
     });
   }
 
-  public clamp(value: number, min: number = 0.0, max: number = 1.0): number {
-    return Math.min(Math.max(min, value), max);
+  /*
+   * We use this to signal the map avatars.
+   */
+  public get activeCandidateId(): string {
+    return this._activeCandidateId;
   }
 
-  public logEvent(eventName: string, eventParams: any = {}): void {
-    this.database.logEvent(eventName, eventParams);
+  /*
+   * We use this to signal the map avatars.
+   * This should only be set by details-candidate.component onInit
+   */
+  public set activeCandidateId(id: string | null) {
+    const changed = this._activeCandidateId !== id;
+    this._activeCandidateId = id;
+    if (changed)
+      this.activeCandidateChanged.emit(id);
   }
 
   /*
@@ -123,4 +136,13 @@ export class SharedService {
       // userEmail: this.userEmail,
     }
   }
+
+  public clamp(value: number, min: number = 0.0, max: number = 1.0): number {
+    return Math.min(Math.max(min, value), max);
+  }
+
+  public logEvent(eventName: string, eventParams: any = {}): void {
+    this.database.logEvent(eventName, eventParams);
+  }
+
 }

@@ -1,5 +1,6 @@
 export * from './map.module';
 export * from './map.component';
+export * from './map-canvas.component';
 export * from './avatars/avatar.component';
 export * from './avatars/person-avatar.component';
 export * from './avatars/party-avatar.component';

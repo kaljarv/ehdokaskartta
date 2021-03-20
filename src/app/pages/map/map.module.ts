@@ -16,6 +16,7 @@ import { FavouritesListModule } from './favourites-list';
 import { FilterCandidatesModule } from './filter-candidates';
 
 import { MapComponent } from './map.component';
+import { MapCanvasComponent } from './map-canvas.component';
 
 
 @NgModule({
@@ -35,9 +36,11 @@ import { MapComponent } from './map.component';
   ],
   exports: [
     MapComponent,
+    MapCanvasComponent,
   ],
   declarations: [
     MapComponent,
+    MapCanvasComponent,
   ],
 })
 export class MapModule {}
