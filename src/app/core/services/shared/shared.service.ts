@@ -25,6 +25,7 @@ export interface ForwardOptions {
 export class SharedService {
   public title: string = 'Tervetuloa Ehdokaskartalle'; // TODO use an Observable instead
   public subtitle: string | Type<any> = ''; // TODO use an Observable instead
+  public hideTopBar: boolean = false;
   public lastOpenCandidateDetailsTab: number = 0; // For details-candidate tabs
   public lastOpenCandidateFilter: number = null; // For filter-candidates expansion panels
   public showMapTools: boolean = false;
@@ -40,14 +41,13 @@ export class SharedService {
   public showCandidateFilters = new EventEmitter<void>();
   public showFavourites = new EventEmitter<void>();
   public toggleAllParties = new EventEmitter<string>();
-  public enableForward = new EventEmitter<ForwardOptions>();
+  public enableForward = new EventEmitter<ForwardOptions>(true);
   public disableForward = new EventEmitter<void>();
   public forwardProgress = new EventEmitter<number>();
   public navigateForward = new EventEmitter<ForwardOptions>();
   public toggleSideNav = new EventEmitter<void>();
   public locateSelf = new EventEmitter<void>();
   public openFeedback = new EventEmitter<void>();
-  public hideTopBar = new EventEmitter<void>();
   public minimiseTopBar = new EventEmitter<void>();
   public showMapTooltips = new EventEmitter<void>();
   public hideMapTooltips = new EventEmitter<void>();

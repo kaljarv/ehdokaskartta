@@ -17,12 +17,12 @@
         {{ givenName }} {{ surname }}
       </h2>
       <div class="party">
-        <mat-icon class="party-{{ candidate.party | toClassName }}">flag</mat-icon>
+        <mat-icon class="party-{{ candidate.partyName | toClassName }}">flag</mat-icon>
         {{ party }}
       </div>
     </div>
     <div class="header-tools">
-      <div class="candidate-number party-{{ candidate.party | toClassName }}">
+      <div class="candidate-number party-{{ candidate.partyName | toClassName }}">
         {{ number }}
       </div>
       <mat-icon *ngIf="isFavourite == false"
@@ -240,7 +240,7 @@
                                   [voterAnswer]="getVoterAnswer(question.id)"
                                   [candidateAnswer]="getCandidateAnswer(question.id)"
                                   [candidateAnswerOpen]="getCandidateAnswerOpen(question.id)"
-                                  [partyName]="candidate.party"
+                                  [partyName]="candidate.partyName"
                                   [partyAnswer]="getPartyAverage(question.id)"></app-candidate-answer>
           </ng-container>
         </app-custom-expander>
@@ -288,7 +288,7 @@
                                   [voterAnswer]="getVoterAnswer(question.id)"
                                   [candidateAnswer]="getCandidateAnswer(question.id)"
                                   [candidateAnswerOpen]="getCandidateAnswerOpen(question.id)"
-                                  [partyName]="candidate.party"
+                                  [partyName]="candidate.partyName"
                                   [partyAnswer]="getPartyAverage(question.id)"></app-candidate-answer>
           </ng-container>
         </app-custom-expander>
@@ -344,7 +344,7 @@
                                   topicClass="category-{{ question.category | toClassName }}"
                                   [candidateAnswer]="getCandidateAnswer(question.id)"
                                   [candidateAnswerOpen]="getCandidateAnswerOpen(question.id)"
-                                  [partyName]="candidate.party"
+                                  [partyName]="candidate.partyName"
                                   [partyAnswer]="getPartyAverage(question.id)"></app-candidate-answer>
           </ng-container>
         </app-custom-expander>

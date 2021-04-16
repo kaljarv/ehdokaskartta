@@ -1,5 +1,6 @@
 import { Component, 
          Inject,
+         OnDestroy,
          OnInit,
          AfterViewChecked,
          ViewChild,
@@ -7,13 +8,16 @@ import { Component,
          ElementRef,
          ViewEncapsulation } from '@angular/core';
 
+import { Subscription } from 'rxjs';
+
 import { MatBottomSheetRef, 
          MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 
 import { MatcherService,
          SharedService,
          Candidate,
-         Question } from '../../../core';
+         QuestionNumeric, 
+         Question} from '../../../core';
 
 // Delay in ms before closing the bottom sheet after setting answer
 export const CLOSE_DELAY: number = 450;
@@ -39,18 +43,20 @@ export class DetailsQuestionGlobalStylesComponent {
 })
 export class DetailsQuestionComponent
   implements OnInit,
+             OnDestroy,
              AfterViewChecked {
 
   @ViewChild('columns') columns: QueryList<ElementRef>;
-  
-  public questionId: string;
-  public question: Question;
-  public values: number[] = [1, 2, 3, 4, 5];
+
+  public question: QuestionNumeric;
   public candidates: {
       [value: number]: Candidate[]
     } = {};
   public showDeleteButton: boolean;
   public candidateSizingClass: string = 'candidateSize-medium';
+
+  // These will be cancelled onDestroy
+  private _subscriptions: Subscription[] = [];
 
   constructor(
     private bottomSheetRef: MatBottomSheetRef,
@@ -58,25 +64,41 @@ export class DetailsQuestionComponent
     private matcher: MatcherService,
     private shared: SharedService,
   ) {
-    this.questionId = data.id;
+    // Get question object
+    this.question = this.matcher.questions[data.id] as QuestionNumeric;
   }
 
   ngOnInit(): void {
 
-    // Get Question object
-    this.question = this.matcher.getQuestion(this.questionId);
+    // this._subscriptions.push(this.matcher.candidateDataReady.subscribe(() => this._initDistributionChart()));
+    this._initDistributionChart();
 
     // Enable delete button if there's an answer
     // NB. We don't want to bind it dynamically, as then the button would be shown prematurely
     this.showDeleteButton = this.voterAnswer != null;
 
+    this.shared.logEvent('questions_show', {id: this.question.id, text: this.question.text});
+  }
+
+  ngAfterViewChecked(): void {
+  }
+
+  ngOnDestroy() {
+    // Cancel subscriptions
+    this._subscriptions.forEach(s => s.unsubscribe());
+  }
+
+  private _initDistributionChart(): void {
+
     // Get Candidates for the distribution chart, group by party
-    const candidates = this.matcher.getCandidatesAsList().sort( (a, b) => a.party.localeCompare(b.party) );
+    const candidates = this.matcher.getCandidatesAsList().sort(
+      (a: Candidate, b: Candidate) => a.partyName.localeCompare(b.partyName)
+    );
 
     // Sort Candidates per answer
     let columnMax = 0;
-    this.values.forEach( v => {
-      this.candidates[v] = candidates.filter( c => Number(c[this.question.id]) == v );
+    this.question.values.forEach( v => {
+      this.candidates[v] = candidates.filter( c => Number(c.getAnswer(this.question)) == v );
       // Save the highest number in a column for radius calculation
       if (this.candidates[v].length > columnMax)
         columnMax = this.candidates[v].length;
@@ -89,11 +111,7 @@ export class DetailsQuestionComponent
     } else if (window.innerWidth / columnMax > 15) {
       this.candidateSizingClass = 'candidateSize-large';
     }
-
-    this.shared.logEvent('questions_show', {id: this.questionId, text: this.question.text});
-  }
-
-  ngAfterViewChecked(): void {
+    
   }
 
   dismiss(event: MouseEvent = null) {
@@ -108,24 +126,25 @@ export class DetailsQuestionComponent
   }
 
   get voterAnswer(): string {
-    let a = this.matcher.getVoterAnswer(this.question.id);
+    let a = this.question.voterAnswer;
     // We have to convert the answer to string for ngModel to work
     return a ? a + '' : null;
   }
+
   set voterAnswer(value: string) {
     this.matcher.setVoterAnswer(this.question.id, Number(value));
-    this.shared.logEvent('questions_answer', {id: this.questionId, text: this.question.text});
+    this.shared.logEvent('questions_answer', {id: this.question.id, text: this.question.text});
     setTimeout(() => this.dismiss(), CLOSE_DELAY);
   }
 
   public deleteVoterAnswer(): void {
     this.matcher.deleteVoterAnswer(this.question.id);
-    this.shared.logEvent('questions_delete_answer', {id: this.questionId, text: this.question.text});
+    this.shared.logEvent('questions_delete_answer', {id: this.question.id, text: this.question.text});
     setTimeout(() => this.dismiss(), CLOSE_DELAY);
   }
 
   public getTooltip(candidate: Candidate): string {
-    return `${candidate.givenName}\xa0${candidate.surname}, ${candidate.party}`;
+    return `${candidate.givenName}\xa0${candidate.surname}, ${candidate.partyName}`;
   }
 
   get constituencyName(): string {

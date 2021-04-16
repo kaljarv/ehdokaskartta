@@ -20,8 +20,9 @@ import { LcFirstPipe,
          SentencifyPipe } from '../../../core/pipes';
 import { MatcherService, 
          Candidate, 
-         Question, 
-         PARTY_INDEPENDENT } from '../../../core';
+         INDEPENDENT_PARTY_ID, 
+         Question,
+         QuestionNumeric } from '../../../core';
 import { SharedService } from '../../../core';
 import { FloatingCardRef,
          FLOATING_CARD_DATA,
@@ -149,8 +150,10 @@ export class DetailsCandidateComponent implements OnInit, AfterViewInit, AfterVi
 
   ngOnInit() {
     this._subscriptions.push(
-      this.matcher.constituencyDataReady.subscribe(() => {
+      this.matcher.constituencyDataReady.subscribe(async () => {
         this.candidate = this.matcher.getCandidate(this.data.id);
+        // TODO: Check if we can move this later
+        await this.candidate.loadDetails();
         this.initQuestions();
       })
     );
@@ -266,43 +269,53 @@ export class DetailsCandidateComponent implements OnInit, AfterViewInit, AfterVi
     this.shared.logEvent('candidate_expand_answers', {id: this.candidate.id, category: category, scrollTo: scrollTo});
   }
 
-  public getVoterAnswer(id: string): number {
-    let a = this.matcher.getVoterAnswer(id);
-    return a ? a : null;
+  public isMissing(id: string): boolean {
+    if (this.matcher.questions[id] == null)
+      throw new Error(`No question with id '${id}' in Matcher.`);
+    return this.matcher.questions[id].isMissing(this.candidate[id]);
+  }
+
+  public getVoterAnswer(id: string): number | number[] {
+    const q = this.matcher.questions[id];
+    if (q instanceof QuestionNumeric)
+      return q.voterAnswer;
+    else
+      throw new Error(`Question with id '${id}' does not allow voter answers.`);
   }
 
   public getCandidateAnswer(id: string): number {
     // NB. The 2nd parameter (true) needed to check for missing Likert values
-    if (this.matcher.isMissing(this.candidate[id], true)) {
+    if (this.isMissing(id))
       return null;
-    } else {
+    else
       return Number(this.candidate[id]);
-    }
   }
 
   public getCandidateAnswerOpen(id: string): string {
     const oId = this.matcher.getOpenAnswerId(id);
-    if (oId) {
-      return this.matcher.isMissing(this.candidate[oId]) ? null : this.candidate[oId];
-    } else {
+    if (oId)
+      return this.isMissing(oId) ? null : this.candidate[oId];
+    else
       throw new Error(`No open answer related to question ${id}.`);
-    }
   }
 
-  public getPartyAverage(id: string): number | null {
-    if (this.candidate.party != PARTY_INDEPENDENT) {
-      return this.matcher.getPartyAverage(this.candidate.party, id);
+  public getPartyAverage(id: string): number | number[] | null {
+    if (this.candidate.party.id != INDEPENDENT_PARTY_ID) {
+      const q = this.matcher.questions[id];
+      if (q instanceof QuestionNumeric)
+        return q.partyAverages[this.candidate.party.id];
+      else
+        throw new Error(`Question with id '${id}' does not allow party averages.`);
     } else {
       return null;
     }
   }
 
   public getOrMissing(key: string, process: Function = (x) => x ): string {
-    if (this.matcher.isMissing(this.candidate[key])) {
+    if (this.isMissing(key))
       return MISSING_DATA_INFO;
-    } else {
+    else
       return process(this.candidate[key]);
-    }
   }
 
   get missingDataInfo(): string {
@@ -332,7 +345,7 @@ export class DetailsCandidateComponent implements OnInit, AfterViewInit, AfterVi
     return this.candidate.surname;
   }
   get party(): string {
-    return this.candidate.party;
+    return this.candidate.partyName;
   }
   get number(): number {
     return this.candidate.number;
@@ -361,31 +374,31 @@ export class DetailsCandidateComponent implements OnInit, AfterViewInit, AfterVi
     return this.getOrMissing("Q67");
   }
   get fundingDescription(): SafeHtml {
-    if (this.matcher.isMissing(this.candidate.Q69)) {
+    if (this.isMissing("Q69")) {
       return this.sanitizer.bypassSecurityTrustHtml(MISSING_DATA_INFO_HTML);
     }
     let desc = "Käytän vaalein rahaa ";
-    desc += `<strong>${ this.candidate.Q69.replace("-", "—").replace(/\s*000\b/g, "\xa0000").replace(/\s*euroa/, "</strong>\xa0€") }`;
-    if (this.matcher.isMissing(this.candidate.Q70)) {
+    desc += `<strong>${ this.candidate.getAnswer('Q69').replace("-", "—").replace(/\s*000\b/g, "\xa0000").replace(/\s*euroa/, "</strong>\xa0€") }`;
+    if (this.isMissing("Q70")) {
       desc += ` <span class="${MISSING_DATA_INFO_CLASS}">Ei vastausta ulkopuolisen rahoituksen osuudesta.</span>`;
-    } else if (this.candidate.Q70 == "0%") {
+    } else if (this.candidate.getAnswer('Q70') == "0%") {
       desc += ", eikä ulkopuolista rahoitusta ei ole lainkaan."
     } else {
-      desc += `. Tästä ulkopuolista rahoitusta on ${ this.candidate.Q70.replace("-", "—").replace(/\s*%/g, "\xa0%") }`;
-      if (this.matcher.isMissing(this.candidate.Q71) || this.candidate.Q71 == "Joku muu") {
+      desc += `. Tästä ulkopuolista rahoitusta on ${ this.candidate.getAnswer('Q70').replace("-", "—").replace(/\s*%/g, "\xa0%") }`;
+      if (this.isMissing("Q71") || this.candidate.getAnswer('Q71') == "Joku muu") {
         desc += `. <span class="${MISSING_DATA_INFO_CLASS}">Ei vastausta ulkopuolisen rahoituksen lähteestä.</span>`;
       } else {
-        desc += `, jonka tärkeimpänä lähteenä ${ this.candidate.Q71 == "Yksityiset lahjoitukset" ? "ovat" : "on" } ${ this.lcFirst.transform(this.candidate.Q71) }.`;
+        desc += `, jonka tärkeimpänä lähteenä ${ this.candidate.getAnswer('Q71') == "Yksityiset lahjoitukset" ? "ovat" : "on" } ${ this.lcFirst.transform(this.candidate.getAnswer('Q71')) }.`;
       }
     }
     return this.sanitizer.bypassSecurityTrustHtml(desc);
   }
   get politicalParagonAndReason(): SafeHtml {
-    if (this.matcher.isMissing(this.candidate["Q75"])) {
+    if (this.isMissing("Q75")) {
       return this.sanitizer.bypassSecurityTrustHtml(MISSING_DATA_INFO_HTML);
     } else {
       let text = `<span class="content-emphasis">${this.sentencify.transform(this.candidate["Q75"])}</span>`;
-      if (!this.matcher.isMissing(this.candidate["Q76"])) {
+      if (!this.isMissing("Q76")) {
         text += ` <span [innerHtml]="politicalParagonReason">${this.candidate["Q76"]}</span>`;
       }
       return this.sanitizer.bypassSecurityTrustHtml(text);
@@ -406,7 +419,7 @@ export class DetailsCandidateComponent implements OnInit, AfterViewInit, AfterVi
   get promises(): string[] {
     let list = [];
     ['Q60', 'Q61', 'Q62'].forEach( (key) => {
-      if (!this.matcher.isMissing(this.candidate[key])) {
+      if (!this.isMissing(key)) {
         list.push(this.candidate[key]);
       }
     });
@@ -415,7 +428,7 @@ export class DetailsCandidateComponent implements OnInit, AfterViewInit, AfterVi
   get committees(): string[] {
     let list = [];
     ['Q72', 'Q73'].forEach( (key) => {
-      if (!this.matcher.isMissing(this.candidate[key])) {
+      if (!this.isMissing(key)) {
         list.push(this.candidate[key]);
       }
     });

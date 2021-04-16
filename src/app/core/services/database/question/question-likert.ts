@@ -1,6 +1,10 @@
+import {
+  QuestionNumeric,
+  QuestionOptionsNumeric
+} from './question-numeric';
+
 /*
  * Provides 5-scale Likert matching functions for use in matcher and filters
- * Use the exported const Likert object to access methods
  */
 
 export enum AgreementType {
@@ -11,21 +15,43 @@ export enum AgreementType {
   StronglyDisagree, // More than 1 Likert step away
 }
 
-export class LikertUtility {
+/*
+ * Base class for Likert question objects
+ */
+
+export interface QuestionOptionsLikert extends QuestionOptionsNumeric {
+  partyAverages?: {
+    [partyId: string]: number
+  }
+}
+
+export class QuestionLikert extends QuestionNumeric {
+
+  /*
+   * Overrides
+   */
+  public voterAnswer: number;
+  public partyAverages: {
+    [partyId: string]: number
+  }
+
   /*
    * Convenience getters for AgreementTypes
    */
-  readonly agree: AgreementType = AgreementType.Agree;
-  readonly disagree: AgreementType = AgreementType.Disagree;
-  readonly opinionUnknown: AgreementType = AgreementType.OpinionUnknown;
-  readonly mostlyAgree: AgreementType = AgreementType.MostlyAgree;
-  readonly stronglyDisagree: AgreementType = AgreementType.StronglyDisagree;
+  static readonly agree: AgreementType = AgreementType.Agree;
+  static readonly disagree: AgreementType = AgreementType.Disagree;
+  static readonly opinionUnknown: AgreementType = AgreementType.OpinionUnknown;
+  static readonly mostlyAgree: AgreementType = AgreementType.MostlyAgree;
+  static readonly stronglyDisagree: AgreementType = AgreementType.StronglyDisagree;
+
   /*
-   * Value for a neutral answer, if needed
+   * These allow changes to Likert scale
    */
   readonly neutralAnswer: number = 3;
+  readonly maxAnswer: number = 5;
 
-  constructor() {
+  constructor(options: QuestionOptionsLikert) {
+    super(options);
   }
 
   /*
@@ -44,40 +70,26 @@ export class LikertUtility {
   }
 
   /*
-   * Get the maximally distant answer to the one given
-   */
-  public invertAnswer(value: any, biasedTowardsFive: boolean = true): number {
-    return Number(value) <= (biasedTowardsFive ? 3 : 2) ? 5 : 1;
-  }
-
-  /*
-   * Check if the value is missing
-   */
-  public isMissing(value: any): boolean {
-    return typeof value === 'undefined' || isNaN(value) || value == null;
-  }
-
-  /*
    * Match to values and get their AgreementType
    */
   public match(value1: any, value2: any, strict: boolean = false, allowOpinionUnknown: boolean = true): AgreementType {
    
     if (allowOpinionUnknown && value1 == null) {
-      return this.opinionUnknown;
+      return AgreementType.OpinionUnknown;
     }
 
     const dist = this.getDistance(value1, value2);
 
     if (strict) {
-      return dist === 0 ? this.agree: this.disagree;
+      return dist === 0 ? AgreementType.Agree: AgreementType.Disagree;
     }
 
     switch (dist) {
       case 0:
       case 1:
-        return this.mostlyAgree;
+        return AgreementType.MostlyAgree;
       default:
-        return this.stronglyDisagree;
+        return AgreementType.StronglyDisagree;
     }
   }
 
@@ -100,26 +112,23 @@ export class LikertUtility {
   }
 
   public doAgree(value1: any, value2: any): boolean {
-    return this.match(value1, value2, true) === this.agree;
+    return this.match(value1, value2, true) === AgreementType.Agree;
   }
 
   public doDisagree(value1: any, value2: any): boolean {
-    return this.match(value1, value2, true) === this.disagree;
+    return this.match(value1, value2, true) === AgreementType.Disagree;
   }
 
   public doMostlyAgree(value1: any, value2: any): boolean {
-    return this.match(value1, value2, false) === this.mostlyAgree;
+    return this.match(value1, value2, false) === AgreementType.MostlyAgree;
   }
 
   public doStronglyDisagree(value1: any, value2: any): boolean {
-    return this.match(value1, value2, false) === this.stronglyDisagree;
+    return this.match(value1, value2, false) === AgreementType.StronglyDisagree;
   }
 
   public doHaveOpinionUnknown(value1: any, value2: any = null): boolean {
-    return this.match(value1, value2, false) === this.opinionUnknown;
+    return this.match(value1, value2, false) === AgreementType.OpinionUnknown;
   }
-
 }
 
-// For convenience
-export const Likert = new LikertUtility();

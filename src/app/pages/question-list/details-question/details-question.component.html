@@ -10,11 +10,8 @@
 
     <mat-radio-group [(ngModel)]="voterAnswer"
                      class="likert-group">
-      <mat-radio-button value="1"></mat-radio-button>
-      <mat-radio-button value="2"></mat-radio-button>
-      <mat-radio-button value="3"></mat-radio-button>
-      <mat-radio-button value="4"></mat-radio-button>
-      <mat-radio-button value="5"></mat-radio-button>
+      <mat-radio-button *ngFor="let value of question.values"
+                        [value]="value.toString()"></mat-radio-button>
     </mat-radio-group>
 
     <div class="labels">
@@ -39,14 +36,14 @@
 
     <div class="columns">
 
-      <div *ngFor="let value of values"
-          class="column"
-          #columns>
+      <div *ngFor="let value of question.values"
+           class="column"
+           #columns>
         <div *ngFor="let candidate of candidates[value]"
-            [matTooltip]="getTooltip(candidate)"
-            matTooltipClass="candidate-tooltip"
-            matTooltipPosition="above"
-            class="candidate party-{{ candidate.party | toClassName }}">
+             [matTooltip]="getTooltip(candidate)"
+             matTooltipClass="candidate-tooltip"
+             matTooltipPosition="above"
+             class="candidate party-{{ candidate.partyName | toClassName }}">
         </div>
       </div>
 

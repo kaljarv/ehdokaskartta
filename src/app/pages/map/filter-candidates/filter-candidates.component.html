@@ -43,10 +43,10 @@
 
               <p>{{ filter.description }}</p>
 
-              <mat-checkbox *ngFor="let value of getSortedValues(filter); let j = index"
+              <mat-checkbox *ngFor="let question of getSortedValues(filter); let j = index"
                             [formControlName]="j">
-                <div class="questionChip category-{{ getQuestion(value).category | toClassName }}">
-                  {{ getQuestion(value).topic }}
+                <div class="questionChip category-{{ question.categoryName | toClassName }}">
+                  {{ question.topic }}
                 </div>
               </mat-checkbox>
               <div *ngIf="filter.getValues().length > 5"

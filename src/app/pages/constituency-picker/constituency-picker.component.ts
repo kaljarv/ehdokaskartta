@@ -38,11 +38,11 @@ export class ConstituencyPickerComponent implements OnInit, OnDestroy {
       title: this.nextButtonText,
       onBefore: () => this.setMunicipality()
     };
+    this.shared.title = "Kotikuntasi";
+    this.shared.subtitle = "Valitse aluksi kotikuntasi, jotta saat selville oman vaalipiirisi. Eduskuntavaaleissa ehdokkaat on jaettu 13 vaalipiiriin, ja voit antaa äänesi vain oman vaalipiirisi ehdokkaille.";
   }
 
   ngOnInit(): void {
-    this.shared.title = "Kotikuntasi";
-    this.shared.subtitle = "Valitse aluksi kotikuntasi, jotta saat selville oman vaalipiirisi. Eduskuntavaaleissa ehdokkaat on jaettu 13 vaalipiiriin, ja voit antaa äänesi vain oman vaalipiirisi ehdokkaille.";
     this._subscriptions.push(this.matcher.constituencyDataReady.subscribe(() => this.setupMunicipalities()));
   }
 
@@ -61,7 +61,7 @@ export class ConstituencyPickerComponent implements OnInit, OnDestroy {
         map(name => name ? this._filter(name) : this.municipalities.slice())
       );
     if (this.matcher.municipalityId) {
-      let m = this.municipalities.filter( m => Number(m.id) === this.matcher.municipalityId)[0];
+      let m = this.municipalities.filter( m => m.id === this.matcher.municipalityId)[0];
       this.municipalityForm.controls.voterMunicipality.setValue(m, {emitEvent: true});
       this.enableForward();
     };
@@ -92,7 +92,7 @@ export class ConstituencyPickerComponent implements OnInit, OnDestroy {
     return this.municipalities.filter(m => m.name.toLocaleLowerCase('fi-FI').includes(filterValue));
   }
 
-  public getSelectedMunicipalityId(): number | null {
+  public getSelectedMunicipalityId(): string | null {
     let value = this.municipalityForm.controls.voterMunicipality.value;
     if (!value) {
       return null;
@@ -107,7 +107,7 @@ export class ConstituencyPickerComponent implements OnInit, OnDestroy {
   }
 
   // Set the selected municipality (or the one defined as the argument)
-  public setMunicipality(id?: number): void {
+  public setMunicipality(id?: string): void {
     if (id == null) {
       id = this.getSelectedMunicipalityId();
     }

@@ -1,9 +1,13 @@
-import { EventEmitter } from '@angular/core';
+import { 
+  EventEmitter 
+} from '@angular/core';
 
-import { MissingValue } from './missing-value-utility';
+import { 
+  Question
+} from '../../database';
 
 export interface CandidateFilterOptions {
-  key?: string,
+  question?: Question,
   title?: string,
   description?: string,
   multipleValues?: boolean,
@@ -25,7 +29,7 @@ export const MISSING_FILTER_VAL = {
  * Base class for filters to filter out candidates
  */ 
 export class CandidateFilter {
-  public key: string;
+  public question: Question;
   public title: string;
   public description: string;
   // Multiple values means a candidate may have multiple values for the datum filtered
@@ -127,7 +131,8 @@ export class CandidateFilter {
   }
 
   protected _process(value: any): any {
-    return MissingValue.isMissing(value) ? MISSING_FILTER_VAL : this._processType(value);
+    return (this.question && this.question.isMissing(value)) || value == null ? 
+           MISSING_FILTER_VAL : this._processType(value);
   }
 
   public addValue(...values: any): void {
@@ -199,7 +204,7 @@ export class CandidateFilter {
     // Apply test to all items
     for (const id in data) {
       let fOut = (filteredKey in data[id]) ? data[id][filteredKey] : null;
-      if (this.active && !this.matchMultiple(data[id][this.key])) {
+      if (this.active && !this.matchMultiple(data[id][this.question.id])) {
         // We save the applied filter in the filteredOut prop
         if (fOut) {
           fOut.add(this);

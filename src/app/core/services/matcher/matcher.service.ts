@@ -1,22 +1,48 @@
-import { Injectable, 
-         EventEmitter } from '@angular/core';
-import { CookieService } from 'ngx-cookie-service';
-import { BehaviorSubject } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { 
+  Injectable, 
+  EventEmitter
+} from '@angular/core';
+import { 
+  CookieService 
+} from 'ngx-cookie-service';
+import { 
+  BehaviorSubject 
+} from 'rxjs';
+import { 
+  filter 
+} from 'rxjs/operators';
 
-import { DatabaseService } from '../database';
-import { PcaProjector } from './data-projector/';
+import {
+  CategoryDict,
+  Candidate,
+  CandidateDict,
+  INDEPENDENT_PARTY_ID,
+  Party,
+  PartyDict,
+  ConstituencyDict,
+  DatabaseService,
+  MunicipalityDict,
+  AgreementType,
+  Question,
+  QuestionDict,
+  QuestionLikert,
+  QuestionNumeric,
+  CandidateOptions,
+  Municipality
+} from '../database';
+import { 
+  PcaProjector 
+} from './data-projector/';
 // import { TsneProjector } from './data-projector/';
 
-import { AgreementType,
-         Likert } from './likert-utility';
-import { MissingValue } from './missing-value-utility';
-import { CandidateFilter,
-         CandidateFilterOptions,
-         CandidateFilterLogicOperator } from './candidate-filter';
-import { CandidateFilterSimple } from './candidate-filter-simple';
-import { CandidateFilterNumberRange } from './candidate-filter-number-range';
-import { CandidateFilterQuestion } from './candidate-filter-question';
+import { 
+  CandidateFilter,
+  CandidateFilterOptions,
+  CandidateFilterLogicOperator,
+  CandidateFilterSimple,
+  CandidateFilterNumberRange,
+  CandidateFilterQuestion
+} from './candidate-filter';
 
 export const COOKIE_PREFIX = "CM-VoterAnswer-";
 export const COOKIE_MUNICIPALITY = "Municipality";
@@ -28,48 +54,8 @@ export const COOKIE_LIFE = 1000 * 60 * 60 * 24 * 7; // Cookie lifetime in millis
 export const MAX_MISSING_VALS = 10; // Set to 0 or greater to cull candidates based on number of missing vals, use -1 to include all candidates
 export const NONMISSING_CANDIDATE_MAX_MISSING_VALS = 9; // The max number of missing vals before a candidate is flagged as missing, set to -1 to mark none
 export const MIN_VALS_FOR_MAPPING = 1; // We are enabling tSNE for the first answer
-export const PARTY_INDEPENDENT = "Sitoutumaton";
-export const QUESTION_LIKERT = "Likert";
-export const QUESTION_OPEN = "Open";
 
-export interface Question {
-  id?: string,
-  text?: string,
-  topic?: string,
-  category?: string,
-  type?: string, // See QUESTION_LIKERT and QUESTION_OPEN
-  relatedId?: string,
-  dropped?: boolean,
-  constituencyId?: number,
-  voterAnswer?: number,
-  partyAverages?: {
-    [partyName: string]: number,
-  },
-}
-export type QuestionDict = { [id: string]: Question }
-
-export interface Candidate {
-  id?: string, // The unique id = constituencyId_number, also used as the key in the dict
-  number: number,
-  surname: string,
-  givenName: string,
-  constituencyId: number,
-  party: string,
-  selected: number,
-  projX?: number,
-  projY?: number,
-  filteredOut?: Set<any>,  // Will actually hold references to CandidateFilters
-  missing?: boolean,       // Flag to mark candidates who didn't answer the questions but are still included
-  [questionN: string]: any // Additionally has props Q1...Q209 corresponding to answers to questions
-}
-export type CandidateDict = { [id: string]: Candidate }
-
-export interface Party {
-  name?: string,
-  projX?: number,
-  projY?: number,
-}
-export type PartyDict = { [name: string]: Party }
+export type QuestionType = "Likert" | "Likert7" | "PreferenceOrder" | "Open";
 
 export interface QuestionAverageDict {
   [questionId: string]: {
@@ -93,39 +79,19 @@ export enum DataStatus {
 })
 export class MatcherService {
   private _municipality: string;
-  private _municipalityId: number;
+  private _municipalityId: string;
   private _constituency: string;
-  private _constituencyId: number;
+  private _constituencyId: string;
   private _voterDisabled: boolean = false;
-  private questions: QuestionDict;
-  private correlationMatrix: any;
-  private candidates: CandidateDict;
-  private parties: PartyDict;
-  private municipalities: any;
-  private constituencies: any;
-  private favourites: string[] = new Array<string>();
-  public questionCategoryOrder = {
-    "Liikenne": 7,
-    "Arvot": 6,
-    "Turvallisuus": 5,
-    "Maahanmuutto": 4,
-    "Perhe ja koulutus": 3,
-    "Terveys": 2,
-    "Raha": 1,
-    "Ilmasto ja ymp\u00e4rist\u00f6": 0
-  };
-  // REM
-  private tsne;
-  public tsneOptions = {
-    perplexity: 30,
-    epsilon: 10,
-    maxChunks: 40,
-    stepChunk: 25, // number of steps to complete in one chunk
-  };
-  private tsneIds: string[]; // Holds the candidateIds matching the elements in the tsne data array
-  private tsneIntervalRef;
-  // REM
-  public filterOpts: {[name: string]: { type: any, opts: CandidateFilterOptions }} = {
+  public questions: QuestionDict = {};
+  public correlationMatrix: any;
+  public categories: CategoryDict;
+  public candidates: CandidateDict;
+  public parties: PartyDict;
+  public municipalities: MunicipalityDict;
+  public constituencies: ConstituencyDict;
+  public favourites: string[] = new Array<string>();
+  public filterOpts: {[name: string]: { type: any, opts: any }} = {
     question: {
       type: CandidateFilterQuestion,
       opts: {
@@ -156,7 +122,7 @@ export class MatcherService {
     party: {
       type: CandidateFilterSimple,
       opts: {
-        key: 'party',
+        key: 'partyName',
         title: 'Puolueen perusteella',
         multipleValues: false,
       }
@@ -225,6 +191,7 @@ export class MatcherService {
 
     this.municipalities = await this.database.getMunicipalities();
     this.constituencies = await this.database.getConstituencies();
+
     this.dataStatus.constituencies.next(DataStatus.Ready);
 
     this.dataStatus.candidates.pipe(filter( t => t !== DataStatus.NotReady )).subscribe(() => {
@@ -236,12 +203,27 @@ export class MatcherService {
     await this.setMunicipalityFromCookie();
   }
 
-  // Getters
+  // Getters and setters
+  // get questions(): QuestionDict {
+  //   // if (! this._questions)
+  //   //   throw Error("Constituency must be defined before getting Questions");
+  //   return this._questions;
+  // }
+
+  // set questions(value: QuestionDict) {
+  //   this._questions = value;
+  // }
+
+  get questionsAsList(): Question[] {
+    return Object.values(this.questions);
+  }
+
+
   get municipality(): string {
     return this._municipality;
   }
 
-  get municipalityId(): number {
+  get municipalityId(): string {
     return this._municipalityId;
   }
 
@@ -249,7 +231,7 @@ export class MatcherService {
     return this._constituency;
   }
 
-  get constituencyId(): number {
+  get constituencyId(): string {
     return this._constituencyId;
   }
 
@@ -265,7 +247,7 @@ export class MatcherService {
     }
   }
 
-  public getConstituencyNameByMunicipalityId(id: number): string {
+  public getConstituencyNameByMunicipalityId(id: string): string {
     if (id in this.municipalities) {
       return this.getConstituencyNameById(this.municipalities[id].constituencyId);
     } else {
@@ -273,7 +255,7 @@ export class MatcherService {
     }
   }
 
-  public getConstituencyNameById(id: number): string {
+  public getConstituencyNameById(id: string): string {
     if (id in this.constituencies) {
       return this.constituencies[id].name;
     } else {
@@ -281,15 +263,11 @@ export class MatcherService {
     }
   }
 
-  public getMunicipalitiesAsList(): any[] {
-    return Object.keys(this.municipalities).map( (id) => { 
-      let copy = { ...this.municipalities[id] };
-      copy.id = Number(id);
-      return copy;
-    });
+  public getMunicipalitiesAsList(): Municipality[] {
+    return Object.values(this.municipalities);
   }
 
-  public async setMunicipality(id: number): Promise<void> {
+  public async setMunicipality(id: string): Promise<void> {
 
     if (!(id in this.municipalities)) {
       throw new Error(`Municipality id '${id}' cannot be found in municipality list.`)
@@ -309,13 +287,17 @@ export class MatcherService {
     await this.setConstituency(this._constituencyId);
   }
 
-  private async setConstituency(id: number): Promise<void> {
+  private async setConstituency(id: string): Promise<void> {
 
     // Reset downstream data statuses
     this.dataStatus.questions.next(DataStatus.NotReady);
     this.dataStatus.candidates.next(DataStatus.NotReady);
     this.dataStatus.mapping.next(DataStatus.NotReady);
     this.dataStatus.filters.next(DataStatus.NotReady);
+
+    // This could be done earlier, but for consistency let's do it only now,
+    // as in theory the categories might be dependent on the constituency
+    this.categories = await this.database.getCategories();
         
     // Import questions data
     this.questions = await this.database.getQuestions(id);
@@ -339,9 +321,21 @@ export class MatcherService {
     // Read voter answers stored in the cookie
     this.setAnswersFromCookie();
 
+    // Import parties
+    this.parties = await this.database.getParties();
+
     // Import candidate data
     this.candidates = await this.database.getCandidates(id);
 
+    // Cull parties not present in this constituency from parties
+    // TODO: Check if this might be unwanted
+    let partiesPresent = new Set<string>();
+    for (const id in this.candidates)
+      partiesPresent.add(this.candidates[id].party.id);
+    for (const id in this.parties)
+      if (!partiesPresent.has(id))
+        delete this.parties[id];
+        
     // DEBUG / TEST / REMOVE
     // Multiply candidates to test performance
     const likertIds = this.getLikertQuestionIds();
@@ -358,24 +352,36 @@ export class MatcherService {
           continue;
         }
         // Otherwise create new objects
+        const c = this.candidates[candidate];
         for (let i = 0; i < multiplier; i++) {
-          const c = {...this.candidates[candidate]};
-          const id = candidate + '_' + i;
+          // Copy props
+          let {
+            id, number, surname, givenName, constituencyId, partyId, selected, detailsLoader, constituencyReference, partyReference,
+            ...rest
+          } = c;
+          const a = {...c.basicQuestions}
           // Create faux replies
           likertIds.forEach(lid => {
             const rand = Math.random();
+            let val = c.getAnswer(lid);
             if (rand < randomProb) {
               // Full random
               // Value should be 1, 2, 4 or 5
-              let val = Math.ceil(Math.random() * 4);
+              val = Math.ceil(Math.random() * 4);
               if (val >= 3) val++;
-              c[lid] = val;
             } else if (rand < perturbProb) {
               // Perturb by one pt
-              c[lid] += [1,4].includes(c[lid]) ? 1 : -1;
+              val += [1,4].includes(val) ? 1 : -1;
             }
+            a[lid] = val;
           });
-          this.candidates[id] = c;
+          id = id + '_' + i
+          const o: CandidateOptions = {
+            id, number, surname, givenName, constituencyId, partyId, selected, detailsLoader, constituencyReference, partyReference,
+            basicQuestions: a
+          }
+          const n = new Candidate(o);
+          this.candidates[id] = n;
         }
       }
     }
@@ -386,41 +392,36 @@ export class MatcherService {
 
     // Cull candidates with too many missing values
     // and flag candidates with missing values above the threshold
-    if (MAX_MISSING_VALS > -1 || 
-        NONMISSING_CANDIDATE_MAX_MISSING_VALS > -1) {
-      let qids = this.getLikertQuestionIds();
+    if (MAX_MISSING_VALS > -1 || NONMISSING_CANDIDATE_MAX_MISSING_VALS > -1) {
+
+      let qq = this.getLikertQuestions();
+ 
       for (const id in this.candidates) {
-        let missing = 0;
-        qids.forEach( q => {
-          if (this.isMissing(this.candidates[id][q], true)) {
-            missing++;
-          }
-        });
-        if (MAX_MISSING_VALS > -1 &&
-            missing > MAX_MISSING_VALS) {
+
+        let missing = qq.filter(q => q.isMissing(this.candidates[id].getAnswer(q))).length;
+
+        if (MAX_MISSING_VALS > -1 && missing > MAX_MISSING_VALS)
           delete this.candidates[id];
-        } else if (NONMISSING_CANDIDATE_MAX_MISSING_VALS > -1 &&
-                   missing > NONMISSING_CANDIDATE_MAX_MISSING_VALS) {
+        else if (NONMISSING_CANDIDATE_MAX_MISSING_VALS > -1 && missing > NONMISSING_CANDIDATE_MAX_MISSING_VALS)
           this.candidates[id].missing = true;
-        }
       }
     }
 
     // Add ids to Candidate objects themselves
-    for (const id in this.candidates) {
+    for (const id in this.candidates)
       this.candidates[id].id = id;
-    }
 
     // Emit change events
     this.dataStatus.questions.next(DataStatus.Ready);
     this.dataStatus.candidates.next(DataStatus.Ready);
   }
 
+  // REM
   // For convenience
-  // NB. We need a different heuristic for checking Likert values
-  public isMissing(value: any, likert: boolean = false): boolean {
-    return (likert ? Likert : MissingValue).isMissing(value);
-  }
+  // // NB. We need a different heuristic for checking Likert values
+  // public isMissing(value: any, likert: boolean = false): boolean {
+  //   return (likert ? Likert : MissingValue).isMissing(value);
+  // }
 
   // // We already filter these when fetching from Firebase
   // public isRelevantQuestion(q: Question): boolean {
@@ -438,31 +439,19 @@ export class MatcherService {
   }
 
   public getLikertQuestionIds(): string[] {
-    if (! this.questions) {
-      throw Error("Constituency must be defined before getting Questions");
-    }
-    return Object.keys(this.questions).filter( k => this.questions[k].type === QUESTION_LIKERT ); // && this.isRelevantQuestion(this.questions[k])
+    return this.getLikertQuestions().map(q => q.id);
   }
  
-  public getLikertQuestions(): QuestionDict {
-    return this.getQuestionsByIds(this.getLikertQuestionIds());
-  }
-
-  public getLikertQuestionsAsList(): Question[] {
-    return Object.values(this.getLikertQuestions()).sort( (a, b) => this.compareQuestions(a, b) );
-  }
-
-  public getCatOrder(q: Question): number {
-    return q.category in this.questionCategoryOrder ? this.questionCategoryOrder[q.category] : 1e10;
+  public getLikertQuestions(): QuestionLikert[] {
+    return Object.values(this.questions).filter(q => q instanceof QuestionLikert) as QuestionLikert[];
   }
 
   public compareQuestions(a: Question, b: Question): number {
-    let cDiff = this.getCatOrder(a) - this.getCatOrder(b);
-    if (cDiff !== 0) {
+    let cDiff = a.category.order - b.category.order;
+    if (cDiff !== 0)
       return cDiff;
-    } else {
+    else
       return a.id < b.id ? -1 : 1;
-    }
   }
 
   public getQuestion(id: string): Question {
@@ -478,11 +467,7 @@ export class MatcherService {
   }
 
   public getCandidatesAsList(): Candidate[] {
-    let list = new Array<Candidate>();
-    for (const id in this.candidates) {
-      list.push(this.candidates[id]);
-    }
-    return list;
+    return Object.values(this.candidates);
   }
 
   public getCandidate(id: string): Candidate | null {
@@ -493,17 +478,18 @@ export class MatcherService {
     return `assets/images/candidate-portraits/${id}.jpg`;
   }
 
-  /*
-   * Get the average answer (decimal) to the question 
-   * by all members (including all constituencies) of the respondent's party
-   */
-  public getPartyAverage(party: string, qId: string): number {
-    if (qId in this.questions && party in this.questions[qId].partyAverages) {
-      return this.questions[qId].partyAverages[party];
-    } else {
-      throw new Error(`Average value not found for party ${party} and question ${qId}.`);
-    }
-  }
+  // REM
+  // /*
+  //  * Get the average answer (decimal) to the question 
+  //  * by all members (including all constituencies) of the respondent's party
+  //  */
+  // public getPartyAverage(party: string, qId: string): number {
+  //   if (qId in this.questions && party in this.questions[qId].partyAverages) {
+  //     return this.questions[qId].partyAverages[party];
+  //   } else {
+  //     throw new Error(`Average value not found for party ${party} and question ${qId}.`);
+  //   }
+  // }
 
   /*
    * NB! The Party objects do NOT contain the average answers
@@ -521,17 +507,17 @@ export class MatcherService {
     return this.parties[party];
   }
 
-  public getVoterAnswer(id: string): any {
-    if ('voterAnswer' in this.questions[id] && this.questions[id].voterAnswer != null) {
-      return this.questions[id].voterAnswer;
-    } else {
+  public getVoterAnswer(question: Question): any {
+    if (question instanceof QuestionNumeric && question.voterAnswer != null)
+      return question.voterAnswer;
+    else
       return null;
-    }
   }
   
   public setVoterAnswer(id: string, value: number): void {
-    if (id in this.questions) {
-      this.questions[id].voterAnswer = value;
+    let question = this.questions[id];
+    if (question && question instanceof QuestionNumeric) {
+      question.voterAnswer = value;
       this.writeCookie(id, value);
       // Emit event
       this.dataStatus.questions.next(DataStatus.Updated);
@@ -539,8 +525,9 @@ export class MatcherService {
   }
 
   public deleteVoterAnswer(id: string): void {
-    if (id in this.questions) {
-      delete this.questions[id].voterAnswer;
+    let question = this.questions[id];
+    if (question && question instanceof QuestionNumeric) {
+      delete question.voterAnswer;
       this.deleteCookie(id);
       // Emit event
       this.dataStatus.questions.next(DataStatus.Updated);
@@ -548,26 +535,20 @@ export class MatcherService {
   }
 
   public countVoterAnswers(): number {
-    return this.getVoterAnsweredQuestionIds().length;
+    return this.getVoterAnsweredQuestions().length;
+  }
+
+  public getVoterAnsweredQuestions(): QuestionNumeric[] {
+    return Object.values(this.questions).filter(q => q instanceof QuestionNumeric && q.voterAnswer != null) as QuestionNumeric[];
   }
 
   public getVoterAnsweredQuestionIds(): string[] {
-    let answered = [];
-    for (const id in this.questions) {
-      const q = this.questions[id];
-      if ('voterAnswer' in q && 
-          q.voterAnswer != null
-          // && this.isRelevantQuestion(q)
-          ) {
-        answered.push(id);
-      }
-    }
-    return answered;
+    return this.getVoterAnsweredQuestions().map(q => q.id);
   }
 
   public getVoterAnswers(): {[questionId: string]: number} {
     let answers = {};
-    this.getVoterAnsweredQuestionIds().forEach( id => answers[id] = this.getVoterAnswer(id) );
+    this.getVoterAnsweredQuestions().forEach( q => answers[q.id] = q.voterAnswer );
     return answers;
   }
 
@@ -596,15 +577,15 @@ export class MatcherService {
    * correlation downwards. We can supply the answered questions as list so as to avoid making
    * consecutive calls to the getter.
    */
-  public getResidualEntropy(questionId: string, answeredQuestions: string[] = null): number {
+  public getResidualEntropy(questionId: string, answeredQuestions: string[]): number {
 
     // Completely correlated questions are not in the correlationMatrix, so we return 0 for them
     if (!(questionId in this.correlationMatrix))
       return 0;
 
-    const answered: string[] = answeredQuestions == null ? this.getVoterAnsweredQuestionIds() : answeredQuestions;
-    let   residue: number = 1;
-    const correlations: number[] = answered.map(q => this.correlationMatrix[q][questionId]).sort().reverse();
+    const answered: string[] = answeredQuestions || this.getVoterAnsweredQuestionIds();
+    let residue: number = 1;
+    const correlations: number[] = answeredQuestions.filter(q => q in this.correlationMatrix).map(q => this.correlationMatrix[q][questionId]).sort().reverse();
     correlations.forEach(c => residue = residue * (1 - Math.abs(c) * residue));
     return residue;
   }
@@ -612,13 +593,13 @@ export class MatcherService {
   /*
    * Calculate the effective total information [0-1] gained for getting an answer given question (row)
    */
-  public getInformationValue(questionId: string, answeredQuestions: string[] = null): number {
+  public getInformationValue(questionId: string): number {
 
     // Completely correlated questions are not in the correlationMatrix, so we return 0 for them
     if (!(questionId in this.correlationMatrix))
       return 0;
 
-    const answered: string[] = answeredQuestions == null ? this.getVoterAnsweredQuestionIds() : answeredQuestions;
+    const answered: string[] = this.getVoterAnsweredQuestionIds();
     let value: number = 0;
     for (const q in this.correlationMatrix[questionId]) {
       // To calculate the value, we get the difference between the current residual entropy and what it would
@@ -657,7 +638,7 @@ export class MatcherService {
       .map(id => {
         qOrder.push({
           id: id,
-          value: this.getInformationValue(id, answered)
+          value: this.getInformationValue(id)
         });
       });
     // Sort by value desc.
@@ -669,54 +650,37 @@ export class MatcherService {
    * Get questions based on agreement with the voter's answers
    */
 
-  public getQuestionIdsByAgreement(candidateId: string, agrType: AgreementType): string[] {
-    if (agrType === Likert.opinionUnknown) {
-      const answered = this.getVoterAnsweredQuestionIds();
-      return this.getLikertQuestionIds().filter( k => !answered.includes(k) );
-    } else {
-      return this.getVoterAnsweredQuestionIds().filter( k => Likert.doMatchAgreementType(this.questions[k].voterAnswer, this.candidates[candidateId][k], agrType) );
-    }  
+  public getQuestionsByAgreement(candidateId: string, agrType: AgreementType): QuestionLikert[] {
+    if (agrType === QuestionLikert.opinionUnknown)
+      return this.getLikertQuestions().filter(q => q.voterAnswer == null);
+    else
+      return this.getLikertQuestions().filter(q => q.doMatchAgreementType(q.voterAnswer, this.candidates[candidateId][q.id], agrType));
   }
 
   // Shorthands for getQuestionIdsByAgreement() returning Question lists 
   // The Questions are sorted by disagreement if the match is approximate
-  public getAgreedQuestionsAsList(candidateId: string, approximateMatch: boolean = false, sortIfApproximate: boolean = true): Question[] {
-    let questions = Object.values(this.getQuestionsByIds(this.getQuestionIdsByAgreement(candidateId, approximateMatch ? Likert.mostlyAgree : Likert.agree)));
+  public getAgreedQuestionsAsList(candidateId: string, approximateMatch: boolean = false, sortIfApproximate: boolean = true): QuestionLikert[] {
+    let questions = this.getQuestionsByAgreement(candidateId, approximateMatch ? QuestionLikert.mostlyAgree : QuestionLikert.agree);
     return approximateMatch && sortIfApproximate ? questions.sort(this._getSorter(candidateId)) : questions;
   }
   // Sorted by disagreement desc
-  public getDisagreedQuestionsAsList(candidateId: string, approximateMatch: boolean = false): Question[] {
-    return Object.values(this.getQuestionsByIds(this.getQuestionIdsByAgreement(candidateId, approximateMatch ? Likert.stronglyDisagree : Likert.disagree)))
-             .sort(this._getSorter(candidateId));
+  public getDisagreedQuestionsAsList(candidateId: string, approximateMatch: boolean = false): QuestionLikert[] {
+    return this.getQuestionsByAgreement(candidateId, approximateMatch ? QuestionLikert.stronglyDisagree : QuestionLikert.disagree)
+           .sort(this._getSorter(candidateId));
   }
-  public getUnansweredQuestionsAsList(candidateId: string): Question[] {
-    return Object.values(this.getQuestionsByIds(this.getQuestionIdsByAgreement(candidateId, Likert.opinionUnknown)));
+  public getUnansweredQuestionsAsList(candidateId: string): QuestionLikert[] {
+    return this.getQuestionsByAgreement(candidateId, QuestionLikert.opinionUnknown);
   }
 
   // Return a function usable for sort
-  private _getSorter(candidateId: string, descending: boolean = true): (a: Question, b: Question) => number {
+  private _getSorter(candidateId: string, descending: boolean = true): (a: QuestionLikert, b: QuestionLikert) => number {
     return (a, b) => { 
-      let diff = Likert.getDistance(a.voterAnswer, this.candidates[candidateId][a.id]) -
-                 Likert.getDistance(b.voterAnswer, this.candidates[candidateId][b.id]);
+      let diff = a.getDistance(a.voterAnswer, this.candidates[candidateId][a.id]) -
+                 b.getDistance(b.voterAnswer, this.candidates[candidateId][b.id]);
       return diff === 0 ? 
              this.compareQuestions(a, b) : 
              (descending ? -diff : diff);
     };
-  }
-
-  // Get the neutral answer, ie. 3, (used for missing answers when not inverting them)
-  get neutralAnswer(): number {
-    return Likert.neutralAnswer;
-  }
-
-  // Returns the maximally distant Likert answer with regard to the voter's answer to the given question
-  public getInvertedVoterAnswer(id: string): number {
-    let answer = this.getVoterAnswer(id);
-    if (answer) {
-      return Likert.invertAnswer(answer);
-    } else {
-      throw new Error(`No voter answer supplied for question ${id}.`);
-    }
   }
 
   public getFavourites(): string[] {
@@ -801,7 +765,7 @@ export class MatcherService {
   public async setMunicipalityFromCookie(): Promise<void> {
     const municipality = this.readCookie(COOKIE_MUNICIPALITY);
     if (municipality) {
-      await this.setMunicipality(Number(municipality));
+      await this.setMunicipality(municipality);
     }
     this.dataStatus.constituencyCookie.next(DataStatus.Ready);
   }
@@ -817,10 +781,7 @@ export class MatcherService {
   }
 
   public unsetVoterAnswers(): void {
-    // TODO Check if necessary
-    for (const id in this.questions) {
-      delete this.questions[id].voterAnswer;
-    }
+    this.getVoterAnsweredQuestions().forEach(q => q.unsetVoterAnswer());
     this.questions = null;
     this._constituencyId = null;
     this._municipalityId = null;
@@ -833,25 +794,24 @@ export class MatcherService {
 
     // Prepare raw data for mapping
     const data = new Array<Array<number>>();
-    const cols = this.voterDisabled ? 
-                 this.getLikertQuestionIds() :
-                 this.getVoterAnsweredQuestionIds();
+    const qq   = this.voterDisabled ? 
+                 this.getLikertQuestions() :
+                 this.getVoterAnsweredQuestions();
     const ids = new Array<string>();
 
     // Treat values
     for (const id in this.candidates) {
       let d = [];
-      cols.forEach( q => {
-        let v = this.candidates[id][q];
+      qq.forEach( q => {
+        let v = this.candidates[id][q.id];
         // Convert missing values to max distance from voter if we are using voter answers
-        if (this.isMissing(v, true)) {
+        if (q.isMissing(v))
           v = this.voterDisabled ? 
-              this.neutralAnswer : 
-              this.getInvertedVoterAnswer(q);
-        }
+              q.neutralAnswer : 
+              q.getInvertedVoterAnswer();
         v = Number(v);
         if (isNaN(v))
-          throw new Error(`Mapping initiated with a NaN value: ${this.candidates[id][q]} • candidate: ${id} • question: ${q}!`)
+          throw new Error(`Mapping initiated with a NaN value: ${this.candidates[id][q.id]} • candidate: ${id} • question: ${q.id}!`)
         d.push(v);
       } );
       data.push(d);
@@ -861,7 +821,7 @@ export class MatcherService {
     // Add the voter as the last item
     if (!this.voterDisabled) {
       const voter = [];
-      cols.forEach( q => voter.push(Number(this.getVoterAnswer(q))) );
+      qq.forEach( q => voter.push(Number(this.getVoterAnswer(q))) );
       data.push(voter);
     }
 
@@ -893,23 +853,17 @@ export class MatcherService {
     // Collect each partie's candidates' tsne values
     for (let c in this.candidates) {
       const cand = this.candidates[c];
-      if (!(cand.party in parties))
-        parties[cand.party] = new Array();
-      parties[cand.party].push([cand.projX, cand.projY]);
+      if (!(cand.partyId in parties))
+        parties[cand.partyId] = new Array();
+      parties[cand.partyId].push([cand.projX, cand.projY]);
     }
-
-    // Init/reset this.parties
-    this.parties = {};
 
     // Calculate coordinate averages and save in the parties property
     for (let p in parties) {
       const projX = parties[p].reduce( (a, v) => a + v[0], 0 ) / parties[p].length;
       const projY = parties[p].reduce( (a, v) => a + v[1], 0 ) / parties[p].length;
-      this.parties[p] = {
-        name: p,
-        projX,
-        projY,
-      };
+      this.parties[p].projX = projX;
+      this.parties[p].projY = projY;
     }
 
     this.dataStatus.mapping.next(DataStatus.Updated);
@@ -924,6 +878,8 @@ export class MatcherService {
     // so if somebody already caught the first event, they won't know of the loss of filters...
     this.clearFilteredCandidates(true);
 
+    const candidates = this.getCandidatesAsList();
+
     // Create filters
     for (const f in this.filterOpts) {
 
@@ -934,9 +890,8 @@ export class MatcherService {
       if (filterType === CandidateFilterQuestion) {
         filter.setValueGetter(() => new Set(this.getVoterAnsweredQuestionIds()));
       } else {
-        for (let candidate in this.candidates) {
-          filter.addValue(this.candidates[candidate][filter.key]);
-        }
+        for (const candidate of candidates)
+          filter.addValue( filter.key in candidate ? candidate[filter.key] : candidate.getAnswer(filter.key) );
       }
       filter.rulesChanged.subscribe(f => this.applyFilter(f));
       this.filters[f] = filter;
@@ -958,9 +913,7 @@ export class MatcherService {
   }
 
   public applyFilter(filter: CandidateFilter): number {
-    const numFiltered = filter instanceof CandidateFilterQuestion ?
-                        filter.applyWithVoter(this.candidates, this.getVoterAnswers()) :
-                        filter.apply(this.candidates);
+    const numFiltered = filter.apply(this.candidates);
     this.dataStatus.filters.next(DataStatus.Updated);
     return numFiltered;
   }

@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { MatcherService,
-         Question } from '../../core';
+         QuestionNumeric } from '../../core';
 import { SharedService, 
          PATHS } from '../../core/services/shared';
 
@@ -85,7 +85,7 @@ const ANIMATION_EXIT_DELAY = '900ms';
 })
 export class QuestionListComponent implements OnInit, AfterViewInit, OnDestroy {
   public isLoading: boolean = true;
-  public questions: Question[];
+  public questions: QuestionNumeric[];
   public informationValueOrder: {id: string, value: number }[];
   // These will be cancelled onDestroy
   private _subscriptions: Subscription[] = [];
@@ -97,12 +97,11 @@ export class QuestionListComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: Router,
     private shared: SharedService
   ) { 
+    this.shared.title = "Mielipiteesi";
+    this.shared.subtitle = QuestionListTopBarContentComponent;
   }
 
   ngOnInit() {
-    this.shared.title = "Mielipiteesi";
-    this.shared.subtitle = QuestionListTopBarContentComponent;
-
     // questionData includes voter answers
     this._subscriptions.push(this.matcher.questionDataUpdated.subscribe(() =>  this._updateData()));
     this._subscriptions.push(this.matcher.questionDataReady.subscribe(() => this._fetchQuestions()));
@@ -134,7 +133,7 @@ export class QuestionListComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  public showQuestion(question: Question): void {
+  public showQuestion(question: QuestionNumeric): void {
     this.shared.showQuestion.emit(question.id);
     this.hideInfos();
   }
@@ -142,14 +141,14 @@ export class QuestionListComponent implements OnInit, AfterViewInit, OnDestroy {
   /*
    * Check if this is the next recommend question. This is based crudely as the first question in the order
    */
-  public isRecommended(question: Question): boolean {
+  public isRecommended(question: QuestionNumeric): boolean {
     return this.informationValueOrder && this.informationValueOrder.length && 
            this.informationValueOrder[0].id === question.id;
   }
 
   private _fetchQuestions(): void {
     this._updateInformationValues();
-    this.questions = this.matcher.getLikertQuestionsAsList();
+    this.questions = this.matcher.getLikertQuestions();
     // Hide progress spinner and show question list
     this.isLoading = false;
   }

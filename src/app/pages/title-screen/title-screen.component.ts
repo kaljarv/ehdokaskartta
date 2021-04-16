@@ -40,11 +40,12 @@ export class TitleScreenComponent implements OnInit, OnDestroy {
     private matcher: MatcherService,
     private shared: SharedService,
     private ngZone: NgZone,
-  ) {}
+  ) {
+    this.shared.hideTopBar = true;
+    this.shared.showFeedbackButton = false;
+  }
 
   ngOnInit(): void {
-    this.shared.hideTopBar.emit();
-    this.shared.showFeedbackButton = false;
     this._subscriptions.push(this.matcher.constituencyCookieRead.subscribe(() => this.showCookieSnackbar()));
   }
 

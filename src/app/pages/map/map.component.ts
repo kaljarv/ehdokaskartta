@@ -157,13 +157,7 @@ export class MapComponent implements OnInit, OnDestroy {
     } else {
       this.matcher.voterDisabled = false;
     }
-  }
 
-  get voterDisabled(): boolean {
-    return this.matcher.voterDisabled;
-  }
-
-  ngOnInit() {
     // Topbar
     this.shared.title = this.voterDisabled ?
       "Ehdokkaat" : // `${this.matcher.constituency}n ehdokkaat` : // NB. In order for this to work properly, we should do it in a subscription
@@ -173,6 +167,13 @@ export class MapComponent implements OnInit, OnDestroy {
       "Ehdokkaat on sijoiteltu kartalle sen perusteella, mitä he ovat vastanneet valitsemiisi kysymyksiin, ja kartan keskeltä löydät itsesi."
     ) + " Voit lähentää tai loitontaa karttaa, rajata ehdokkaita vaikkapa iän perusteella tai näyttää puolueet kartalla.";
 
+  }
+
+  get voterDisabled(): boolean {
+    return this.matcher.voterDisabled;
+  }
+
+  ngOnInit() {
     // Initialisation chain
     this._subscriptions.push(this.matcher.mappingDataReady.subscribe(() => this.initMap()));
     this._subscriptions.push(this.matcher.candidateDataReady.subscribe(() => this.initData()));
@@ -643,14 +644,14 @@ export class MapComponent implements OnInit, OnDestroy {
 
   public getCandidateLabel(candidate: Candidate): string {
     // return `${this.initials.transform(candidate.givenName)}\xa0${candidate.surname}, ${this.abbreviate.transform(candidate.party)}`;
-    return `${candidate.givenName}\xa0${candidate.surname}, ${this.abbreviate.transform(candidate.party)}`;
+    return `${candidate.givenName}\xa0${candidate.surname}, ${candidate.party.abbreviation}`;
   }
 
   public showPartyAvatar(party: string): boolean {
     return  this.shared.showAllParties || 
            (!this.matcher.partyIsExcluded(party) &&
             this.shared.activeCandidateId != null && 
-            party == this.matcher.getCandidate(this.shared.activeCandidateId).party) ||
+            party == this.matcher.getCandidate(this.shared.activeCandidateId).partyName) ||
             this.matcher.partyIsRequired(party);
   }
 

@@ -1,5 +1,4 @@
-import { Component, 
-         OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { SharedService } from '../../core';
@@ -10,15 +9,13 @@ import { SharedService } from '../../core';
   templateUrl: './about-screen.component.html',
   styleUrls: ['./about-screen.component.sass']
 })
-export class AboutScreenComponent implements OnInit {
+export class AboutScreenComponent {
 
   constructor(
     private router: Router,
     private shared: SharedService,
-  ) {}
-
-  ngOnInit(): void {
-    this.shared.hideTopBar.emit();
+  ) {
+    this.shared.hideTopBar = true;
   }
 
   public toggleSideNav(event: MouseEvent): void {

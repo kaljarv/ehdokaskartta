@@ -124,7 +124,6 @@ export class AppComponent {
   public showNextProgress: boolean;
   public nextProgressValue: number = 0;
   public paths: { [name: string]: string } = PATHS;
-  public hideTopBar: boolean;
   private _floatingCardRef: FloatingCardRef;
   private _dialogRef: MatDialogRef<any>;
   private _snackBarRef: MatSnackBarRef<any>;
@@ -183,9 +182,6 @@ export class AppComponent {
     this.shared.toggleSideNav.subscribe( () =>
       this.sideNav.toggle()
     );
-    this.shared.hideTopBar.subscribe( () => 
-      this.hideTopBar = true
-    );
     this.shared.showMapTooltips.subscribe( () =>
       this.showHideMapTooltips(true)
     );
@@ -202,7 +198,7 @@ export class AppComponent {
 
   // Reset to default configuration (on NavigationStart mainly)
   private _resetState(): void {
-    this.hideTopBar = false;
+    this.shared.hideTopBar = false;
     this.sideNav.close();
     this.showHideMapTooltips(false);
     this.shared.showFeedbackButton = true;
@@ -381,6 +377,10 @@ export class AppComponent {
   
   get subtitle(): string | Type<any> {
     return this.shared.subtitle;
+  }
+
+  get hideTopBar(): boolean {
+    return this.shared.hideTopBar;
   }
 
   get showMapTools(): boolean {

@@ -1,21 +1,67 @@
-import { Injectable } from '@angular/core';
-import { take } from 'rxjs/operators';
+import { 
+  Injectable
+} from '@angular/core';
+import { 
+  take 
+} from 'rxjs/operators';
 
-import { AngularFirestore,
-         DocumentData,
-         DocumentSnapshot,
-         QuerySnapshot } from '@angular/fire/firestore';
-import { AngularFireAnalytics } from '@angular/fire/analytics';
+import { 
+  AngularFirestore,
+  DocumentData,
+  DocumentSnapshot,
+  QuerySnapshot 
+} from '@angular/fire/firestore';
+import { 
+  AngularFireAnalytics 
+} from '@angular/fire/analytics';
 import firebase from 'firebase/app';
 
-import { FeedbackItem } from './feedback-item';
+import { 
+  FeedbackItem 
+} from './feedback-item';
 
-export const ELECTION_ID = '2019-eduskuntavaalit';
+import {
+  Question,
+  QuestionDict,
+  QuestionLikert,
+  QuestionLikertSeven,
+  QuestionOpen,
+  QuestionPreferenceOrder,
+  QuestionOptions,
+  QuestionOptionsLikert,
+  QuestionOptionsPreferenceOrder
+} from './question';
+import {
+  AnswerDict,
+  Candidate,
+  CandidateDict,
+  CandidateOptions
+} from './candidate';
+import {
+  CategoryDict,
+} from './category';
+import {
+  DEFAULT_CONSTITUENCY_ID,
+  ConstituencyDict,
+} from './constituency';
+import {
+  MunicipalityDict
+} from './municipality';
+import {
+  PartyDict
+} from './party';
+
+export const ELECTION_ID = '2021-kuntavaalit-test'; // '2019-eduskuntavaalit';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DatabaseService {
+  private _cache: {
+    categories?: CategoryDict
+    constituencies?: ConstituencyDict,
+    parties?: PartyDict
+  } = {};
 
   constructor(
     private firestore: AngularFirestore,
@@ -32,20 +78,19 @@ export class DatabaseService {
    * thus we need to use take(1) to get only the a snapshot.
    * Supports to chained where clauses in a very unelegant manner ;)
    */
-  public async getCollectionOnce(path: string, numericId: boolean = false, where: [string, string, any] = null, andWhere: [string, string, any] = null): Promise<any> {
+  public async getCollectionOnce(path: string, where: [string, string, any] = null, andWhere: [string, string, any] = null): Promise<any> {
     // Wrap in a Promise
     return new Promise((resolve, reject) => {
-      // Use where query if defined
-      const query = where ? this.dataRoot.collection(path, ref => andWhere ? ref.where(...where).where(...andWhere) : ref.where(...where) ) 
-                          : this.dataRoot.collection(path);
-      // Get a snapshot with take(1)
+      // Use where query if defined. Nb. we cannot use type here, as the matching type, Collection, is not exported
+      const query = where ? this.dataRoot.collection(path.toString(), ref => andWhere ? ref.where(...where).where(...andWhere) : ref.where(...where) )
+                          : this.dataRoot.collection(path.toString());
       query.get().pipe(take(1)).subscribe((res: QuerySnapshot<DocumentData>) => {
         // We expect a result
         if (res.empty)
           reject(`Couldn't retrieve collection '${path}' (where ${where ? where.join(' ') : '<none>'}) from database!`);
         // Map output to an object (possibly converting ids to numbers)
         let output = {};
-        res.forEach(d => output[numericId ? Number(d.id) : d.id] = d.data());
+        res.forEach(d => output[d.id] = d.data());
         // Return ie. resolve with the object
         // console.log(path, output);
         resolve(output);
@@ -60,7 +105,8 @@ export class DatabaseService {
     // Wrap in a Promise
     return new Promise((resolve, reject) => {
       // Get a snapshot with take(1)
-      this.dataRoot.collection(collection).doc(document).get().pipe(take(1)).subscribe((res: DocumentSnapshot<DocumentData>) => {
+      // Enforce toString to ward off errors
+      this.dataRoot.collection(collection.toString()).doc(document.toString()).get().pipe(take(1)).subscribe((res: DocumentSnapshot<DocumentData>) => {
         // We expect a result
         if (!res.exists)
           reject(`Couldn't retrieve document '${collection}/${document}' from database!`);
@@ -72,28 +118,104 @@ export class DatabaseService {
   /*
    * Shorthand methods for gettings specific collections (once)
    */
-  public async getMunicipalities(): Promise<any> {
-    return this.getCollectionOnce('municipalities', true);
+  public async getMunicipalities(): Promise<MunicipalityDict> {
+    return this.getCollectionOnce('municipalities');
   }
 
-  public async getConstituencies(): Promise<any> {
-    return this.getCollectionOnce('constituencies', true);
+  public async getCategories(): Promise<CategoryDict> {
+    const promise = this.getCollectionOnce('questionCategories');
+    promise.then(data => this._cache.categories = data);
+    return promise;
   }
 
-  public async getQuestions(constituencyId: number): Promise<any> {
-    // Get questions related to the chosen constituencyId or -1, which is a special value denoting general
-    // questions not related to any specific constituency. NB. ids are not numeric!
-    return this.getCollectionOnce('questions', false, ['constituencyId', 'in', [constituencyId, -1]], ['dropped', '==', false]);
+  public async getConstituencies(): Promise<ConstituencyDict> {
+    const promise = this.getCollectionOnce('constituencies');
+    promise.then(data => this._cache.constituencies = data);
+    return promise;
   }
 
-  public async getCandidates(constituencyId: number): Promise<any> {
-    // NB. ids are not numeric!
-    return this.getCollectionOnce('candidates', false, ['constituencyId', '==', constituencyId]);
+  public async getParties(): Promise<PartyDict> {
+    const promise = this.getCollectionOnce('parties');
+    promise.then(data => this._cache.parties = data);
+    return promise;
   }
 
-  public async getCorrelationMatrix(constituencyId: number): Promise<any> {
-    // NB. ids are not numeric!
-    return this.getDocumentOnce('pcm-matrices', constituencyId.toString());
+  public async getQuestions(constituencyId: string): Promise<QuestionDict> {
+    // Get questions related to the chosen constituencyId or '-1', which is a special value denoting general
+    // questions not related to any specific constituency.
+
+    // We need these for the questions constructor
+    if (this._cache.categories == null || this._cache.constituencies == null)
+      throw new Error('Load cateories and constituencies before questions!');
+
+    // Data converter
+    // AngularFire doesn't implement the withConverter method, so we'll have to
+    // process the data ourselves.
+    const questionConverter = (data: any): Question => {
+      // Get QuestionOptions from data by removing some properties
+      const {filterable, type, ...opts} = data;
+      // Add reference links
+      opts.categoryReference = this._cache.categories;
+      opts.constituencyReference = this._cache.constituencies;
+      // Create object
+      switch (data.type) {
+        case "Likert":
+          return new QuestionLikert(opts as QuestionOptionsLikert);
+        case "Likert7":
+          return new QuestionLikertSeven(opts as QuestionOptionsLikert);
+        case "Open":
+          return new QuestionOpen(opts as QuestionOptions);
+        case "PreferenceOrder":
+          return new QuestionPreferenceOrder(opts as QuestionOptionsPreferenceOrder);
+        default:
+          throw new Error(`Unknown question type '${data.type}'!`);
+      }
+    }
+
+    // Return Promise
+    return new Promise<QuestionDict>(async (resolve, reject) => {
+      const data = await this.getCollectionOnce('questions', ['constituencyId', 'in', [constituencyId, DEFAULT_CONSTITUENCY_ID]], ['dropped', '==', false]);
+      const dict: QuestionDict = {};
+      for (const id in data)
+        dict[id] = questionConverter(data[id]);
+      resolve(dict);
+    });
+  }
+
+  public async getCandidates(constituencyId: string): Promise<CandidateDict> {
+
+    // We need these for the candidates constructor
+    if (this._cache.parties == null)
+      throw new Error('Load parties before candidates!');
+
+    // Data converter
+    // AngularFire doesn't implement the withConverter method, so we'll have to
+    // process the data ourselves.
+    const candidateConverter = (opts: any, id: string): Candidate => {
+      // Add further data to options
+      opts.constituencyId = constituencyId;
+      opts.detailsLoader = (candidate: Candidate) => this.getCandidateDetails(candidate);
+      opts.id = id;
+      opts.partyReference = this._cache.parties;
+      return new Candidate(opts as CandidateOptions);
+    }
+
+    // Return Promise
+    return new Promise<CandidateDict>(async (resolve, reject) => {
+      const data = await this.getCollectionOnce(`candidates/${constituencyId}/candidates`);
+      const dict: CandidateDict = {};
+      for (const id in data)
+        dict[id] = candidateConverter(data[id], id);
+      resolve(dict);
+    });
+  }
+
+  public async getCandidateDetails(candidate: Candidate): Promise<AnswerDict> {
+    return this.getDocumentOnce(`candidateDetails/${candidate.constituencyId}/candidates`, candidate.id);
+  }
+
+  public async getCorrelationMatrix(constituencyId: string): Promise<any> {
+    return this.getDocumentOnce('pcm-matrices', constituencyId);
   }
 
   /*

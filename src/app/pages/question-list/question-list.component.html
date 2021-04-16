@@ -12,7 +12,7 @@
   <mat-chip-list>
     <mat-chip *ngFor="let question of questions"
               (click)="showQuestion(question)"
-              class="category-{{ question.category | toClassName }}"
+              class="category-{{ question.categoryName | toClassName }}"
               [class.answered]="question.voterAnswer">
       <!-- 
         Didn't work of routerLink outlet clearing bug
