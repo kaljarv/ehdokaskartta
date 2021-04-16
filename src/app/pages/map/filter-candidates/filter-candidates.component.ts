@@ -27,7 +27,7 @@ import { MatcherService,
          CandidateFilterNumberRange,
          CandidateFilterQuestion,
          Question,
-         QuestionLikert } from '../../../core';
+         QuestionNumeric } from '../../../core';
 import { SharedService } from '../../../core';
 
 const ANIMATION_TIMING = "225ms cubic-bezier(0.4, 0, 0.2, 1)";
@@ -181,7 +181,7 @@ export class FilterCandidatesComponent implements OnInit, OnDestroy {
     });
   }
 
-  public getSortedValues(filter: CandidateFilterQuestion): QuestionLikert[] {
+  public getSortedValues(filter: CandidateFilterQuestion): QuestionNumeric[] {
     return filter.getValues().sort( (a, b) => this._compareQuestions(a, b) );
   }
 

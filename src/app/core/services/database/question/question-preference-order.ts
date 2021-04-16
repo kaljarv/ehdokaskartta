@@ -35,6 +35,13 @@ export class QuestionPreferenceOrder extends QuestionNumeric {
     this.neutralAnswer = undefined;
   }
 
+  /*
+   * Overrides
+   */
+  public isMissing(value: any): boolean {
+    return value == null || !Array.isArray(value) || value.length === 0;
+  }
+
   get valueNames(): string[] {
     return this._valueNames;
   }

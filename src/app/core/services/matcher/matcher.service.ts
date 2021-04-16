@@ -16,7 +16,6 @@ import {
   CategoryDict,
   Candidate,
   CandidateDict,
-  INDEPENDENT_PARTY_ID,
   Party,
   PartyDict,
   ConstituencyDict,
@@ -25,10 +24,10 @@ import {
   AgreementType,
   Question,
   QuestionDict,
-  QuestionLikert,
   QuestionNumeric,
   CandidateOptions,
-  Municipality
+  Municipality,
+  QuestionPreferenceOrder
 } from '../database';
 import { 
   PcaProjector 
@@ -37,7 +36,6 @@ import {
 
 import { 
   CandidateFilter,
-  CandidateFilterOptions,
   CandidateFilterLogicOperator,
   CandidateFilterSimple,
   CandidateFilterNumberRange,
@@ -338,7 +336,7 @@ export class MatcherService {
         
     // DEBUG / TEST / REMOVE
     // Multiply candidates to test performance
-    const likertIds = this.getLikertQuestionIds();
+    const qq = this.getAnswerableQuestions();
     const perturbProb = 0.25; // 0.5;
     const randomProb = 0.1;
     const multiplierRange = [0.25, 6];
@@ -361,15 +359,20 @@ export class MatcherService {
           } = c;
           const a = {...c.basicQuestions}
           // Create faux replies
-          likertIds.forEach(lid => {
+          qq.forEach(q => {
+            const lid = q.id;
             const rand = Math.random();
             let val = c.getAnswer(lid);
             if (rand < randomProb) {
               // Full random
               // Value should be 1, 2, 4 or 5
-              val = Math.ceil(Math.random() * 4);
-              if (val >= 3) val++;
-            } else if (rand < perturbProb) {
+              if (q instanceof QuestionPreferenceOrder) {
+                // Do nothing
+              } else {
+                val = Math.ceil(Math.random() * (q.maxAnswer - 1));
+                if (val >= q.neutralAnswer) val++;
+              }
+            } else if (rand < perturbProb && !(q instanceof QuestionPreferenceOrder)) {
               // Perturb by one pt
               val += [1,4].includes(val) ? 1 : -1;
             }
@@ -394,7 +397,7 @@ export class MatcherService {
     // and flag candidates with missing values above the threshold
     if (MAX_MISSING_VALS > -1 || NONMISSING_CANDIDATE_MAX_MISSING_VALS > -1) {
 
-      let qq = this.getLikertQuestions();
+      let qq = this.getAnswerableQuestions();
  
       for (const id in this.candidates) {
 
@@ -438,12 +441,12 @@ export class MatcherService {
     return dict;
   }
 
-  public getLikertQuestionIds(): string[] {
-    return this.getLikertQuestions().map(q => q.id);
+  public getAnswerableQuestionIds(): string[] {
+    return this.getAnswerableQuestions().map(q => q.id);
   }
  
-  public getLikertQuestions(): QuestionLikert[] {
-    return Object.values(this.questions).filter(q => q instanceof QuestionLikert) as QuestionLikert[];
+  public getAnswerableQuestions(): QuestionNumeric[] {
+    return Object.values(this.questions).filter(q => q instanceof QuestionNumeric) as QuestionNumeric[];
   }
 
   public compareQuestions(a: Question, b: Question): number {
@@ -650,30 +653,30 @@ export class MatcherService {
    * Get questions based on agreement with the voter's answers
    */
 
-  public getQuestionsByAgreement(candidateId: string, agrType: AgreementType): QuestionLikert[] {
-    if (agrType === QuestionLikert.opinionUnknown)
-      return this.getLikertQuestions().filter(q => q.voterAnswer == null);
+  public getQuestionsByAgreement(candidateId: string, agrType: AgreementType): QuestionNumeric[] {
+    if (agrType === QuestionNumeric.opinionUnknown)
+      return this.getAnswerableQuestions().filter(q => q.voterAnswer == null);
     else
-      return this.getLikertQuestions().filter(q => q.doMatchAgreementType(q.voterAnswer, this.candidates[candidateId][q.id], agrType));
+      return this.getAnswerableQuestions().filter(q => q.doMatchAgreementType(q.voterAnswer, this.candidates[candidateId][q.id], agrType));
   }
 
   // Shorthands for getQuestionIdsByAgreement() returning Question lists 
   // The Questions are sorted by disagreement if the match is approximate
-  public getAgreedQuestionsAsList(candidateId: string, approximateMatch: boolean = false, sortIfApproximate: boolean = true): QuestionLikert[] {
-    let questions = this.getQuestionsByAgreement(candidateId, approximateMatch ? QuestionLikert.mostlyAgree : QuestionLikert.agree);
+  public getAgreedQuestionsAsList(candidateId: string, approximateMatch: boolean = false, sortIfApproximate: boolean = true): QuestionNumeric[] {
+    let questions = this.getQuestionsByAgreement(candidateId, approximateMatch ? QuestionNumeric.mostlyAgree : QuestionNumeric.agree);
     return approximateMatch && sortIfApproximate ? questions.sort(this._getSorter(candidateId)) : questions;
   }
   // Sorted by disagreement desc
-  public getDisagreedQuestionsAsList(candidateId: string, approximateMatch: boolean = false): QuestionLikert[] {
-    return this.getQuestionsByAgreement(candidateId, approximateMatch ? QuestionLikert.stronglyDisagree : QuestionLikert.disagree)
+  public getDisagreedQuestionsAsList(candidateId: string, approximateMatch: boolean = false): QuestionNumeric[] {
+    return this.getQuestionsByAgreement(candidateId, approximateMatch ? QuestionNumeric.stronglyDisagree : QuestionNumeric.disagree)
            .sort(this._getSorter(candidateId));
   }
-  public getUnansweredQuestionsAsList(candidateId: string): QuestionLikert[] {
-    return this.getQuestionsByAgreement(candidateId, QuestionLikert.opinionUnknown);
+  public getUnansweredQuestionsAsList(candidateId: string): QuestionNumeric[] {
+    return this.getQuestionsByAgreement(candidateId, QuestionNumeric.opinionUnknown);
   }
 
   // Return a function usable for sort
-  private _getSorter(candidateId: string, descending: boolean = true): (a: QuestionLikert, b: QuestionLikert) => number {
+  private _getSorter(candidateId: string, descending: boolean = true): (a: QuestionNumeric, b: QuestionNumeric) => number {
     return (a, b) => { 
       let diff = a.getDistance(a.voterAnswer, this.candidates[candidateId][a.id]) -
                  b.getDistance(b.voterAnswer, this.candidates[candidateId][b.id]);
@@ -795,7 +798,7 @@ export class MatcherService {
     // Prepare raw data for mapping
     const data = new Array<Array<number>>();
     const qq   = this.voterDisabled ? 
-                 this.getLikertQuestions() :
+                 this.getAnswerableQuestions() :
                  this.getVoterAnsweredQuestions();
     const ids = new Array<string>();
 

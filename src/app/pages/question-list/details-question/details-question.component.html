@@ -34,17 +34,13 @@
 
   <div class="distribution {{ candidateSizingClass }}">
 
-    <div class="columns">
+    <div class="columns columns-{{ question.values.length }}">
 
       <div *ngFor="let value of question.values"
            class="column"
            #columns>
-        <div *ngFor="let candidate of candidates[value]"
-             [matTooltip]="getTooltip(candidate)"
-             matTooltipClass="candidate-tooltip"
-             matTooltipPosition="above"
-             class="candidate party-{{ candidate.partyName | toClassName }}">
-        </div>
+        <span *ngFor="let candidate of candidates[value]"
+              class="candidate party-{{ candidate.partyName | toClassName }}">&bull;</span>
       </div>
 
     </div>
@@ -54,8 +50,3 @@
   </div>
 
 </div>
-<!--
-<distribution-chart
-  [question-id]="question.id"
-  padding-ratio="0.75"></distribution-chart>
--->

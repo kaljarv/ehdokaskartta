@@ -71,27 +71,32 @@ label
   align-items: flex-end
 
 .column
-  width: 15%
-  max-width: 5rem
   display: flex
   flex-flow: row wrap-reverse
   align-items: flex-end
   justify-content: center
 
-.candidate
-  border-radius: 50%
-  width: 5px
-  height: 5px
-  margin: 1.25px
+.columns-5
+  .column
+    width: 15%
+    max-width: 5rem
+
+.columns-7
+  .column
+    width: 11%
+    max-width: 3.8rem
 
 .candidateSize-small
-  .candidate
-    width: 4px
-    height: 4px
-    margin: 1px
+  font-size: 14px
+  line-height: 5px
+  letter-spacing: -0.5px
+
+.candidateSize-medium
+  font-size: 18px
+  line-height: 6px
+  letter-spacing: 0px
 
 .candidateSize-large
-  .candidate
-    width: 6.5px
-    height: 6.5px
-    margin: 1.25px
+  font-size: 22px
+  line-height: 8px
+  letter-spacing: 0px

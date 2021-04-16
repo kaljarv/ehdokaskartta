@@ -3,7 +3,7 @@ import {
 } from './candidate-filter';
 
 import { 
-  QuestionLikert 
+  QuestionNumeric 
 } from '../../database';
 
 // These are used as keys to the rules, they must match the agreement properties in the LikertUtility class
@@ -17,9 +17,9 @@ export class CandidateFilterQuestion extends CandidateFilter {
 
   // NB. agreementType must be an AgreementType but we cannot enforce it as an index
   protected _rules: {
-    [agreementType: string]: Set<QuestionLikert>
+    [agreementType: string]: Set<QuestionNumeric>
   } = {};
-  protected _valueGetter: () => Set<QuestionLikert>;
+  protected _valueGetter: () => Set<QuestionNumeric>;
   protected _isInitialized: boolean = false;
 
   constructor(...args) {
@@ -29,11 +29,11 @@ export class CandidateFilterQuestion extends CandidateFilter {
 
   // Overrides
 
-  get _values(): Set<QuestionLikert> {
+  get _values(): Set<QuestionNumeric> {
     return this._valueGetter ? this._valueGetter() : new Set();
   }
   // We need this because the super constructor implicitly sets _values
-  set _values(_: Set<QuestionLikert>) {
+  set _values(_: Set<QuestionNumeric>) {
     if (this._isInitialized) {
       throw new Error("Cannot set _values on CandidateFilterQuestion. Use setValueGetter instead.")
     }
@@ -62,21 +62,21 @@ export class CandidateFilterQuestion extends CandidateFilter {
   // New methods
 
   // We need to set a dynamic value getter as the voter's answers won't otherwise be added to values
-  public setValueGetter(getter: () => Set<QuestionLikert>): void {
+  public setValueGetter(getter: () => Set<QuestionNumeric>): void {
     this._valueGetter = getter;
   }
 
   // Rule setters
 
-  public require(type: AgreementTypeGetter, question: QuestionLikert): void {
+  public require(type: AgreementTypeGetter, question: QuestionNumeric): void {
     if (this._rules[type]) {
       this._rules[type].add(question);
     } else {
-      this._rules[type] = new Set<QuestionLikert>([question]);
+      this._rules[type] = new Set<QuestionNumeric>([question]);
     }
   }
 
-  public dontRequire(type: AgreementTypeGetter, question: QuestionLikert): void {
+  public dontRequire(type: AgreementTypeGetter, question: QuestionNumeric): void {
     if (this._rules[type]) {
       this._rules[type].delete(question);
       if (this._rules[type].size === 0)
@@ -84,22 +84,22 @@ export class CandidateFilterQuestion extends CandidateFilter {
     }
   }
 
-  public isRequired(type: AgreementTypeGetter, question: QuestionLikert): boolean {
+  public isRequired(type: AgreementTypeGetter, question: QuestionNumeric): boolean {
     return this._rules[type] && this._rules[type].has(question);
   }
 
   // Rule setter and getter shortcuts
   // TODO Implement others too
 
-  public requireMostlyAgree(question: QuestionLikert): void {
+  public requireMostlyAgree(question: QuestionNumeric): void {
     this.require('mostlyAgree', question);
   }
 
-  public dontRequireMostlyAgree(question: QuestionLikert): void {
+  public dontRequireMostlyAgree(question: QuestionNumeric): void {
     this.dontRequire('mostlyAgree', question);
   }
 
-  public isRequiredMostlyAgree(question: QuestionLikert): boolean {
+  public isRequiredMostlyAgree(question: QuestionNumeric): boolean {
     return this.isRequired('mostlyAgree', question);
   }
 

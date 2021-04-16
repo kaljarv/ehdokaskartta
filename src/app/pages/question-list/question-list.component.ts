@@ -148,7 +148,7 @@ export class QuestionListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private _fetchQuestions(): void {
     this._updateInformationValues();
-    this.questions = this.matcher.getLikertQuestions();
+    this.questions = this.matcher.getAnswerableQuestions();
     // Hide progress spinner and show question list
     this.isLoading = false;
   }

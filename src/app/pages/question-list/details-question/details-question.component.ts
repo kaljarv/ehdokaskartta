@@ -104,6 +104,9 @@ export class DetailsQuestionComponent
         columnMax = this.candidates[v].length;
     });
 
+    // Factor in column count if it differs from the default 5
+    columnMax *= 5 / this.question.values.length;
+
     // Set a special candidateSize class for extreme cases
     // TODO: Enable on window resize
     if (window.innerWidth / columnMax < 3) {
