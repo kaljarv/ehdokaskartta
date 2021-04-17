@@ -16,10 +16,11 @@
   </header>
   <section [@toggleExpand]="expanded ? 'open' : 'closed'"
            class="content">
-    <ng-template  *ngIf="contentIsComponent"
-                  #contentTemplate></ng-template>
-    <ng-container *ngIf="!contentIsComponent">
+    <ng-template #stringContentTemplate>
       {{ content }}
-    </ng-container>
+    </ng-template>
+    <ng-template #contentTemplate>
+      <!-- We insert here either a component or the template above -->
+    </ng-template>
   </section>
 </mat-card>

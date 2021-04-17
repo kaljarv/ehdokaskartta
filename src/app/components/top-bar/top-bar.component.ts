@@ -1,16 +1,22 @@
-import { Component, 
-         ComponentFactoryResolver,
-         Input,
-         OnChanges,
-         OnInit,
-         Type,
-         ViewChild,
-         ViewContainerRef, } from '@angular/core';
-import { trigger,
-         style,
-         state,
-         animate,
-         transition, } from '@angular/animations';
+import { 
+  AfterViewInit,
+  Component, 
+  ComponentFactoryResolver,
+  Input,
+  OnChanges,
+  OnInit,
+  TemplateRef,
+  Type,
+  ViewChild,
+  ViewContainerRef
+} from '@angular/core';
+import { 
+  trigger,
+  style,
+  state,
+  animate,
+  transition
+} from '@angular/animations';
 
 import { SharedService } from '../../core/services';
 
@@ -58,10 +64,11 @@ const ANIMATION_TIMING = "225ms cubic-bezier(0.4, 0, 0.2, 1)";
     ]),
   ]
 })
-export class TopBarComponent implements OnInit, OnChanges {
+export class TopBarComponent implements AfterViewInit, OnInit, OnChanges {
   @Input() title: string;
   @Input() content: string | Type<any>;
   @ViewChild('contentTemplate', {read: ViewContainerRef}) contentTemplate: ViewContainerRef;
+  @ViewChild('stringContentTemplate', {read: TemplateRef}) stringContentTemplate: TemplateRef<undefined>;
   public expanded: boolean = true;
   private _prevContent: string | Type<any> = '';
   private _componentWaiting: boolean = false;
@@ -70,6 +77,10 @@ export class TopBarComponent implements OnInit, OnChanges {
     public shared: SharedService,
     private componentFactoryResolver: ComponentFactoryResolver,
   ) {}
+
+  ngAfterViewInit() {
+    this.ngOnChanges();
+  }
 
   ngOnInit() {
     this.shared.minimiseTopBar.subscribe(() => this.minimise());
@@ -84,12 +95,8 @@ export class TopBarComponent implements OnInit, OnChanges {
     // Check if content has changed
     if (this._prevContent != this.content) {
       this._prevContent = this.content;
-      if (this.contentIsComponent) {
-        // We set this flag, as the ng-template may not have yet initialized
-        this._componentWaiting = true;
-      } else {
-        hasChanged = true;
-      }
+      // We set this flag, as the ng-template may not have yet initialized
+      this._componentWaiting = true;
     }
 
     // Attempt to load component and clear waiting flag if succesful
@@ -102,26 +109,32 @@ export class TopBarComponent implements OnInit, OnChanges {
 
     // If there were changes (and in case of a component content we managed to load them)
     // expand the top bar
-    if (hasChanged) {
+    if (hasChanged)
       this.expanded = true;
-    }
-  }
-
-  get contentIsComponent(): boolean {
-    return this.content && typeof this.content !== 'string';
   }
 
   private _loadComponent(): boolean {
     // We have to check if ng-template has already initialized
     // and we'll return true when we succesfully load the content component
     if (this.contentTemplate) {
-      const componentFactory = this.componentFactoryResolver.resolveComponentFactory(this.content as Type<any>);
-      this.contentTemplate.clear();
-      this.contentTemplate.createComponent(componentFactory);
+
+      // To ward off content changed after checked errors
+      setTimeout(() => {
+        this.contentTemplate.clear();
+      
+        if (this.content == null || typeof this.content === 'string') {
+          console.log(this.content, this.stringContentTemplate);
+          this.contentTemplate.createEmbeddedView(this.stringContentTemplate);
+        } else {
+          const componentFactory = this.componentFactoryResolver.resolveComponentFactory(this.content as Type<any>);
+          this.contentTemplate.createComponent(componentFactory);
+        }
+      }, 1);
+
       return true;
-      // const componentRef = viewContainerRef.createComponent(componentFactory);
-      // (<AdComponent>componentRef.instance).data = adItem.data;
+
     } else {
+      // Content template not yet instantiated, we'll have to reschedule change checking
       return false;
     }
   }
