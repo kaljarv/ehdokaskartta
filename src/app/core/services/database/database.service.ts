@@ -53,6 +53,8 @@ import {
 
 export const ELECTION_ID = '2021-kuntavaalit-test'; // '2019-eduskuntavaalit';
 
+export type QuestionType = 'Likert' | 'Likert7' | 'Open' | 'PreferenceOrder';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -158,7 +160,7 @@ export class DatabaseService {
       opts.categoryReference = this._cache.categories;
       opts.constituencyReference = this._cache.constituencies;
       // Create object
-      switch (data.type) {
+      switch (type) {
         case "Likert":
           return new QuestionLikert(opts as QuestionOptionsLikert);
         case "Likert7":
@@ -168,7 +170,7 @@ export class DatabaseService {
         case "PreferenceOrder":
           return new QuestionPreferenceOrder(opts as QuestionOptionsPreferenceOrder);
         default:
-          throw new Error(`Unknown question type '${data.type}'!`);
+          throw new Error(`Unknown question type '${type}'!`);
       }
     }
 

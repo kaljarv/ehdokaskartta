@@ -4,35 +4,78 @@
 
 <h2>{{ question.text }}</h2>
 
-<div class="options">
+<div class="content">
 
-  <div class="likert">
+  <!-- Selector: Likert -->
+
+  <div *ngIf="questionType == 'Likert' || questionType == 'Likert7'"
+       class="likert">
 
     <mat-radio-group [(ngModel)]="voterAnswer"
-                     class="likert-group">
+                     class="likert-group category-{{ question.categoryName | toClassName }}">
       <mat-radio-button *ngFor="let value of question.values"
-                        [value]="value.toString()"></mat-radio-button>
+                        [value]="value.key.toString()"></mat-radio-button>
     </mat-radio-group>
 
     <div class="labels">
-      <label>Täysin eri mieltä</label>
-      <label class="labels-empty"></label>
-      <label>Neutraali</label>
-      <label class="labels-empty"></label>
-      <label>Täysin samaa mieltä</label>
-    </div> 
+      <ng-container *ngFor="let value of question.values">
+        <label *ngIf="value.name">{{ value.name }}</label>
+      </ng-container>
+    </div>
 
     <button *ngIf="showDeleteButton"
             (click)="deleteVoterAnswer()"
             mat-button
             color="warn"
-            class="likert-delete">
+            class="delete">
       <mat-icon>highlight_off</mat-icon> Poista vastauksesi tähän kysymykseen
     </button>
 
   </div>
 
-  <div class="distribution {{ candidateSizingClass }}">
+  <!-- Selector: PreferenceOrder -->
+
+  <div *ngIf="questionType == 'PreferenceOrder'"
+       class="preferenceOrder">
+
+      <label>Vedä vaihtoehdot haluamaasi järjestykseen.</label>
+
+      <div cdkDropList 
+           (cdkDropListDropped)="drop($event)"
+           class="preferenceOrder--list">
+        <div *ngFor="let option of preferenceOrder"
+             cdkDrag
+             cdkDragBoundary=".preferenceOrder--list"
+             class="preferenceOrder--option category-{{ question.categoryName | toClassName }}" >
+          <div *cdkDragPlaceholder
+               class="preferenceOrder--placeholder"></div>
+          {{ option.name }}
+        </div>
+      </div>
+
+      <div class="actions">
+        <button mat-button
+                type="button"
+                (click)="dismiss()">Peruuta</button>
+        <button mat-raised-button 
+                color="primary"
+                type="button"
+                (click)="savePreferenceOrder()">Tallenna</button>
+        <button *ngIf="showDeleteButton"
+                (click)="deleteVoterAnswer()"
+                mat-button
+                color="warn"
+                class="delete">
+          <mat-icon>highlight_off</mat-icon> Poista vastauksesi tähän kysymykseen
+        </button>
+      </div>
+
+  </div>
+
+  <!-- Distribution chart -->
+
+  <div *ngIf="questionType == 'Likert' || questionType == 'Likert7'"
+       class="distribution {{ candidateSizingClass }}">
 
     <div class="columns columns-{{ question.values.length }}">
 

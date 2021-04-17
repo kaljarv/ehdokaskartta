@@ -22,7 +22,7 @@ label
   line-height: $lineHeight-S
   margin-top: $margin-S
 
-.options
+.content
   max-width: $maxWidth-S
   margin: 0 auto $margin-M auto
 
@@ -34,10 +34,18 @@ label
   display: flex
   flex-flow: row nowrap
   align-items: flex-start
+  justify-content: space-between
 
   label
-    width: 20%
+    flex-basis: 0
+    flex-grow: 1
     hyphens: manual
+
+    &:first-child
+      text-align: left
+
+    &:last-child
+      text-align: right
 
 .likert-group
   background-color: $color-secondaryBg
@@ -45,19 +53,58 @@ label
   display: flex
   flex-flow: row nowrap
   align-items: flex-end
+  justify-content: space-around
   margin: $margin-XS 0
 
   mat-radio-button
-    width: 20%
+    flex-basis: 0
     flex-direction: column
     justify-items: center
 
-.likert-delete
+.delete
   font-size: $fontSize-S
   margin-top: $margin-S
 
   // mat-icon
 
+// Preference order
+
+.preferenceOrder
+  label
+    margin-bottom: $margin-M
+
+.preferenceOrder--list
+  
+.preferenceOrder--option,
+.preferenceOrder--placeholder
+  cursor: pointer
+  display: flex
+  flex-flow: column nowrap
+  justify-content: center
+  text-align: center
+  // background: $color-secondaryBg
+  border-radius: 1.5rem
+  font-size: $fontSize-M
+  font-weight: 500
+  margin-bottom: $margin-XS
+  min-height: 3rem
+  padding: $margin-XS
+
+.preferenceOrder--placeholder
+  background-color: $color-secondaryBg
+  border: dotted 2px $color-secondary
+  transition: transform $transition-M
+
+.cdk-drag-preview
+  box-sizing: border-box
+  box-shadow: $boxShadow-M
+
+.cdk-drag-animating
+  transition: transform $transition-M
+
+.actions
+  margin-top: $margin-M
+  text-align: center
 
 // .distribution
 

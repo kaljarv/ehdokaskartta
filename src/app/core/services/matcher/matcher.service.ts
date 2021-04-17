@@ -53,8 +53,6 @@ export const MAX_MISSING_VALS = 10; // Set to 0 or greater to cull candidates ba
 export const NONMISSING_CANDIDATE_MAX_MISSING_VALS = 9; // The max number of missing vals before a candidate is flagged as missing, set to -1 to mark none
 export const MIN_VALS_FOR_MAPPING = 1; // We are enabling tSNE for the first answer
 
-export type QuestionType = "Likert" | "Likert7" | "PreferenceOrder" | "Open";
-
 export interface QuestionAverageDict {
   [questionId: string]: {
     [partyName: string]: number
@@ -317,7 +315,7 @@ export class MatcherService {
     });
 
     // Read voter answers stored in the cookie
-    this.setAnswersFromCookie();
+    this.readAnswersFromCookie();
 
     // Import parties
     this.parties = await this.database.getParties();
@@ -517,11 +515,10 @@ export class MatcherService {
       return null;
   }
   
-  public setVoterAnswer(id: string, value: number): void {
-    let question = this.questions[id];
-    if (question && question instanceof QuestionNumeric) {
+  public setVoterAnswer(question: Question, value: number | number[]): void {
+    if (question instanceof QuestionNumeric) {
       question.voterAnswer = value;
-      this.writeCookie(id, value);
+      this.writeCookie(question.id, question.convertAnswerToString());
       // Emit event
       this.dataStatus.questions.next(DataStatus.Updated);
     }
@@ -739,12 +736,12 @@ export class MatcherService {
     return this.countVoterAnswers() >= MIN_VALS_FOR_MAPPING;
   }
 
-  public writeCookie(name: string, value: any): void {
+  public writeCookie(name: string, value: string): void {
     // Save in cookie
     let expiry = new Date();
     expiry.setTime(expiry.getTime() + COOKIE_LIFE);
     // TODO Secure cookies don't currently work, maybe because of localhost?
-    this.cookie.set(COOKIE_PREFIX + name, value.toString(), expiry, COOKIE_PATH, COOKIE_DOMAIN, false, 'Strict');
+    this.cookie.set(COOKIE_PREFIX + name, value, expiry, COOKIE_PATH, COOKIE_DOMAIN, false, 'Strict');
   }
 
   public readCookie(name: string): string | null {
@@ -773,13 +770,12 @@ export class MatcherService {
     this.dataStatus.constituencyCookie.next(DataStatus.Ready);
   }
 
-  public setAnswersFromCookie(): void {
-    for (const id in this.questions) {
-      const answer = this.readCookie(id);
-      if (answer != null) {
-        // Use Number as cookie values are stored as text
-        this.setVoterAnswer(id, Number(answer));
-      }
+  public readAnswersFromCookie(): void {
+    for (const q of this.getAnswerableQuestions()) {
+      const answer = this.readCookie(q.id);
+      if (answer != null)
+        // Use Numbers as cookie values are stored as text
+        this.setVoterAnswer(q, q.parseAnswerFromString(answer));
     }
   }
 

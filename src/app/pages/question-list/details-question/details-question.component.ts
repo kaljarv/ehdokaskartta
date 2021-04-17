@@ -1,23 +1,35 @@
-import { Component, 
-         Inject,
-         OnDestroy,
-         OnInit,
-         AfterViewChecked,
-         ViewChild,
-         QueryList,
-         ElementRef,
-         ViewEncapsulation } from '@angular/core';
+import { 
+  Component, 
+  Inject,
+  OnInit,
+  ViewChild,
+  QueryList,
+  ElementRef,
+  ViewEncapsulation
+} from '@angular/core';
 
-import { Subscription } from 'rxjs';
+import { 
+  MatBottomSheetRef, 
+  MAT_BOTTOM_SHEET_DATA 
+} from '@angular/material/bottom-sheet';
 
-import { MatBottomSheetRef, 
-         MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
+import {
+  CdkDragDrop,
+  moveItemInArray
+} from '@angular/cdk/drag-drop';
 
-import { MatcherService,
-         SharedService,
-         Candidate,
-         QuestionNumeric, 
-         Question} from '../../../core';
+import { 
+  MatcherService,
+  SharedService,
+  Candidate,
+  QuestionLikert,
+  QuestionLikertSeven,
+  QuestionNumeric,
+  QuestionNumericValue,
+  QuestionPreferenceOrder, 
+  QuestionType,
+  Question
+} from '../../../core';
 
 // Delay in ms before closing the bottom sheet after setting answer
 export const CLOSE_DELAY: number = 450;
@@ -41,22 +53,20 @@ export class DetailsQuestionGlobalStylesComponent {
   templateUrl: './details-question.component.html',
   styleUrls: ['./details-question.component.sass']
 })
-export class DetailsQuestionComponent
-  implements OnInit,
-             OnDestroy,
-             AfterViewChecked {
+export class DetailsQuestionComponent implements OnInit {
 
   @ViewChild('columns') columns: QueryList<ElementRef>;
 
   public question: QuestionNumeric;
+  public questionType: QuestionType;
   public candidates: {
-      [value: number]: Candidate[]
-    } = {};
+    [value: number]: Candidate[]
+  } = {};
   public showDeleteButton: boolean;
   public candidateSizingClass: string = 'candidateSize-medium';
 
-  // These will be cancelled onDestroy
-  private _subscriptions: Subscription[] = [];
+  // For preference order data
+  public preferenceOrder: QuestionNumericValue[];
 
   constructor(
     private bottomSheetRef: MatBottomSheetRef,
@@ -66,26 +76,34 @@ export class DetailsQuestionComponent
   ) {
     // Get question object
     this.question = this.matcher.questions[data.id] as QuestionNumeric;
-  }
-
-  ngOnInit(): void {
-
-    // this._subscriptions.push(this.matcher.candidateDataReady.subscribe(() => this._initDistributionChart()));
-    this._initDistributionChart();
-
+    // Set question type
+    if (this.question instanceof QuestionLikert) {
+      this.questionType = 'Likert';
+    } else if (this.question instanceof QuestionLikertSeven) {
+      this.questionType = 'Likert7';
+    } else if (this.question instanceof QuestionPreferenceOrder) {
+      this.questionType = 'PreferenceOrder';
+      this._initPreferenceOrder();
+    } else {
+      throw new Error(`Unimplemented question type '${this.question.constructor.name}'!`);
+    }
     // Enable delete button if there's an answer
     // NB. We don't want to bind it dynamically, as then the button would be shown prematurely
     this.showDeleteButton = this.voterAnswer != null;
+  }
+
+  ngOnInit(): void {
+    this._initDistributionChart();
 
     this.shared.logEvent('questions_show', {id: this.question.id, text: this.question.text});
   }
 
-  ngAfterViewChecked(): void {
-  }
-
-  ngOnDestroy() {
-    // Cancel subscriptions
-    this._subscriptions.forEach(s => s.unsubscribe());
+  /*
+   * Make specific initialisations for preference order questions
+   */
+  private _initPreferenceOrder(): void {
+    const q = this.question as QuestionPreferenceOrder;
+    this.preferenceOrder = q.getVoterAnswerValues() || q.getShuffledValues();
   }
 
   private _initDistributionChart(): void {
@@ -96,22 +114,16 @@ export class DetailsQuestionComponent
     );
 
     // Sort Candidates per answer
-    let columnMax = 0;
-    this.question.values.forEach( v => {
-      this.candidates[v] = candidates.filter( c => Number(c.getAnswer(this.question)) == v );
-      // Save the highest number in a column for radius calculation
-      if (this.candidates[v].length > columnMax)
-        columnMax = this.candidates[v].length;
-    });
-
-    // Factor in column count if it differs from the default 5
-    columnMax *= 5 / this.question.values.length;
+    this.question.valueKeys.forEach(v => 
+      this.candidates[v] = candidates.filter(c => Number(c.getAnswer(this.question)) == v)
+    );
 
     // Set a special candidateSize class for extreme cases
+    const factor = candidates.length * this.question.values.length / 5;
     // TODO: Enable on window resize
-    if (window.innerWidth / columnMax < 3) {
+    if (window.innerWidth / factor < 15) {
       this.candidateSizingClass = 'candidateSize-small';
-    } else if (window.innerWidth / columnMax > 15) {
+    } else if (window.innerWidth / factor > 75) {
       this.candidateSizingClass = 'candidateSize-large';
     }
     
@@ -128,14 +140,16 @@ export class DetailsQuestionComponent
     this.dismiss(event);
   }
 
-  get voterAnswer(): string {
+  get voterAnswer(): string | number[] {
     let a = this.question.voterAnswer;
     // We have to convert the answer to string for ngModel to work
-    return a ? a + '' : null;
+    return a ? 
+           (Array.isArray(a) ? a : a.toString()) : 
+           undefined;
   }
 
-  set voterAnswer(value: string) {
-    this.matcher.setVoterAnswer(this.question.id, Number(value));
+  set voterAnswer(value: string | number[]) {
+    this.matcher.setVoterAnswer(this.question, Array.isArray(value) ? value : Number(value));
     this.shared.logEvent('questions_answer', {id: this.question.id, text: this.question.text});
     setTimeout(() => this.dismiss(), CLOSE_DELAY);
   }
@@ -146,11 +160,18 @@ export class DetailsQuestionComponent
     setTimeout(() => this.dismiss(), CLOSE_DELAY);
   }
 
-  public getTooltip(candidate: Candidate): string {
-    return `${candidate.givenName}\xa0${candidate.surname}, ${candidate.partyName}`;
+  get constituencyName(): string {
+    return this.matcher.constituency || 'Vaalipiiri';
   }
 
-  get constituencyName(): string {
-    return this.matcher.constituency ? this.matcher.constituency : 'Vaalipiiri';
+  /*
+   * For use with preference order questions
+   */
+  public drop(event: CdkDragDrop<QuestionNumericValue[]>) {
+    moveItemInArray(this.preferenceOrder, event.previousIndex, event.currentIndex);
+  }
+
+  public savePreferenceOrder(): void {
+    this.voterAnswer = this.preferenceOrder.map(v => v.key);
   }
 }
