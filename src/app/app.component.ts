@@ -1,7 +1,9 @@
 import { Component, 
+         DoCheck,
          ViewChild,
          Type,  
-         ElementRef} from '@angular/core';
+         ElementRef
+        } from '@angular/core';
 import { Router, 
          NavigationStart } from '@angular/router';
 import { trigger,
@@ -9,6 +11,7 @@ import { trigger,
          state,
          animate,
          transition, } from '@angular/animations';
+import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
@@ -21,8 +24,10 @@ import { MatTooltip } from '@angular/material/tooltip';
 
 import { SharedService, 
          PATHS,
-         ADMIN_EMAIL,  
-         ForwardOptions } from './core/services/shared';
+         ADMIN_EMAIL,
+         DEFAULT_LOADING_STATE,
+         ForwardOptions,
+         LoadingState } from './core/services/shared';
 import { MatcherService } from './core';
 
 import { DetailsQuestionComponent } from './pages/question-list';
@@ -44,7 +49,7 @@ export const DIALOG_CONFIG: MatDialogConfig = {
   maxHeight: '80vh',
 };
 export const SNACK_BAR_DURATION = 5000;
-export const SNACK_BAR_DURATION_WITH_ACTION = 10000;
+export const SNACK_BAR_DURATION_WITH_ACTION = 7500;
 
 /*
  * Handles main UI, tools, routing and opening of overlays.
@@ -110,9 +115,33 @@ export const SNACK_BAR_DURATION_WITH_ACTION = 10000;
         animate(ANIMATION_TIMING)
       ),
     ]),
+    trigger('fadeInOut', [
+      transition(':enter', [
+        style({
+          opacity: 0,
+        }),
+        animate(ANIMATION_TIMING, style({
+          opacity: 1,
+        })),
+      ], {
+        params: {
+          delay: '0ms'
+      }}),
+      transition(':leave', [
+        style({
+          opacity: 1,
+        }),
+        animate(ANIMATION_TIMING, style({
+          opacity: 0,
+        })),
+      ], {
+        params: {
+          delay: '0ms'
+      }}),
+    ])
   ]
 })
-export class AppComponent {
+export class AppComponent implements DoCheck {
   @ViewChild('sideNav') sideNav;
   @ViewChild('filterButtonTooltip') filterButtonTooltip: MatTooltip;
   @ViewChild('partyButtonTooltip') partyButtonTooltip: MatTooltip;
@@ -124,9 +153,16 @@ export class AppComponent {
   public showNextProgress: boolean;
   public nextProgressValue: number = 0;
   public paths: { [name: string]: string } = PATHS;
+  public isLoading: boolean;
+  public loadingMessage: string = 'Ladataan…';
+  public loadingMode: string = 'indeterminate';
+  public loadingValue: number;
   private _floatingCardRef: FloatingCardRef;
   private _dialogRef: MatDialogRef<any>;
   private _snackBarRef: MatSnackBarRef<any>;
+  private _doChanges: {
+    loadingState?: LoadingState
+  } = {};
   
   constructor(
     private router: Router,
@@ -135,8 +171,12 @@ export class AppComponent {
     private shared: SharedService,
     private matcher: MatcherService,
     private fcService: FloatingCardService,
-    private snackBar: MatSnackBar,
+    private snackBar: MatSnackBar
   ) {
+
+    this.shared.loadingState.subscribe( state => {
+      this._doChanges.loadingState = state;
+    });
     this.shared.showQuestion.subscribe( id => 
       this.openBottomSheet(DetailsQuestionComponent, {id: id})
     );
@@ -164,9 +204,8 @@ export class AppComponent {
     );
     this.shared.enableForward.subscribe( options => {
       this.forwardOptions = {...options};
-      if (options.showProgress) {
+      if (options.showProgress)
         this.showNextProgress = true;
-      }
       this.showNextButtonBar = true;
     });
     this.shared.forwardProgress.subscribe( value => {
@@ -196,9 +235,24 @@ export class AppComponent {
       ).subscribe(() => this._resetState());
   }
 
+  /*
+   * Process any changes here that might take place duting content checking
+   */
+  ngDoCheck() {
+    if (this._doChanges.loadingState) {
+      const state = this._doChanges.loadingState;
+      this.isLoading = state.type === 'loading';
+      this.loadingMessage = state.message;
+      this.loadingValue = state.value;
+      this.loadingMode = state.value == null ? 'indeterminate' : 'determinate';
+      delete this._doChanges.loadingState;
+    }
+  }
+
   // Reset to default configuration (on NavigationStart mainly)
   private _resetState(): void {
     this.shared.hideTopBar = false;
+    this.shared.loadingState.next(DEFAULT_LOADING_STATE);
     this.sideNav.close();
     this.showHideMapTooltips(false);
     this.shared.showFeedbackButton = true;
@@ -389,6 +443,10 @@ export class AppComponent {
 
   get showFeedbackButton(): boolean {
     return this.shared.showFeedbackButton;
+  }
+
+  get loadingState(): BehaviorSubject<LoadingState> {
+    return this.shared.loadingState;
   }
 
   get isAlternativeMap(): boolean {

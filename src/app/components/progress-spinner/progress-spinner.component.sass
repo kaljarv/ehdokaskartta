@@ -1,7 +1,6 @@
-@use 'sass:color'
+// @use 'sass:color'
 
 @import 'variables.scss'
-
 
 :host
   display: flex
@@ -10,10 +9,11 @@
   top: 0
   right: 0
   bottom: 0
-  background-color: color.change($color-background, $alpha: $alpha-overlay)
+  background-color: $color-background // color.change($color-background, $alpha: $alpha-overlay)
   flex-flow: column nowrap
   justify-content: center
   align-items: center
+  z-index: $zIndex-6
 
 .progressSpinner-container
   text-align: center

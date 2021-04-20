@@ -27,7 +27,8 @@ import {
   QuestionNumeric,
   CandidateOptions,
   Municipality,
-  QuestionPreferenceOrder
+  QuestionPreferenceOrder,
+  QuestionSingleNumber
 } from '../database';
 import { 
   PcaProjector 
@@ -367,7 +368,7 @@ export class MatcherService {
               if (q instanceof QuestionPreferenceOrder) {
                 // Do nothing
               } else {
-                val = Math.ceil(Math.random() * (q.maxAnswer - 1));
+                val = Math.ceil(Math.random() * ((q as QuestionSingleNumber).maxAnswer - 1));
                 if (val >= q.neutralAnswer) val++;
               }
             } else if (rand < perturbProb && !(q instanceof QuestionPreferenceOrder)) {
@@ -793,34 +794,46 @@ export class MatcherService {
 
     // Prepare raw data for mapping
     const data = new Array<Array<number>>();
-    const qq   = this.voterDisabled ? 
-                 this.getAnswerableQuestions() :
-                 this.getVoterAnsweredQuestions();
-    const ids = new Array<string>();
+    const questions = this.voterDisabled ? 
+                      this.getAnswerableQuestions() :
+                      this.getVoterAnsweredQuestions();
+    const candidates = this.getCandidatesAsList();
 
     // Treat values
-    for (const id in this.candidates) {
+    for (const c of candidates) {
       let d = [];
-      qq.forEach( q => {
-        let v = this.candidates[id][q.id];
-        // Convert missing values to max distance from voter if we are using voter answers
-        if (q.isMissing(v))
-          v = this.voterDisabled ? 
-              q.neutralAnswer : 
-              q.getInvertedVoterAnswer();
-        v = Number(v);
-        if (isNaN(v))
-          throw new Error(`Mapping initiated with a NaN value: ${this.candidates[id][q.id]} • candidate: ${id} • question: ${q.id}!`)
-        d.push(v);
-      } );
+      questions.forEach(q => {
+
+        let answer: number | number[] = c.getAnswer(q);
+
+        if (q.isMissing(answer))
+          answer = this.voterDisabled ? 
+                   q.neutralAnswer : 
+                   q.getInvertedVoterAnswer();
+
+        answer = q.normalizeValue(answer)
+
+        // QuestionPreferenceOrder values are converted to a number of pairwise combinations
+        if (Array.isArray(answer))
+          d.push(...answer);
+        else
+          d.push(answer)
+
+      });
       data.push(d);
-      ids.push(id);
     }
 
     // Add the voter as the last item
+    // TODO:  Move voterAnswer away from Questions and convert Voter to a subclass of Candidate
     if (!this.voterDisabled) {
       const voter = [];
-      qq.forEach( q => voter.push(Number(this.getVoterAnswer(q))) );
+      questions.forEach(q => {
+        let answer: number | number[] = q.normalizeValue(q.voterAnswer);
+        if (Array.isArray(answer))
+          voter.push(...answer);
+        else
+        voter.push(answer);
+      });
       data.push(voter);
     }
 
@@ -830,16 +843,16 @@ export class MatcherService {
     projector.project(data, this.voterDisabled, (progress) => {
       this.progressChanged.emit(progress);
     }).then((coordinates) => {
-      this.setCandidateCoordinates(ids, coordinates);
+      this.setCandidateCoordinates(candidates, coordinates);
       this.placeParties();
       this.dataStatus.mapping.next(DataStatus.Ready);
     });
   }
 
-  public setCandidateCoordinates(ids: string[], coordinates: [number, number][]): void {
-    for (let i = 0; i < ids.length; i++) {
-      this.candidates[ids[i]].projX = coordinates[i][0];
-      this.candidates[ids[i]].projY = coordinates[i][1];
+  public setCandidateCoordinates(candidates: Candidate[], coordinates: [number, number][]): void {
+    for (let i = 0; i < candidates.length; i++) {
+      candidates[i].projX = coordinates[i][0];
+      candidates[i].projY = coordinates[i][1];
     }
     this.dataStatus.mapping.next(DataStatus.Updated);
   }

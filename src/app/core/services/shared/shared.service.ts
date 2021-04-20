@@ -1,6 +1,9 @@
-import { Injectable, 
-         EventEmitter,
-         Type } from '@angular/core';
+import { 
+  Injectable, 
+  EventEmitter,
+  Type 
+} from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 import { DatabaseService } from '../database';
 
@@ -21,6 +24,14 @@ export interface ForwardOptions {
   onBefore?: () => void,  // An optional callback function that is called before navigating
 }
 
+export type LoadingState = {
+  type: 'loading' | 'loaded' | 'default',
+  message?: string,
+  value?: number
+}
+
+export const DEFAULT_LOADING_STATE: LoadingState = {type: 'default'};
+
 @Injectable()
 export class SharedService {
   public title: string = 'Tervetuloa Ehdokaskartalle'; // TODO use an Observable instead
@@ -32,6 +43,8 @@ export class SharedService {
   public showFeedbackButton: boolean = false;
   public showAllParties: boolean = false; // This will be set by MapComponent based on a subscription to toggleAllParties
   public userEmail: string = '';
+
+  public loadingState = new BehaviorSubject<LoadingState>(DEFAULT_LOADING_STATE);
 
   public showQuestion = new EventEmitter<string>();
   public showCandidate = new EventEmitter<string>();

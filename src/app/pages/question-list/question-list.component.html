@@ -1,14 +1,4 @@
-<!-- Spinner shown when loading -->
-
-<app-progress-spinner *ngIf="isLoading"
-                      title="Ladataan kysymyksiä…"
-                      @fadeInOut></app-progress-spinner>
-
-<!-- Question list -->
-
-<div *ngIf="!isLoading"
-     class="questionListContainer"
-     @fadeInOut>
+<div class="questionListContainer">
   <mat-chip-list>
     <mat-chip *ngFor="let question of questions"
               (click)="showQuestion(question)"

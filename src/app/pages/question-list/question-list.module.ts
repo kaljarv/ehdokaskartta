@@ -7,7 +7,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { CorePipesModule } from '../../core';
-import { ProgressSpinnerModule } from '../../components';
 
 import { QuestionListComponent } from './question-list.component';
 import { QuestionListTopBarContentComponent } from './question-list-top-bar-content.component';
@@ -21,8 +20,7 @@ import { DetailsQuestionModule } from './details-question';
     MatIconModule,
     MatTooltipModule,
     CorePipesModule,
-    DetailsQuestionModule,
-    ProgressSpinnerModule,
+    DetailsQuestionModule
   ],
   exports: [
     QuestionListComponent,

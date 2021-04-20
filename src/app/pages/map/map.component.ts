@@ -28,8 +28,6 @@ import {
   Party,
   SharedService,
   AbbreviatePipe,
-  GenitivePipe,
-  InitialsPipe,
   ToClassNamePipe,
   PATHS,
   D3Service
@@ -118,8 +116,6 @@ export class MapComponent implements OnInit, OnDestroy {
 
   public windowResizeDelay: number = 500; // Call rescale after this delay for window resize (and supress further calls during that time)
   private _windowResizeLock: boolean = false; // Used to track the above delay rescaling
-  public progressValueEmitter: EventEmitter<number>;
-  public isLoading: boolean = true;
   public redrawEmitter = new EventEmitter<MapRedrawOptions>();
   public zoomEmitter = new EventEmitter<{x: number, y: number}>();
   public showAllParties: boolean = false;
@@ -144,12 +140,12 @@ export class MapComponent implements OnInit, OnDestroy {
     private shared: SharedService,
     private d3s: D3Service,
     private toClassName: ToClassNamePipe,
-    private abbreviate: AbbreviatePipe,
-    private genitive: GenitivePipe,
-    private initials: InitialsPipe
+    private abbreviate: AbbreviatePipe
   ) {
-    this.progressValueEmitter = this.matcher.progressChanged;
     this.d3 = this.d3s.d3;
+
+    // Start loading spinner
+    this._reportProgress();
 
     // Check if we are browsing or not
     if (this.route.snapshot.data.voterDisabled) {
@@ -175,6 +171,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     // Initialisation chain
+    this._subscriptions.push(this.matcher.progressChanged.subscribe(v => this._reportProgress(v)))
     this._subscriptions.push(this.matcher.mappingDataReady.subscribe(() => this.initMap()));
     this._subscriptions.push(this.matcher.candidateDataReady.subscribe(() => this.initData()));
     this._subscriptions.push(this.matcher.constituencyCookieRead.subscribe(() => {
@@ -220,6 +217,17 @@ export class MapComponent implements OnInit, OnDestroy {
     this.shared.showMapTooltips.emit();
     if (this.voterTooltip != null)
       this.voterTooltip.show();
+  }
+
+  private _reportProgress(value: number = 0, complete = false) {
+    if (complete)
+      this.shared.loadingState.next({type: 'loaded'});
+    else
+      this.shared.loadingState.next({
+        type: 'loading',
+        message: 'Ladataan tuloksia…',
+        value
+      })
   }
 
   public hideInfos(): void {
@@ -277,7 +285,7 @@ export class MapComponent implements OnInit, OnDestroy {
     // This is async so we need to wait
     this.rescaleMap().then(() => {
       // Init view and hide spinner
-      this.isLoading = false;
+      this._reportProgress(100, true);
 
       // This will show the filtering tools
       this.shared.showMapTools = true;
@@ -510,7 +518,7 @@ export class MapComponent implements OnInit, OnDestroy {
           case "candidate":
             m = new MapDatumCandidate({
               ...opts,
-              color: this.colors[a.party],
+              color: this.colors[a.partyName],
               label: this.getCandidateLabel(a),
               transition: { 
                 state: "minimized"

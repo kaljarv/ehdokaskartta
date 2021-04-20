@@ -33,6 +33,7 @@ import { ConstituencyPickerComponent,
          TitleScreenModule } from './pages';
 import { FeedbackFormModule,
          FloatingCardModule,
+         ProgressSpinnerModule,
          TopBarModule } from './components'
 import { PATHS } from './core/services/shared';
 
@@ -90,6 +91,7 @@ const paths = [
     AboutScreenModule,
     ConstituencyPickerModule,
     MapModule,
+    ProgressSpinnerModule,
     QuestionListModule,
     TitleScreenModule
   ],

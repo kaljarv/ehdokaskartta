@@ -1,6 +1,7 @@
-import { Component, 
-         Input, 
-         EventEmitter } from '@angular/core';
+import { 
+  Component, 
+  Input
+} from '@angular/core';
 
 @Component({
   selector: 'app-progress-spinner',

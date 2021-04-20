@@ -145,7 +145,21 @@
       </div>
     </div>
 
+    <!-- ================================================================= 
+         PAGE CONTENT
+         ================================================================= -->
+
+    <!-- Spinner shown when loading -->
+
+    <app-progress-spinner *ngIf="isLoading"
+                          @fadeInOut
+                          [title]="loadingMessage"
+                          [mode]="loadingMode"
+                          [value]="loadingValue"></app-progress-spinner>
+
     <router-outlet></router-outlet>
+
+
 
     <div *ngIf="showMapTools || showFeedbackButton"
          [@bottomToolsShift]="bottomToolsShiftTrigger"

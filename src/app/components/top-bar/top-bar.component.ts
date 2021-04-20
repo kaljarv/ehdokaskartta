@@ -123,7 +123,6 @@ export class TopBarComponent implements AfterViewInit, OnInit, OnChanges {
         this.contentTemplate.clear();
       
         if (this.content == null || typeof this.content === 'string') {
-          console.log(this.content, this.stringContentTemplate);
           this.contentTemplate.createEmbeddedView(this.stringContentTemplate);
         } else {
           const componentFactory = this.componentFactoryResolver.resolveComponentFactory(this.content as Type<any>);

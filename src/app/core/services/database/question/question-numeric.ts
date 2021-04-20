@@ -42,6 +42,8 @@ export const QUESTION_NUMERIC_DEFAULT_VALUES: QuestionNumericValue[] = [
 /*
  * Base class for numeric question objects
  * Only numeric questions allow for voter answers and party averages
+ * TODO: Move voterAnswer away from Questions and convert Voter to
+ * a subclass of Candidate
  */
 
 export abstract class QuestionNumeric extends Question {
@@ -50,12 +52,12 @@ export abstract class QuestionNumeric extends Question {
     [partyId: string]: number | number[]
   }
   /*
-   * These are initialized in the constructor
+   * These should be initialized in the constructor
    */
   readonly values: QuestionNumericValue[];
-  readonly maxAnswer: number;
-  readonly minAnswer: number;
-  readonly neutralAnswer: number;
+  readonly maxAnswer: number | number[];
+  readonly minAnswer: number | number[];
+  readonly neutralAnswer: number | number[];
   /*
    * Convenience getters for AgreementTypes
    */
@@ -70,13 +72,8 @@ export abstract class QuestionNumeric extends Question {
     defaultValues: QuestionNumericValue[] = QUESTION_NUMERIC_DEFAULT_VALUES
   ) {
     super(options);
+    this.values = values;
     this.partyAverages = options.partyAverages ?? {};
-    // Set values and find min and max
-    this.values = values || defaultValues;
-    const sorted = this.values.sort((a, b) => a.key - b.key);
-    this.minAnswer = sorted[0].key;
-    this.maxAnswer = sorted[sorted.length - 1].key;
-    this.neutralAnswer = sorted[Math.floor(sorted.length / 2)].key;
   }
 
   get valueKeys(): number[] {
@@ -91,6 +88,12 @@ export abstract class QuestionNumeric extends Question {
     for (const v of this.values)
       if (v.key === key)
         return v;
+    return undefined;
+  }
+  public getValueIndex(key: number): number {
+    for (let i = 0; i < this.values.length; i++)
+      if (this.values[i].key === key)
+        return i;
     return undefined;
   }
 
@@ -113,24 +116,30 @@ export abstract class QuestionNumeric extends Question {
    * Override if needed.
    */
   public convertAnswerToString(value: number | number[] = this.voterAnswer): string {
-    return value.toString();
+    throw new Error("Not implemented!");
   }
 
   public parseAnswerFromString(value: string): number | number[] {
-    return Number(value);
+    throw new Error("Not implemented!");
+  }
+
+  /*
+   * Get a normalized value (0--1) for mapping
+   * Override if needed.
+   */
+  public normalizeValue(value: number | number[] = this.voterAnswer): number | number[] {
+    throw new Error("Not implemented!");
   }
 
   /*
    * Get the maximally distant answer to the one given
    */
-  public invertAnswer(value: any, biasedTowardsMax: boolean = true): number {
-    return Number(value) <= (biasedTowardsMax ? this.neutralAnswer : this.neutralAnswer - 1) ? this.maxAnswer : this.minAnswer;
+  public invertAnswer(value: any, biasedTowardsMax: boolean = true): number | number[] {
+    throw new Error("Not implemented!");
   }
 
-  public getInvertedVoterAnswer(biasedTowardsMax?: boolean): number {
-    if (this.voterAnswer == null)
-      throw new Error(`No voter answer for question '${this.id}'.`);
-    return this.invertAnswer(this.voterAnswer, biasedTowardsMax);
+  public getInvertedVoterAnswer(biasedTowardsMax?: boolean): number | number[] {
+    throw new Error("Not implemented!");
   }
 
   /*

@@ -4,3 +4,4 @@ export * from './question-likert-seven';
 export * from './question-numeric';
 export * from './question-open';
 export * from './question-preference-order';
+export * from './question-single-number';

@@ -1,18 +1,15 @@
 import {
-  QuestionNumeric,
-  QuestionNumericValue,
-  QuestionOptionsNumeric
-} from './question-numeric';
+  QuestionNumericValue
+}  from './question-numeric';
+
+import {
+  QuestionSingleNumber,
+  QuestionOptionsSingleNumber
+} from './question-single-number';
 
 /*
  * Base class for Likert question objects
  */
-
-export interface QuestionOptionsLikert extends QuestionOptionsNumeric {
-  partyAverages?: {
-    [partyId: string]: number
-  }
-}
 
 export const QUESTION_LIKERT_DEFAULT_VALUES: QuestionNumericValue[] = [
   {key: 1, name: 'Täysin eri mieltä'},
@@ -22,7 +19,7 @@ export const QUESTION_LIKERT_DEFAULT_VALUES: QuestionNumericValue[] = [
   {key: 5, name: 'Täysin samaa mieltä'}
 ];
 
-export class QuestionLikert extends QuestionNumeric {
+export class QuestionLikert extends QuestionSingleNumber {
 
   /*
    * Overrides
@@ -33,7 +30,7 @@ export class QuestionLikert extends QuestionNumeric {
   }
 
   constructor(
-    options: QuestionOptionsLikert,
+    options: QuestionOptionsSingleNumber,
     defaultValues: QuestionNumericValue[] = QUESTION_LIKERT_DEFAULT_VALUES
   ) {
     super(options, defaultValues);

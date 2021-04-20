@@ -52,41 +52,20 @@ const ANIMATION_EXIT_DELAY = '900ms';
         params: {
           delay: ANIMATION_EXIT_DELAY
       }}),
-    ]),
-    trigger('fadeInOut', [
-      transition(':enter', [
-        style({
-          opacity: 0,
-        }),
-        animate(ANIMATION_TIMING, style({
-          opacity: 1,
-        })),
-      ], {
-        params: {
-          delay: '0ms'
-      }}),
-      transition(':leave', [
-        style({
-          opacity: 1,
-        }),
-        animate(ANIMATION_TIMING, style({
-          opacity: 0,
-        })),
-      ], {
-        params: {
-          delay: '0ms'
-      }}),
-    ]),
+    ])
   ],
   // Minimise the top bar when first clicking on background
   host: {
     "(click)": "hideInfos()"
   },
 })
-export class QuestionListComponent implements OnInit, AfterViewInit, OnDestroy {
-  public isLoading: boolean = true;
+export class QuestionListComponent
+  implements OnInit, AfterViewInit, OnDestroy {
+
   public questions: QuestionNumeric[];
   public informationValueOrder: {id: string, value: number }[];
+
+  private _contentChecked: boolean = false;
   // These will be cancelled onDestroy
   private _subscriptions: Subscription[] = [];
   // Track first interaction
@@ -97,6 +76,10 @@ export class QuestionListComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: Router,
     private shared: SharedService
   ) { 
+    this.shared.loadingState.next({
+      type: 'loading',
+      message: 'Ladataan kysymyksiä…'
+    });
     this.shared.title = "Mielipiteesi";
     this.shared.subtitle = QuestionListTopBarContentComponent;
   }
@@ -149,8 +132,7 @@ export class QuestionListComponent implements OnInit, AfterViewInit, OnDestroy {
   private _fetchQuestions(): void {
     this._updateInformationValues();
     this.questions = this.matcher.getAnswerableQuestions();
-    // Hide progress spinner and show question list
-    this.isLoading = false;
+    this.shared.loadingState.next({ type: 'loaded' });
   }
 
   private _updateData(): void {

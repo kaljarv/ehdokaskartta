@@ -300,7 +300,6 @@ export class MapCanvasComponent implements AfterViewInit, OnChanges, OnInit, OnD
   }
 
   ngOnChanges() {
-    console.log("Changed");
     if (this._canvasInitialized)
       this._applyDataChanges(MapRedrawOptions.ReInitialize);
   }
@@ -315,7 +314,7 @@ export class MapCanvasComponent implements AfterViewInit, OnChanges, OnInit, OnD
   }
 
   private _applyDataChanges(options: MapRedrawOptions = MapRedrawOptions.RedrawOnly) {
-    console.log("_applyDataChanges", options);
+
     // To make sure these are up-to-date
     this._calcCoordinateFactors();
 
@@ -1144,10 +1143,10 @@ export class MapCanvasComponent implements AfterViewInit, OnChanges, OnInit, OnD
       const key = rgba.slice(0, 3).join(",");
       const datum = this._hitColor2Marker?.[key];
 
-      console.log("Click", x, y, key, datum?.source?.id, JSON.parse(JSON.stringify(datum ?? "NODATUM")), 
-        this._hitColor2Marker, this.markerData, this._animations,
-        `minScale ${this._coordinateFactors.minimizedMarkerScale} based on Input ${this.minimizedCandidateScale}.`,
-        `zoomLevel ${this._coordinateFactors.zoomScale} maxZoom ${this.zoomExtents[1]} labelOpacity ${this.globalLabelOpacity} opacityThreshold ${this.showLabelsAtFactor}`,);
+      // console.log("Click", x, y, key, datum?.source?.id, JSON.parse(JSON.stringify(datum ?? "NODATUM")), 
+      //   this._hitColor2Marker, this.markerData, this._animations,
+      //   `minScale ${this._coordinateFactors.minimizedMarkerScale} based on Input ${this.minimizedCandidateScale}.`,
+      //   `zoomLevel ${this._coordinateFactors.zoomScale} maxZoom ${this.zoomExtents[1]} labelOpacity ${this.globalLabelOpacity} opacityThreshold ${this.showLabelsAtFactor}`,);
       
       // Ensure that click is within the bounding box of the marker and
       // emit matching click
