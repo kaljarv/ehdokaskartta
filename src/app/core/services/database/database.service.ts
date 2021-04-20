@@ -28,8 +28,8 @@ import {
   QuestionOpen,
   QuestionPreferenceOrder,
   QuestionOptions,
-  QuestionOptionsLikert,
-  QuestionOptionsPreferenceOrder
+  QuestionOptionsPreferenceOrder,
+  QuestionOptionsSingleNumber
 } from './question';
 import {
   AnswerDict,
@@ -162,9 +162,9 @@ export class DatabaseService {
       // Create object
       switch (type) {
         case "Likert":
-          return new QuestionLikert(opts as QuestionOptionsLikert);
+          return new QuestionLikert(opts as QuestionOptionsSingleNumber);
         case "Likert7":
-          return new QuestionLikertSeven(opts as QuestionOptionsLikert);
+          return new QuestionLikertSeven(opts as QuestionOptionsSingleNumber);
         case "Open":
           return new QuestionOpen(opts as QuestionOptions);
         case "PreferenceOrder":

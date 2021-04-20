@@ -8,6 +8,8 @@ import { PCA } from 'ml-pca';
 
 export class PcaProjector extends DataProjector {
 
+  readonly reportsProgess = false;
+
   constructor() {
     super();
   }
@@ -19,11 +21,15 @@ export class PcaProjector extends DataProjector {
 
   /*
   * Call to start the mapping process. In the end, this will call finalize to calculate
-  * the final positions. NB. We don't fire any onUpdate events.
+  * the final positions. NB. Progress is not reported
   */
-  public project(data: ProjectorData, disableVoter: boolean = false, onUpdate_notAvailable?: (number) => void): Promise<ProjectedMapping> {
+  public project(data: ProjectorData, disableVoter: boolean = false, onUpdate?: (number) => void): Promise<ProjectedMapping> {
 
     return new Promise((resolve, reject) => {
+
+      // Send one progress message
+      if (onUpdate) onUpdate(null);
+
       // Calculate PCA
       const pca = new PCA(data);
       const result = pca.predict(data).to2DArray();

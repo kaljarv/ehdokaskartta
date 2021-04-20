@@ -41,8 +41,8 @@ export class QuestionPreferenceOrder extends QuestionNumeric {
   /*
    * Overrides
    */
-  public isMissing(value: any): boolean {
-    return value == null || !Array.isArray(value) || value.length === 0;
+  public isMissing(value: number[]): boolean {
+    return value == null || value.length === 0;
   }
 
   public convertAnswerToString(value: number[] = this.voterAnswer): string {
@@ -72,9 +72,9 @@ export class QuestionPreferenceOrder extends QuestionNumeric {
   public normalizeValue(value: number[] = this.voterAnswer): number[] {
 
     // This will house the pairwise preferences
-    const pairs = this.getPairwisePreferences();
+    const pairs = this.getPairwisePreferences(value);
     // The weight for one question is 1 divided by the number or pairs
-    const weight = pairs.length;
+    const weight = 1 / pairs.length;
     // Convert boolean pairs to numeric values centered on 0.5
     return pairs.map(v => 0.5 + v * weight / 2);
   }

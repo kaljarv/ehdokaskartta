@@ -61,7 +61,7 @@ export abstract class QuestionSingleNumber extends QuestionNumeric {
    * Override if needed.
    */
   public normalizeValue(value: number = this.voterAnswer): number {
-    return (value - this.minAnswer) * (this.maxAnswer - this.minAnswer);
+    return (value - this.minAnswer) / (this.maxAnswer - this.minAnswer);
   }
 
   /*

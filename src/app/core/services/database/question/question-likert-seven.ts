@@ -1,10 +1,12 @@
 import {
-  QuestionLikert,
-  QuestionOptionsLikert
+  QuestionLikert
 } from './question-likert';
 import {
   QuestionNumericValue,
 } from './question-numeric';
+import {
+  QuestionOptionsSingleNumber
+} from './question-single-number';
 
 export const QUESTION_LIKERT_SEVEN_DEFAULT_VALUES: QuestionNumericValue[] = [
   {key: 1, name: 'Täysin eri mieltä'},
@@ -23,7 +25,7 @@ export class QuestionLikertSeven extends QuestionLikert {
    */
 
   constructor(
-    options: QuestionOptionsLikert,
+    options: QuestionOptionsSingleNumber,
     defaultValues: QuestionNumericValue[] = QUESTION_LIKERT_SEVEN_DEFAULT_VALUES
   ) {
     super(options, defaultValues);

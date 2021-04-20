@@ -5,6 +5,9 @@ import { DataProjector,
 import * as tsnejs from './lib/tsne';
 
 export class TsneProjector extends DataProjector {
+
+  readonly reportsProgess = true;
+
   private _tsne: any;
   public intervalRef: number;
   public tsneOptions = {

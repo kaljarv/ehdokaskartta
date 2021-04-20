@@ -219,7 +219,7 @@ export class MapComponent implements OnInit, OnDestroy {
       this.voterTooltip.show();
   }
 
-  private _reportProgress(value: number = 0, complete = false) {
+  private _reportProgress(value: number = null, complete = false) {
     if (complete)
       this.shared.loadingState.next({type: 'loaded'});
     else

@@ -82,13 +82,13 @@
       <div *ngFor="let value of question.values"
            class="column"
            #columns>
-        <span *ngFor="let candidate of candidates[value]"
+        <span *ngFor="let candidate of candidates[value.key]"
               class="candidate party-{{ candidate.partyName | toClassName }}">&bull;</span>
       </div>
 
     </div>
 
-    <label>{{ constituencyName }}n ehdokkaiden vastausten jakauma</label>
+    <label>{{ constituencyName | genitive }} ehdokkaiden vastausten jakauma</label>
 
   </div>
 

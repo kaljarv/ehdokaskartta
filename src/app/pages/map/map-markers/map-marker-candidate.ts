@@ -57,6 +57,7 @@ export class MapMarkerCandidate extends MapMarker {
     x: this._width / 2, 
     y: this._bodyY
   };
+  protected _labelY = 5 + this._headR;
 
   constructor(
     public contexts: CanvasRenderingContext2D[],

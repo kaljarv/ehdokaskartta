@@ -7,6 +7,8 @@ export type ProjectedMapping = [number, number][];
 
 export abstract class DataProjector {
 
+  readonly reportsProgess: boolean;
+
   constructor() { }
 
   /*

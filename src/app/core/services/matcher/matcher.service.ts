@@ -540,6 +540,7 @@ export class MatcherService {
   }
 
   public getVoterAnsweredQuestions(): QuestionNumeric[] {
+
     return Object.values(this.questions).filter(q => q instanceof QuestionNumeric && q.voterAnswer != null) as QuestionNumeric[];
   }
 
@@ -782,7 +783,7 @@ export class MatcherService {
 
   public unsetVoterAnswers(): void {
     this.getVoterAnsweredQuestions().forEach(q => q.unsetVoterAnswer());
-    this.questions = null;
+    this.questions = {};
     this._constituencyId = null;
     this._municipalityId = null;
     this.dataStatus.questions.next(DataStatus.NotReady);
@@ -817,7 +818,7 @@ export class MatcherService {
         if (Array.isArray(answer))
           d.push(...answer);
         else
-          d.push(answer)
+          d.push(answer);
 
       });
       data.push(d);
@@ -832,7 +833,7 @@ export class MatcherService {
         if (Array.isArray(answer))
           voter.push(...answer);
         else
-        voter.push(answer);
+          voter.push(answer);
       });
       data.push(voter);
     }
