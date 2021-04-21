@@ -335,59 +335,59 @@ export class MatcherService {
         
     // DEBUG / TEST / REMOVE
     // Multiply candidates to test performance
-    const qq = this.getAnswerableQuestions();
-    const perturbProb = 0.25; // 0.5;
-    const randomProb = 0.1;
-    const multiplierRange = [0.25, 6];
-    let multiplier = multiplierRange[0] + Math.random() * (multiplierRange[1] - multiplierRange[0]);
-    if (multiplier > 1) multiplier = Math.round(multiplier);
-    if (multiplier !== 1) {
-      for (const candidate in this.candidates) {
-        // Skip randomly if multiplier < 1
-        if (multiplier < 1 && Math.random() > multiplier) {
-          delete(this.candidates[candidate]);
-          continue;
-        }
-        // Otherwise create new objects
-        const c = this.candidates[candidate];
-        for (let i = 0; i < multiplier; i++) {
-          // Copy props
-          let {
-            id, number, surname, givenName, constituencyId, partyId, selected, detailsLoader, constituencyReference, partyReference,
-            ...rest
-          } = c;
-          const a = {...c.basicQuestions}
-          // Create faux replies
-          qq.forEach(q => {
-            const lid = q.id;
-            const rand = Math.random();
-            let val = c.getAnswer(lid);
-            if (rand < randomProb) {
-              // Full random
-              // Value should be 1, 2, 4 or 5
-              if (q instanceof QuestionPreferenceOrder) {
-                // Do nothing
-              } else {
-                val = Math.ceil(Math.random() * ((q as QuestionSingleNumber).maxAnswer - 1));
-                if (val >= q.neutralAnswer) val++;
-              }
-            } else if (rand < perturbProb && !(q instanceof QuestionPreferenceOrder)) {
-              // Perturb by one pt
-              val += [1,4].includes(val) ? 1 : -1;
-            }
-            a[lid] = val;
-          });
-          id = id + '_' + i
-          const o: CandidateOptions = {
-            id, number, surname, givenName, constituencyId, partyId, selected, detailsLoader, constituencyReference, partyReference,
-            basicQuestions: a
-          }
-          const n = new Candidate(o);
-          this.candidates[id] = n;
-        }
-      }
-    }
-    console.log("TEST: Added candidates for testing! Before culling, N = " + Object.keys(this.candidates).length);
+    // const qq = this.getAnswerableQuestions();
+    // const perturbProb = 0.25; // 0.5;
+    // const randomProb = 0.1;
+    // const multiplierRange = [0.25, 6];
+    // let multiplier = multiplierRange[0] + Math.random() * (multiplierRange[1] - multiplierRange[0]);
+    // if (multiplier > 1) multiplier = Math.round(multiplier);
+    // if (multiplier !== 1) {
+    //   for (const candidate in this.candidates) {
+    //     // Skip randomly if multiplier < 1
+    //     if (multiplier < 1 && Math.random() > multiplier) {
+    //       delete(this.candidates[candidate]);
+    //       continue;
+    //     }
+    //     // Otherwise create new objects
+    //     const c = this.candidates[candidate];
+    //     for (let i = 0; i < multiplier; i++) {
+    //       // Copy props
+    //       let {
+    //         id, number, surname, givenName, constituencyId, partyId, selected, detailsLoader, constituencyReference, partyReference,
+    //         ...rest
+    //       } = c;
+    //       const a = {...c.basicQuestions}
+    //       // Create faux replies
+    //       qq.forEach(q => {
+    //         const lid = q.id;
+    //         const rand = Math.random();
+    //         let val = c.getAnswer(lid);
+    //         if (rand < randomProb) {
+    //           // Full random
+    //           // Value should be 1, 2, 4 or 5
+    //           if (q instanceof QuestionPreferenceOrder) {
+    //             // Do nothing
+    //           } else {
+    //             val = Math.ceil(Math.random() * ((q as QuestionSingleNumber).maxAnswer - 1));
+    //             if (val >= q.neutralAnswer) val++;
+    //           }
+    //         } else if (rand < perturbProb && !(q instanceof QuestionPreferenceOrder)) {
+    //           // Perturb by one pt
+    //           val += [1,4].includes(val) ? 1 : -1;
+    //         }
+    //         a[lid] = val;
+    //       });
+    //       id = id + '_' + i
+    //       const o: CandidateOptions = {
+    //         id, number, surname, givenName, constituencyId, partyId, selected, detailsLoader, constituencyReference, partyReference,
+    //         basicQuestions: a
+    //       }
+    //       const n = new Candidate(o);
+    //       this.candidates[id] = n;
+    //     }
+    //   }
+    // }
+    // console.log("TEST: Added candidates for testing! Before culling, N = " + Object.keys(this.candidates).length);
     
     // console.log(this.candidates);
     // END: DEBUG / TEST / REMOVE
@@ -458,10 +458,6 @@ export class MatcherService {
 
   public getQuestion(id: string): Question {
     return this.questions[id];
-  }
-
-  public getOpenAnswerId(id: string): string {
-    return this.questions[id].relatedId;
   }
 
   public getCandidates(): CandidateDict {
@@ -652,33 +648,33 @@ export class MatcherService {
    * Get questions based on agreement with the voter's answers
    */
 
-  public getQuestionsByAgreement(candidateId: string, agrType: AgreementType): QuestionNumeric[] {
+  public getQuestionsByAgreement(candidate: Candidate, agrType: AgreementType): QuestionNumeric[] {
     if (agrType === QuestionNumeric.opinionUnknown)
       return this.getAnswerableQuestions().filter(q => q.voterAnswer == null);
     else
-      return this.getAnswerableQuestions().filter(q => q.doMatchAgreementType(q.voterAnswer, this.candidates[candidateId][q.id], agrType));
+      return this.getAnswerableQuestions().filter(q => q.doMatchAgreementType(q.voterAnswer, candidate.getAnswer(q), agrType));
   }
 
   // Shorthands for getQuestionIdsByAgreement() returning Question lists 
   // The Questions are sorted by disagreement if the match is approximate
-  public getAgreedQuestionsAsList(candidateId: string, approximateMatch: boolean = false, sortIfApproximate: boolean = true): QuestionNumeric[] {
-    let questions = this.getQuestionsByAgreement(candidateId, approximateMatch ? QuestionNumeric.mostlyAgree : QuestionNumeric.agree);
-    return approximateMatch && sortIfApproximate ? questions.sort(this._getSorter(candidateId)) : questions;
+  public getAgreedQuestionsAsList(candidate: Candidate, approximateMatch: boolean = false, sortIfApproximate: boolean = true): QuestionNumeric[] {
+    const questions = this.getQuestionsByAgreement(candidate, approximateMatch ? QuestionNumeric.mostlyAgree : QuestionNumeric.agree);
+    return approximateMatch && sortIfApproximate ? questions.sort(this._getSorter(candidate)) : questions;
   }
   // Sorted by disagreement desc
-  public getDisagreedQuestionsAsList(candidateId: string, approximateMatch: boolean = false): QuestionNumeric[] {
-    return this.getQuestionsByAgreement(candidateId, approximateMatch ? QuestionNumeric.stronglyDisagree : QuestionNumeric.disagree)
-           .sort(this._getSorter(candidateId));
+  public getDisagreedQuestionsAsList(candidate: Candidate, approximateMatch: boolean = false): QuestionNumeric[] {
+    return this.getQuestionsByAgreement(candidate, approximateMatch ? QuestionNumeric.stronglyDisagree : QuestionNumeric.disagree)
+           .sort(this._getSorter(candidate));
   }
-  public getUnansweredQuestionsAsList(candidateId: string): QuestionNumeric[] {
-    return this.getQuestionsByAgreement(candidateId, QuestionNumeric.opinionUnknown);
+  public getUnansweredQuestionsAsList(candidate: Candidate): QuestionNumeric[] {
+    return this.getQuestionsByAgreement(candidate, QuestionNumeric.opinionUnknown);
   }
 
   // Return a function usable for sort
-  private _getSorter(candidateId: string, descending: boolean = true): (a: QuestionNumeric, b: QuestionNumeric) => number {
-    return (a, b) => { 
-      let diff = a.getDistance(a.voterAnswer, this.candidates[candidateId][a.id]) -
-                 b.getDistance(b.voterAnswer, this.candidates[candidateId][b.id]);
+  private _getSorter(candidate: Candidate, descending: boolean = true): (a: QuestionNumeric, b: QuestionNumeric) => number {
+    return (a: QuestionNumeric, b: QuestionNumeric) => { 
+      let diff = a.getDistance(a.voterAnswer, candidate.getAnswer(a)) -
+                 b.getDistance(b.voterAnswer, candidate.getAnswer(b));
       return diff === 0 ? 
              this.compareQuestions(a, b) : 
              (descending ? -diff : diff);

@@ -147,14 +147,12 @@ export abstract class QuestionNumeric extends Question {
    * NB. If one of the values is missing, it's treated as inverted
    */
   public getDistance(value1: any, value2: any): number {
-    if (this.isMissing(value1) && this.isMissing(value2)) {
+    if (this.isMissing(value1) && this.isMissing(value2))
       throw new Error("Both values to getDistance cannot be missing!");
-    } else {
-      return Math.abs(
-        Number(this.isMissing(value1) ? this.invertAnswer(value2) : value1) -
-        Number(this.isMissing(value2) ? this.invertAnswer(value1) : value2)
-      );
-    }
+    return Math.abs(
+      Number(this.isMissing(value1) ? this.invertAnswer(value2) : value1) -
+      Number(this.isMissing(value2) ? this.invertAnswer(value1) : value2)
+    );
   }
 
   /*
@@ -162,23 +160,18 @@ export abstract class QuestionNumeric extends Question {
    */
   public match(value1: any, value2: any, strict: boolean = false, allowOpinionUnknown: boolean = true): AgreementType {
     
-    if (allowOpinionUnknown && value1 == null) {
+    if (allowOpinionUnknown && this.isMissing(value1))
       return AgreementType.OpinionUnknown;
-    }
 
     const dist = this.getDistance(value1, value2);
 
-    if (strict) {
+    if (strict)
       return dist === 0 ? AgreementType.Agree: AgreementType.Disagree;
-    }
 
-    switch (dist) {
-      case 0:
-      case 1:
-        return AgreementType.MostlyAgree;
-      default:
-        return AgreementType.StronglyDisagree;
-    }
+    if (dist <= 1)
+      return AgreementType.MostlyAgree;
+    else
+      return AgreementType.StronglyDisagree;
   }
 
   /*

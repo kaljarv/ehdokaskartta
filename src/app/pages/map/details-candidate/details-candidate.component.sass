@@ -78,15 +78,20 @@ header
     padding-top: $margin-S
 
     .customChipList
-      // Counter the 16px margin and padding
+      // Edge-to-edge with padding on the left
+      margin-left: -16px
+      padding: 0 16px 
       width: calc(100% + 32px)
       display: flex
       flex-direction: row
       flex-wrap: nowrap
       overflow-x: scroll
       position: relative
-      padding-right: 16px
       scrollbar-width: none
+
+      &::-webkit-scrollbar
+        display: none
+
 
     .customChipList::webkit-scrollbar
       display: none
@@ -115,7 +120,7 @@ header
       text-overflow: ellipsis
       display: inline-block
       max-width: 20vw
-      margin-right: $fontSize-XS / 4
+      margin-right: $fontSize-XS / 2
       @media (max-width: 30rem)
         max-width: 6rem
     

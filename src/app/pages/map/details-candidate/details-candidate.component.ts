@@ -22,7 +22,8 @@ import { MatcherService,
          Candidate, 
          INDEPENDENT_PARTY_ID, 
          Question,
-         QuestionNumeric } from '../../../core';
+         QuestionNumeric, 
+         QuestionPreferenceOrder} from '../../../core';
 import { SharedService } from '../../../core';
 import { FloatingCardRef,
          FLOATING_CARD_DATA,
@@ -110,24 +111,25 @@ export class DetailsCandidateComponent implements OnInit, AfterViewInit, AfterVi
   @ViewChild('tabGroup', {read: ElementRef}) tabGroup: ElementRef;
   @ViewChild('expanderDisagreed') expanderDisagreed: CustomExpanderComponent;
   public candidate: Candidate;
-  public opinions: { [key: string]: Question[] } = { // Will house question lists
-    agreed: null,
-    disagreed: null,
-    unanswered: null,
+  public opinions: { [key: string]: QuestionNumeric[] } = { // Will house question lists
+    agreed: [],
+    disagreed: [],
+    unanswered: []
   };
-  public excerpts: { [key: string]: Question[] } = { // Sublists of opinions to show as excerpts
-    agreed: null,
-    disagreed: null,
-    unanswered: null,
+  public excerpts: { [key: string]: QuestionNumeric[] } = { // Sublists of opinions to show as excerpts
+    agreed: [],
+    disagreed: [],
+    unanswered: []
   };
   public excerptMores: { [key: string]: number } = { // Strings to add after excerpts if there are more than the ones shown
-    agreed: null,
-    disagreed: null,
-    unanswered: null,
+    agreed: 0,
+    disagreed: 0,
+    unanswered: 0
   }
   public excerptMaxLength: number = 9;
   public peekOffset: string = '1rem';
   public opinionsTabIndex: number = 2;
+  public detailsLoaded: boolean = false;
   private _tabBodies: NodeList;
   private _tabBodyHeight: string = '';
   // These will be cancelled onDestroy
@@ -154,7 +156,7 @@ export class DetailsCandidateComponent implements OnInit, AfterViewInit, AfterVi
         this.candidate = this.matcher.getCandidate(this.data.id);
         // TODO: Check if we can move this later
         await this.candidate.loadDetails();
-        this.initQuestions();
+        this._initQuestions();
       })
     );
     // We use this to signal the map avatars
@@ -173,14 +175,44 @@ export class DetailsCandidateComponent implements OnInit, AfterViewInit, AfterVi
   }
 
   ngAfterViewChecked() {
+    if (this.detailsLoaded)
+      this._updateBodyHeight();
+  }
 
-    // Calculate a height for mat-tab-body elements so the user can scroll inside them.
-    // NB. We can't use div.mat-tab-body-wrapper as it's style is reset ever so often.
+  ngOnDestroy() {
+    // We use this to signal the map avatars
+    if (this.shared.activeCandidateId === this.data.id) {
+      this.shared.activeCandidateId = null;
+    }
+    // Cancel subscriptions
+    this._subscriptions.forEach(s => s.unsubscribe());
+  }
+
+  private _initQuestions(): void {
+    this.opinions.agreed = this.matcher.getAgreedQuestionsAsList(this.candidate, true); // True here means we are using approximate matching
+    this.opinions.disagreed = this.matcher.getDisagreedQuestionsAsList(this.candidate, true);
+    this.opinions.unanswered = this.matcher.getUnansweredQuestionsAsList(this.candidate);
+    // Setup excerpts
+    for (const key in this.opinions) {
+      if (this.opinions[key].length <= this.excerptMaxLength + 1) {
+        this.excerpts[key] = this.opinions[key];
+      } else {
+        this.excerpts[key] = this.opinions[key].slice(0, this.excerptMaxLength);
+        this.excerptMores[key] = this.opinions[key].length - this.excerptMaxLength;
+      }
+    }
+    this.detailsLoaded = true;
+  }
+
+  /*
+   * Calculate a height for mat-tab-body elements so the user can scroll inside them.
+   * NB. We can't use div.mat-tab-body-wrapper as it's style is reset ever so often.
+   */
+  private _updateBodyHeight(): void {
 
     // Find the elements if we haven't done it yet
-    if (!this._tabBodies || this._tabBodies.length === 0) {
+    if (!this._tabBodies || this._tabBodies.length === 0)
       this._tabBodies = this.tabGroup.nativeElement.querySelectorAll('mat-tab-body');
-    }
 
     if (this._tabBodies.length > 0) {
 
@@ -194,30 +226,6 @@ export class DetailsCandidateComponent implements OnInit, AfterViewInit, AfterVi
         this._tabBodyHeight = bodyHeight;
       }
 
-    }
-  }
-
-  ngOnDestroy() {
-    // We use this to signal the map avatars
-    if (this.shared.activeCandidateId === this.data.id) {
-      this.shared.activeCandidateId = null;
-    }
-    // Cancel subscriptions
-    this._subscriptions.forEach(s => s.unsubscribe());
-  }
-
-  private initQuestions(): void {
-    this.opinions.agreed = this.matcher.getAgreedQuestionsAsList(this.data.id, true); // True here means we are using approximate matching
-    this.opinions.disagreed = this.matcher.getDisagreedQuestionsAsList(this.data.id, true);
-    this.opinions.unanswered = this.matcher.getUnansweredQuestionsAsList(this.data.id);
-    // Setup excerpts
-    for (const key in this.opinions) {
-      if (this.opinions[key].length <= this.excerptMaxLength + 1) {
-        this.excerpts[key] = this.opinions[key];
-      } else {
-        this.excerpts[key] = this.opinions[key].slice(0, this.excerptMaxLength);
-        this.excerptMores[key] = this.opinions[key].length - this.excerptMaxLength;
-      }
     }
   }
 
@@ -269,53 +277,53 @@ export class DetailsCandidateComponent implements OnInit, AfterViewInit, AfterVi
     this.shared.logEvent('candidate_expand_answers', {id: this.candidate.id, category: category, scrollTo: scrollTo});
   }
 
-  public isMissing(id: string): boolean {
-    if (this.matcher.questions[id] == null)
-      throw new Error(`No question with id '${id}' in Matcher.`);
-    return this.matcher.questions[id].isMissing(this.candidate[id]);
+  public getVoterAnswer(question: QuestionNumeric): number | number[] {
+    return question.voterAnswer;
   }
 
-  public getVoterAnswer(id: string): number | number[] {
-    const q = this.matcher.questions[id];
-    if (q instanceof QuestionNumeric)
-      return q.voterAnswer;
-    else
-      throw new Error(`Question with id '${id}' does not allow voter answers.`);
+
+  private _getQuestion(questionOrId: Question | string): Question {
+    const question: Question = questionOrId instanceof Question ? 
+                               questionOrId : 
+                               this.matcher.questions[questionOrId];
+    if (!question)
+      throw new Error(`Question with id '${questionOrId}' does not exist!`);
+    return question;
   }
 
-  public getCandidateAnswer(id: string): number {
-    // NB. The 2nd parameter (true) needed to check for missing Likert values
-    if (this.isMissing(id))
-      return null;
-    else
-      return Number(this.candidate[id]);
+  public getAnswer(questionOrId: Question | string): any {
+    return this.candidate.getAnswer(this._getQuestion(questionOrId));
   }
 
-  public getCandidateAnswerOpen(id: string): string {
-    const oId = this.matcher.getOpenAnswerId(id);
-    if (oId)
-      return this.isMissing(oId) ? null : this.candidate[oId];
-    else
-      throw new Error(`No open answer related to question ${id}.`);
+  public getNumericAnswer(question: QuestionNumeric): number {
+    const answer = this.getAnswer(question);
+    return question.isMissing(answer) ? null : Number(answer);
   }
 
-  public getPartyAverage(id: string): number | number[] | null {
-    if (this.candidate.party.id != INDEPENDENT_PARTY_ID) {
-      const q = this.matcher.questions[id];
-      if (q instanceof QuestionNumeric)
-        return q.partyAverages[this.candidate.party.id];
-      else
-        throw new Error(`Question with id '${id}' does not allow party averages.`);
-    } else {
-      return null;
+  public getRelated(question: Question): string {
+    const oId = question.relatedId;
+    if (oId) {
+      const answer = this.getAnswer(oId);
+      return question.isMissing(answer) ? null : answer;
     }
+    return null;
   }
 
-  public getOrMissing(key: string, process: Function = (x) => x ): string {
-    if (this.isMissing(key))
-      return MISSING_DATA_INFO;
-    else
-      return process(this.candidate[key]);
+  public isMissing(questionOrId: Question | string): boolean {
+    const question = this._getQuestion(questionOrId);
+    return question.isMissing(this.getAnswer(question));
+  }
+
+  public getPartyAverage(question: QuestionNumeric): number | number[] | null {
+    return this.candidate.party.id != INDEPENDENT_PARTY_ID ? 
+           question.partyAverages[this.candidate.party.id] :
+           null;
+  }
+
+  public getOrMissing(questionOrId: Question | string, process: Function = (x) => x ): string {
+    return this.isMissing(questionOrId) ?
+           MISSING_DATA_INFO :
+           process(this.getAnswer(questionOrId));
   }
 
   get missingDataInfo(): string {
@@ -397,9 +405,9 @@ export class DetailsCandidateComponent implements OnInit, AfterViewInit, AfterVi
     if (this.isMissing("Q75")) {
       return this.sanitizer.bypassSecurityTrustHtml(MISSING_DATA_INFO_HTML);
     } else {
-      let text = `<span class="content-emphasis">${this.sentencify.transform(this.candidate["Q75"])}</span>`;
+      let text = `<span class="content-emphasis">${this.sentencify.transform(this.getAnswer("Q75"))}</span>`;
       if (!this.isMissing("Q76")) {
-        text += ` <span [innerHtml]="politicalParagonReason">${this.candidate["Q76"]}</span>`;
+        text += ` <span [innerHtml]="politicalParagonReason">${this.getAnswer("Q76")}</span>`;
       }
       return this.sanitizer.bypassSecurityTrustHtml(text);
     }
@@ -420,7 +428,7 @@ export class DetailsCandidateComponent implements OnInit, AfterViewInit, AfterVi
     let list = [];
     ['Q60', 'Q61', 'Q62'].forEach( (key) => {
       if (!this.isMissing(key)) {
-        list.push(this.candidate[key]);
+        list.push(this.getAnswer(key));
       }
     });
     return list;
@@ -429,7 +437,7 @@ export class DetailsCandidateComponent implements OnInit, AfterViewInit, AfterVi
     let list = [];
     ['Q72', 'Q73'].forEach( (key) => {
       if (!this.isMissing(key)) {
-        list.push(this.candidate[key]);
+        list.push(this.getAnswer(key));
       }
     });
     return list;

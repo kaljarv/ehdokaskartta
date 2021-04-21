@@ -1,4 +1,5 @@
 import {
+  AgreementType,
   QuestionNumeric,
   QuestionNumericValue,
   QuestionOptionsNumeric
@@ -80,6 +81,31 @@ export class QuestionPreferenceOrder extends QuestionNumeric {
   }
 
   /*
+   * Calc distance between two preference orders by counting pairwise matches,
+   * see: https://en.wikipedia.org/wiki/Kendall_rank_correlation_coefficient
+   * Used by all matching methods
+   */
+  public getDistance(value1: number[], value2: number[]): number {
+    if (this.isMissing(value1) && this.isMissing(value2))
+      throw new Error("Both values to getDistance cannot be missing!");
+    
+    let dist = 0;    
+    
+    // Get pairwise preferences
+    const pairs1 = this.getPairwisePreferences(value1);
+    const pairs2 = this.getPairwisePreferences(value2);
+
+    // We just subtract the values from each other, thus the distance for
+    // a pair ranges from 0 to 2
+    for (let i = 0; i < pairs1.length; i++)
+      dist += Math.abs(pairs1[i] - pairs2[i]);
+    
+    // Normalize distance to 0--2, nb. that for each pair the distance is
+    // already from 0 to 2
+    return dist / pairs1.length;
+  }
+
+  /*
    * Return pairwise preferences for all possible value pairs. The form for, eg., 4 values is:
    * [ 
    *   this.values[0] > this.values[1], 
@@ -156,11 +182,6 @@ export class QuestionPreferenceOrder extends QuestionNumeric {
       return undefined;
     return this.voterAnswer.map(v => this.getValue(v));
   }
-
-  /*
-   * TODO:
-   * match
-   */
 
 }
 
