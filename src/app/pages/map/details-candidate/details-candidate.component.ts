@@ -134,6 +134,7 @@ export class DetailsCandidateComponent implements OnInit, AfterViewInit, AfterVi
   private _tabBodyHeight: string = '';
   // These will be cancelled onDestroy
   private _subscriptions: Subscription[] = [];
+  private _viewInitialized: boolean = false;
 
   public get isMaximised(): boolean {
     return this.floatingCardRef.isMaximised;
@@ -154,9 +155,11 @@ export class DetailsCandidateComponent implements OnInit, AfterViewInit, AfterVi
     this._subscriptions.push(
       this.matcher.constituencyDataReady.subscribe(async () => {
         this.candidate = this.matcher.getCandidate(this.data.id);
-        // TODO: Check if we can move this later
-        await this.candidate.loadDetails();
         this._initQuestions();
+        // We try to set the peek element here just in case the view was already initialized
+        this._setPeekElement();
+        await this.candidate.loadDetails();
+        this.detailsLoaded = true;
       })
     );
     // We use this to signal the map avatars
@@ -164,14 +167,8 @@ export class DetailsCandidateComponent implements OnInit, AfterViewInit, AfterVi
   }
 
   ngAfterViewInit() {
-    // Header needs to be initialized
-    // This will also set up draggability
-    this.floatingCardRef.setPeekElement(this.header, {
-      offset: this.peekOffset,
-      // Use persistentHeight as the header height will be miscalculated on minimise because
-      // the lower part of the header is not rendered in the maximised state
-      persistentHeight: true,
-    });
+    this._viewInitialized = true;
+    this._setPeekElement();
   }
 
   ngAfterViewChecked() {
@@ -201,7 +198,20 @@ export class DetailsCandidateComponent implements OnInit, AfterViewInit, AfterVi
         this.excerptMores[key] = this.opinions[key].length - this.excerptMaxLength;
       }
     }
-    this.detailsLoaded = true;
+  }
+
+  private _setPeekElement(): void {
+    // Header needs to be initialized before this is done
+    if (!this._viewInitialized)
+      return;
+      
+    // This will also set up draggability
+    this.floatingCardRef.setPeekElement(this.header, {
+      offset: this.peekOffset,
+      // Use persistentHeight as the header height will be miscalculated on minimise because
+      // the lower part of the header is not rendered in the maximised state
+      persistentHeight: true
+    });
   }
 
   /*

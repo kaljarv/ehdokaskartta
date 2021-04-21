@@ -52,13 +52,12 @@ export class FloatingCardRef {
   public dismissed: EventEmitter<void> = new EventEmitter<void>();
 
   get peekHeight(): string {
-    if (this._peekHeight != null) {
+    if (this._peekHeight != null)
       return this._peekHeight;
-    } else if (this.peekElement != null) {
+    else if (this.peekElement != null)
       return this.peekElement.nativeElement.clientHeight + 'px';
-    } else {
+    else
       return FLOATING_CARD_DEFAULT_PEEK_HEIGHT;
-    }
   }
 
   set peekHeight(height: string) {
@@ -139,18 +138,16 @@ export class FloatingCardRef {
   }
 
   public toggle(): void {
-    if (this.isMaximised) {
+    if (this.isMaximised)
       this.peek();
-    } else {
+    else
       this.maximise();
-    }
   }
 
   public maximise(dragged: boolean = false): void {
 
-    if (this._cancelClick && !dragged) {
+    if (this._cancelClick && !dragged)
       return;
-    }
 
     const position = this.overlayRef.getConfig().positionStrategy as GlobalPositionStrategy;
     position.top();
@@ -166,9 +163,8 @@ export class FloatingCardRef {
 
   public peek(dragged: boolean = false): void {
 
-    if (this._cancelClick && !dragged) {
+    if (this._cancelClick && !dragged)
       return;
-    }
 
     this._updatePeekPosition();
     this.overlayRef.removePanelClass(FLOATING_CARD_MAXIMISED_CLASS);
@@ -192,6 +188,10 @@ export class FloatingCardRef {
   public setPeekElement(element: ElementRef<HTMLElement>, peekElementOptions: FloatingCardPeekElementOptions = {}): void {
     let options = {...DEFAULT_FLOATING_CARD_PEEK_ELEMENT_OPTIONS, ...peekElementOptions};
 
+    // Reset possibly set persistent height
+    this._peekHeight = null;
+
+    // Set the element
     this.peekElement = element;
     
     // Offset to add below the peeking element
@@ -206,22 +206,20 @@ export class FloatingCardRef {
     this.dragRef.ended.subscribe(() => this._onDragEnd());
 
     // Persistent peek height means we only calculate it once
-    if (options.persistentHeight) {
+    if (options.persistentHeight)
       // This assigns the dynamically calculated height to a static private property
       this.peekHeight = this.peekHeight;
-    }
 
     // Show element unless disabled
-    if (!options.dontPeek) {
+    if (!options.dontPeek)
       // We add a small timeout to allow for the overlay to originally position itself,
       // as init will set some transitions which would otherwise cause glitches
       setTimeout( () => {
         this.init();
         this.peek();
       }, 10);
-    } else {
+    else
       this.init();
-    }
   }
 
   /* Constrain the dragging to the top of the viewport when maximised.
