@@ -1,4 +1,18 @@
-import { CandidateFilter } from './candidate-filter';
+import { 
+  CandidateFilter,
+  CandidateFilterOptions
+} from './candidate-filter';
+
+import { 
+  Question
+} from '../../database';
+
+/*
+ * Question is required for basic filters
+ */
+export interface CandidateFilterOptionsBasic extends CandidateFilterOptions {
+  question: Question
+}
 
 
 /*
@@ -12,8 +26,11 @@ export class CandidateFilterBasic extends CandidateFilter {
     excluded: new Set(),
   }
 
-  constructor(...args) {
-    super(...args);
+  constructor(
+    opts: CandidateFilterOptions,
+    values?: any[]
+  ) {
+    super(opts, values);
   }
 
   // Overrides

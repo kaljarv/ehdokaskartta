@@ -29,6 +29,7 @@ export abstract class QuestionSingleNumber extends QuestionNumeric {
   readonly maxAnswer: number;
   readonly minAnswer: number;
   readonly neutralAnswer: number;
+  readonly answerRange: number;
 
   constructor(
     {values, ...options}: QuestionOptionsSingleNumber,
@@ -41,6 +42,7 @@ export abstract class QuestionSingleNumber extends QuestionNumeric {
     this.minAnswer = sorted[0].key;
     this.maxAnswer = sorted[sorted.length - 1].key;
     this.neutralAnswer = sorted[Math.floor(sorted.length / 2)].key;
+    this.answerRange = this.maxAnswer - this.minAnswer;
   }
 
 
@@ -61,7 +63,24 @@ export abstract class QuestionSingleNumber extends QuestionNumeric {
    * Override if needed.
    */
   public normalizeValue(value: number = this.voterAnswer): number {
-    return (value - this.minAnswer) / (this.maxAnswer - this.minAnswer);
+    return (value - this.minAnswer) / this.answerRange;
+  }
+
+  /*
+   * Calc distance between two values on a scale of 0--1
+   * NB. If one of the values is missing, it's treated as inverted
+   */
+  public getDistance(value1: any, value2: any, disallowBothMissing: boolean = false): number {
+    if (this.isMissing(value1) && this.isMissing(value2)) {
+      if (disallowBothMissing)
+        throw new Error("Both values to getDistance cannot be missing!");
+      return 0;
+    }
+
+    return Math.abs(
+      Number(this.isMissing(value1) ? this.invertAnswer(value2) : value1) -
+      Number(this.isMissing(value2) ? this.invertAnswer(value1) : value2)
+    ) / this.answerRange;
   }
 
   /*

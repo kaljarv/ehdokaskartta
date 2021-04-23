@@ -58,7 +58,6 @@ export class DetailsQuestionComponent implements OnInit {
   @ViewChild('columns') columns: QueryList<ElementRef>;
 
   public question: QuestionNumeric;
-  public questionType: QuestionType;
   public candidates: {
     [value: number]: Candidate[]
   } = {};
@@ -76,17 +75,11 @@ export class DetailsQuestionComponent implements OnInit {
   ) {
     // Get question object
     this.question = this.matcher.questions[data.id] as QuestionNumeric;
-    // Set question type
-    if (this.question instanceof QuestionLikert) {
-      this.questionType = 'Likert';
-    } else if (this.question instanceof QuestionLikertSeven) {
-      this.questionType = 'Likert7';
-    } else if (this.question instanceof QuestionPreferenceOrder) {
-      this.questionType = 'PreferenceOrder';
+
+    // Init pref order
+    if (this.questionType === 'PreferenceOrder')
       this._initPreferenceOrder();
-    } else {
-      throw new Error(`Unimplemented question type '${this.question.constructor.name}'!`);
-    }
+      
     // Enable delete button if there's an answer
     // NB. We don't want to bind it dynamically, as then the button would be shown prematurely
     this.showDeleteButton = this.voterAnswer != null;
@@ -138,6 +131,16 @@ export class DetailsQuestionComponent implements OnInit {
 
   openLink(event: MouseEvent): void {
     this.dismiss(event);
+  }
+
+  get questionType(): QuestionType {
+    if (this.question instanceof QuestionLikert)
+      return 'Likert';
+    if (this.question instanceof QuestionLikertSeven)
+      return 'Likert7';
+    if (this.question instanceof QuestionPreferenceOrder)
+      return 'PreferenceOrder';
+    throw new Error(`Unimplemented question type '${this.question.constructor.name}'!`);
   }
 
   get voterAnswer(): string | number[] {

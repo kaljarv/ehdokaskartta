@@ -3,16 +3,35 @@ import {
 } from '@angular/core';
 
 import { 
+  Candidate,
+  CandidateDict,
   Question
 } from '../../database';
 
+
+export type CandidateFilterAnswerQuestion = {
+  type: 'question',
+  question: Question
+}
+
+export type CandidateFilterAnswerProperty = {
+  type: 'property',
+  property: keyof Candidate
+}
+
+export type CandidateFilterAnswerCandidate = {
+  type: 'candidate'
+}
+
+export type CandidateFilterAnswerType = CandidateFilterAnswerQuestion | CandidateFilterAnswerProperty | CandidateFilterAnswerCandidate;
+
 export interface CandidateFilterOptions {
   question?: Question,
+  property?: keyof Candidate,
   title?: string,
   description?: string,
   multipleValues?: boolean,
-  multipleValueSeparator?: string,
-  [extraOptionName: string]: any
+  multipleValueSeparator?: string
 }
 
 export enum CandidateFilterLogicOperator {
@@ -28,8 +47,8 @@ export const MISSING_FILTER_VAL = {
 /* 
  * Base class for filters to filter out candidates
  */ 
-export class CandidateFilter {
-  public question: Question;
+export abstract class CandidateFilter {
+  public answerType: CandidateFilterAnswerType;
   public title: string;
   public description: string;
   // Multiple values means a candidate may have multiple values for the datum filtered
@@ -43,16 +62,23 @@ export class CandidateFilter {
   protected _supressRulesChanged = false;
 
   constructor(
-    opts?: CandidateFilterOptions,
-    values?: any[]) {
-    if (opts) {
-      for (let key in opts) {
-        this[key] = opts[key];
-      }
-    }
-    if (values) {
+    opts: CandidateFilterOptions,
+    values?: any[]
+  ) {
+    const {property, question, ...otherOpts} = opts;
+
+    for (let key in otherOpts)
+      this[key] = opts[key];
+
+    if (values)
       this.addValue(values);
-    }
+
+    if (property != null)
+      this.answerType = {type: 'property', property}
+    else if (question != null)
+      this.answerType = {type: 'question', question}
+    else
+      this.answerType = {type: 'candidate'}
   }
   // Methods that are usually be overriden by subclasses
 
@@ -68,11 +94,10 @@ export class CandidateFilter {
 
   // Sorting function
   protected _sort(a: any, b: any): number {
-    if (this.isNumeric) {
+    if (this.isNumeric)
       return a - b;
-    } else {
-      return a.localeCompare(b);
-    }
+    else
+      return a.toString().localeCompare(b.toString());
   }
 
   // Called for each rule when clearing, default expects rules to be Sets
@@ -106,15 +131,14 @@ export class CandidateFilter {
            Array.from(this._values) : 
            Array.from(this._values).sort((a, b) => {
              // Sort missing values to the end
-             if (a === b) {
+             if (a === b)
                return 0;
-             } else if (a === MISSING_FILTER_VAL) {
+             else if (a === MISSING_FILTER_VAL)
                return 1;
-             } else if (b === MISSING_FILTER_VAL) {
+             else if (b === MISSING_FILTER_VAL)
                return -1;
-             } else {
+             else
                return this._sort(a, b);
-             }
            });
   }
 
@@ -130,9 +154,26 @@ export class CandidateFilter {
     return this._values.has(MISSING_FILTER_VAL);
   }
 
+  protected _getAnswer(candidate: Candidate): any {
+    switch (this.answerType.type) {
+      case 'candidate':
+        return candidate;
+      case 'property':
+        return candidate[this.answerType.property];
+      case 'question':
+        return candidate.getAnswer(this.answerType.question);
+    }
+  }
+
   protected _process(value: any): any {
-    return (this.question && this.question.isMissing(value)) || value == null ? 
-           MISSING_FILTER_VAL : this._processType(value);
+    switch (this.answerType.type) {
+      case 'candidate':
+        return value;
+      case 'property':
+        return value == null ? MISSING_FILTER_VAL :  this._processType(value);
+      case 'question':
+        return this.answerType.question.isMissing(value) ? MISSING_FILTER_VAL :  this._processType(value);
+    }
   }
 
   public addValue(...values: any): void {
@@ -198,27 +239,28 @@ export class CandidateFilter {
     }
   }
 
-  // NB. This expects a dictionary
-  public apply(data: {[id: string]: {}}, filteredKey: string = 'filteredOut'): number {
+  public apply(candidates: CandidateDict, filteredKey: string = 'filteredOut'): number {
     let count = 0;
-    // Apply test to all items
-    for (const id in data) {
-      let fOut = (filteredKey in data[id]) ? data[id][filteredKey] : null;
-      if (this.active && !this.matchMultiple(data[id][this.question.id])) {
+    // Apply test to all candidates
+    for (const id in candidates) {
+      const candidate = candidates[id];
+      // Get already active filters
+      let fOut = filteredKey in candidate ? candidate[filteredKey] : null;
+      if (this.active && !this.matchMultiple(this._getAnswer(candidate))) {
         // We save the applied filter in the filteredOut prop
-        if (fOut) {
+        if (fOut)
           fOut.add(this);
-        } else {
+        else
           fOut = new Set<CandidateFilter>([this]);
-        }
         count++;
       } else if (fOut) {
         // Filter matched, so we remove this from the filters
         fOut.delete(this);
         // If no filters apply remove the set altogether
-        if (!fOut.size) fOut = null;
+        if (!fOut.size) 
+          fOut = null;
       }
-      data[id][filteredKey] = fOut;
+      candidate[filteredKey] = fOut;
     }
     return count;
   }

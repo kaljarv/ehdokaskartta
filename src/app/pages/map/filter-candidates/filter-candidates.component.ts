@@ -25,7 +25,7 @@ import { MatcherService,
          CandidateFilter,
          CandidateFilterSimple,
          CandidateFilterNumberRange,
-         CandidateFilterQuestion,
+         CandidateFilterMultiQuestion,
          Question,
          QuestionNumeric } from '../../../core';
 import { SharedService } from '../../../core';
@@ -152,7 +152,7 @@ export class FilterCandidatesComponent implements OnInit, OnDestroy {
           fa.push(c);
         });
 
-      } else if (filter instanceof CandidateFilterQuestion) {
+      } else if (filter instanceof CandidateFilterMultiQuestion) {
 
         fa = this.fb.array([]);
         this.getSortedValues(filter).forEach(v => {
@@ -181,13 +181,13 @@ export class FilterCandidatesComponent implements OnInit, OnDestroy {
     });
   }
 
-  public getSortedValues(filter: CandidateFilterQuestion): QuestionNumeric[] {
-    return filter.getValues().sort( (a, b) => this._compareQuestions(a, b) );
+  public getSortedValues(filter: CandidateFilterMultiQuestion): QuestionNumeric[] {
+    return filter.getValues(true).sort( (a, b) => this._compareQuestions(a, b) );
   }
 
   // We use this for sorting the questions from the question filter
-  private _compareQuestions(questionIdA: string, questionIdB: string): number {
-    return this.matcher.compareQuestions(this.matcher.getQuestion(questionIdA), this.matcher.getQuestion(questionIdB));
+  private _compareQuestions(questionA: QuestionNumeric, questionB: QuestionNumeric): number {
+    return this.matcher.compareQuestions(questionA, questionB);
   }
  
   private _getFormArray(filterIndex: number): FormArray {
@@ -200,7 +200,7 @@ export class FilterCandidatesComponent implements OnInit, OnDestroy {
 
   // For choosing the display template
   public filterType(filter: CandidateFilter): FilterType {
-    if (filter instanceof CandidateFilterQuestion) {
+    if (filter instanceof CandidateFilterMultiQuestion) {
       return 'question';
     } else if (filter instanceof CandidateFilterNumberRange) {
       return 'range';
@@ -270,7 +270,7 @@ export class FilterCandidatesComponent implements OnInit, OnDestroy {
           }
         }
 
-      } else if (filter instanceof CandidateFilterQuestion) {
+      } else if (filter instanceof CandidateFilterMultiQuestion) {
 
         const filterValues = this.getSortedValues(filter);
         for (let j = 0; j < values[i].length; j++) {

@@ -17,6 +17,8 @@ import { CustomExpanderModule,
 import { CandidateAnswerComponent } from './candidate-answer.component';
 import { DetailsCandidateComponent,
          DetailsCandidateGlobalStylesComponent } from './details-candidate.component';
+import { LikertAnswerComponent } from './likert-answer.component';
+import { PreferenceOrderAnswerComponent } from './preference-order-answer.component';
 
 @NgModule({
   imports: [
@@ -31,16 +33,20 @@ import { DetailsCandidateComponent,
     CorePipesModule,
     CustomExpanderModule,
     FadeoutExpanderModule, 
-    FloatingCardModule,
+    FloatingCardModule
   ],
   exports: [
     CandidateAnswerComponent,
     DetailsCandidateComponent,
+    LikertAnswerComponent,
+    PreferenceOrderAnswerComponent
   ],
   declarations: [
     CandidateAnswerComponent,
     DetailsCandidateComponent,
     DetailsCandidateGlobalStylesComponent,
-  ],
+    LikertAnswerComponent,
+    PreferenceOrderAnswerComponent
+  ]
 })
 export class DetailsCandidateModule {}

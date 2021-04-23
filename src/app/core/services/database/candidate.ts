@@ -38,6 +38,10 @@ export type CandidateDict = {
   [id: string]: Candidate
 }
 
+
+/*
+ * TODO: Add methods to get and add to filteredOut
+ */
 export class Candidate {
 
   public id: string;

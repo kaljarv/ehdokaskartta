@@ -186,9 +186,18 @@ export class DetailsCandidateComponent implements OnInit, AfterViewInit, AfterVi
   }
 
   private _initQuestions(): void {
-    this.opinions.agreed = this.matcher.getAgreedQuestionsAsList(this.candidate, true); // True here means we are using approximate matching
+    this.opinions.agreed = this.matcher.getAgreedQuestionsAsList(this.candidate, true);
     this.opinions.disagreed = this.matcher.getDisagreedQuestionsAsList(this.candidate, true);
     this.opinions.unanswered = this.matcher.getUnansweredQuestionsAsList(this.candidate);
+    
+    // DEBUG / TODO / REMOVE
+    let d = 0;
+    this.matcher.getDisagreedQuestionsAsList(this.candidate, false).forEach(q =>
+      d += q.getDistance(q.voterAnswer, this.candidate.getAnswer(q))
+    );
+    console.log(`Total disagreement: ${d}`);
+
+
     // Setup excerpts
     for (const key in this.opinions) {
       if (this.opinions[key].length <= this.excerptMaxLength + 1) {
@@ -305,16 +314,18 @@ export class DetailsCandidateComponent implements OnInit, AfterViewInit, AfterVi
     return this.candidate.getAnswer(this._getQuestion(questionOrId));
   }
 
-  public getNumericAnswer(question: QuestionNumeric): number {
+  public getNumericAnswer(question: QuestionNumeric): number | number[] {
     const answer = this.getAnswer(question);
-    return question.isMissing(answer) ? null : Number(answer);
+    return question.isMissing(answer) ? null : 
+           Array.isArray(answer) ? answer : Number(answer);
   }
 
   public getRelated(question: Question): string {
     const oId = question.relatedId;
     if (oId) {
+      const related = this._getQuestion(oId);
       const answer = this.getAnswer(oId);
-      return question.isMissing(answer) ? null : answer;
+      return related.isMissing(answer) ? null : answer;
     }
     return null;
   }

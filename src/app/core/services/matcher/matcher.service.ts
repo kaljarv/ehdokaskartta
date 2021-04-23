@@ -40,7 +40,7 @@ import {
   CandidateFilterLogicOperator,
   CandidateFilterSimple,
   CandidateFilterNumberRange,
-  CandidateFilterQuestion
+  CandidateFilterMultiQuestion
 } from './candidate-filter';
 
 export const COOKIE_PREFIX = "CM-VoterAnswer-";
@@ -88,9 +88,15 @@ export class MatcherService {
   public municipalities: MunicipalityDict;
   public constituencies: ConstituencyDict;
   public favourites: string[] = new Array<string>();
-  public filterOpts: {[name: string]: { type: any, opts: any }} = {
+  public filterOpts: {
+    [name: string]: { 
+      type: any, 
+      questionKey?: string,
+      opts: any 
+    }
+  } = {
     question: {
-      type: CandidateFilterQuestion,
+      type: CandidateFilterMultiQuestion,
       opts: {
         title: 'Kynnyskysymyksen perusteella',
         description: 'Näytä vain ehdokkaat, jotka ovat samaa tai lähes samaa mieltä kanssasi valituista kysymyksistä.',
@@ -99,8 +105,8 @@ export class MatcherService {
     },
     age: {
       type: CandidateFilterNumberRange,
+      questionKey: 'Q59',
       opts: {
-        key: 'Q59',
         title: 'Iän perusteella',
         unitName: 'vuotta',
         // minDescription: 'Ikä vähintään', 
@@ -110,8 +116,8 @@ export class MatcherService {
     },
     gender: {
       type: CandidateFilterSimple,
+      questionKey: 'Q63',
       opts: {
-        key: 'Q63',
         title: 'Sukupuolen perusteella',
         multipleValues: false,
       }
@@ -119,31 +125,31 @@ export class MatcherService {
     party: {
       type: CandidateFilterSimple,
       opts: {
-        key: 'partyName',
+        property: 'partyName',
         title: 'Puolueen perusteella',
         multipleValues: false,
       }
     },
     motherTongue: {
       type: CandidateFilterSimple,
+      questionKey: 'Q64',
       opts: {
-        key: 'Q64',
         title: 'Äidinkielen perusteella',
         multipleValues: false,
       }
     },
     education: {
       type: CandidateFilterSimple,
+      questionKey: 'Q66',
       opts: {
-        key: 'Q66',
         title: 'Koulutuksen perusteella',
         multipleValues: false,
       }
     },
     politicalExperience: {
       type: CandidateFilterSimple,
+      questionKey: 'Q68',
       opts: {
-        key: 'Q68',
         title: 'Poliittisen kokemuksen perusteella',
         multipleValues: true,
         multipleValueLogicOperator: CandidateFilterLogicOperator.Or,
@@ -644,33 +650,34 @@ export class MatcherService {
     return qOrder;
   }
 
-  /*
-   * Get questions based on agreement with the voter's answers
-   */
-
-  public getQuestionsByAgreement(candidate: Candidate, agrType: AgreementType): QuestionNumeric[] {
-    if (agrType === QuestionNumeric.opinionUnknown)
-      return this.getAnswerableQuestions().filter(q => q.voterAnswer == null);
-    else
-      return this.getAnswerableQuestions().filter(q => q.doMatchAgreementType(q.voterAnswer, candidate.getAnswer(q), agrType));
-  }
-
   // Shorthands for getQuestionIdsByAgreement() returning Question lists 
   // The Questions are sorted by disagreement if the match is approximate
   public getAgreedQuestionsAsList(candidate: Candidate, approximateMatch: boolean = false, sortIfApproximate: boolean = true): QuestionNumeric[] {
-    const questions = this.getQuestionsByAgreement(candidate, approximateMatch ? QuestionNumeric.mostlyAgree : QuestionNumeric.agree);
+    const questions = this.getAnswerableQuestions().filter(q =>
+      approximateMatch ?
+      q.doLooselyAgree(q.voterAnswer, candidate.getAnswer(q)) :
+      q.doStrictlyAgree(q.voterAnswer, candidate.getAnswer(q))
+    );
     return approximateMatch && sortIfApproximate ? questions.sort(this._getSorter(candidate)) : questions;
   }
+  
   // Sorted by disagreement desc
   public getDisagreedQuestionsAsList(candidate: Candidate, approximateMatch: boolean = false): QuestionNumeric[] {
-    return this.getQuestionsByAgreement(candidate, approximateMatch ? QuestionNumeric.stronglyDisagree : QuestionNumeric.disagree)
-           .sort(this._getSorter(candidate));
-  }
-  public getUnansweredQuestionsAsList(candidate: Candidate): QuestionNumeric[] {
-    return this.getQuestionsByAgreement(candidate, QuestionNumeric.opinionUnknown);
+    return this.getAnswerableQuestions().filter(q =>
+      approximateMatch ?
+      q.doLooselyDisagree(q.voterAnswer, candidate.getAnswer(q)) :
+      q.doStrictlyDisagree(q.voterAnswer, candidate.getAnswer(q))
+    ).sort(this._getSorter(candidate));
   }
 
-  // Return a function usable for sort
+  public getUnansweredQuestionsAsList(candidate: Candidate): QuestionNumeric[] {
+    return  this.getAnswerableQuestions().filter(q => q.voterAnswer == null);
+  }
+
+  /*
+   * Return a function usable for sort
+   * TODO: the distance for Likert7 questions is higher as they are not normalized.
+   */
   private _getSorter(candidate: Candidate, descending: boolean = true): (a: QuestionNumeric, b: QuestionNumeric) => number {
     return (a: QuestionNumeric, b: QuestionNumeric) => { 
       let diff = a.getDistance(a.voterAnswer, candidate.getAnswer(a)) -
@@ -892,16 +899,25 @@ export class MatcherService {
     // Create filters
     for (const f in this.filterOpts) {
 
+      // QuestionKey is required for basic filters, for property-based ones
+      // the prop name is in the opts already. For CandidateFilterMultiQuestion
+      // none is required.
+      const opts = {...this.filterOpts[f].opts};
+      if (this.filterOpts[f].questionKey != null)
+        opts.question = this.questions[this.filterOpts[f].questionKey];
+
       const filterType = this.filterOpts[f].type;
-      const filter = new filterType(this.filterOpts[f].opts);
+      const filter = new filterType(opts);
 
       // Extract unique values
-      if (filterType === CandidateFilterQuestion) {
-        filter.setValueGetter(() => new Set(this.getVoterAnsweredQuestionIds()));
-      } else {
+      if (filterType === CandidateFilterMultiQuestion)
+        filter.setValueGetter(() => new Set(this.getVoterAnsweredQuestions()));
+      else
         for (const candidate of candidates)
-          filter.addValue( filter.key in candidate ? candidate[filter.key] : candidate.getAnswer(filter.key) );
-      }
+          filter.addValue(opts.question ? 
+                          candidate.getAnswer(opts.question) : 
+                          candidate[opts.property]);
+
       filter.rulesChanged.subscribe(f => this.applyFilter(f));
       this.filters[f] = filter;
 

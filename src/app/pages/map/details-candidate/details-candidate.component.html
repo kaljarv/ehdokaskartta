@@ -235,9 +235,7 @@
                         *ngIf="!first"></mat-divider>
             -->
             <app-candidate-answer [attr.id]="'answer-' + question.id"
-                                  [questionText]="question.text"
-                                  [topicText]="question.topic"
-                                  topicClass="category-{{ question.categoryName | toClassName }}"
+                                  [question]="question"
                                   [voterAnswer]="getVoterAnswer(question)"
                                   [candidateAnswer]="getNumericAnswer(question)"
                                   [candidateAnswerOpen]="getRelated(question)"
@@ -251,8 +249,8 @@
         ------------------------------------------------>
 
         <app-custom-expander #expanderAgreed
-                            (afterExpand)="logExpand('agreed', $event)"
-                            class="candidate-opinions-agreed">
+                             (afterExpand)="logExpand('agreed', $event)"
+                             class="candidate-opinions-agreed">
           <app-custom-expander-title>
             <span>Samaa tai lähes samaa mieltä kanssasi</span>
             <!-- <span [matBadge]="opinions.agreed?.length" 
@@ -283,9 +281,7 @@
                         *ngIf="!first"></mat-divider>
             -->
             <app-candidate-answer [attr.id]="'answer-' + question.id"
-                                  [questionText]="question.text"
-                                  [topicText]="question.topic"
-                                  topicClass="category-{{ question.categoryName | toClassName }}"
+                                  [question]="question"
                                   [voterAnswer]="getVoterAnswer(question)"
                                   [candidateAnswer]="getNumericAnswer(question)"
                                   [candidateAnswerOpen]="getRelated(question)"
@@ -299,8 +295,8 @@
         ------------------------------------------------>
 
         <app-custom-expander #expanderUnanswered
-                            (afterExpand)="logExpand('unanswered', $event)"
-                            class="candidate-opinions-unanswered">
+                             (afterExpand)="logExpand('unanswered', $event)"
+                             class="candidate-opinions-unanswered">
           <app-custom-expander-title>
             <span>Mielipiteet kysymyksiin, joihin et vielä ole vastannut</span>
             <!-- <span [matBadge]="opinions.unanswered?.length" 
@@ -340,9 +336,7 @@
                         *ngIf="!first"></mat-divider>
             -->
             <app-candidate-answer [attr.id]="'answer-' + question.id"
-                                  [questionText]="question.text"
-                                  [topicText]="question.topic"
-                                  topicClass="category-{{ question.categoryName | toClassName }}"
+                                  [question]="question"
                                   [candidateAnswer]="getNumericAnswer(question)"
                                   [candidateAnswerOpen]="getRelated(question)"
                                   [partyName]="candidate.partyName"

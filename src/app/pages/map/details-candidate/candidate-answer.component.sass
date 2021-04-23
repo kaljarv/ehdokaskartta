@@ -31,89 +31,16 @@ h3
   margin: 0 auto
   text-align: center
 
-.likertBlock
+.answerBlock
   width: 100%
   max-width: $maxWidth-S
 
-.svgContainer
-  margin-top: $margin-S
-  
-.valueBg
-  fill: $color-secondaryBg  
-
-// Use the same bg colour regardless of agreement type
-
-// .stronglyDisagree 
-//   .valueBg
-//     fill: $color-warnBg
-
-// .agree,
-// .mostlyAgree  
-//   .valueBg
-//     fill: $color-primaryBg
-
-.valueDot
-  fill: $color-secondary
-
-.candidate,
-.missingCandidate
-  .body
-    fill: $color-secondary
-
-.party
-  .label
-    font-size: 9px
-    fill: $color-nega
-
-.tooltip
-  font-size: $fontSize-S !important
-  padding: $margin-XS !important
-  width: 10rem !important
-  hyphens: manual
-  text-align: center
-
-// NB. These are not inside the svg element
-.titles,
-.partyTitle
-  position: relative
-  height: 2rem
-  width: 100%
-
-  label
-    color: $color-text
-    font-size: $fontSize-S
-    line-height: $lineHeight-S
-    text-transform: uppercase
-    text-align: center
-    width: 20%
-    position: absolute
-    bottom: 0.1rem
-
-  // label.coincident
-
-.partyTitle
-  height: 1.5rem
-
-.partyTitle
-  bottom: 0rem
-
-// NB. These are not inside the svg element
-.legend,
 .missingAnswerInfo
   color: $color-secondary
   font-size: $fontSize-S
   width: 100%
   line-height: $lineHeight-S
   margin-bottom: $margin-S
-  display: flex
-  flex-wrap: nowrap
-  justify-content: space-between
-
-  label
-    flex: 20% 0 0
-    text-align: center
-
-.missingAnswerInfo
   font-style: italic
   display: block
   text-align: center

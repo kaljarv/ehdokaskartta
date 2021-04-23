@@ -1,0 +1,93 @@
+@use 'sass:color'
+
+@import 'variables.scss'
+
+// NB. Match this with the dimensions in component.ts
+$avatarWidth: 26.2652px
+
+:host
+  display: flex
+  flex-flow: row nowrap
+  justify-content: space-between
+
+.answerColumn
+  flex-basis: calc(50% - #{$margin-M} / 2)
+  display: flex
+  flex-flow: column nowrap
+  padding: $margin-L 0
+
+label
+  color: $color-text
+  font-size: $fontSize-S
+  line-height: $lineHeight-S
+  text-transform: uppercase
+  text-align: center
+  margin-bottom: $margin-M
+
+.preferenceOrder--option
+  display: flex
+  flex-flow: column nowrap
+  justify-content: center
+  position: relative // For avatar positioning
+  background-color: $color-secondaryBg
+  font-size: $fontSize-S
+  font-weight: 500
+  padding: 0.2rem 1rem
+  min-height: 1.8rem
+  border-radius: 1rem
+  // white-space: nowrap
+  // overflow: hidden
+  text-overflow: ellipsis
+  display: inline-block
+  max-width: 100%
+  margin: $margin-S auto
+
+.preferenceOrder--option-0
+  background-color: color.mix($color-secondary, $color-secondaryBg, 40%)
+
+.preferenceOrder--option-1
+  background-color: color.mix($color-secondary, $color-secondaryBg, 30%)
+
+.preferenceOrder--option-2
+  background-color: color.mix($color-secondary, $color-secondaryBg, 20%)
+
+.preferenceOrder--option-3
+  background-color: color.mix($color-secondary, $color-secondaryBg, 10%)
+
+.preferenceOrder--option-4
+  background-color: $color-secondaryBg
+
+/* Avatars inside the chips */
+
+.preferenceOrder--option-0
+  padding-right: calc(0.9rem + #{$avatarWidth} * 1.15)
+
+.avatar
+  position: absolute
+  bottom: 0px
+  right: 0.9rem
+
+.avatar-candidate
+  .body
+    fill: $color-secondary
+
+
+// .answerColumn-candidate
+//   .preferenceOrder--option-0
+//     padding-left: calc(0.9rem + #{$avatarWidth} * 1.15)
+
+// .answerColumn-voter
+//   .preferenceOrder--option-0
+//     padding-right: calc(0.9rem + #{$avatarWidth} * 1.15)
+
+// .avatar
+//   position: absolute
+//   bottom: 0px
+
+// .avatar-voter
+//   right: 0.9rem
+
+// .avatar-candidate
+//   left: 0.9rem
+//   .body
+//     fill: $color-secondary

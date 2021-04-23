@@ -3,8 +3,12 @@ import {
 } from './candidate-filter';
 
 import { 
+  Candidate,
   QuestionNumeric 
 } from '../../database';
+import {
+  CandidateFilterOptions 
+} from './candidate-filter';
 
 // These are used as keys to the rules, they must match the agreement properties in the LikertUtility class
 export type AgreementTypeGetter = 'agree' | 'disagree' | 'mostlyAgree' | 'stronglyDisagree' | 'opinionUnknown';
@@ -12,7 +16,7 @@ export type AgreementTypeGetter = 'agree' | 'disagree' | 'mostlyAgree' | 'stron
 /*
  * Question agreement filter
  */
-export class CandidateFilterQuestion extends CandidateFilter {
+export class CandidateFilterMultiQuestion extends CandidateFilter {
   readonly isNumeric: boolean = false;
 
   // NB. agreementType must be an AgreementType but we cannot enforce it as an index
@@ -22,8 +26,11 @@ export class CandidateFilterQuestion extends CandidateFilter {
   protected _valueGetter: () => Set<QuestionNumeric>;
   protected _isInitialized: boolean = false;
 
-  constructor(...args) {
-    super(...args);
+  constructor(
+    opts: CandidateFilterOptions,
+    values?: any[]
+  ) {
+    super(opts, values);
     this._isInitialized = true;
   }
 
@@ -34,9 +41,8 @@ export class CandidateFilterQuestion extends CandidateFilter {
   }
   // We need this because the super constructor implicitly sets _values
   set _values(_: Set<QuestionNumeric>) {
-    if (this._isInitialized) {
-      throw new Error("Cannot set _values on CandidateFilterQuestion. Use setValueGetter instead.")
-    }
+    if (this._isInitialized)
+      throw new Error("Cannot set _values on CandidateFilterMultiQuestion. Use setValueGetter instead.")
   }
 
   get active(): boolean {
@@ -47,12 +53,32 @@ export class CandidateFilterQuestion extends CandidateFilter {
     return false;
   }
 
-  public match(candidate: any): boolean {
+  public match(candidate: Candidate): boolean {
     for (let type in this._rules) {
       if (this._rules[type].size) {
         for (let key of this._rules[type]) {
-          if (! key.doMatchAgreementType(key.voterAnswer, candidate[key.id], key[type]))
-            return false;
+          switch (type) {
+            case 'agree':
+              if (! key.doStrictlyAgree(key.voterAnswer, candidate.getAnswer(key)))
+                return false;
+              break;
+            case 'disagree':
+              if (! key.doStrictlyDisagree(key.voterAnswer, candidate.getAnswer(key)))
+                return false;
+              break;
+            case 'mostlyAgree':
+              if (! key.doLooselyAgree(key.voterAnswer, candidate.getAnswer(key)))
+                return false;
+              break;
+            case 'stronglyDisagree':
+              if (! key.doLooselyDisagree(key.voterAnswer, candidate.getAnswer(key)))
+                return false;
+              break;
+            case 'opinionUnknown':
+              if (! key.isMissing(candidate.getAnswer(key)))
+                return false;
+              break;
+          }
         } 
       }
     }

@@ -1,15 +1,17 @@
-import { Component,
-         Input,
-         ViewChild,
-         ElementRef, 
-         AfterViewChecked 
-       } from '@angular/core';
-import { trigger,
-         style,
-         state,
-         animate,
-         transition,
-       } from '@angular/animations';
+import { 
+  Component,
+  Input,
+  ViewChild,
+  ElementRef, 
+  DoCheck, 
+} from '@angular/core';
+import { 
+  trigger,
+  style,
+  state,
+  animate,
+  transition,
+} from '@angular/animations';
 
 const ANIMATION_TIMING = "225ms cubic-bezier(0.4, 0, 0.2, 1)";
 export const OVERFLOW_CLASS = "app-fadeout-expander--overflow";
@@ -40,7 +42,7 @@ export const OVERFLOW_CLASS = "app-fadeout-expander--overflow";
     ]),
   ],
 })
-export class FadeoutExpanderComponent implements AfterViewChecked {
+export class FadeoutExpanderComponent implements DoCheck {
   @Input() fadedMaxHeight: string = "4.35rem";
   @Input() expanded: boolean = false;
   @ViewChild('expander') expanderDiv: ElementRef;
@@ -52,9 +54,8 @@ export class FadeoutExpanderComponent implements AfterViewChecked {
   }
 
   public toggle(): void {
-    if (this.hasOverflow) {
+    if (this.hasOverflow)
       this.expanded = !this.expanded;
-    }
   }
 
   public getTrigger(): { value: string, params: Object } {
@@ -66,15 +67,13 @@ export class FadeoutExpanderComponent implements AfterViewChecked {
     }
   }
 
-  ngAfterViewChecked() {
+  ngDoCheck() {
     // scrollHeight is 0 if the element hasn't been drawn yet
     // TODO This doesn't reset on window resize so change that
-    if (!this.hasOverflow) {
-      if (this.expanderDiv.nativeElement.scrollHeight > this.expanderDiv.nativeElement.clientHeight) {
-        // console.log(this.text, this.expanderDiv, this.expanderDiv.nativeElement, this.expanderDiv.nativeElement.scrollHeight,  this.expanderDiv.nativeElement.clientHeight);
-        this.expanderDiv.nativeElement.classList.add(OVERFLOW_CLASS);
-        this.hasOverflow = true;
-      }
+    if (!this.hasOverflow && this.expanderDiv &&
+        this.expanderDiv.nativeElement.scrollHeight > this.expanderDiv.nativeElement.clientHeight) {
+      this.expanderDiv.nativeElement.classList.add(OVERFLOW_CLASS);
+      this.hasOverflow = true;
     }
   }
 }

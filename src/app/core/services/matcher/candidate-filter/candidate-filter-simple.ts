@@ -1,5 +1,9 @@
-import { CandidateFilterBasic } from './candidate-filter-basic';
-
+import {
+  CandidateFilterOptions 
+} from './candidate-filter';
+import { 
+  CandidateFilterBasic
+} from './candidate-filter-basic';
 
 /*
  * Simple string filter that implements exclusion-only matching
@@ -13,8 +17,11 @@ export class CandidateFilterSimple extends CandidateFilterBasic {
     excluded: new Set(),
   }
 
-  constructor(...args) {
-    super(...args);
+  constructor(
+    opts: CandidateFilterOptions,
+    values?: any[]
+  ) {
+    super(opts, values);
   }
 
   // Overrides

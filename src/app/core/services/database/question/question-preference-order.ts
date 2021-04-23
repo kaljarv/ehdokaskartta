@@ -84,25 +84,28 @@ export class QuestionPreferenceOrder extends QuestionNumeric {
    * Calc distance between two preference orders by counting pairwise matches,
    * see: https://en.wikipedia.org/wiki/Kendall_rank_correlation_coefficient
    * Used by all matching methods
+   * Scale 0 to 1
    */
-  public getDistance(value1: number[], value2: number[]): number {
-    if (this.isMissing(value1) && this.isMissing(value2))
-      throw new Error("Both values to getDistance cannot be missing!");
-    
-    let dist = 0;    
+  public getDistance(value1: number[], value2: number[], disallowBothMissing: boolean = false): number {
+    if (this.isMissing(value1) && this.isMissing(value2)) {
+      if (disallowBothMissing)
+        throw new Error("Both values to getDistance cannot be missing!");
+      return 0;
+    }
+
+    let dist = 0;
     
     // Get pairwise preferences
-    const pairs1 = this.getPairwisePreferences(value1);
-    const pairs2 = this.getPairwisePreferences(value2);
+    const pairs1 = this.getPairwisePreferences(this.isMissing(value1) ? this.invertAnswer(value2) : value1);
+    const pairs2 = this.getPairwisePreferences(this.isMissing(value2) ? this.invertAnswer(value1) : value2);
 
     // We just subtract the values from each other, thus the distance for
     // a pair ranges from 0 to 2
     for (let i = 0; i < pairs1.length; i++)
       dist += Math.abs(pairs1[i] - pairs2[i]);
     
-    // Normalize distance to 0--2, nb. that for each pair the distance is
-    // already from 0 to 2
-    return dist / pairs1.length;
+    // Normalize distance to 0--1
+    return dist / (2 * pairs1.length);
   }
 
   /*
@@ -118,7 +121,7 @@ export class QuestionPreferenceOrder extends QuestionNumeric {
    * The values return are numbers where -1 imlplies <, 1 > and 0 == or unknown
    * TODO: Use a more efficient algorithm for this naïve one
    */
-  public getPairwisePreferences(preferenceOrder: number[] = this.voterAnswer): number[] {
+  public getPairwisePreferences(preferenceOrder: number[]): number[] {
 
     const prefs: number[] = [];
 

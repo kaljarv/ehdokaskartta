@@ -1,158 +1,31 @@
-<h4 *ngIf="topicText"
-    class="topicChip {{ topicClass }}">
-  {{ topicText }}
+<h4 *ngIf="question.topic"
+    class="topicChip category-{{ question.categoryName | toClassName }}">
+  {{ question.topic }}
 </h4>
 
 <h3>
-  {{ questionText }}
+  {{ question.text }}
 </h3>
 
-<div class="likertBlock">
-  
-  <!--
-  <div *ngIf="partyAnswer"
-       class="partyTitle">
-    <label [style.left]="getX(partyAnswer, -10)">
-      {{ partyTitle }}
-    </label>
-  </div>
-  -->
+<div class="answerBlock">
 
-  <div class="titles">
-    <label *ngIf="voterAnswer && voterAnswer != candidateAnswer"
-           [style.left]="getX(voterAnswer, -10)">Sinä</label>
-    <label *ngIf="candidateAnswer && voterAnswer != candidateAnswer"
-           [style.left]="getX(candidateAnswer, -10)">{{ candidateTitle }}</label>
-    <label *ngIf="!candidateAnswer"
-           [style.left]="getX(missingAnswer, -10)">Ei vastausta</label>
-    <label *ngIf="voterAnswer && voterAnswer == candidateAnswer"
-           class="coincident"
-           [style.left]="getX(voterAnswer, -10)">Sinä & ehdokas</label>
-  </div>
+  <app-likert-answer *ngIf="questionType == 'Likert' || questionType == 'Likert7'"
+                     [question]="question"
+                     [candidateAnswer]="candidateAnswer"
+                     [candidateTitle]="candidateTitle"
+                     [partyName]="partyName"
+                     [partyAnswer]="partyAnswer"
+                     [partyTitle]="partyTitle"
+                     [voterAnswer]="voterAnswer"></app-likert-answer>
 
-  <svg #svgContainer
-       class="svgContainer {{ matchType }}"
-       width="100%"
-       [attr.height]="svgHeight"
-       [class.hasLegend]="showLegend">
-
-    <!-- Mask for the party flag. It uses the voter and candidate avatars for masking -->
-    <svg:mask *ngIf="partyAnswer"
-              [attr.id]="maskId">
-
-      <svg:rect x="0" y="0"
-                width="100%"
-                height="100%"
-                fill="white" />
-
-      <svg:use attr.href="#{{ personsId }}" 
-               fill="black"
-               stroke="black" 
-               stroke-width="4" />
-
-    </svg:mask>
-
-    <!-- Background colour block -->
-    <svg:rect x="0" 
-              [attr.y]="centerlineY - backgroundHeight / 2"
-              width="100%"
-              [attr.height]="backgroundHeight"
-              [attr.rx]="backgroundHeight / 2"
-              class="valueBg"></svg:rect>
-
-    <!-- Likert scale dots -->
-    <svg:circle *ngFor="let value of unusedValues"
-                [attr.cx]="getX(value)" 
-                [attr.cy]="centerlineY"
-                r="2.5"
-                class="valueDot" />
-
-    <!-- Party position -->
-    <svg:g *ngIf="partyAnswer"
-           attr.mask="url(#{{ maskId }})"
-           class="party">
-      <!-- The transformation is moved to an inner g so that the mask stays in place -->
-      <svg:g attr.transform="translate({{ getAbsX(partyAnswer) }})">
-        <svg:g [attr.transform]="partyInnerAlignment"
-               matTooltip="Kaikkien {{ partyName | genitive }} ehdokkaiden vastausten keskiarvo on {{ partyAnswer | number:'1.1-1':'fi-FI' }}"
-               matTooltipClass="tooltip"
-               matTooltipPosition="above">
-          <svg:polygon points="16.57 1.5 15.87 0.01 0.03 0 0 98.18 3.52 98.18 3.54 17.6 13.39 17.61 14.1 19.1 26.42 19.1 26.43 1.5 16.57 1.5"
-                  class="flag party-{{ partyName | toClassName }}" />
-          <svg:text x="13.2596"
-                    y="12.8504"
-                    text-anchor="middle"
-                    class="label">
-            {{ partyName | abbreviate }}
-          </svg:text>
-        </svg:g>
-      </svg:g>
-    </svg:g>
-
-    <!-- Voter and candidate -->
-    <svg:g [attr.id]="personsId">
-
-      <!-- Candidate -->
-      <svg:g *ngIf="candidateAnswer"
-             class="candidate"
-             attr.transform="translate({{ getAbsX(candidateAnswer) }})">
-        <svg:g [attr.transform]="candidateInnerAlignment"
-               matTooltip="Ehdokkaan vastaus"
-               matTooltipClass="tooltip"
-               matTooltipPosition="above">
-          <svg:circle cx="13.13" 
-                      cy="14.64"
-                      r="6"
-                      class="head party-{{ partyName | toClassName }}" />
-          <svg:path d="M24.29,0A2.16,2.16,0,0,0,22,2h0L20.4,19.77a.13.13,0,0,0,0,.06,2.86,2.86,0,0,1-.31,1,3.22,3.22,0,0,1-1.16,1.27,3,3,0,0,1-1.59.48H8.94a7.24,7.24,0,0,0-2.72.53,7.63,7.63,0,0,0-3.16,2.42,7.24,7.24,0,0,0-1.49,3.8L0,47.18a2.16,2.16,0,1,0,4.3.38L5.64,32.35h1L5.19,49.47a1.77,1.77,0,0,0,0,.46L7.29,74a2.64,2.64,0,0,0,5.27-.23V50H13.7V73.8A2.64,2.64,0,0,0,19,74l2.11-24.1a3.53,3.53,0,0,0,0-.46l-1-11.79c.13-.66.3-1.35.49-2.07.64-2.45,1.55-5.19,2.37-7.86.41-1.33.79-2.64,1.11-3.91a25.84,25.84,0,0,0,.67-3.64h0v0L26.26,2.35A2.16,2.16,0,0,0,24.29,0Z"
-                    class="body" />
-        </svg:g>
-      </svg:g>
-
-      <!-- Missing candidate -->
-      <svg:g *ngIf="!candidateAnswer"
-             class="missingCandidate"
-             attr.transform="translate({{ getAbsX(missingAnswer) }})">
-        <svg:g [attr.transform]="missingInnerAlignment"
-               matTooltip="Ehdokas ei ole vastannut tähän kysymykseen"
-               matTooltipClass="tooltip"
-               matTooltipPosition="above">
-          <svg:circle cx="7.93"
-                      cy="27.7" 
-                      r="4.17"
-                      class="head party-{{ partyName | toClassName }}" />
-          <svg:path d="M7.93,0A7.93,7.93,0,0,0,0,7.93a2,2,0,0,0,4,0H4a3.92,3.92,0,0,1,6.7-2.78,3.93,3.93,0,0,1-.46,5.95,13.89,13.89,0,0,0-2.49,2.37,9.5,9.5,0,0,0-1.24,2A6.09,6.09,0,0,0,5.93,18v2.73h4V18a2,2,0,0,1,.22-.89,6.37,6.37,0,0,1,1.18-1.64,10.92,10.92,0,0,1,1.26-1.12A7.92,7.92,0,0,0,7.93,0Z"
-                    class="body" />
-        </svg:g>
-      </svg:g>
-
-      <!-- Voter -->
-      <svg:g *ngIf="voterAnswer"
-             class="voter"
-             attr.transform="translate({{ getAbsX(voterAnswer) }})">
-        <svg:g [attr.transform]="voterInnerAlignment"
-               matTooltip="Sinun vastauksesi"
-               matTooltipClass="tooltip"
-               matTooltipPosition="above">
-          <svg:circle cx="13.13" 
-                      cy="6.08"
-                      r="6"
-                      class="head" />
-          <svg:path d="M26.26,38.63,24.7,20.8a7.33,7.33,0,0,0-.77-2.65,7.65,7.65,0,0,0-2.69-2.95,7.28,7.28,0,0,0-3.91-1.15H8.94a7.06,7.06,0,0,0-2.72.54A7.55,7.55,0,0,0,3.06,17,7.2,7.2,0,0,0,1.57,20.8L0,38.63a2.16,2.16,0,1,0,4.3.37L5.64,23.79h1L5.18,40.92a3.53,3.53,0,0,0,0,.46L7.29,65.47a2.64,2.64,0,0,0,5.27-.23V41.39H13.7V65.24a2.64,2.64,0,0,0,5.27.23l2.11-24.09a3.53,3.53,0,0,0,0-.46l-1.5-17.13h1L22,39a2.16,2.16,0,1,0,4.31-.37Z"
-                    class="body" />
-        </svg:g>
-      </svg:g>
-
-    </svg:g>
-
-  </svg>
-       
-  <div *ngIf="showLegend"
-       class="legend">
-    <label>Täysin eri mieltä</label>
-    <label>Neutraali</label>
-    <label>Täysin samaa mieltä</label>
-  </div>
+  <app-preference-order-answer *ngIf="questionType == 'PreferenceOrder'"
+                               [question]="question"
+                               [candidateAnswer]="candidateAnswer"
+                               [candidateTitle]="candidateTitle"
+                               [partyName]="partyName"
+                               [partyAnswer]="partyAnswer"
+                               [partyTitle]="partyTitle"
+                               [voterAnswer]="voterAnswer"></app-preference-order-answer>
 
   <div *ngIf="showMissingAnswerInfo"
        class="missingAnswerInfo">

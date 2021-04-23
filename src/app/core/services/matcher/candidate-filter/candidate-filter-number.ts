@@ -1,4 +1,10 @@
-import { CandidateFilterBasic } from './candidate-filter-basic';
+
+import {
+  CandidateFilterOptions 
+} from './candidate-filter';
+import {
+  CandidateFilterBasic
+} from './candidate-filter-basic';
 
 /*
  * Basic number filter that implements require and exclude
@@ -7,8 +13,11 @@ import { CandidateFilterBasic } from './candidate-filter-basic';
 export class CandidateFilterNumber extends CandidateFilterBasic {
   readonly isNumeric: boolean = true;
 
-  constructor(...args) {
-    super(...args);
+  constructor(
+    opts: CandidateFilterOptions,
+    values?: any[]
+  ) {
+    super(opts, values);
   }
 
   protected _processType(value: any): any {

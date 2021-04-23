@@ -1,22 +1,25 @@
-import { Component, 
-         Directive, 
-         EventEmitter, 
-         Input, 
-         Output, 
-         ViewChild, 
-         ElementRef, 
-         AfterViewChecked, 
-       } from '@angular/core';
-import { AnimationEvent,
-         trigger,
-         style,
-         state,
-         animate,
-         transition,
-       } from '@angular/animations';
+import { 
+  Component, 
+  Directive, 
+  DoCheck,
+  ElementRef, 
+  EventEmitter, 
+  Input, 
+  Output, 
+  ViewChild
+} from '@angular/core';
+import { 
+  animate,
+  AnimationEvent,
+  style,
+  state,
+  transition,
+  trigger
+} from '@angular/animations';
 
 const ANIMATION_TIMING = "225ms cubic-bezier(0.4, 0, 0.2, 1)";
-const SCROLL_OPTIONS = { behavior: "smooth", block: "start", inline: "nearest" };
+
+// const SCROLL_OPTIONS = { behavior: "smooth", block: "start", inline: "nearest" };
 
 /*
  * <app-custom-expander>
@@ -61,7 +64,7 @@ const SCROLL_OPTIONS = { behavior: "smooth", block: "start", inline: "nearest" }
     ]),
   ]
 })
-export class CustomExpanderComponent implements AfterViewChecked {
+export class CustomExpanderComponent implements DoCheck {
   @Input() expanded: boolean = false;
   @Input() subtitleMaxHeight: string = "none";
   @Input() disabled: boolean = false;
@@ -77,7 +80,7 @@ export class CustomExpanderComponent implements AfterViewChecked {
   constructor() {
   }
 
-  ngAfterViewChecked(): void {
+  ngDoCheck(): void {
     // Disable the expander if there is no content to show
     if (!this.disabled && this.contentDiv) {
       let setDisabled = true;

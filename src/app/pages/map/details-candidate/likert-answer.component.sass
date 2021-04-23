@@ -1,0 +1,85 @@
+@import 'variables.scss'
+
+.svgContainer
+  margin-top: $margin-S
+  
+.valueBg
+  fill: $color-secondaryBg  
+
+// Use the same bg colour regardless of agreement type
+
+// .stronglyDisagree 
+//   .valueBg
+//     fill: $color-warnBg
+
+// .agree,
+// .mostlyAgree  
+//   .valueBg
+//     fill: $color-primaryBg
+
+.valueDot
+  fill: $color-secondary
+
+.candidate,
+.missingCandidate
+  .body
+    fill: $color-secondary
+
+.party
+  .label
+    font-size: 9px
+    fill: $color-nega
+
+.tooltip
+  font-size: $fontSize-S !important
+  padding: $margin-XS !important
+  width: 10rem !important
+  hyphens: manual
+  text-align: center
+
+// NB. These are not inside the svg element
+.titles,
+.partyTitle
+  position: relative
+  height: 2rem
+  width: 100%
+
+  label
+    color: $color-text
+    font-size: $fontSize-S
+    line-height: $lineHeight-S
+    text-transform: uppercase
+    text-align: center
+    width: 20%
+    position: absolute
+    bottom: 0.1rem
+
+  // label.coincident
+
+.partyTitle
+  height: 1.5rem
+
+.partyTitle
+  bottom: 0rem
+
+.valueLabels
+  display: flex
+  flex-flow: row nowrap
+  align-items: flex-start
+  justify-content: space-between
+  color: $color-secondary
+  font-size: $fontSize-S
+  line-height: $lineHeight-S
+  margin-bottom: $margin-S
+
+  label
+    flex-basis: 0
+    flex-grow: 1
+    hyphens: manual
+    text-align: center
+
+    &:first-child
+      text-align: left
+
+    &:last-child
+      text-align: right

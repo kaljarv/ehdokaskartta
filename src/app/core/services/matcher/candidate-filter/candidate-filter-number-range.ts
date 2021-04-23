@@ -1,4 +1,14 @@
-import { CandidateFilter } from './candidate-filter';
+import { 
+  CandidateFilter, 
+  CandidateFilterOptions 
+} from './candidate-filter';
+
+export interface CandidateFilterNumberRangeOptions extends CandidateFilterOptions {
+  minDescription?: string;
+  maxDescription?: string;
+  unitName?: string;
+  sliderStep?: number;
+}
 
 /*
  * Numeric range filter
@@ -15,8 +25,11 @@ export class CandidateFilterNumberRange extends CandidateFilter {
     excludeMissing: <boolean>null,
   }
 
-  constructor(...args) {
-    super(...args);
+  constructor(
+    opts: CandidateFilterOptions,
+    values?: any[]
+  ) {
+    super(opts, values);
     // We have to define defaults here, because they would override options arguments 
     // if we defined them with the declarations above
     if (this.minDescription == null) this.minDescription = 'Vähintään';
