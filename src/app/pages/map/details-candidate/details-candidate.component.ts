@@ -23,7 +23,8 @@ import { MatcherService,
          INDEPENDENT_PARTY_ID, 
          Question,
          QuestionNumeric, 
-         QuestionPreferenceOrder} from '../../../core';
+         QuestionPreferenceOrder,
+         Party} from '../../../core';
 import { SharedService } from '../../../core';
 import { FloatingCardRef,
          FLOATING_CARD_DATA,
@@ -111,6 +112,7 @@ export class DetailsCandidateComponent implements OnInit, AfterViewInit, AfterVi
   @ViewChild('tabGroup', {read: ElementRef}) tabGroup: ElementRef;
   @ViewChild('expanderDisagreed') expanderDisagreed: CustomExpanderComponent;
   public candidate: Candidate;
+  public party: Party;
   public opinions: { [key: string]: QuestionNumeric[] } = { // Will house question lists
     agreed: [],
     disagreed: [],
@@ -155,6 +157,7 @@ export class DetailsCandidateComponent implements OnInit, AfterViewInit, AfterVi
     this._subscriptions.push(
       this.matcher.constituencyDataReady.subscribe(async () => {
         this.candidate = this.matcher.getCandidate(this.data.id);
+        this.party = this.matcher.getParty(this.candidate.partyId);
         this._initQuestions();
         // We try to set the peek element here just in case the view was already initialized
         this._setPeekElement();
@@ -336,8 +339,8 @@ export class DetailsCandidateComponent implements OnInit, AfterViewInit, AfterVi
   }
 
   public getPartyAverage(question: QuestionNumeric): number | number[] | null {
-    return this.candidate.party.id != INDEPENDENT_PARTY_ID ? 
-           question.partyAverages[this.candidate.party.id] :
+    return this.party.id != INDEPENDENT_PARTY_ID ? 
+           this.party.getAnswer(question) :
            null;
   }
 
@@ -373,8 +376,8 @@ export class DetailsCandidateComponent implements OnInit, AfterViewInit, AfterVi
   get surname(): string {
     return this.candidate.surname;
   }
-  get party(): string {
-    return this.candidate.partyName;
+  get partyName(): string {
+    return this.party.name;
   }
   get number(): number {
     return this.candidate.number;

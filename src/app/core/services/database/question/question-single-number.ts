@@ -6,10 +6,7 @@ import {
 } from './question-numeric';
 
 export interface QuestionOptionsSingleNumber extends QuestionOptionsNumeric {
-  values?: QuestionNumericValue[],
-  partyAverages?: {
-    [partyId: string]: number
-  }
+  values?: QuestionNumericValue[]
 }
 
 
@@ -19,9 +16,6 @@ export interface QuestionOptionsSingleNumber extends QuestionOptionsNumeric {
 
 export abstract class QuestionSingleNumber extends QuestionNumeric {
   public voterAnswer: number;
-  public partyAverages: {
-    [partyId: string]: number
-  }
   /*
    * These are initialized in the constructor
    */

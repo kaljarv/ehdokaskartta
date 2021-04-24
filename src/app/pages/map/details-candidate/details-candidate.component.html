@@ -17,12 +17,12 @@
         {{ givenName }} {{ surname }}
       </h2>
       <div class="party">
-        <mat-icon class="party-{{ candidate.partyName | toClassName }}">flag</mat-icon>
+        <mat-icon class="party-{{ partyName | toClassName }}">flag</mat-icon>
         {{ party }}
       </div>
     </div>
     <div class="header-tools">
-      <div class="candidate-number party-{{ candidate.partyName | toClassName }}">
+      <div class="candidate-number party-{{ partyName | toClassName }}">
         {{ number }}
       </div>
       <mat-icon *ngIf="isFavourite == false"
@@ -239,7 +239,7 @@
                                   [voterAnswer]="getVoterAnswer(question)"
                                   [candidateAnswer]="getNumericAnswer(question)"
                                   [candidateAnswerOpen]="getRelated(question)"
-                                  [partyName]="candidate.partyName"
+                                  [partyName]="partyName"
                                   [partyAnswer]="getPartyAverage(question)"></app-candidate-answer>
           </ng-container>
         </app-custom-expander>
@@ -285,7 +285,7 @@
                                   [voterAnswer]="getVoterAnswer(question)"
                                   [candidateAnswer]="getNumericAnswer(question)"
                                   [candidateAnswerOpen]="getRelated(question)"
-                                  [partyName]="candidate.partyName"
+                                  [partyName]="partyName"
                                   [partyAnswer]="getPartyAverage(question)"></app-candidate-answer>
           </ng-container>
         </app-custom-expander>
@@ -339,7 +339,7 @@
                                   [question]="question"
                                   [candidateAnswer]="getNumericAnswer(question)"
                                   [candidateAnswerOpen]="getRelated(question)"
-                                  [partyName]="candidate.partyName"
+                                  [partyName]="partyName"
                                   [partyAnswer]="getPartyAverage(question)"></app-candidate-answer>
           </ng-container>
         </app-custom-expander>

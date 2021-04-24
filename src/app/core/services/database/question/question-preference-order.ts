@@ -14,9 +14,6 @@ export const ITEM_SEPARATOR_IN_STRING = '/';
 
 export interface QuestionOptionsPreferenceOrder extends QuestionOptionsNumeric {
   values: QuestionNumericValue[],
-  partyAverages?: {
-    [partyId: string]: number
-  }
 }
 
 export class QuestionPreferenceOrder extends QuestionNumeric {
@@ -25,9 +22,6 @@ export class QuestionPreferenceOrder extends QuestionNumeric {
    * Overrides
    */
   public voterAnswer: number[];
-  public partyAverages: {
-    [partyId: string]: number
-  }
 
   readonly maxAnswer: never;
   readonly minAnswer: never;

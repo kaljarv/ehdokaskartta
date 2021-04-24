@@ -1,3 +1,13 @@
+import {
+  AnswerDict
+} from './candidate';
+import {
+  GetAnswer
+} from './get-answer';
+import {
+   Question
+} from './question';
+
 export const INDEPENDENT_PARTY_ID = '18';
 
 export type PartyDict = { 
@@ -7,11 +17,13 @@ export type PartyDict = {
 export interface PartyOptions {
   id: string;
   name: string;
+  averageAnswers?: AnswerDict;
   abbreviation?: string;
 }
 
-export class Party {
+export class Party implements GetAnswer {
 
+  public averageAnswers: AnswerDict = {};
   public id: string;
   public name: string;
   public projX: number;
@@ -25,5 +37,19 @@ export class Party {
 
   get abbreviation(): string {
     return this._abbreviation || this.name;
+  }
+
+  set abbreviation(value: string) {
+    this._abbreviation = value;
+  }
+
+  /*
+   * Get the party's average answer to a question
+   */
+  public getAnswer(question: string | Question): any | undefined {
+    let id: string = question instanceof Question ? question.id : question;
+    if (id in this.averageAnswers)
+      return this.averageAnswers[id];
+    return undefined;
   }
 }

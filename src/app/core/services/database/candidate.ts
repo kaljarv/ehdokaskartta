@@ -2,12 +2,13 @@ import {
   Constituency,
   ConstituencyDict
 } from './constituency';
-
+import {
+  GetAnswer
+} from './get-answer';
 import {
   Party,
   PartyDict
 } from './party';
-
 import {
   Question
 } from './question';
@@ -42,7 +43,7 @@ export type CandidateDict = {
 /*
  * TODO: Add methods to get and add to filteredOut
  */
-export class Candidate {
+export class Candidate implements GetAnswer {
 
   public id: string;
   public number: number;

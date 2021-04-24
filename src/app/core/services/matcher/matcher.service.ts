@@ -16,22 +16,22 @@ import {
   CategoryDict,
   Candidate,
   CandidateDict,
+  GetAnswer,
   Party,
   PartyDict,
   ConstituencyDict,
   DatabaseService,
   MunicipalityDict,
-  AgreementType,
   Question,
   QuestionDict,
   QuestionNumeric,
-  CandidateOptions,
   Municipality,
-  QuestionPreferenceOrder,
-  QuestionSingleNumber
 } from '../database';
 import { 
-  PcaProjector 
+  DataProjector,
+  PcaProjector,
+  ProjectorDatum,
+  TsneProjector
 } from './data-projector/';
 // import { TsneProjector } from './data-projector/';
 
@@ -75,11 +75,7 @@ export enum DataStatus {
   providedIn: 'root'
 })
 export class MatcherService {
-  private _municipality: string;
-  private _municipalityId: string;
-  private _constituency: string;
-  private _constituencyId: string;
-  private _voterDisabled: boolean = false;
+
   public questions: QuestionDict = {};
   public correlationMatrix: any;
   public categories: CategoryDict;
@@ -156,9 +152,6 @@ export class MatcherService {
       }
     },
   };
-  private filters: {
-    [name: string]: CandidateFilter
-  };
   public dataStatus = {
     constituencies:     new BehaviorSubject<DataStatus>(DataStatus.NotReady),
     questions:          new BehaviorSubject<DataStatus>(DataStatus.NotReady),
@@ -177,6 +170,16 @@ export class MatcherService {
   public filterDataUpdated =       this.dataStatus.filters.pipe(filter(            t => t === DataStatus.Updated ));
   public constituencyCookieRead =  this.dataStatus.constituencyCookie.pipe(filter( t => t === DataStatus.Ready ));
   public progressChanged =         new EventEmitter<number>();
+
+  private _filters: {
+    [name: string]: CandidateFilter
+  };
+  private _municipality: string;
+  private _municipalityId: string;
+  private _constituency: string;
+  private _constituencyId: string;
+  private _projector: DataProjector;
+  private _voterDisabled: boolean = false;
 
   constructor(
     private cookie: CookieService,
@@ -482,19 +485,6 @@ export class MatcherService {
     return `assets/images/candidate-portraits/${id}.jpg`;
   }
 
-  // REM
-  // /*
-  //  * Get the average answer (decimal) to the question 
-  //  * by all members (including all constituencies) of the respondent's party
-  //  */
-  // public getPartyAverage(party: string, qId: string): number {
-  //   if (qId in this.questions && party in this.questions[qId].partyAverages) {
-  //     return this.questions[qId].partyAverages[party];
-  //   } else {
-  //     throw new Error(`Average value not found for party ${party} and question ${qId}.`);
-  //   }
-  // }
-
   /*
    * NB! The Party objects do NOT contain the average answers
    * TODO: Collate party averages and parties
@@ -794,38 +784,53 @@ export class MatcherService {
     this.deleteAllCookies();
   }
 
-  public initMapping(): void {
+  public getMappingQuestions(): QuestionNumeric[] {
+    return this.voterDisabled ? 
+           this.getAnswerableQuestions() :
+           this.getVoterAnsweredQuestions();
+  }
+
+  /*
+   * Get the datum for a Candidate or Party for use in mapping
+   * Pass questions to skip repeated calls to getMappingQuestions()
+   */
+  public getMappingData(source: GetAnswer, questions: QuestionNumeric[] = this.getMappingQuestions()): ProjectorDatum {
+    
+    const datum = [];
+    
+    questions.forEach(q => {
+      let answer: number | number[] = source.getAnswer(q);
+
+      if (q.isMissing(answer))
+        answer = this.voterDisabled ? 
+                 q.neutralAnswer : 
+                 q.getInvertedVoterAnswer();
+
+      answer = q.normalizeValue(answer)
+
+      // QuestionPreferenceOrder values are converted to a number of pairwise combinations
+      if (Array.isArray(answer))
+        datum.push(...answer);
+      else
+        datum.push(answer);
+    });
+
+    return datum;
+  }
+
+  /*
+   * Project candidates on the map
+   */
+  public initMapping(method: 'PCA' | 'RadarPCA' | 'TSNE' = 'PCA'): void {
 
     // Prepare raw data for mapping
     const data = new Array<Array<number>>();
-    const questions = this.voterDisabled ? 
-                      this.getAnswerableQuestions() :
-                      this.getVoterAnsweredQuestions();
+    const questions = this.getMappingQuestions();
     const candidates = this.getCandidatesAsList();
 
     // Treat values
-    for (const c of candidates) {
-      let d = [];
-      questions.forEach(q => {
-
-        let answer: number | number[] = c.getAnswer(q);
-
-        if (q.isMissing(answer))
-          answer = this.voterDisabled ? 
-                   q.neutralAnswer : 
-                   q.getInvertedVoterAnswer();
-
-        answer = q.normalizeValue(answer)
-
-        // QuestionPreferenceOrder values are converted to a number of pairwise combinations
-        if (Array.isArray(answer))
-          d.push(...answer);
-        else
-          d.push(answer);
-
-      });
-      data.push(d);
-    }
+    for (const c of candidates)
+      data.push(this.getMappingData(c, questions));
 
     // Add the voter as the last item
     // TODO:  Move voterAnswer away from Questions and convert Voter to a subclass of Candidate
@@ -841,10 +846,22 @@ export class MatcherService {
       data.push(voter);
     }
 
-    // Call projector service,
+    // Create the projector
+    switch (method) {
+      case 'PCA':
+        this._projector = new PcaProjector();
+        break;
+      case 'RadarPCA':
+        this._projector = new PcaProjector();
+        break;
+      case 'TSNE':
+        this._projector = new TsneProjector();
+        break;
+    }
+    
+    // Call the projector
     // NB. with PCA the progress emitter is not used
-    const projector = new PcaProjector();
-    projector.project(data, this.voterDisabled, (progress) => {
+    this._projector.project(data, this.voterDisabled, (progress) => {
       this.progressChanged.emit(progress);
     }).then((coordinates) => {
       this.setCandidateCoordinates(candidates, coordinates);
@@ -863,23 +880,43 @@ export class MatcherService {
 
   public placeParties(): void {
 
-    // Calculate party centroids
-    let parties: any = {};
+    // If predict is implemented, we need to pass party opinion averages
+    // to the projector
+    if (this._projector.implementsPredict) {
 
-    // Collect each partie's candidates' tsne values
-    for (let c in this.candidates) {
-      const cand = this.candidates[c];
-      if (!(cand.partyId in parties))
-        parties[cand.partyId] = new Array();
-      parties[cand.partyId].push([cand.projX, cand.projY]);
-    }
+      const questions = this.getMappingQuestions();
 
-    // Calculate coordinate averages and save in the parties property
-    for (let p in parties) {
-      const projX = parties[p].reduce( (a, v) => a + v[0], 0 ) / parties[p].length;
-      const projY = parties[p].reduce( (a, v) => a + v[1], 0 ) / parties[p].length;
-      this.parties[p].projX = projX;
-      this.parties[p].projY = projY;
+      for (const p in this.parties) {
+        const party = this.parties[p];
+        console.log(party);
+        const data = this.getMappingData(party, questions);
+        const coords = this._projector.predict(data);
+        party.projX = coords[0];
+        party.projY = coords[1];
+      }
+
+    // Otherwise we'll just average over the projected coordinates of the
+    // parties' candidates
+    } else {
+
+      // Calculate party centroids
+      const partyProjs: {[id: string]: [number, number][]} = {};
+
+      // Collect each partie's candidates' projected values
+      for (const c in this.candidates) {
+        const cand = this.candidates[c];
+        if (!(cand.partyId in partyProjs))
+          partyProjs[cand.partyId] = [];
+        partyProjs[cand.partyId].push([cand.projX, cand.projY]);
+      }
+
+      // Calculate coordinate averages and save in the parties property
+      for (const p in partyProjs) {
+        const projX = partyProjs[p].reduce( (a, v) => a + v[0], 0 ) / partyProjs[p].length;
+        const projY = partyProjs[p].reduce( (a, v) => a + v[1], 0 ) / partyProjs[p].length;
+        this.parties[p].projX = projX;
+        this.parties[p].projY = projY;
+      }
     }
 
     this.dataStatus.mapping.next(DataStatus.Updated);
@@ -888,7 +925,7 @@ export class MatcherService {
   private initFilters(): void {
 
     // Clear filters
-    this.filters = {};
+    this._filters = {};
     // Reset filter data for candidates
     // TODO: We are not emitting an update event for candidates, 
     // so if somebody already caught the first event, they won't know of the loss of filters...
@@ -919,7 +956,7 @@ export class MatcherService {
                           candidate[opts.property]);
 
       filter.rulesChanged.subscribe(f => this.applyFilter(f));
-      this.filters[f] = filter;
+      this._filters[f] = filter;
 
     }
 
@@ -944,11 +981,11 @@ export class MatcherService {
   }
 
   public getFilters(): CandidateFilter[] {
-    return Object.values(this.filters);
+    return Object.values(this._filters);
   }
 
   public getActiveFilterNames(): string[] {
-    return Object.keys(this.filters).filter( f => this.filters[f].active );
+    return Object.keys(this._filters).filter( f => this._filters[f].active );
   }
 
   get hasActiveFilters(): boolean {
@@ -960,7 +997,7 @@ export class MatcherService {
    */
   public setPartyFilter(party: string = null, exclude: boolean = false): void {
 
-    const filter = this.filters.party as CandidateFilterSimple;
+    const filter = this._filters.party as CandidateFilterSimple;
 
     if (party !== null) {
       if (exclude) {
@@ -977,7 +1014,7 @@ export class MatcherService {
   }
 
   get hasPartyFilter(): boolean {
-    return this.filters.party.active;
+    return this._filters.party.active;
   }
 
   /*
@@ -989,12 +1026,12 @@ export class MatcherService {
     if (!this.hasPartyFilter)
       return false;
 
-    const isActive =  (this.filters.party as CandidateFilterSimple).isRequired(party);
-    return isTheOnlyActive ? (isActive && (this.filters.party as CandidateFilterSimple).getRequired().length === 1) : isActive;
+    const isActive =  (this._filters.party as CandidateFilterSimple).isRequired(party);
+    return isTheOnlyActive ? (isActive && (this._filters.party as CandidateFilterSimple).getRequired().length === 1) : isActive;
   }
 
   public partyIsExcluded(party: string): boolean {
-    return (this.filters.party as CandidateFilterSimple).isExcluded(party);
+    return (this._filters.party as CandidateFilterSimple).isExcluded(party);
   }
 
   public logEvent(eventName: string, eventParams: any = {}): void {

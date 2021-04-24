@@ -73,7 +73,10 @@ label
   label
     margin-bottom: $margin-M
 
-// .preferenceOrder--list
+.preferenceOrder--list
+  display: flex
+  flex-flow: column nowrap
+  align-items: center
   
 .preferenceOrder--option,
 .preferenceOrder--placeholder
@@ -86,8 +89,9 @@ label
   border-radius: 1.5rem
   font-size: $fontSize-M
   font-weight: 500
-  margin-bottom: $margin-XS
-  min-height: 3rem
+  margin-bottom: $margin-S
+  min-height: 2.5rem
+  min-width: 20rem
   padding: $margin-XS
 
 .preferenceOrder--placeholder

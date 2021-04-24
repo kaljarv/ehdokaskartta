@@ -48,7 +48,9 @@ import {
   MunicipalityDict
 } from './municipality';
 import {
-  PartyDict
+  Party,
+  PartyDict,
+  PartyOptions
 } from './party';
 
 export const ELECTION_ID = '2021-kuntavaalit-test'; // '2019-eduskuntavaalit';
@@ -137,9 +139,21 @@ export class DatabaseService {
   }
 
   public async getParties(): Promise<PartyDict> {
-    const promise = this.getCollectionOnce('parties');
-    promise.then(data => this._cache.parties = data);
-    return promise;
+
+    // Data converter
+    // AngularFire doesn't implement the withConverter method, so we'll have to
+    // process the data ourselves.
+    const partyConverter = (data: PartyOptions): Party => new Party(data);
+
+    // Return Promise
+    return new Promise<PartyDict>(async (resolve, reject) => {
+      const data = await this.getCollectionOnce('parties');
+      const dict: PartyDict = {};
+      for (const id in data)
+        dict[id] = partyConverter(data[id]);
+      this._cache.parties = dict;
+      resolve(dict);
+    });
   }
 
   public async getQuestions(constituencyId: string): Promise<QuestionDict> {

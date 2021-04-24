@@ -25,9 +25,6 @@ export class QuestionLikert extends QuestionSingleNumber {
    * Overrides
    */
   public voterAnswer: number;
-  public partyAverages: {
-    [partyId: string]: number
-  }
 
   constructor(
     options: QuestionOptionsSingleNumber,

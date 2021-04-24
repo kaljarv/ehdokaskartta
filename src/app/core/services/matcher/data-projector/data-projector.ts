@@ -2,14 +2,29 @@
  * Base class for utilities to project multidimensional data into 2D.
  */
 
-export type ProjectorData = number[][];
-export type ProjectedMapping = [number, number][];
+export type ProjectorDatum = number[];
+export type ProjectorData = ProjectorDatum[];
+export type Coordinates = [number, number]
+export type ProjectedMapping = Coordinates[];
 
 export abstract class DataProjector {
 
+  readonly implementsPredict: boolean;
   readonly reportsProgess: boolean;
 
-  constructor() { }
+  constructor() {}
+
+  /*
+   * Call to start the mapping process.
+   */
+  public project(data: ProjectorData, disableVoter: boolean = false, onUpdate: (number) => void = null, finalize: boolean = true): Promise<ProjectedMapping> {
+    return new Promise(async (resolve, reject) => {
+
+      const result = await this._project(data, disableVoter, onUpdate) as ProjectedMapping;
+
+      resolve(finalize ? this.finalize(result , disableVoter) : result);
+    });
+  }
 
   /*
    * Overrideable methods
@@ -23,9 +38,18 @@ export abstract class DataProjector {
   }
 
   /*
-   * Call to start the mapping process. In the end, this should call finalize and return the results.
+   * Do the projection
    */
-  public project(data: ProjectorData, disableVoter: boolean = false, onUpdate?: (number) => void ): Promise<ProjectedMapping> {
+  protected _project(data: ProjectorData, disableVoter: boolean = false, onUpdate: (number) => void = null): Promise<ProjectedMapping> {
+    throw new Error("Not implemented!");
+  }
+
+  /*
+   * Get the projected coordinates for one datum
+   * Not all projectors implement this, but if they do, also set
+   * implementsPredict to true.
+   */
+  public predict(datum: ProjectorDatum): Coordinates {
     throw new Error("Not implemented!");
   }
 
@@ -39,7 +63,7 @@ export abstract class DataProjector {
   public finalize(solution: ProjectedMapping, disableVoter: boolean = false): ProjectedMapping {
 
     // Scaled solution
-    const scaled: ProjectedMapping = new Array<[number, number]>();
+    const scaled: ProjectedMapping = [];
 
     // Find out min and max dimensions to normalize tSNE coordinates 
     const bounds: [number[], number[]] = [this._getBounds(solution, 0),
@@ -47,7 +71,7 @@ export abstract class DataProjector {
     // Set normalization scale based on the maximum dimension
     let max: number = 0;
     let scale: number;
-    let voter: [number, number]; // This will only be used if not voterDisabled
+    let voter: Coordinates; // This will only be used if not voterDisabled
 
     if (disableVoter) {
 

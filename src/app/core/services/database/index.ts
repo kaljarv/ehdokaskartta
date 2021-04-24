@@ -1,5 +1,6 @@
 export * from './category';
 export * from './constituency';
+export * from './get-answer';
 export * from './municipality';
 export * from './party';
 export * from './candidate';

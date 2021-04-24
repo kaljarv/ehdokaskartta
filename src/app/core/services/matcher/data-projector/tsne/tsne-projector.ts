@@ -6,6 +6,7 @@ import * as tsnejs from './lib/tsne';
 
 export class TsneProjector extends DataProjector {
 
+  readonly implementsPredict = false;
   readonly reportsProgess = true;
 
   private _tsne: any;
@@ -34,7 +35,7 @@ export class TsneProjector extends DataProjector {
    * Call to start the mapping process. In the end, this will call finalize to calculate
    * the final positions.
    */
-  public project(data: ProjectorData, disableVoter: boolean = false, onUpdate?: (number) => void ): Promise<ProjectedMapping> {
+  protected _project(data: ProjectorData, disableVoter: boolean = false, onUpdate?: (number) => void ): Promise<ProjectedMapping> {
 
     return new Promise((resolve, reject) => {
       // Create tsne object and initialize
@@ -51,8 +52,7 @@ export class TsneProjector extends DataProjector {
           this._tsne.step();
           if (this._tsne.iter >= this.tsneOptions.maxChunks * this.tsneOptions.stepChunk) {
             window.clearInterval(this.intervalRef);
-            const scaled = this.finalize(this._tsne.getSolution(), disableVoter);
-            resolve(scaled);
+            resolve(this._tsne.getSolution());
           }
         }
       }, 1);
