@@ -31,16 +31,19 @@ export class PcaProjector extends DataProjector {
   /*
   * NB. Progress is not reported
   */
-  protected _project(data: ProjectorData, disableVoter: boolean = false, onUpdate?: (number) => void): Promise<ProjectedMapping> {
+  protected _project(data: ProjectorData, voter: ProjectorDatum = null, onUpdate?: (number) => void): Promise<ProjectedMapping> {
 
     return new Promise((resolve, reject) => {
 
       // Send one progress message
       if (onUpdate) onUpdate(null);
 
+      // Data
+      const projData = voter ? data.concat([voter]) : data;
+
       // Calculate PCA
-      this._pca = new PCA(data);
-      const result = this._pca.predict(data).to2DArray();
+      this._pca = new PCA(projData);
+      const result = this._pca.predict(projData).to2DArray();
       resolve(this._processPrediction(result));
     });
   }

@@ -32,12 +32,13 @@ export abstract class DataProjector {
   /*
    * Call to start the mapping process.
    */
-  public project(data: ProjectorData, disableVoter: boolean = false, onUpdate: (number) => void = null, finalize: boolean = true): Promise<ProjectedMapping> {
+  public project(data: ProjectorData, voter: ProjectorDatum = undefined, onUpdate: (number) => void = undefined, finalize: boolean = true): Promise<ProjectedMapping> {
     return new Promise(async (resolve, reject) => {
 
-      const result = await this._project(data, disableVoter, onUpdate) as ProjectedMapping;
-
-      resolve(finalize ? this.finalize(result , disableVoter) : result);
+      const result = await this._project(data, voter, onUpdate) as ProjectedMapping;
+      const voterResult = voter ? result.pop() : undefined;
+        
+      resolve(finalize ? this.finalize(result, voterResult) : result);
     });
   }
 
@@ -54,8 +55,9 @@ export abstract class DataProjector {
 
   /*
    * Do the projection
+   * If voter is supplied, their coordinates should be the last item in the solution
    */
-  protected _project(data: ProjectorData, disableVoter: boolean = false, onUpdate: (number) => void = null): Promise<ProjectedMapping> {
+  protected _project(data: ProjectorData, voter: ProjectorDatum = undefined, onUpdate: (number) => void = undefined): Promise<ProjectedMapping> {
     throw new Error("Not implemented!");
   }
 
@@ -85,15 +87,15 @@ export abstract class DataProjector {
   /*
    * Scale values into 0–1 centered on the voter unless disabled
    */
-  public finalize(solution: ProjectedMapping, disableVoter: boolean = false): ProjectedMapping {
-    this._calcScalingParams(solution, disableVoter);
+  public finalize(solution: ProjectedMapping, voter: Coordinates = undefined): ProjectedMapping {
+    this._calcScalingParams(solution, voter);
     return this.scaleSolution(solution);
   }
 
   /*
    * Calculate the scaling parameters and save them so we can use them later
    */
-  private _calcScalingParams(solution: ProjectedMapping, disableVoter: boolean = false): void {
+  private _calcScalingParams(solution: ProjectedMapping, voter: Coordinates = undefined): void {
 
     // Shorthand
     const params = this._scalingParams;
@@ -104,7 +106,9 @@ export abstract class DataProjector {
     // Set normalization scale based on the maximum dimension
     params.max = 0;
 
-    if (disableVoter) {
+    if (!voter) {
+
+      params.voter = undefined;
 
       // Check both dims (i) to find the one with the maximum spread
       for (let i = 0; i < 2; i++) {
@@ -117,9 +121,7 @@ export abstract class DataProjector {
     } else {
 
       // Set scale based on the greatest absolute distance from the voter in either direction
-      // The last item in the solution is the voter, which we pop
-      // TODO: This is a bit dangerous!
-      params.voter = solution.pop();
+      params.voter = voter;
 
       for (let i = 0; i < 2; i++) {
         for (let j = 0; j < 2; j++) {
@@ -181,11 +183,10 @@ export abstract class DataProjector {
     let max: number = min;
     // Start from one as we already assigned [0]
     for (let j = 1; j < vals.length; j++) {
-      if (vals[j][index] < min) {
+      if (vals[j][index] < min)
         min = vals[j][index];
-      } else if (vals[j][index] > max) {
+      else if (vals[j][index] > max)
         max = vals[j][index];
-      }
     }
     return [min, max];
   }

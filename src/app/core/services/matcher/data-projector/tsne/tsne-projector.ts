@@ -1,5 +1,6 @@
 import { DataProjector,
          ProjectorData,
+         ProjectorDatum,
          ProjectedMapping } from '../data-projector';
 
 import * as tsnejs from './lib/tsne';
@@ -35,12 +36,15 @@ export class TsneProjector extends DataProjector {
    * Call to start the mapping process. In the end, this will call finalize to calculate
    * the final positions.
    */
-  protected _project(data: ProjectorData, disableVoter: boolean = false, onUpdate?: (number) => void ): Promise<ProjectedMapping> {
+  protected _project(data: ProjectorData, voter: ProjectorDatum = null, onUpdate?: (number) => void ): Promise<ProjectedMapping> {
 
     return new Promise((resolve, reject) => {
+      // Data
+      const projData = voter ? data.concat([voter]) : data;
+
       // Create tsne object and initialize
       this._tsne = new tsnejs.tSNE(this.tsneOptions);
-      this._tsne.initDataRaw(data);
+      this._tsne.initDataRaw(projData);
       // Start calculating
       // TODO: make this nice and async instead of setInterval
       //       couldn't make async work nicely with the spinner

@@ -29,8 +29,11 @@ import {
 } from '../database';
 import { 
   DataProjector,
+  ManhattanProjector,
   PcaProjector,
+  ProjectedMapping,
   ProjectorDatum,
+  RadarProjector,
   TsneProjector
 } from './data-projector/';
 // import { TsneProjector } from './data-projector/';
@@ -821,12 +824,13 @@ export class MatcherService {
   /*
    * Project candidates on the map
    */
-  public initMapping(method: 'PCA' | 'RadarPCA' | 'TSNE' = 'PCA'): void {
+  public initMapping(method: 'PCA' | 'RadarPCA' | 'TSNE' | 'Manhattan' = 'RadarPCA'): void {
 
     // Prepare raw data for mapping
     const data = new Array<Array<number>>();
     const questions = this.getMappingQuestions();
     const candidates = this.getCandidatesAsList();
+    let voter: ProjectorDatum;
 
     // Treat values
     for (const c of candidates)
@@ -835,7 +839,7 @@ export class MatcherService {
     // Add the voter as the last item
     // TODO:  Move voterAnswer away from Questions and convert Voter to a subclass of Candidate
     if (!this.voterDisabled) {
-      const voter = [];
+      voter = [];
       questions.forEach(q => {
         let answer: number | number[] = q.normalizeValue(q.voterAnswer);
         if (Array.isArray(answer))
@@ -843,16 +847,23 @@ export class MatcherService {
         else
           voter.push(answer);
       });
-      data.push(voter);
     }
 
     // Create the projector
     switch (method) {
+      case 'Manhattan':
+        this._projector = new ManhattanProjector();
+        break;
       case 'PCA':
         this._projector = new PcaProjector();
         break;
       case 'RadarPCA':
-        this._projector = new PcaProjector();
+        this._projector = new RadarProjector({
+          angularMethod: 'PCA',
+          // minimumDistance: 0.1,
+          // minimumAngle: -0.25 * Math.PI,
+          // maximumAngle:  1.25 * Math.PI
+        });
         break;
       case 'TSNE':
         this._projector = new TsneProjector();
@@ -861,7 +872,7 @@ export class MatcherService {
     
     // Call the projector
     // NB. with PCA the progress emitter is not used
-    this._projector.project(data, this.voterDisabled, (progress) => {
+    this._projector.project(data, voter, (progress) => {
       this.progressChanged.emit(progress);
     }).then((coordinates) => {
       this.setCandidateCoordinates(candidates, coordinates);
@@ -870,7 +881,7 @@ export class MatcherService {
     });
   }
 
-  public setCandidateCoordinates(candidates: Candidate[], coordinates: [number, number][]): void {
+  public setCandidateCoordinates(candidates: Candidate[], coordinates: ProjectedMapping): void {
     for (let i = 0; i < candidates.length; i++) {
       candidates[i].projX = coordinates[i][0];
       candidates[i].projY = coordinates[i][1];
