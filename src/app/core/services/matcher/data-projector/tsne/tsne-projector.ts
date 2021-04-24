@@ -52,7 +52,9 @@ export class TsneProjector extends DataProjector {
           this._tsne.step();
           if (this._tsne.iter >= this.tsneOptions.maxChunks * this.tsneOptions.stepChunk) {
             window.clearInterval(this.intervalRef);
-            resolve(this._tsne.getSolution());
+            const result = this._tsne.getSolution();
+            // Return a copy because tsne uses the solution internally
+            resolve(result.map(x => [...x]));
           }
         }
       }, 1);

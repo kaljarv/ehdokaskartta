@@ -888,7 +888,6 @@ export class MatcherService {
 
       for (const p in this.parties) {
         const party = this.parties[p];
-        console.log(party);
         const data = this.getMappingData(party, questions);
         const coords = this._projector.predict(data);
         party.projX = coords[0];

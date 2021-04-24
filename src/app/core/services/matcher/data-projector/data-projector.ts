@@ -12,6 +12,21 @@ export abstract class DataProjector {
   readonly implementsPredict: boolean;
   readonly reportsProgess: boolean;
 
+  /*
+   * We need to save these for later calls to finalize
+   */
+  private _scalingParams: {
+    bounds: [[number, number], [number, number]],
+    max: number,
+    scale: number,
+    voter?: Coordinates
+  } = {
+    bounds: [[undefined, undefined], [undefined, undefined]],
+    max: undefined,
+    scale: undefined,
+    voter: undefined,
+  };
+
   constructor() {}
 
   /*
@@ -46,10 +61,20 @@ export abstract class DataProjector {
 
   /*
    * Get the projected coordinates for one datum
+   */
+  public predict(datum: ProjectorDatum, dontScale: boolean = false): Coordinates {
+    const coords = this._predict(datum);
+    if (dontScale)
+      return coords;
+    return this.scaleSolution([coords])[0];
+  }
+
+  /*
+   * Calculate the projected coordinates for one datum
    * Not all projectors implement this, but if they do, also set
    * implementsPredict to true.
    */
-  public predict(datum: ProjectorDatum): Coordinates {
+  protected _predict(datum: ProjectorDatum): Coordinates {
     throw new Error("Not implemented!");
   }
 
@@ -61,71 +86,89 @@ export abstract class DataProjector {
    * Scale values into 0–1 centered on the voter unless disabled
    */
   public finalize(solution: ProjectedMapping, disableVoter: boolean = false): ProjectedMapping {
+    this._calcScalingParams(solution, disableVoter);
+    return this.scaleSolution(solution);
+  }
 
-    // Scaled solution
-    const scaled: ProjectedMapping = [];
+  /*
+   * Calculate the scaling parameters and save them so we can use them later
+   */
+  private _calcScalingParams(solution: ProjectedMapping, disableVoter: boolean = false): void {
 
-    // Find out min and max dimensions to normalize tSNE coordinates 
-    const bounds: [number[], number[]] = [this._getBounds(solution, 0),
-                                          this._getBounds(solution, 1)];
+    // Shorthand
+    const params = this._scalingParams;
+
+    // Find out min and max dimensions to normalize projected coordinates 
+    params.bounds = [this._getBounds(solution, 0), this._getBounds(solution, 1)];
+
     // Set normalization scale based on the maximum dimension
-    let max: number = 0;
-    let scale: number;
-    let voter: Coordinates; // This will only be used if not voterDisabled
+    params.max = 0;
 
     if (disableVoter) {
 
       // Check both dims (i) to find the one with the maximum spread
       for (let i = 0; i < 2; i++) {
-        let dist = bounds[i][1] - bounds[i][0];
-        if (dist > max)
-          max = dist;
+        const dist = params.bounds[i][1] - params.bounds[i][0];
+        if (dist > params.max)
+          params.max = dist;
       }
-      scale = 1 / max;
+      params.scale = 1 / params.max;
 
     } else {
 
       // Set scale based on the greatest absolute distance from the voter in either direction
-      // The last item in the solution is the voter (can't use pop as the solver needs the solution)
-      voter = solution[solution.length - 1];
+      // The last item in the solution is the voter, which we pop
+      // TODO: This is a bit dangerous!
+      params.voter = solution.pop();
+
       for (let i = 0; i < 2; i++) {
         for (let j = 0; j < 2; j++) {
-          let dist = Math.abs(voter[i] - bounds[i][j]);
-          if (dist > max)
-            max = dist;
+          const dist = Math.abs(params.voter[i] - params.bounds[i][j]);
+          if (dist > params.max)
+            params.max = dist;
         }
       }
       // We need to multiply max by two as it's the max distance from the voter in either direction on either axis
-      scale = 1 / (2 * max);
+      params.scale = 1 / (2 * params.max);
 
     }
+  }
+
+  /*
+   * Perform solution scaling
+   */
+  public scaleSolution(solution: ProjectedMapping): ProjectedMapping {
     
+    // Scaled solution
+    const scaled: ProjectedMapping = [];
+
+    // Shorthand
+    const params = this._scalingParams;
+
     // Set scaled coordinates
-    if (disableVoter) {
+    if (!params.voter) {
 
       for (let i = 0; i < solution.length; i++) {
         // Scale and normalise by subtracting the dimension's lower bound
         // and center the smaller dimension: 
         // max - (bounds[0/1][1] - bounds[0/1][0]) goes to zero for the bigger dim
         // and represents the difference for the smaller, of which we add half
-        const x = (solution[i][0] - bounds[0][0] + (max - (bounds[0][1] - bounds[0][0])) / 2) * scale;
-        const y = (solution[i][1] - bounds[1][0] + (max - (bounds[1][1] - bounds[1][0])) / 2) * scale;
+        const x = (solution[i][0] - params.bounds[0][0] + (params.max - (params.bounds[0][1] - params.bounds[0][0])) / 2) * params.scale;
+        const y = (solution[i][1] - params.bounds[1][0] + (params.max - (params.bounds[1][1] - params.bounds[1][0])) / 2) * params.scale;
         scaled.push([x, y]);
       }
 
     } else {
 
       for (let i = 0; i < solution.length; i++) {
-        // Skip the last one as that's the voter
-        if (i === solution.length - 1)
-          break;
         // Scale and center on voter
-        const x = (solution[i][0] - voter[0]) * scale + 0.5;
-        const y = (solution[i][1] - voter[1]) * scale + 0.5;
+        const x = (solution[i][0] - params.voter[0]) * params.scale + 0.5;
+        const y = (solution[i][1] - params.voter[1]) * params.scale + 0.5;
         scaled.push([x, y]);
       }
 
     }
+
     return scaled;
   }
 

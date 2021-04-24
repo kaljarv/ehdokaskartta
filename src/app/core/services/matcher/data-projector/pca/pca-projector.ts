@@ -41,28 +41,33 @@ export class PcaProjector extends DataProjector {
       // Calculate PCA
       this._pca = new PCA(data);
       const result = this._pca.predict(data).to2DArray();
-
-      if (result[0].length === 0)
-        throw new Error("PCA did not produce results.");
-
-      for (let i = 0; i < result.length; i++) {
-        // Just in case we only have one column
-        if (result[i].length < 2)
-          result[i].push(result[i][0]);
-        // Otherwise trim to 2 columns
-        else
-          for (let j = 2; j < result[i].length; j++)
-            delete result[i][j];
-      }
-      
-      resolve(result as ProjectedMapping);
+      resolve(this._processPrediction(result));
     });
   }
 
-  public predict(datum: ProjectorDatum): Coordinates {
+  protected _processPrediction(prediction: number[][]): ProjectedMapping {
+    
+    const result: ProjectedMapping = [];
+
+    if (prediction[0].length === 0)
+      throw new Error("PCA did not produce results.");
+
+    for (let i = 0; i < prediction.length; i++) {
+      // Just in case we only have one column, add zeros for second column
+      if (prediction[i].length < 2)
+        result.push([prediction[i][0], 0.]);
+      else
+        result.push([prediction[i][0], prediction[i][1]]);
+    }
+
+    return result;
+  }
+
+  protected _predict(datum: ProjectorDatum): Coordinates {
     if (!this._pca)
       throw new Error("Call project before predict!");
-    return this._pca.predict([datum]).to2DArray()[0] as Coordinates;
+    const result = this._pca.predict([datum]).to2DArray();
+    return this._processPrediction(result)[0];
   }
 
 }
