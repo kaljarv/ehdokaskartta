@@ -10,7 +10,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { CorePipesModule } from '../../core';
 import { ProgressSpinnerModule } from '../../components';
 
-import { AvatarModule } from './avatars';
 import { DetailsCandidateModule } from './details-candidate';
 import { FavouritesListModule } from './favourites-list';
 import { FilterCandidatesModule } from './filter-candidates';
@@ -29,7 +28,6 @@ import { MapCanvasComponent } from './map-canvas.component';
     MatTooltipModule,
     CorePipesModule,
     ProgressSpinnerModule,
-    AvatarModule,
     DetailsCandidateModule,
     FavouritesListModule,
     FilterCandidatesModule,
