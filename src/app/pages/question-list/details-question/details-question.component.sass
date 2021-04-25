@@ -2,6 +2,7 @@
 
 
 :host
+  position: relative
   display: flex
   flex-direction: column
   flex-wrap: nowrap
@@ -21,8 +22,9 @@ app-details-question-global-styles
 
 #closeIcon
   position: absolute
-  right: 0
-  top: 0
+  right: $margin-S
+  top: $margin-S
+  cursor: pointer
 
 .topicChip
   margin: $margin-S 0 0 0
@@ -135,7 +137,22 @@ label
 .distribution
   @include restrictedWidth
 
+  label
+    color: $color-secondary
+    cursor: pointer
+
+    mat-icon
+      font-size: $fontSize-M !important
+      width: $fontSize-M !important
+      height: $fontSize-M !important
+      vertical-align: bottom
+
+  label.expanded
+    color: inherit
+
+
 .columns
+  overflow: hidden
   border-bottom: $border-M
   margin-bottom: $margin-XS
   padding-bottom: $margin-XS

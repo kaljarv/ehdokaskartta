@@ -41,6 +41,7 @@ export const DEFAULT_LOADING_STATE: LoadingState = {type: 'default'};
 export class SharedService {
   public titleIndex: number = 0; // TODO use an Observable instead
   public subtitle: string | Type<any> = ''; // TODO use an Observable instead
+  public hideDistribution: boolean = false;
   public hideTopBar: boolean = false;
   public lastOpenCandidateDetailsTab: number = 0; // For details-candidate tabs
   public lastOpenCandidateFilter: number = null; // For filter-candidates expansion panels

@@ -64,12 +64,14 @@ export class DetailsQuestionGlobalStylesComponent {
       state('open', 
         style({
           height: '*',
+          borderBottomColor: '*',
           paddingBottom: '*',
           paddingTop: '*',
         })),
       state('closed', 
         style({
           height: 0,
+          borderBottomColor: 'rgba(255, 255, 255, 0.0)',
           paddingBottom: 0,
           paddingTop: 0,
         })),
@@ -122,6 +124,10 @@ export class DetailsQuestionComponent implements OnInit {
     // Enable delete button if there's an answer
     // NB. We don't want to bind it dynamically, as then the button would be shown prematurely
     this.showDeleteButton = this.voterAnswer != null;
+  }
+
+  get distributionChartExpanded(): boolean {
+    return !this.shared.hideDistribution;
   }
 
   ngOnInit(): void {
@@ -214,5 +220,14 @@ export class DetailsQuestionComponent implements OnInit {
 
   public savePreferenceOrder(): void {
     this.voterAnswer = this.preferenceOrder.map(v => v.key);
+  }
+
+  /*
+   * Hide or show distribution chart
+   */
+  public toggleDistributionChart(event?: Event): void {
+    this.shared.hideDistribution = !this.shared.hideDistribution;
+    if (event != null)
+      event.preventDefault();
   }
 }

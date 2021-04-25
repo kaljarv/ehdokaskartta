@@ -85,7 +85,8 @@
 <div *ngIf="questionType == 'Likert' || questionType == 'Likert7'"
       class="distribution {{ candidateSizingClass }}">
 
-  <div class="columns columns-{{ question.values.length }}">
+  <div class="columns columns-{{ question.values.length }}"
+       [@toggleExpand]="distributionChartExpanded ? 'open' : 'closed'">
 
     <div *ngFor="let value of question.values"
           class="column"
@@ -96,6 +97,10 @@
 
   </div>
 
-  <label>{{ constituencyName | genitive: 'n' }} ehdokkaiden vastausten jakauma</label>
+  <label (click)="toggleDistributionChart()"
+         [class.expanded]="distributionChartExpanded">
+    {{ constituencyName | genitive: 'n' }} ehdokkaiden vastausten jakauma
+    <mat-icon class="expandIcon">{{ distributionChartExpanded ? 'visibility' : 'visibility_off' }}</mat-icon>
+  </label>
 
 </div>
