@@ -48,11 +48,27 @@ h3
   span
     overflow: visible
 
-
 mat-bottom-sheet-container
   min-height: 50vh
   position: relative // Needed for z-index
   z-index: $zIndex-9
+
+.topicChip
+  display: inline-block
+  background-color: $color-secondaryBg
+  font-size: $fontSize-S
+  font-weight: 500
+  padding: 0.2rem 0.5rem
+  min-height: 1.5rem
+  border-radius: 1rem
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis
+  display: inline-block
+  max-width: 100%
+  margin: 0rem $margin-XS $margin-XS 0rem
+  &:last-of-type
+    margin-right: 0rem
 
 /*
  * PARTY COLOURS
@@ -183,6 +199,3 @@ app-top-bar
   margin: $margin-M
   position: relative // Needed for z-index
   z-index: $zIndex-7
-
-
-

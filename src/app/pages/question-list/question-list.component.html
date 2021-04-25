@@ -4,10 +4,6 @@
               (click)="showQuestion(question)"
               class="category-{{ question.categoryName | toClassName }}"
               [class.answered]="question.voterAnswer">
-      <!-- 
-        Didn't work of routerLink outlet clearing bug
-        [routerLink]="['', { outlets: { details: ['question', question.id] } }]" 
-      -->
       {{ question.topic }}
       <mat-icon *ngIf="isRecommended(question)"
                 matTooltip="Suositeltu seuraava kysymys"

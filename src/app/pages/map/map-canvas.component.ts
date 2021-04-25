@@ -296,7 +296,6 @@ export class MapCanvasComponent implements AfterViewInit, OnChanges, OnInit, OnD
   }
 
   ngOnInit() {
-    console.log("Init", this.mapCentre);
     this._subscriptions.push(this.redrawEmitter.subscribe(
       (v: MapRedrawOptions) => this._applyDataChanges(v)
     ));

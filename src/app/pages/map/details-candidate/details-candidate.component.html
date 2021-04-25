@@ -53,10 +53,10 @@
     <ng-container *ngIf="!candidate.missing">
 
       <ng-container *ngIf="opinions.disagreed.length > 0">
-        <div class="customChipList">
+        <div class="topicChipList">
           <div *ngFor="let question of opinions.disagreed"
               (click)="maximiseAndGoToQuestion('answer-' + question.id)"
-              class="customChip category-{{ question.categoryName | toClassName }}">
+              class="topicChip customChip category-{{ question.categoryName | toClassName }}">
             {{ question.topic }}
           </div>
         </div>
@@ -207,18 +207,14 @@
                              class="candidate-opinions-disagreed">
           <app-custom-expander-title>
             <span>Merkittävästi eri mieltä kanssasi</span>
-            <!-- <span [matBadge]="opinions.disagreed?.length" 
-                  matBadgeOverlap="false"
-                  matBadgeColor="warn"
-                  matBadgeSize="small">Eri mieltä kanssasi</span> -->
           </app-custom-expander-title>
           <app-custom-expander-subtitle>
-            <mat-chip-list>
-              <mat-chip *ngFor="let question of excerpts.disagreed"
-                        (click)="expanderDisagreed.expandAndScrollTo('answer-' + question.id)"
-                        class="candidate-opinions-topicChip category-{{ question.categoryName | toClassName }}">
+            <div class="topicChipList">
+              <div *ngFor="let question of excerpts.disagreed"
+                   (click)="expanderDisagreed.expandAndScrollTo('answer-' + question.id, $event)"
+                   class="topicChip customChip category-{{ question.categoryName | toClassName }}">
                 {{ question.topic }}
-              </mat-chip>
+              </div>
               <span *ngIf="excerptMores.disagreed"
                     class="candidate-opinions-moreTopics">
                 + {{ excerptMores.disagreed }} muuta
@@ -227,13 +223,9 @@
                     class="candidate-opinions-noTopics">
                 Ei kysymyksiä, joista olette merkittävästi eri mieltä
               </span>
-            </mat-chip-list>
+            </div>
           </app-custom-expander-subtitle>
           <ng-container *ngFor="let question of opinions.disagreed; first as first">
-            <!--
-              <mat-divider class="candidate-opinions-divider"
-                        *ngIf="!first"></mat-divider>
-            -->
             <app-candidate-answer [attr.id]="'answer-' + question.id"
                                   [question]="question"
                                   [voterAnswer]="getVoterAnswer(question)"
@@ -253,18 +245,14 @@
                              class="candidate-opinions-agreed">
           <app-custom-expander-title>
             <span>Samaa tai lähes samaa mieltä kanssasi</span>
-            <!-- <span [matBadge]="opinions.agreed?.length" 
-                  matBadgeOverlap="false"
-                  matBadgeColor="primary"
-                  matBadgeSize="small">Samaa mieltä kanssasi</span> -->
           </app-custom-expander-title>
           <app-custom-expander-subtitle>
-            <mat-chip-list>
-              <mat-chip *ngFor="let question of excerpts.agreed"
-                        (click)="expanderAgreed.expandAndScrollTo('answer-' + question.id)"
-                        class="candidate-opinions-topicChip category-{{ question.categoryName | toClassName }}">
+            <div class="topicChipList">
+              <div *ngFor="let question of excerpts.agreed"
+                   (click)="expanderAgreed.expandAndScrollTo('answer-' + question.id, $event)"
+                   class="topicChip customChip category-{{ question.categoryName | toClassName }}">
                 {{ question.topic }}
-              </mat-chip>
+              </div>
               <span *ngIf="excerptMores.agreed"
                     class="candidate-opinions-moreTopics">
                 + {{ excerptMores.agreed }} muuta
@@ -273,13 +261,9 @@
                     class="candidate-opinions-noTopics">
                 Ei kysymyksiä, joista olette samaa tai lähes samaa mieltä
               </span>
-            </mat-chip-list>
+            </div>
           </app-custom-expander-subtitle>
           <ng-container  *ngFor="let question of opinions.agreed; first as first">
-            <!--
-              <mat-divider class="candidate-opinions-divider"
-                        *ngIf="!first"></mat-divider>
-            -->
             <app-candidate-answer [attr.id]="'answer-' + question.id"
                                   [question]="question"
                                   [voterAnswer]="getVoterAnswer(question)"
@@ -299,9 +283,6 @@
                              class="candidate-opinions-unanswered">
           <app-custom-expander-title>
             <span>Mielipiteet kysymyksiin, joihin et vielä ole vastannut</span>
-            <!-- <span [matBadge]="opinions.unanswered?.length" 
-                  matBadgeOverlap="false"
-                  matBadgeSize="small">Mielipiteet kysymyksiin, joihin et vielä ole vastannut</span> -->
           </app-custom-expander-title>
           <app-custom-expander-subtitle>
             <span *ngIf="opinions.unanswered.length != 0"
@@ -312,29 +293,10 @@
                   class="candidate-opinions-noTopics">
               Ei kysymyksiä, joihin et olisi vastannut
             </span>
-            <!--
-            <mat-chip-list>
-              <mat-chip *ngFor="let question of excerpts.unanswered"
-                        (click)="expanderUnanswered.expandAndScrollTo('answer-' + question.id)"
-                        class="candidate-opinions-topicChip">
-                {{ question.topic }}
-              </mat-chip>
-              <span *ngIf="excerptMores.unanswered"
-                  class="candidate-opinions-moreTopics">
-                + {{ excerptMores.unanswered }} muuta
-              </span>
-              <span *ngIf="opinions.unanswered.length == 0"
-                    class="candidate-opinions-noTopics">
-                Ei kysymyksiä, joihin et olisi vastannut
-              </span>
-            </mat-chip-list>
-            -->
+
           </app-custom-expander-subtitle>
           <ng-container  *ngFor="let question of opinions.unanswered; first as first">
-            <!--
-              <mat-divider class="candidate-opinions-divider"
-                        *ngIf="!first"></mat-divider>
-            -->
+
             <app-candidate-answer [attr.id]="'answer-' + question.id"
                                   [question]="question"
                                   [candidateAnswer]="getNumericAnswer(question)"

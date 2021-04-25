@@ -2,13 +2,16 @@
 
 
 :host
-  display: block
+  display: flex
+  flex-direction: column
+  flex-wrap: nowrap
+  justify-content: center
+  align-items: center
   margin: 0 auto
   max-width: $maxWidth-L
 
-// h4
-//   mat-icon
-//     vertical-align: bottom
+.topicChip
+  margin: $margin-M 0
 
 h2
   margin: $margin-XL 0
@@ -23,7 +26,8 @@ label
   margin-top: $margin-S
 
 .content
-  max-width: $maxWidth-S
+  width: $maxWidth-S
+  max-width: 100%
   margin: 0 auto $margin-M auto
 
 .likert

@@ -1,6 +1,9 @@
 <app-details-question-global-styles></app-details-question-global-styles>
 
-<!-- <h4><mat-icon>help</mat-icon>{{ question.category }}</h4> -->
+<div *ngIf="question.topic"
+    class="topicChip category-{{ question.categoryName | toClassName }}">
+  {{ question.topic }}
+</div>
 
 <h2>{{ question.text }}</h2>
 
@@ -12,7 +15,7 @@
        class="likert">
 
     <mat-radio-group [(ngModel)]="voterAnswer"
-                     class="likert-group category-{{ question.categoryName | toClassName }}">
+                     class="likert-group">
       <mat-radio-button *ngFor="let value of question.values"
                         [value]="value.key.toString()"></mat-radio-button>
     </mat-radio-group>
@@ -46,7 +49,7 @@
         <div *ngFor="let option of preferenceOrder"
              cdkDrag
              cdkDragBoundary=".preferenceOrder--list"
-             class="preferenceOrder--option category-{{ question.categoryName | toClassName }}" >
+             class="preferenceOrder--option" >
           <div *cdkDragPlaceholder
                class="preferenceOrder--placeholder"></div>
           {{ option.name }}
@@ -88,7 +91,7 @@
 
     </div>
 
-    <label>{{ constituencyName | genitive }} ehdokkaiden vastausten jakauma</label>
+    <label>{{ constituencyName | genitive: 'n' }} ehdokkaiden vastausten jakauma</label>
 
   </div>
 

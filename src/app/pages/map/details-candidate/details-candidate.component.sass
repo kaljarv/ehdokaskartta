@@ -77,7 +77,7 @@ header
     flex-direction: column
     padding-top: $margin-S
 
-    .customChipList
+    .topicChipList
       // Edge-to-edge with padding on the left
       margin-left: -16px
       padding: 0 16px 
@@ -92,35 +92,12 @@ header
       &::-webkit-scrollbar
         display: none
 
-
     .customChipList::webkit-scrollbar
       display: none
 
-    // .customChipList::after
-    //   content: ''
-    //   display: block !important
-    //   position: fixed
-    //   top: 0
-    //   right: 0
-    //   width: 16px
-    //   height: 100% 
-    //   background-image: linear-gradient(to right, transparent, 35%, #{$color-nega})
-
     .customChip
-      display: block
-      // background-color: $color-accentBg
-      font-size: $fontSize-XS
       flex-shrink: 0
-      font-weight: bold
-      border-radius: $fontSize-XS
-      padding: 0.15rem 0.4rem
-      min-height: 1.2rem
-      white-space: nowrap
-      overflow: hidden
-      text-overflow: ellipsis
-      display: inline-block
       max-width: 20vw
-      margin-right: $fontSize-XS / 2
       @media (max-width: 30rem)
         max-width: 6rem
     

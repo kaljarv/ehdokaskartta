@@ -55,6 +55,7 @@ header
     align-items: center
     margin-right: $margin-S
     color: $color-negaSecondary
+    transition: all $transition-M
 
   li:last-of-type
     margin-right: 0rem
@@ -66,8 +67,9 @@ header
 
   li::before
     display: flex
-    background-color: $color-negaSecondary
-    color: $color-primary
+    background-color: transparent
+    border: 1px solid $color-negaSecondary
+    color: $color-negaSecondary
     width: 1.5rem
     min-width: 1.5rem
     height: 1.5rem
@@ -78,6 +80,7 @@ header
     align-content: center
     justify-content: center
     align-items: center
+    transition: all $transition-M
 
   li:nth-of-type(1)::before
     content: '1'
@@ -89,7 +92,9 @@ header
     content: '3'
 
   li.current::before
+    border-color: $color-nega
     background-color: $color-nega
+    color: $color-primary
 
 .expandIcon
   flex-grow: 0

@@ -1,7 +1,7 @@
-<h4 *ngIf="question.topic"
+<div *ngIf="question.topic"
     class="topicChip category-{{ question.categoryName | toClassName }}">
   {{ question.topic }}
-</h4>
+</div>
 
 <h3>
   {{ question.text }}

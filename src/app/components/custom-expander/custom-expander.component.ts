@@ -49,6 +49,19 @@ const ANIMATION_TIMING = "225ms cubic-bezier(0.4, 0, 0.2, 1)";
         animate(ANIMATION_TIMING)
       ),
     ]),
+    trigger('toggleExpandSubtitle', [
+      state('open', 
+        style({
+          height: '*'
+        })),
+      state('closed', 
+        style({
+          height: 0
+        })),
+      transition('* => *',
+        animate(ANIMATION_TIMING)
+      ),
+    ]),
     trigger('toggleRotate', [
       state('normal', 
         style({
@@ -163,9 +176,11 @@ export class CustomExpanderComponent implements DoCheck {
     }
   }
 
-  public expandAndScrollTo(elementId: string): void {
+  public expandAndScrollTo(elementId: string, event?: Event): void {
     this._scrollToId = elementId;
     this.expanded = true;
+    if (event) 
+      event.stopPropagation();
   }
 }
 
