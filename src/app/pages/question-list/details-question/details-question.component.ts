@@ -7,18 +7,26 @@ import {
   ElementRef,
   ViewEncapsulation
 } from '@angular/core';
-
+import { 
+  trigger,
+  style,
+  state,
+  animate,
+  transition
+} from '@angular/animations';
 import { 
   MatBottomSheetRef, 
   MAT_BOTTOM_SHEET_DATA 
 } from '@angular/material/bottom-sheet';
-
 import {
   CdkDragDrop,
   moveItemInArray
 } from '@angular/cdk/drag-drop';
 
+
 import { 
+  ANIMATION_TIMING,
+  ANIMATION_DURATION_MS,
   MatcherService,
   SharedService,
   Candidate,
@@ -27,12 +35,11 @@ import {
   QuestionNumeric,
   QuestionNumericValue,
   QuestionPreferenceOrder, 
-  QuestionType,
-  Question
+  QuestionType
 } from '../../../core';
 
 // Delay in ms before closing the bottom sheet after setting answer
-export const CLOSE_DELAY: number = 450;
+export const CLOSE_DELAY: number = 2 * ANIMATION_DURATION_MS;
 
 /* 
  * A utility class to publish styles to the global ns
@@ -51,7 +58,39 @@ export class DetailsQuestionGlobalStylesComponent {
 @Component({
   selector: 'app-details-question',
   templateUrl: './details-question.component.html',
-  styleUrls: ['./details-question.component.sass']
+  styleUrls: ['./details-question.component.sass'],
+  animations: [
+    trigger('toggleExpand', [
+      state('open', 
+        style({
+          height: '*',
+          paddingBottom: '*',
+          paddingTop: '*',
+        })),
+      state('closed', 
+        style({
+          height: 0,
+          paddingBottom: 0,
+          paddingTop: 0,
+        })),
+      transition('* => *',
+        animate(ANIMATION_TIMING)
+      ),
+    ]),
+    trigger('toggleRotate', [
+      state('normal', 
+        style({
+          transform: 'rotate(0deg)',
+        })),
+      state('rotated', 
+        style({
+          transform: 'rotate(-180deg)',
+        })),
+      transition('* => *',
+        animate(ANIMATION_TIMING)
+      ),
+    ]),
+  ]
 })
 export class DetailsQuestionComponent implements OnInit {
 
@@ -124,9 +163,8 @@ export class DetailsQuestionComponent implements OnInit {
 
   dismiss(event: MouseEvent = null) {
     this.bottomSheetRef.dismiss();
-    if (event != null) {
+    if (event != null)
       event.preventDefault();
-    }
   }
 
   openLink(event: MouseEvent): void {

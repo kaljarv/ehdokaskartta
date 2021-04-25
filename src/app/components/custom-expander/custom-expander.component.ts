@@ -16,8 +16,9 @@ import {
   transition,
   trigger
 } from '@angular/animations';
-
-const ANIMATION_TIMING = "225ms cubic-bezier(0.4, 0, 0.2, 1)";
+import {
+  ANIMATION_TIMING
+} from '../../core';
 
 // const SCROLL_OPTIONS = { behavior: "smooth", block: "start", inline: "nearest" };
 

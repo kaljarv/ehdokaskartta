@@ -30,6 +30,7 @@ import {
   SharedService,
   AbbreviatePipe,
   ToClassNamePipe,
+  ANIMATION_DURATION_MS,
   PATHS,
   D3Service
 } from '../../core';
@@ -50,7 +51,7 @@ import {
 } from './map-markers';
 
 const SHOW_INFOS_DELAY = 100; // A small delay after the map has loaded before showing the infos, needed for the components to initialise
-const HIDE_TOOLTIPS_DELAY = 225;
+const HIDE_TOOLTIPS_DELAY = ANIMATION_DURATION_MS;
 const PARTY_SELECTOR_PREFIX = "party-";
 const PARTY_COLOR_PROPERTY = "fill";
 

@@ -22,15 +22,14 @@ import { MatExpansionPanel } from '@angular/material/expansion';
 import { MatSliderChange } from '@angular/material/slider';
 
 import { MatcherService,
+         ANIMATION_TIMING,
          CandidateFilter,
          CandidateFilterSimple,
          CandidateFilterNumberRange,
          CandidateFilterMultiQuestion,
          Question,
-         QuestionNumeric } from '../../../core';
-import { SharedService } from '../../../core';
-
-const ANIMATION_TIMING = "225ms cubic-bezier(0.4, 0, 0.2, 1)";
+         QuestionNumeric,
+         SharedService } from '../../../core';
 
 // For choosing the display template
 export type FilterType = 'default' | 'range' | 'question';

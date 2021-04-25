@@ -25,10 +25,12 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { SharedService, 
          PATHS,
          ADMIN_EMAIL,
+         ANIMATION_TIMING,
+         ANIMATION_DURATION_MS,
          DEFAULT_LOADING_STATE,
          ForwardOptions,
-         LoadingState } from './core/services/shared';
-import { MatcherService } from './core';
+         LoadingState,
+         MatcherService } from './core';
 
 import { DetailsQuestionComponent } from './pages/question-list';
 import { DetailsCandidateComponent,
@@ -40,8 +42,7 @@ import { FloatingCardService,
          FloatingCardConfigOptions } from './components/floating-card';
 import { FeedbackFormComponent } from './components';
 
-export const ANIMATION_TIMING = "225ms cubic-bezier(0.4, 0, 0.2, 1)";
-export const HIDE_TOOLTIPS_DELAY = 225;
+export const HIDE_TOOLTIPS_DELAY = ANIMATION_DURATION_MS;
 export const DIALOG_CONFIG: MatDialogConfig = {
   minWidth:  '24rem',
   maxWidth:  '80vw',

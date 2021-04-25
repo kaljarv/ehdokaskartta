@@ -12,8 +12,10 @@ import {
   animate,
   transition,
 } from '@angular/animations';
+import {
+  ANIMATION_TIMING
+} from '../../core';
 
-const ANIMATION_TIMING = "225ms cubic-bezier(0.4, 0, 0.2, 1)";
 export const OVERFLOW_CLASS = "app-fadeout-expander--overflow";
 
 @Component({

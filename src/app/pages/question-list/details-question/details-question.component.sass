@@ -5,16 +5,30 @@
   display: flex
   flex-direction: column
   flex-wrap: nowrap
-  justify-content: center
+  justify-content: space-between
   align-items: center
   margin: 0 auto
   max-width: $maxWidth-L
+  min-height: min(60vh, 60rem)
+  padding: $margin-M
+
+app-details-question-global-styles
+  display: none
+
+@mixin restrictedWidth
+  width: $maxWidth-S
+  max-width: 100%
+
+#closeIcon
+  position: absolute
+  right: 0
+  top: 0
 
 .topicChip
-  margin: $margin-M 0
+  margin: $margin-S 0 0 0
 
 h2
-  margin: $margin-XL 0
+  margin: 0 0 $margin-M 0
   text-align: center
 
 label
@@ -25,13 +39,17 @@ label
   line-height: $lineHeight-S
   margin-top: $margin-S
 
-.content
-  width: $maxWidth-S
-  max-width: 100%
-  margin: 0 auto $margin-M auto
+.question
+  display: flex
+  flex-direction: column
+  flex-wrap: nowrap
+  align-items: center
+  justify-content: center
+
+.answerSelector
+  @include restrictedWidth
 
 .likert
-  margin: $margin-L 0 $margin-XL 0
   text-align: center
 
 .labels
@@ -89,7 +107,7 @@ label
   flex-flow: column nowrap
   justify-content: center
   text-align: center
-  // background: $color-secondaryBg
+  background: $color-secondaryBg
   border-radius: 1.5rem
   font-size: $fontSize-M
   font-weight: 500
@@ -114,7 +132,8 @@ label
   margin-top: $margin-M
   text-align: center
 
-// .distribution
+.distribution
+  @include restrictedWidth
 
 .columns
   border-bottom: $border-M

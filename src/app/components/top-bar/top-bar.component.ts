@@ -19,11 +19,10 @@ import {
 } from '@angular/animations';
 
 import { 
+  ANIMATION_TIMING,
   PATHS,
   SharedService 
 } from '../../core';
-
-const ANIMATION_TIMING = "225ms cubic-bezier(0.4, 0, 0.2, 1)";
 
 /*
  * <app-top-bar>

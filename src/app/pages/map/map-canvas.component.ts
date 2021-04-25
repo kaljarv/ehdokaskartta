@@ -17,7 +17,8 @@ import {
 } from 'rxjs';
 
 import { 
-  D3Service 
+  ANIMATION_DURATION_MS,
+  D3Service
 } from '../../core';
 
 import {
@@ -141,7 +142,7 @@ export class MapCanvasComponent implements AfterViewInit, OnChanges, OnInit, OnD
    * such as enter, exit and appearance of text labels
    * NB. Not used currently
    */
-  @Input() animationStagger: number = 225;
+  @Input() animationStagger: number = ANIMATION_DURATION_MS;
 
   /*
    * The background image to draw. Possible values:

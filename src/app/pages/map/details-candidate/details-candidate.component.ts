@@ -20,23 +20,25 @@ import { LcFirstPipe,
          SentencifyPipe } from '../../../core/pipes';
 import { MatcherService, 
          Candidate, 
+         ANIMATION_TIMING,
+         ANIMATION_DURATION_MS,
          INDEPENDENT_PARTY_ID, 
          Question,
          QuestionNumeric, 
          QuestionPreferenceOrder,
-         Party} from '../../../core';
-import { SharedService } from '../../../core';
+         Party,
+         SharedService } from '../../../core';
 import { FloatingCardRef,
          FLOATING_CARD_DATA,
-         ANIMATION_DURATION_MS as FLOATING_CARD_ANIMATION_DURATION_MS } from '../../../components/floating-card';
+         FLOATING_CARD_ANIMATION_DURATION_MS } from '../../../components/floating-card';
 import { CustomExpanderComponent } from '../../../components';
 
 export const DATA_CONTENT_CLASS = "content";
 export const MISSING_DATA_INFO_CLASS = "detailsCandidateMissingData";
 export const MISSING_DATA_INFO = "Ei vastausta";
 export const MISSING_DATA_INFO_HTML = `<span class="${MISSING_DATA_INFO_CLASS}">${MISSING_DATA_INFO}</span>`;
-const ANIMATION_TIMING = "225ms cubic-bezier(0.4, 0, 0.2, 1)";
-const GOTO_QUESTION_DELAY = 225;
+
+const GOTO_QUESTION_DELAY = FLOATING_CARD_ANIMATION_DURATION_MS;
 
 
 /* 

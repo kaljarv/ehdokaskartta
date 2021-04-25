@@ -11,13 +11,13 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { MatcherService,
-         QuestionNumeric } from '../../core';
-import { SharedService, 
-         PATHS } from '../../core/services/shared';
+         QuestionNumeric,
+         SharedService, 
+         ANIMATION_TIMING,
+         PATHS } from '../../core';
 
 import { QuestionListTopBarContentComponent } from './question-list-top-bar-content.component';
 
-const ANIMATION_TIMING = "225ms {{ delay }} cubic-bezier(0.4, 0, 0.2, 1)";
 // Delays for the star to appear and disappear, needed because of delay in closing the question bottom sheet
 const ANIMATION_ENTER_DELAY = '1000ms';
 const ANIMATION_EXIT_DELAY = '900ms';

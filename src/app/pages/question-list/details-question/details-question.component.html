@@ -1,18 +1,21 @@
 <app-details-question-global-styles></app-details-question-global-styles>
 
+<mat-icon (click)="dismiss($event)"
+          id="closeIcon">close</mat-icon>
+
 <div *ngIf="question.topic"
     class="topicChip category-{{ question.categoryName | toClassName }}">
   {{ question.topic }}
 </div>
 
-<h2>{{ question.text }}</h2>
+<div class="question">
 
-<div class="content">
+  <h2>{{ question.text }}</h2>
 
   <!-- Selector: Likert -->
 
   <div *ngIf="questionType == 'Likert' || questionType == 'Likert7'"
-       class="likert">
+       class="likert answerSelector">
 
     <mat-radio-group [(ngModel)]="voterAnswer"
                      class="likert-group">
@@ -39,7 +42,7 @@
   <!-- Selector: PreferenceOrder -->
 
   <div *ngIf="questionType == 'PreferenceOrder'"
-       class="preferenceOrder">
+       class="preferenceOrder answerSelector">
 
       <label>Vedä vaihtoehdot haluamaasi järjestykseen.</label>
 
@@ -75,24 +78,24 @@
 
   </div>
 
-  <!-- Distribution chart -->
+</div>
 
-  <div *ngIf="questionType == 'Likert' || questionType == 'Likert7'"
-       class="distribution {{ candidateSizingClass }}">
+<!-- Distribution chart -->
 
-    <div class="columns columns-{{ question.values.length }}">
+<div *ngIf="questionType == 'Likert' || questionType == 'Likert7'"
+      class="distribution {{ candidateSizingClass }}">
 
-      <div *ngFor="let value of question.values"
-           class="column"
-           #columns>
-        <span *ngFor="let candidate of candidates[value.key]"
-              class="candidate party-{{ candidate.partyName | toClassName }}">&bull;</span>
-      </div>
+  <div class="columns columns-{{ question.values.length }}">
 
+    <div *ngFor="let value of question.values"
+          class="column"
+          #columns>
+      <span *ngFor="let candidate of candidates[value.key]"
+            class="candidate party-{{ candidate.partyName | toClassName }}">&bull;</span>
     </div>
 
-    <label>{{ constituencyName | genitive: 'n' }} ehdokkaiden vastausten jakauma</label>
-
   </div>
+
+  <label>{{ constituencyName | genitive: 'n' }} ehdokkaiden vastausten jakauma</label>
 
 </div>

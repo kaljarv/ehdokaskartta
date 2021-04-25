@@ -1,15 +1,14 @@
 import { Component,
-         Directive,
          Injector,
          OnInit,
+         StaticProvider,
          ViewEncapsulation } from '@angular/core';
-import { ComponentPortal, 
-         PortalInjector, } from '@angular/cdk/portal';
+import { ComponentPortal } from '@angular/cdk/portal';
 
 import { FloatingCardConfig,
          FLOATING_CARD_DATA } from './floating-card.config';
 import { FloatingCardRef,
-         ANIMATION_TIMING,
+         FLOATING_CARD_ANIMATION_TIMING,
          FLOATING_CARD_PANEL_CLASS,
          FLOATING_CARD_INITIALISED_CLASS } from './floating-card-ref';
 
@@ -34,7 +33,7 @@ import { FloatingCardRef,
     }
     .${FLOATING_CARD_INITIALISED_CLASS} {
       margin-top: unset;
-      transition: margin-top ${ANIMATION_TIMING};
+      transition: margin-top ${FLOATING_CARD_ANIMATION_TIMING};
     }`
   ],
   encapsulation: ViewEncapsulation.None,
@@ -77,11 +76,11 @@ export class FloatingCardComponent implements OnInit {
 
   ngOnInit() {
     // Create injector
-    const injectionTokens = new WeakMap();
-    injectionTokens.set(FloatingCardRef, this.floatingCardRef);
-    injectionTokens.set(FLOATING_CARD_DATA, this.config.data);
-
-    const injector = new PortalInjector(this.injector, injectionTokens);
+    const providers: StaticProvider[] = [
+      {provide: FloatingCardRef, useValue: this.floatingCardRef},
+      {provide: FLOATING_CARD_DATA, useValue: this.config.data}
+    ];
+    const injector = Injector.create({parent: this.injector, providers});
 
     // Create content component
     this.contentPortal = new ComponentPortal(this.config.component, null, injector);

@@ -14,7 +14,12 @@ export const PATHS = {
   about: 'about',
   browse: 'browse',
 }
+
 export const ADMIN_EMAIL = 'info@kaljarv.com';
+
+export const ANIMATION_DURATION_MS = 225;
+export const ANIMATION_EASING = 'cubic-bezier(0.4, 0, 0.2, 1)';
+export const ANIMATION_TIMING = `${ANIMATION_DURATION_MS}ms ${ANIMATION_EASING}`;
 
 export interface ForwardOptions {
   path: any[],            // The path array to navigate

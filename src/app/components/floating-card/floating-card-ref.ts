@@ -9,18 +9,21 @@ import { DragDrop,
          DragRef } from '@angular/cdk/drag-drop';
 import { Observable } from 'rxjs';
 
+import { ANIMATION_DURATION_MS,
+         ANIMATION_TIMING } from '../../core';
+
 import { FloatingCardComponent } from './floating-card.component';
 import { FloatingCardPeekElementOptions,
          DEFAULT_FLOATING_CARD_PEEK_ELEMENT_OPTIONS } from './floating-card.config';
 
-export const ANIMATION_DURATION_MS = 225;
-export const ANIMATION_TIMING = ANIMATION_DURATION_MS + 'ms cubic-bezier(0.4, 0, 0.2, 1)';
 export const FLOATING_CARD_PANEL_CLASS = 'floatingCard-panel';
 export const FLOATING_CARD_INITIALISED_CLASS = FLOATING_CARD_PANEL_CLASS + '--initialised';
 export const FLOATING_CARD_MAXIMISED_CLASS = FLOATING_CARD_PANEL_CLASS + '--maximised';
 export const FLOATING_CARD_DEFAULT_PEEK_HEIGHT: string = '6rem';
 export const CLICK_CANCEL_DURATION = 300; // ms
 export const CLOSE_DELAY = 500; // ms to allow for transitioning at close before disposing overlay
+export const FLOATING_CARD_ANIMATION_DURATION_MS = ANIMATION_DURATION_MS;
+export const FLOATING_CARD_ANIMATION_TIMING = ANIMATION_TIMING;
 
 export enum FloatingCardState {
   Hidden,
