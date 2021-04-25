@@ -18,7 +18,10 @@ import {
   transition
 } from '@angular/animations';
 
-import { SharedService } from '../../core/services';
+import { 
+  PATHS,
+  SharedService 
+} from '../../core';
 
 const ANIMATION_TIMING = "225ms cubic-bezier(0.4, 0, 0.2, 1)";
 
@@ -65,11 +68,12 @@ const ANIMATION_TIMING = "225ms cubic-bezier(0.4, 0, 0.2, 1)";
   ]
 })
 export class TopBarComponent implements AfterViewInit, OnInit, OnChanges {
-  @Input() title: string;
+  @Input() titleIndex: number = 0;
   @Input() content: string | Type<any>;
   @ViewChild('contentTemplate', {read: ViewContainerRef}) contentTemplate: ViewContainerRef;
   @ViewChild('stringContentTemplate', {read: TemplateRef}) stringContentTemplate: TemplateRef<undefined>;
   public expanded: boolean = true;
+  public paths: { [name: string]: string } = PATHS;
   private _prevContent: string | Type<any> = '';
   private _componentWaiting: boolean = false;
 

@@ -311,10 +311,8 @@ export class AppComponent implements DoCheck {
   }
 
   public clearDetailsCard(): void {
-    if (this._floatingCardRef) {
+    if (this._floatingCardRef)
       this._floatingCardRef.close();
-      // this._floatingCardRef = null;
-    }
   }
 
   // TODO: Toggle sidenav on item click for all items
@@ -425,8 +423,8 @@ export class AppComponent implements DoCheck {
 
   }
 
-  get title(): string {
-    return this.shared.title;
+  get titleIndex(): number {
+    return this.shared.titleIndex;
   }
   
   get subtitle(): string | Type<any> {
@@ -475,13 +473,11 @@ export class AppComponent implements DoCheck {
   }
 
   get peekHeight(): string | null {
-    if (this._floatingCardRef && this._floatingCardRef.isPeeking) {
+    if (this._floatingCardRef && this._floatingCardRef.isPeeking)
       return this._floatingCardRef.peekHeight;
-    } else if (this.showNextButtonBar && this.nextButtonBar != null) {
+    if (this.showNextButtonBar && this.nextButtonBar != null)
       return `${this.nextButtonBar.nativeElement.clientHeight}px`;
-    } else {
-      return null;
-    }
+    return null;
   }
 
   get bottomToolsShiftTrigger(): {value: string, params: any} {

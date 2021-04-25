@@ -38,7 +38,7 @@ export class ConstituencyPickerComponent implements OnInit, OnDestroy {
       title: this.nextButtonText,
       onBefore: () => this.setMunicipality()
     };
-    this.shared.title = "Kotikuntasi";
+    this.shared.titleIndex = 0;
     this.shared.subtitle = "Valitse aluksi kotikuntasi, jotta saat selville oman vaalipiirisi. Eduskuntavaaleissa ehdokkaat on jaettu 13 vaalipiiriin, ja voit antaa äänesi vain oman vaalipiirisi ehdokkaille.";
   }
 

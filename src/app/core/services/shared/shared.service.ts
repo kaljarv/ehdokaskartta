@@ -34,7 +34,7 @@ export const DEFAULT_LOADING_STATE: LoadingState = {type: 'default'};
 
 @Injectable()
 export class SharedService {
-  public title: string = 'Tervetuloa Ehdokaskartalle'; // TODO use an Observable instead
+  public titleIndex: number = 0; // TODO use an Observable instead
   public subtitle: string | Type<any> = ''; // TODO use an Observable instead
   public hideTopBar: boolean = false;
   public lastOpenCandidateDetailsTab: number = 0; // For details-candidate tabs
@@ -138,7 +138,7 @@ export class SharedService {
    */
   get state(): any {
     return {
-      title: this.title,
+      titleIndex: this.titleIndex,
       // subtitle: this.subtitle.toString(),
       lastOpenCandidateDetailsTab: this.lastOpenCandidateDetailsTab,
       lastOpenCandidateFilter: this.lastOpenCandidateFilter,

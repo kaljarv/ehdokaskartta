@@ -163,9 +163,7 @@ export class MapComponent implements OnInit, OnDestroy {
       this.matcher.voterDisabled = false;
 
     // Topbar
-    this.shared.title = this.voterDisabled ?
-      "Ehdokkaat" : // `${this.matcher.constituency}n ehdokkaat` : // NB. In order for this to work properly, we should do it in a subscription
-      "Tulokset";
+    this.shared.titleIndex = 2;
     this.shared.subtitle = (this.voterDisabled ?
       "Ehdokkaat on sijoiteltu kartalle heidän mielipiteidensä perusteella." :
       "Ehdokkaat on sijoiteltu kartalle sen perusteella, mitä he ovat vastanneet valitsemiisi kysymyksiin, ja kartan keskeltä löydät itsesi."

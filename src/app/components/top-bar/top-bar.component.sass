@@ -13,7 +13,6 @@
 
 header
   border-radius: inherit
-  cursor: pointer
   padding: $margin-S
   position: relative
   min-height: 1.5rem
@@ -22,21 +21,75 @@ header
   flex-wrap: nowrap
   align-items: center
 
+  mat-icon
+    cursor: pointer
+
 #menuButton
   flex-grow: 0
   flex-basis: 2rem
 
 .title
-  font-weight: bold
+  flex-grow: 1
+  padding: 0 $margin-M
+  display: flex
+  align-content: center
+  flex-wrap: nowrap
+  flex-direction: row
+  justify-content: space-between
+  align-items: center
   font-size: $fontSize-M
   text-align: center
-  flex-grow: 1
   transition: font-size $transition-M
+  white-space: nowrap
+  overflow: hidden
+  
+  li
+    cursor: pointer
+    flex-shrink: 1
+    overflow: hidden
+    text-overflow: ellipsis
+    display: flex
+    flex-wrap: nowrap
+    flex-direction: row
+    justify-content: flex-start
+    align-items: center
+    margin-right: $margin-S
+    color: $color-negaSecondary
 
-.active
-  .title
-    font-size: $fontSize-L
+  li:last-of-type
+    margin-right: 0rem
 
+  li.current
+    flex-shrink: 0
+    color: $color-nega
+    font-weight: bold
+
+  li::before
+    display: flex
+    background-color: $color-negaSecondary
+    color: $color-primary
+    width: 1.5rem
+    min-width: 1.5rem
+    height: 1.5rem
+    border-radius: 0.75rem
+    font-weight: bold
+    margin-right: $margin-S
+    flex-wrap: nowrap
+    align-content: center
+    justify-content: center
+    align-items: center
+
+  li:nth-of-type(1)::before
+    content: '1'
+
+  li:nth-of-type(2)::before
+    content: '2'
+
+  li:nth-of-type(3)::before
+    content: '3'
+
+  li.current::before
+    background-color: $color-nega
 
 .expandIcon
   flex-grow: 0

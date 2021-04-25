@@ -1,6 +1,5 @@
 <mat-card id="container"
-          [class.expanded]="expanded"
-          (click)="toggle()">
+          [class.expanded]="expanded">
   <header>
     <button id="menuButton"
             mat-icon-button 
@@ -9,12 +8,25 @@
       <mat-icon>menu</mat-icon>
     </button>
     <div class="title">
-      {{ title }}
+      <li [routerLink]="paths.constituencyPicker"
+          [class.current]="titleIndex == 0">
+        Kotikuntasi
+      </li>
+      <li [routerLink]="paths.questions"
+          [class.current]="titleIndex == 1">
+        Kysymykset
+      </li>
+      <li [routerLink]="paths.map"
+          [class.current]="titleIndex == 2">
+        Tulokset
+      </li>
     </div>
     <mat-icon [@toggleRotate]="expanded ? 'rotated' : 'normal'"
+              (click)="toggle()"
               class="expandIcon">expand_more</mat-icon>
   </header>
   <section [@toggleExpand]="expanded ? 'open' : 'closed'"
+           (click)="toggle()"
            class="content">
     <ng-template #stringContentTemplate>
       {{ content }}

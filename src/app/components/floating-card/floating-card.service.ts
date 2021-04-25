@@ -1,10 +1,10 @@
 import { ComponentRef,
          Injectable, 
-         Injector, } from '@angular/core';
+         Injector, 
+         StaticProvider } from '@angular/core';
 import { Overlay, 
          OverlayConfig, } from '@angular/cdk/overlay';
-import { ComponentPortal, 
-         PortalInjector, } from '@angular/cdk/portal';
+import { ComponentPortal } from '@angular/cdk/portal';
 import { DragDrop } from '@angular/cdk/drag-drop';
 
 import { FloatingCardConfig,
@@ -71,13 +71,12 @@ export class FloatingCardService {
     const floatingCardRef = new FloatingCardRef(this.overlay.create(new OverlayConfig(overlayConfig)), this.overlay, this.dragDrop);
 
     // Create injector
-    const injectionTokens = new WeakMap();
-    injectionTokens.set(FloatingCardConfig, config);
-    injectionTokens.set(FloatingCardRef, floatingCardRef);
+    const providers: StaticProvider[] = [
+      {provide: FloatingCardConfig, useValue: config},
+      {provide: FloatingCardRef, useValue: floatingCardRef}
+    ];
 
-    // injectionTokens.set(FLOATING_CARD_DATA, config.data);
-
-    const injector = new PortalInjector(this.injector, injectionTokens);
+    const injector = Injector.create({parent: this.injector, providers});
 
     // Create content component
     const containerPortal = new ComponentPortal(FloatingCardComponent, null, injector);

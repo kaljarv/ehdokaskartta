@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 @import '~@angular/material/theming';
 
 // Typography
@@ -98,6 +100,7 @@ $fontIncrement-M:   120%;
 
 $color-text:        map-get($foreground, text);
 $color-nega:        white;
+$color-negaSecondary: color.change($color-nega, $alpha: 0.6); // rgba(255, 255, 255, 0.6);
 $color-primary:     mat-color($app-primary);
 $color-primaryBg:   mat-color($app-primary, 100); // color.mix(white, $color-primary, 80%)
 $color-accent:      mat-color($accent);

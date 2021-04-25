@@ -80,7 +80,7 @@ export class QuestionListComponent
       type: 'loading',
       message: 'Ladataan kysymyksiä…'
     });
-    this.shared.title = "Mielipiteesi";
+    this.shared.titleIndex = 1;
     this.shared.subtitle = QuestionListTopBarContentComponent;
   }
 
