@@ -15,16 +15,18 @@ export abstract class DataProjector {
   /*
    * We need to save these for later calls to finalize
    */
-  private _scalingParams: {
+  protected _scalingParams: {
     bounds: [[number, number], [number, number]],
     max: number,
     scale: number,
-    voter?: Coordinates
+    voter?: Coordinates,
+    centreOn: Coordinates,
   } = {
     bounds: [[undefined, undefined], [undefined, undefined]],
     max: undefined,
     scale: undefined,
     voter: undefined,
+    centreOn: [0.5, 0.5]
   };
 
   constructor() {}
@@ -154,9 +156,10 @@ export abstract class DataProjector {
         // Scale and normalise by subtracting the dimension's lower bound
         // and center the smaller dimension: 
         // max - (bounds[0/1][1] - bounds[0/1][0]) goes to zero for the bigger dim
-        // and represents the difference for the smaller, of which we add half
-        const x = (solution[i][0] - params.bounds[0][0] + (params.max - (params.bounds[0][1] - params.bounds[0][0])) / 2) * params.scale;
-        const y = (solution[i][1] - params.bounds[1][0] + (params.max - (params.bounds[1][1] - params.bounds[1][0])) / 2) * params.scale;
+        // and represents the difference for the smaller, of which we add the 
+        // relevant centreOn fraction (0.5 by default)
+        const x = (solution[i][0] - params.bounds[0][0] + (params.max - (params.bounds[0][1] - params.bounds[0][0])) * params.centreOn[0]) * params.scale;
+        const y = (solution[i][1] - params.bounds[1][0] + (params.max - (params.bounds[1][1] - params.bounds[1][0])) * params.centreOn[1]) * params.scale;
         scaled.push([x, y]);
       }
 
@@ -164,8 +167,8 @@ export abstract class DataProjector {
 
       for (let i = 0; i < solution.length; i++) {
         // Scale and center on voter
-        const x = (solution[i][0] - params.voter[0]) * params.scale + 0.5;
-        const y = (solution[i][1] - params.voter[1]) * params.scale + 0.5;
+        const x = (solution[i][0] - params.voter[0]) * params.scale + params.centreOn[0];
+        const y = (solution[i][1] - params.voter[1]) * params.scale + params.centreOn[1];
         scaled.push([x, y]);
       }
 

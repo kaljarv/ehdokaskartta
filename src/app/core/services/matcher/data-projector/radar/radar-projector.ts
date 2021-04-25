@@ -18,6 +18,7 @@ export type AngularMethod = 'PCA' | 'precalculated';
 export interface RadarProjectorOptions {
   angularMethod?: AngularMethod;
   angularValues?: number[];
+  centreOn?: Coordinates;
   minimumDistance?: number;
   minimumAngle?: number;
   maximumAngle?: number;
@@ -63,6 +64,8 @@ export class RadarProjector extends DataProjector {
     this.minimumDistance = options?.minimumDistance || 0;
     this.minimumAngle = options?.minimumAngle || 0;
     this.maximumAngle = options?.maximumAngle || Math.PI;
+    // Set the scaling centre to the middle of the bottom edge
+    this._scalingParams.centreOn = options?.centreOn || [0.5, 1.0];
   }
 
   /*

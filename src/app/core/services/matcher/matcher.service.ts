@@ -28,6 +28,7 @@ import {
   Municipality,
 } from '../database';
 import { 
+  Coordinates,
   DataProjector,
   ManhattanProjector,
   PcaProjector,
@@ -69,6 +70,8 @@ export enum DataStatus {
   Updated,
 }
 
+export type ProjectionMethod = 'PCA' | 'RadarPCA' | 'TSNE' | 'Manhattan';
+
 
 /**********************************************************************
  * MATCHER SERVICE
@@ -80,6 +83,7 @@ export enum DataStatus {
 export class MatcherService {
 
   public questions: QuestionDict = {};
+  public radarCentre: Coordinates = [0.5, 0.8];
   public correlationMatrix: any;
   public categories: CategoryDict;
   public candidates: CandidateDict;
@@ -824,7 +828,7 @@ export class MatcherService {
   /*
    * Project candidates on the map
    */
-  public initMapping(method: 'PCA' | 'RadarPCA' | 'TSNE' | 'Manhattan' = 'RadarPCA'): void {
+  public initMapping(method: ProjectionMethod = 'RadarPCA'): void {
 
     // Prepare raw data for mapping
     const data = new Array<Array<number>>();
@@ -860,6 +864,7 @@ export class MatcherService {
       case 'RadarPCA':
         this._projector = new RadarProjector({
           angularMethod: 'PCA',
+          centreOn: this.radarCentre
           // minimumDistance: 0.1,
           // minimumAngle: -0.25 * Math.PI,
           // maximumAngle:  1.25 * Math.PI

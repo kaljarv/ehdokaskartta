@@ -4,6 +4,7 @@ import {
   ElementRef,
   EventEmitter,
   Input,
+  NgZone,
   OnChanges,
   OnDestroy,
   OnInit,
@@ -87,6 +88,8 @@ export enum MapRedrawOptions {
   ReInitialize
 }
 
+export type MapBackgroundType = 'none' | 'default' | 'radar';
+
 
 /*  
  * Utility
@@ -139,6 +142,14 @@ export class MapCanvasComponent implements AfterViewInit, OnChanges, OnInit, OnD
    * NB. Not used currently
    */
   @Input() animationStagger: number = 225;
+
+  /*
+   * The background image to draw. Possible values:
+   * 'default' -- concentric circles and radii on voter
+   * 'radar' -- only the upper half of that above
+   * 'none' -- no background
+   */
+  @Input() backgroundType: MapBackgroundType = 'default';
 
   /*
    * This should match $color-secondary in the sass definitions
@@ -273,7 +284,8 @@ export class MapCanvasComponent implements AfterViewInit, OnChanges, OnInit, OnD
 
   constructor(
     private d3: D3Service,
-  ) { }
+    private ngZone: NgZone
+  ) {}
 
   public get width(): number | undefined {
     return window.innerWidth;
@@ -284,6 +296,7 @@ export class MapCanvasComponent implements AfterViewInit, OnChanges, OnInit, OnD
   }
 
   ngOnInit() {
+    console.log("Init", this.mapCentre);
     this._subscriptions.push(this.redrawEmitter.subscribe(
       (v: MapRedrawOptions) => this._applyDataChanges(v)
     ));
@@ -880,8 +893,8 @@ export class MapCanvasComponent implements AfterViewInit, OnChanges, OnInit, OnD
    * Draw canvas and check if we are still animating and need to ask for another frame
    */
   public draw(time: DOMHighResTimeStamp = performance.now()): void {
-    // Do draw
-    this._draw(time);
+    // Draw outside Angular to be safe 
+    this.ngZone.runOutsideAngular(() => this._draw(time));
     // Check if we have running animations or a redraw flag set
     // and request a frame if there are any
     if (this._checkRedraw(time))
@@ -1006,10 +1019,13 @@ export class MapCanvasComponent implements AfterViewInit, OnChanges, OnInit, OnD
   }
 
   /*
-   * Draw a stylized bg map centered on the map centre (proj. 0.5, 0.5)
+   * Draw a stylized bg map centered on the map centre (proj. 0.5, 0.5 by default)
    * TODO: Only draw visible shapes
    */
   private _drawBackground(): void {
+
+    if (this.backgroundType === 'none')
+      return;
 
     const projCentre = this.mapCentre;
     const centre = {
@@ -1017,8 +1033,11 @@ export class MapCanvasComponent implements AfterViewInit, OnChanges, OnInit, OnD
       y: this.convertY(projCentre.y)
     };
     const nRadii = 12;
+    // For the radar type, we only draw half of the radii
+    const nRadiiToDraw = this.backgroundType === 'radar' ? Math.floor(nRadii / 2) + 1 : nRadii;
     const radLength = this._coordinateFactors.maxDistance / 2;
     const nCircles = 6;
+    const circleArcAngle = this.backgroundType === 'radar' ? Math.PI : 2 * Math.PI;
     const scale = this._coordinateFactors.coordinateScale;
     const ctx = this._context;
 
@@ -1031,8 +1050,9 @@ export class MapCanvasComponent implements AfterViewInit, OnChanges, OnInit, OnD
     ctx.beginPath();
     
     // Draw radii
-    for (let i = 0; i < nRadii; i++) {
-      const angle = i * 2 * Math.PI / nRadii;
+    for (let i = 0; i < nRadiiToDraw; i++) {
+      // The half pi offset is because of the radar type
+      const angle = i * 2 * Math.PI / nRadii + 0.5 * Math.PI;
       const end = {
         x: this.convertX(projCentre.x + radLength * Math.sin(angle)),
         y: this.convertY(projCentre.y + radLength * Math.cos(angle))
@@ -1045,8 +1065,9 @@ export class MapCanvasComponent implements AfterViewInit, OnChanges, OnInit, OnD
     // Draw circles
     for (let i = 0; i < nCircles; i++) {
       const radius = (i + 1) * scale / 2 / nCircles;
-      ctx.moveTo(centre.x + radius, centre.y);
-      ctx.arc(centre.x, centre.y, radius, 0, 2 * Math.PI);
+      // We draw from circleArcAngle to zero because of the radar type
+      ctx.moveTo(centre.x - radius, centre.y);
+      ctx.arc(centre.x, centre.y, radius, circleArcAngle, 0);
     }
 
     // Stroke and restore

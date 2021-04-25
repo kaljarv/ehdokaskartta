@@ -26,6 +26,7 @@ import {
   MatcherService,
   Candidate,
   Party,
+  ProjectionMethod,
   SharedService,
   AbbreviatePipe,
   ToClassNamePipe,
@@ -34,6 +35,7 @@ import {
 } from '../../core';
 
 import {
+  MapBackgroundType,
   MapMarkerClickData,
   MapRedrawOptions
 } from './map-canvas.component';
@@ -67,13 +69,18 @@ type ColorDict = { [party: string]: string };
 })
 export class MapComponent implements OnInit, OnDestroy {
   /*
-  * This should match $color-primary in the sass definitions
-  */
+   * See matcher for projection methods
+   */
+  @Input() projectionType: ProjectionMethod = 'RadarPCA';
+
+  /*
+   * This should match $color-primary in the sass definitions
+   */
   @Input() voterColor: string = "rgba(0,0,0,0.87)";
 
   /*
-  * Bind height to window innerHeight instead of setting it to 100vh which doesn't work as wanted on mobile
-  */
+   * Bind height to window innerHeight instead of setting it to 100vh which doesn't work as wanted on mobile
+   */
   @HostBinding('style.height.px')
   get height(): number {
     return window.innerHeight;
@@ -89,6 +96,8 @@ export class MapComponent implements OnInit, OnDestroy {
   public colors: ColorDict = {}; // We fetch colors for parties from the stylesheets and store it here
   public candidates = new Array<Candidate>();
   public parties = new Array<Party>();
+  // We might change this based on the voter position
+  public mapCentre = {x: 0.5, y: 0.5};
   public markerData = new Array<MapDatum>(); // We'll conflate candidates and parties in this list for correct depth placement
   public coordinateScale = 1.0; // This will be set later
   public markerScale = 1.0;
@@ -148,11 +157,10 @@ export class MapComponent implements OnInit, OnDestroy {
     this._reportProgress();
 
     // Check if we are browsing or not
-    if (this.route.snapshot.data.voterDisabled) {
+    if (this.route.snapshot.data.voterDisabled)
       this.matcher.voterDisabled = true;
-    } else {
+    else
       this.matcher.voterDisabled = false;
-    }
 
     // Topbar
     this.shared.title = this.voterDisabled ?
@@ -163,6 +171,14 @@ export class MapComponent implements OnInit, OnDestroy {
       "Ehdokkaat on sijoiteltu kartalle sen perusteella, mitä he ovat vastanneet valitsemiisi kysymyksiin, ja kartan keskeltä löydät itsesi."
     ) + " Voit lähentää tai loitontaa karttaa, rajata ehdokkaita vaikkapa iän perusteella tai näyttää puolueet kartalla.";
 
+  }
+
+  get isRadar(): boolean {
+    return this.projectionType.indexOf('Radar') === 0;
+  }
+
+  get mapBackgroundType(): MapBackgroundType {
+    return this.isRadar ? 'radar' : 'default';
   }
 
   get voterDisabled(): boolean {
@@ -258,14 +274,19 @@ export class MapComponent implements OnInit, OnDestroy {
 
     // Create the Voter, a pseudo-Candidate object
     // It will be sorted with the rest of the avatars
-    if (!this.voterDisabled)
+    if (!this.voterDisabled) {
       this.voter = {
         isVoter: true,
         filteredOut: false,
-        projX: 0.5,
-        projY: 0.5,
-      }
-
+        projX: this.isRadar ? this.matcher.radarCentre[0] : 0.5,
+        projY: this.isRadar ? this.matcher.radarCentre[1] : 0.5
+      };
+      this.mapCentre = {
+        x: this.voter.projX,
+        y: this.voter.projY
+      };
+    }
+      
     // Get party centroids
     this.parties = this.matcher.getPartiesAsList();
 
