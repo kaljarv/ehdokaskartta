@@ -34,13 +34,13 @@ export const GENITIVES = {
 })
 export class GenitivePipe implements PipeTransform {
 
-  transform(value: string): string {
+  transform(value: string, defaultSuffix: string = ':n'): string {
     // If a predefined genitive exists, use that
     if (value in GENITIVES) {
       return GENITIVES[value];
     // Otherwise use a dummy generic 'genitive'
     } else {
-      return value + ':n';
+      return value + defaultSuffix;
     }
   }
 }
