@@ -2,8 +2,8 @@ import {
   AfterViewInit,
   Component, 
   ComponentFactoryResolver,
-  Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   TemplateRef,
   Type,
@@ -20,6 +20,9 @@ import {
 import { 
   Router
 } from '@angular/router';
+import {
+  Subscription
+} from 'rxjs';
 
 import { 
   ANIMATION_TIMING,
@@ -85,14 +88,16 @@ import {
     ]),
   ]
 })
-export class TopBarComponent implements AfterViewInit, OnInit, OnChanges {
+export class TopBarComponent implements AfterViewInit, OnDestroy, OnInit {
 
   @ViewChild('contentTemplate', {read: ViewContainerRef}) contentTemplate: ViewContainerRef;
   @ViewChild('stringContentTemplate', {read: TemplateRef}) stringContentTemplate: TemplateRef<undefined>;
   public expanded: boolean = true;
 
-  private _prevContent: string | Type<any> = '';
+  private _prevContent: string | Type<any>;
   private _componentWaiting: boolean = false;
+  // These will be cancelled onDestroy
+  private _subscriptions: Subscription[] = [];
 
   constructor(
     private router: Router,
@@ -120,24 +125,25 @@ export class TopBarComponent implements AfterViewInit, OnInit, OnChanges {
     return this.shared.voterDisabled;
   }
 
-  ngAfterViewInit() {
-    this.ngOnChanges();
-  }
-
   ngOnInit() {
-    this.shared.minimiseTopBar.subscribe(() => this.minimise());
+    this._subscriptions.push(this.shared.minimiseTopBar.subscribe(() => this.minimise()));
+    this._subscriptions.push(this.shared.topBarDataChanged.subscribe(() => this._updateContent()));
   }
 
-  // Handle loading of components to the content area
-  // and expand the top bar if the content changes
-  ngOnChanges() {
+  ngAfterViewInit() {
+    this._updateContent();
+  }
+
+  ngOnDestroy() {
+    this._subscriptions.forEach(s => s.unsubscribe());
+  }
+
+  private _updateContent(): void {
 
     let hasChanged = false;
-
-    console.log(this.content);
     
     // Check if content has changed
-    if (this._prevContent != this.content) {
+    if (this._prevContent !== this.content) {
       this._prevContent = this.content;
       // We set this flag, as the ng-template may not have yet initialized
       this._componentWaiting = true;

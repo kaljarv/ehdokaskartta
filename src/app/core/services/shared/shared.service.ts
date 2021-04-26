@@ -48,8 +48,6 @@ export const DEFAULT_LOADING_STATE: LoadingState = {type: 'default'};
 
 @Injectable()
 export class SharedService {
-  public currentPage: PageName; // TODO use an Observable instead
-  public subtitle: string | Type<any> = ''; // TODO use an Observable instead
   public hideDistribution: boolean = false;
   public hideTopBar: boolean = false;
   public lastOpenCandidateDetailsTab: number = 0; // For details-candidate tabs
@@ -61,6 +59,10 @@ export class SharedService {
 
   public loadingState = new BehaviorSubject<LoadingState>(DEFAULT_LOADING_STATE);
 
+  public topBarDataChanged = new EventEmitter<{
+    currentPage: PageName,
+    subtitle: string | Type<any>
+  }>();
   public showQuestion = new EventEmitter<string>();
   public showCandidate = new EventEmitter<string>();
   public toggleCandidate = new EventEmitter<string>();
@@ -91,6 +93,8 @@ export class SharedService {
   public mapInteraction = new EventEmitter<void>();
 
   private _activeCandidateId: string = null;
+  public _currentPage: PageName;
+  public _subtitle: string | Type<any> = '';
 
   constructor(
     private database: DatabaseService,
@@ -149,6 +153,22 @@ export class SharedService {
       this.activeCandidateChanged.emit(id);
   }
 
+  get currentPage(): PageName {
+    return this._currentPage;
+  }
+  set currentPage(value: PageName) {
+    this._currentPage = value;
+    this._emitTopBarDataChanged();
+  }
+
+  get subtitle(): string | Type<any> {
+    return this._subtitle;
+  }
+  set subtitle(value: string | Type<any>) {
+    this._subtitle = value;
+    this._emitTopBarDataChanged();
+  }
+
   get enableMap(): boolean {
     return this.matcher.hasEnoughAnswersForMapping;
   }
@@ -184,6 +204,13 @@ export class SharedService {
 
   public logEvent(eventName: string, eventParams: any = {}): void {
     this.database.logEvent(eventName, eventParams);
+  }
+
+  private _emitTopBarDataChanged(): void {
+    this.topBarDataChanged.emit({
+      currentPage: this.currentPage, 
+      subtitle: this.subtitle
+    })
   }
 
 }
