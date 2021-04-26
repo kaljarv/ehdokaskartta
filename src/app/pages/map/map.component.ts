@@ -687,6 +687,7 @@ export class MapComponent implements OnInit, OnDestroy {
    * Center map (on voter)
    */
   public locateSelf(): void {
+    console.log("Locate");
     this.zoomEmitter.emit({
       x: window.innerWidth  * (this.voterDisabled ? 0.5 : this.voter.projX),
       y: window.innerHeight * (this.voterDisabled ? 0.5 : this.voter.projY)

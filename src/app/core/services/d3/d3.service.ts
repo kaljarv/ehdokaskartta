@@ -11,4 +11,9 @@ export class D3Service {
   get d3(): any {
     return d3;
   }
+
+  public getTransform(k: number = 1, x: number = 0, y: number = 0): any {
+    return d3.zoomIdentity.translate(x, y)
+                          .scale(k);
+  }
 }

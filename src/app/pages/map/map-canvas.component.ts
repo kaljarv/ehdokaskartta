@@ -599,6 +599,15 @@ export class MapCanvasComponent implements AfterViewInit, OnChanges, OnInit, OnD
       this._updateZoomed();
     };
 
+    const dblClickZoom = () =>  {
+      // Zoom to the level were labels are visible
+      const k = this.labelThreshholdZoomLevel;
+      const t = d3.zoomTransform(d3.event.target);
+      const x = (d3.event.offsetX - t.x) / t.k,
+            y = (d3.event.offsetY - t.y) / t.k;
+      this._zoomTo(x, y, k);
+    }
+
     this._zoomFunction = d3.zoom()
       .on("zoom", zoomed)
       .clickDistance(10);
@@ -607,7 +616,8 @@ export class MapCanvasComponent implements AfterViewInit, OnChanges, OnInit, OnD
     // when rescaling
     this._updateZoomExtents();
 
-    this._zoomElement.call(this._zoomFunction);
+    this._zoomElement.call(this._zoomFunction)
+      .on("dblclick.zoom", dblClickZoom);
   }
 
   /*
@@ -786,6 +796,10 @@ export class MapCanvasComponent implements AfterViewInit, OnChanges, OnInit, OnD
       m.marker.showLabel = true;
       m.marker.drawingOptions[0].opacityLabel = this.globalLabelOpacity;
     }
+  }
+
+  public get labelThreshholdZoomLevel(): number {
+    return this.showLabelsAtFactor / this.markerScale;
   }
 
   public get globalLabelOpacity(): number {
@@ -1135,6 +1149,8 @@ export class MapCanvasComponent implements AfterViewInit, OnChanges, OnInit, OnD
    */
   public onCanvasClick(event: MouseEvent): void {
 
+    console.log("onCanvasClick");
+
     if (this._canvasInitialized) {
 
       // Position on canvas
@@ -1189,11 +1205,19 @@ export class MapCanvasComponent implements AfterViewInit, OnChanges, OnInit, OnD
 
   /*
    * Called by the zoomEmitter and onCanvasClick
+   * The x and y coordinates are the desired centre coordinates in 1:1 scale
    */
   private _zoomTo(x: number, y: number, toScale: number = this._coordinateFactors.zoomScale): void {
+
+    if (!this._zoomElement)
+      return;
+
+    let tX = -1 * (x * toScale - this.width / 2),
+        tY = -1 * (y * toScale - this.height / 2);
+
     this._zoomElement
       .transition()
       .duration(this.zoomDuration)
-      .call(this._zoomFunction.scaleTo, toScale, [x, y]);
+      .call(this._zoomFunction.transform, this.d3.getTransform(toScale, tX, tY));
   }
 }
