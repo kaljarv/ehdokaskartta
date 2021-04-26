@@ -466,11 +466,11 @@ export class AppComponent implements DoCheck {
   }
 
   get enableQuestions(): boolean {
-    return this.matcher.constituencyId != null;
+    return this.shared.enableQuestions;
   }
 
   get enableMap(): boolean {
-    return this.matcher.hasEnoughAnswersForMapping;
+    return this.shared.enableMap;
   }
 
   get peekHeight(): string | null {

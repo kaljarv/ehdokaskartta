@@ -3,9 +3,16 @@ import {
   EventEmitter,
   Type 
 } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { 
+  BehaviorSubject 
+} from 'rxjs';
 
-import { DatabaseService } from '../database';
+import {
+  MatcherService
+} from '../matcher';
+import { 
+  DatabaseService 
+} from '../database';
 
 export const PATHS = {
   constituencyPicker: 'constituency-picker',
@@ -85,6 +92,7 @@ export class SharedService {
 
   constructor(
     private database: DatabaseService,
+    private matcher: MatcherService
   ) {
     // Set up mapInteraction
     this.showCandidate.subscribe( id => {
@@ -124,7 +132,7 @@ export class SharedService {
   /*
    * We use this to signal the map avatars.
    */
-  public get activeCandidateId(): string {
+  get activeCandidateId(): string {
     return this._activeCandidateId;
   }
 
@@ -132,11 +140,19 @@ export class SharedService {
    * We use this to signal the map avatars.
    * This should only be set by details-candidate.component onInit
    */
-  public set activeCandidateId(id: string | null) {
+  set activeCandidateId(id: string | null) {
     const changed = this._activeCandidateId !== id;
     this._activeCandidateId = id;
     if (changed)
       this.activeCandidateChanged.emit(id);
+  }
+
+  get enableMap(): boolean {
+    return this.matcher.hasEnoughAnswersForMapping;
+  }
+
+  get enableQuestions(): boolean {
+    return this.matcher.constituencyId != null;
   }
 
   /*

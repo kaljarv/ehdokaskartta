@@ -8,17 +8,31 @@
       <mat-icon>menu</mat-icon>
     </button>
     <div class="title">
-      <li [routerLink]="paths.constituencyPicker"
+      <li (click)="followLink('constituencyPicker', $event)"
           [class.current]="titleIndex == 0">
-        Kotikuntasi
+        <div class="marker">1</div>
+        <span>Kotikuntasi</span>
       </li>
-      <li [routerLink]="paths.questions"
-          [class.current]="titleIndex == 1">
-        Kysymykset
+      <li (click)="followLink('questions', $event)"
+          [class.current]="titleIndex == 1"
+          [class.disabled]="!enableQuestions">
+        <div class="marker">
+          <ng-container *ngIf="enableQuestions">2</ng-container>
+          <mat-icon *ngIf="!enableQuestions">block</mat-icon>
+        </div>
+        <span>Tulokset</span>
       </li>
-      <li [routerLink]="paths.map"
-          [class.current]="titleIndex == 2">
-        Tulokset
+      <li (click)="followLink('map', $event)"
+          [class.current]="titleIndex == 2"
+          [class.disabled]="!enableQuestions">
+        <div class="marker">
+          <ng-container *ngIf="enableQuestions">3</ng-container>
+          <mat-icon *ngIf="!enableQuestions">block</mat-icon>
+        </div>
+          <span *ngIf="enableMap"
+                @labelAppear>Tulokset</span>
+          <span *ngIf="!enableMap"
+                @labelAppear>Selaa ehdokkaita</span>
       </li>
     </div>
     <mat-icon [@toggleRotate]="expanded ? 'rotated' : 'normal'"

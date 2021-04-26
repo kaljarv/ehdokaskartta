@@ -17,6 +17,9 @@ import {
   animate,
   transition
 } from '@angular/animations';
+import { 
+  Router
+} from '@angular/router';
 
 import { 
   ANIMATION_TIMING,
@@ -34,6 +37,21 @@ import {
   templateUrl: './top-bar.component.html',
   styleUrls: ['./top-bar.component.sass'],
   animations: [
+    trigger('labelAppear', [
+      transition(':enter', [
+        style({
+          width: 0,
+        }),
+        animate(ANIMATION_TIMING, style({
+          width: '*',
+        }))
+      ]),
+      transition(':leave', [
+        animate(ANIMATION_TIMING, style({
+          width: '0',
+        }))
+      ]),
+    ]),
     trigger('toggleExpand', [
       state('open', 
         style({
@@ -67,19 +85,29 @@ import {
   ]
 })
 export class TopBarComponent implements AfterViewInit, OnInit, OnChanges {
+
   @Input() titleIndex: number = 0;
   @Input() content: string | Type<any>;
   @ViewChild('contentTemplate', {read: ViewContainerRef}) contentTemplate: ViewContainerRef;
   @ViewChild('stringContentTemplate', {read: TemplateRef}) stringContentTemplate: TemplateRef<undefined>;
   public expanded: boolean = true;
-  public paths: { [name: string]: string } = PATHS;
+
   private _prevContent: string | Type<any> = '';
   private _componentWaiting: boolean = false;
 
   constructor(
-    public shared: SharedService,
+    private router: Router,
+    private shared: SharedService,
     private componentFactoryResolver: ComponentFactoryResolver,
   ) {}
+
+  get enableQuestions(): boolean {
+    return this.shared.enableQuestions;
+  }
+
+  get enableMap(): boolean {
+    return this.shared.enableMap;
+  } 
 
   ngAfterViewInit() {
     this.ngOnChanges();
@@ -141,7 +169,6 @@ export class TopBarComponent implements AfterViewInit, OnInit, OnChanges {
     }
   }
 
-
   public toggle(): void {
     this.expanded = !this.expanded;
   }
@@ -150,8 +177,27 @@ export class TopBarComponent implements AfterViewInit, OnInit, OnChanges {
     this.expanded = false;
   }
 
-  public onMenuButtonClick(event: MouseEvent): void {
+  public onMenuButtonClick(event: Event): void {
     this.shared.toggleSideNav.emit();
     event.stopPropagation();
+  }
+
+  public followLink(linkName: string, event?: Event): void {
+    switch (linkName) {
+      case 'constituencyPicker':
+        this.router.navigate([PATHS.constituencyPicker]);
+        break;
+      case 'questions':
+        if (this.enableQuestions)
+          this.router.navigate([PATHS.questions]);
+        break;
+      case 'map':
+        // NB. We enable results even if no questions are answered
+        if (this.enableQuestions)
+          this.router.navigate([PATHS.map]);
+        break;
+    }
+    if (event)
+      event.stopPropagation();
   }
 }
