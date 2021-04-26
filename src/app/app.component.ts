@@ -324,9 +324,8 @@ export class AppComponent implements DoCheck {
   }
 
   public goForward() {
-    if (this.forwardOptions.onBefore) {
+    if (this.forwardOptions.onBefore)
       this.forwardOptions.onBefore();
-    }
     this.router.navigate(this.forwardOptions.path);
     this.clearForward();
   }

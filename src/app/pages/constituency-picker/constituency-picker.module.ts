@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
 import { ConstituencyPickerComponent } from './constituency-picker.component';
+import { ConstituencyPickerTopBarContentComponent } from './constituency-picker-top-bar-content.component';
 
 
 @NgModule({
@@ -19,9 +20,11 @@ import { ConstituencyPickerComponent } from './constituency-picker.component';
   ],
   exports: [
     ConstituencyPickerComponent,
+    ConstituencyPickerTopBarContentComponent
   ],
   declarations: [
     ConstituencyPickerComponent,
+    ConstituencyPickerTopBarContentComponent
   ],
 })
 export class ConstituencyPickerModule {}

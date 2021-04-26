@@ -142,7 +142,7 @@ export class QuestionListComponent
 
   private _updateInformationValues(): void {
     this.informationValueOrder = this.matcher.getInformationValueOrder();
-    this.shared.forwardProgress.emit(this.matcher.getTotalInformation() * 100);
+    this.shared.forwardProgress.emit(this.matcher.getTotalInformation() ** 2 * 100);
   }
 
   private _checkEnableForward(): void {

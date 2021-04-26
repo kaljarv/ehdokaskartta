@@ -13,6 +13,8 @@ import { SharedService,
          ForwardOptions } from '../../core/services/shared';
 import { MatcherService } from '../../core';
 
+import { ConstituencyPickerTopBarContentComponent } from './constituency-picker-top-bar-content.component';
+
 @Component({
   selector: 'app-constituency-picker',
   templateUrl: './constituency-picker.component.html',
@@ -25,7 +27,8 @@ export class ConstituencyPickerComponent implements OnInit, OnDestroy {
   });
   public filteredMunicipalities: Observable<string[]>;
   public nextButtonText: string = 'Siirry kysymyksiin';
-  private forwardOptions: ForwardOptions;
+
+  private _forwardOptions: ForwardOptions;
   // These will be cancelled onDestroy
   private _subscriptions: Subscription[] = [];
 
@@ -33,13 +36,13 @@ export class ConstituencyPickerComponent implements OnInit, OnDestroy {
     private matcher: MatcherService,
     private shared: SharedService
   ) {
-    this.forwardOptions = {
+    this._forwardOptions = {
       path: [PATHS.questions], 
       title: this.nextButtonText,
       onBefore: () => this.setMunicipality()
     };
     this.shared.currentPage = 'constituencyPicker';
-    this.shared.subtitle = "Valitse aluksi kotikuntasi, jotta saat selville oman vaalipiirisi. Eduskuntavaaleissa ehdokkaat on jaettu 13 vaalipiiriin, ja voit antaa äänesi vain oman vaalipiirisi ehdokkaille.";
+    this.shared.subtitle = ConstituencyPickerTopBarContentComponent;
   }
 
   ngOnInit(): void {
@@ -70,21 +73,20 @@ export class ConstituencyPickerComponent implements OnInit, OnDestroy {
   private _filter(value: string): string[] {
     // Check if we already have a valid value, so we can enable submitting the form
     let exact = this.getMunicipalityId(value);
-    if (exact !== null) {
+    // We might have already commenced goForward from the optionSelected event
+    if (exact !== null)
       this.enableForward();
-    } else {
+    else
       this.shared.disableForward.emit();
-    }
     return this.filterMunicipalities(value);
   }
  
   public getMunicipalityId(name: string): number | null {
     let matches = this.filterMunicipalities(name);
-    if (matches.length > 0 && name.toLocaleLowerCase('fi-FI') === matches[0].name.toLocaleLowerCase('fi-FI')) {
+    if (matches.length > 0 && name.toLocaleLowerCase('fi-FI') === matches[0].name.toLocaleLowerCase('fi-FI'))
       return matches[0].id;
-    } else {
+    else
       return null;
-    }
   }
 
   public filterMunicipalities(name: string): any[] {
@@ -94,23 +96,23 @@ export class ConstituencyPickerComponent implements OnInit, OnDestroy {
 
   public getSelectedMunicipalityId(): string | null {
     let value = this.municipalityForm.controls.voterMunicipality.value;
-    if (!value) {
+    if (!value)
       return null;
-    }
     // Nb. return value from getMunicipalityId() may still be null
     return typeof value === 'string' ? this.getMunicipalityId(value) : value.id;
   }
 
   // This is called by form.onSubmit and mat-autocomplete.optionSelected
   public goForward(e?:any): void {
-    this.shared.navigateForward.emit(this.forwardOptions);
+    // We have to setTimeout here as otherwise app component might receive
+    // the enableForward event after this one :O
+    setTimeout(() => this.shared.navigateForward.emit(this._forwardOptions), 5);
   }
 
   // Set the selected municipality (or the one defined as the argument)
   public setMunicipality(id?: string): void {
-    if (id == null) {
+    if (id == null)
       id = this.getSelectedMunicipalityId();
-    }
     // This will throw an Error if id is bad
     this.matcher.setMunicipality(id);
   }
@@ -120,7 +122,7 @@ export class ConstituencyPickerComponent implements OnInit, OnDestroy {
   }
 
   public enableForward(): void {
-    this.shared.enableForward.emit(this.forwardOptions);
+    this.shared.enableForward.emit(this._forwardOptions);
   }
 
   public get constituencyName(): string | null {
