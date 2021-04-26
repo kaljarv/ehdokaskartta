@@ -1149,8 +1149,6 @@ export class MapCanvasComponent implements AfterViewInit, OnChanges, OnInit, OnD
    */
   public onCanvasClick(event: MouseEvent): void {
 
-    console.log("onCanvasClick");
-
     if (this._canvasInitialized) {
 
       // Position on canvas
@@ -1179,11 +1177,6 @@ export class MapCanvasComponent implements AfterViewInit, OnChanges, OnInit, OnD
       // Use as key to get datum from dict
       const key = rgba.slice(0, 3).join(",");
       const datum = this._hitColor2Marker?.[key];
-
-      // console.log("Click", x, y, key, datum?.source?.id, JSON.parse(JSON.stringify(datum ?? "NODATUM")), 
-      //   this._hitColor2Marker, this.markerData, this._animations,
-      //   `minScale ${this._coordinateFactors.minimizedMarkerScale} based on Input ${this.minimizedCandidateScale}.`,
-      //   `zoomLevel ${this._coordinateFactors.zoomScale} maxZoom ${this.zoomExtents[1]} labelOpacity ${this.globalLabelOpacity} opacityThreshold ${this.showLabelsAtFactor}`,);
       
       // Ensure that click is within the bounding box of the marker and
       // emit matching click
