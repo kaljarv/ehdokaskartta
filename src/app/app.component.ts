@@ -424,14 +424,6 @@ export class AppComponent implements DoCheck {
 
   }
 
-  get titleIndex(): number {
-    return this.shared.titleIndex;
-  }
-  
-  get subtitle(): string | Type<any> {
-    return this.shared.subtitle;
-  }
-
   get hideTopBar(): boolean {
     return this.shared.hideTopBar;
   }

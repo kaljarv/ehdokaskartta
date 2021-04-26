@@ -9,29 +9,29 @@
     </button>
     <div class="title">
       <li (click)="followLink('constituencyPicker', $event)"
-          [class.current]="titleIndex == 0">
+          [class.current]="currentPage == 'constituencyPicker'">
         <div class="marker">1</div>
         <span>Kotikuntasi</span>
       </li>
       <li (click)="followLink('questions', $event)"
-          [class.current]="titleIndex == 1"
+          [class.current]="currentPage == 'questions'"
           [class.disabled]="!enableQuestions">
         <div class="marker">
           <ng-container *ngIf="enableQuestions">2</ng-container>
           <mat-icon *ngIf="!enableQuestions">block</mat-icon>
         </div>
-        <span>Tulokset</span>
+        <span>Kysymykset</span>
       </li>
       <li (click)="followLink('map', $event)"
-          [class.current]="titleIndex == 2"
+          [class.current]="currentPage == 'map' || currentPage == 'browse'"
           [class.disabled]="!enableQuestions">
         <div class="marker">
           <ng-container *ngIf="enableQuestions">3</ng-container>
           <mat-icon *ngIf="!enableQuestions">block</mat-icon>
         </div>
-          <span *ngIf="enableMap"
+          <span *ngIf="enableMap && currentPage != 'browse'"
                 @labelAppear>Tulokset</span>
-          <span *ngIf="!enableMap"
+          <span *ngIf="!enableMap || currentPage == 'browse'"
                 @labelAppear>Selaa ehdokkaita</span>
       </li>
     </div>

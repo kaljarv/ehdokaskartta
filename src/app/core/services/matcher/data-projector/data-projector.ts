@@ -149,29 +149,32 @@ export abstract class DataProjector {
     // Shorthand
     const params = this._scalingParams;
 
-    // Set scaled coordinates
+    // Calc offsets
+    let offsetX: number, 
+        offsetY: number,
+        centreX = params.centreOn[0],
+        centreY = params.centreOn[1];
+
     if (!params.voter) {
-
-      for (let i = 0; i < solution.length; i++) {
-        // Scale and normalise by subtracting the dimension's lower bound
-        // and center the smaller dimension: 
-        // max - (bounds[0/1][1] - bounds[0/1][0]) goes to zero for the bigger dim
-        // and represents the difference for the smaller, of which we add the 
-        // relevant centreOn fraction (0.5 by default)
-        const x = (solution[i][0] - params.bounds[0][0] + (params.max - (params.bounds[0][1] - params.bounds[0][0])) * params.centreOn[0]) * params.scale;
-        const y = (solution[i][1] - params.bounds[1][0] + (params.max - (params.bounds[1][1] - params.bounds[1][0])) * params.centreOn[1]) * params.scale;
-        scaled.push([x, y]);
-      }
-
+      // Center on the smaller dimension: 
+      // max - (bounds[0/1][1] - bounds[0/1][0]) goes to zero for the bigger dim
+      // and represents the difference for the smaller
+      const rangeX = params.bounds[0][1] - params.bounds[0][0],
+            rangeY = params.bounds[1][1] - params.bounds[1][0];
+      offsetX = 0.5 * (params.max - 2 * rangeX) - params.bounds[0][0];
+      offsetY = 0.5 * (params.max - 2 * rangeY) - params.bounds[1][0];
+      centreY -= 0.5;
     } else {
+      // Center on voter
+      offsetX = -1 * params.voter[0];
+      offsetY = -1 * params.voter[1];
+    }
 
-      for (let i = 0; i < solution.length; i++) {
-        // Scale and center on voter
-        const x = (solution[i][0] - params.voter[0]) * params.scale + params.centreOn[0];
-        const y = (solution[i][1] - params.voter[1]) * params.scale + params.centreOn[1];
-        scaled.push([x, y]);
-      }
-
+    // Normalize and apply offsets
+    for (let i = 0; i < solution.length; i++) {
+      const x = (solution[i][0] + offsetX) * params.scale + centreX,
+            y = (solution[i][1] + offsetY) * params.scale + centreY;
+      scaled.push([x, y]);
     }
 
     return scaled;

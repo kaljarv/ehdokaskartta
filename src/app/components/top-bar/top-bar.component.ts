@@ -24,6 +24,7 @@ import {
 import { 
   ANIMATION_TIMING,
   PATHS,
+  PageName,
   SharedService 
 } from '../../core';
 
@@ -86,8 +87,6 @@ import {
 })
 export class TopBarComponent implements AfterViewInit, OnInit, OnChanges {
 
-  @Input() titleIndex: number = 0;
-  @Input() content: string | Type<any>;
   @ViewChild('contentTemplate', {read: ViewContainerRef}) contentTemplate: ViewContainerRef;
   @ViewChild('stringContentTemplate', {read: TemplateRef}) stringContentTemplate: TemplateRef<undefined>;
   public expanded: boolean = true;
@@ -101,13 +100,25 @@ export class TopBarComponent implements AfterViewInit, OnInit, OnChanges {
     private componentFactoryResolver: ComponentFactoryResolver,
   ) {}
 
+  get currentPage(): PageName {
+    return this.shared.currentPage;
+  }
+
+  get content(): string | Type<any> {
+    return this.shared.subtitle;
+  }
+
   get enableQuestions(): boolean {
     return this.shared.enableQuestions;
   }
 
   get enableMap(): boolean {
     return this.shared.enableMap;
-  } 
+  }
+
+  get voterDisabled(): boolean {
+    return this.shared.voterDisabled;
+  }
 
   ngAfterViewInit() {
     this.ngOnChanges();
@@ -122,6 +133,8 @@ export class TopBarComponent implements AfterViewInit, OnInit, OnChanges {
   ngOnChanges() {
 
     let hasChanged = false;
+
+    console.log(this.content);
     
     // Check if content has changed
     if (this._prevContent != this.content) {

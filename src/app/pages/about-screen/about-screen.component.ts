@@ -15,6 +15,7 @@ export class AboutScreenComponent {
     private router: Router,
     private shared: SharedService,
   ) {
+    this.shared.currentPage = 'about';
     this.shared.hideTopBar = true;
   }
 

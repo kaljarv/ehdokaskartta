@@ -164,7 +164,7 @@ export class MapComponent implements OnInit, OnDestroy {
       this.matcher.voterDisabled = false;
 
     // Topbar
-    this.shared.titleIndex = 2;
+    this.shared.currentPage = this.voterDisabled ? 'browse' : 'map';
     this.shared.subtitle = (this.voterDisabled ?
       "Ehdokkaat on sijoiteltu kartalle heidän mielipiteidensä perusteella." :
       "Ehdokkaat on sijoiteltu kartalle sen perusteella, mitä he ovat vastanneet valitsemiisi kysymyksiin, ja kartan keskeltä löydät itsesi."
@@ -271,18 +271,20 @@ export class MapComponent implements OnInit, OnDestroy {
     // Get candidates
     this.candidates = this.matcher.getCandidatesAsList();
 
+    // Set map centre
+    this.mapCentre = {
+      x: this.isRadar ? this.matcher.radarCentre[0] : 0.5,
+      y: this.isRadar ? this.matcher.radarCentre[1] : 0.5
+    };
+
     // Create the Voter, a pseudo-Candidate object
     // It will be sorted with the rest of the avatars
     if (!this.voterDisabled) {
       this.voter = {
         isVoter: true,
         filteredOut: false,
-        projX: this.isRadar ? this.matcher.radarCentre[0] : 0.5,
-        projY: this.isRadar ? this.matcher.radarCentre[1] : 0.5
-      };
-      this.mapCentre = {
-        x: this.voter.projX,
-        y: this.voter.projY
+        projX: this.mapCentre.x,
+        projY: this.mapCentre.y
       };
     }
       
@@ -687,7 +689,6 @@ export class MapComponent implements OnInit, OnDestroy {
    * Center map (on voter)
    */
   public locateSelf(): void {
-    console.log("Locate");
     this.zoomEmitter.emit({
       x: window.innerWidth  * (this.voterDisabled ? 0.5 : this.voter.projX),
       y: window.innerHeight * (this.voterDisabled ? 0.5 : this.voter.projY)

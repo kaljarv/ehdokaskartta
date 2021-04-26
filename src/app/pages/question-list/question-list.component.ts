@@ -80,7 +80,7 @@ export class QuestionListComponent
       type: 'loading',
       message: 'Ladataan kysymyksiä…'
     });
-    this.shared.titleIndex = 1;
+    this.shared.currentPage = 'questions';
     this.shared.subtitle = QuestionListTopBarContentComponent;
   }
 

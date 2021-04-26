@@ -41,6 +41,7 @@ export class TitleScreenComponent implements OnInit, OnDestroy {
     private shared: SharedService,
     private ngZone: NgZone,
   ) {
+    this.shared.currentPage = 'titleScreen';
     this.shared.hideTopBar = true;
     this.shared.showFeedbackButton = false;
   }

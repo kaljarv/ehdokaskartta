@@ -42,11 +42,13 @@ export type LoadingState = {
   value?: number
 }
 
+export type PageName = 'constituencyPicker' | 'questions' | 'map' | 'browse' | 'titleScreen' | 'about';
+
 export const DEFAULT_LOADING_STATE: LoadingState = {type: 'default'};
 
 @Injectable()
 export class SharedService {
-  public titleIndex: number = 0; // TODO use an Observable instead
+  public currentPage: PageName; // TODO use an Observable instead
   public subtitle: string | Type<any> = ''; // TODO use an Observable instead
   public hideDistribution: boolean = false;
   public hideTopBar: boolean = false;
@@ -155,12 +157,16 @@ export class SharedService {
     return this.matcher.constituencyId != null;
   }
 
+  get voterDisabled(): boolean {
+    return this.matcher.voterDisabled;
+  }
+
   /*
    * Return a dump of the shared state for feedback
    */
   get state(): any {
     return {
-      titleIndex: this.titleIndex,
+      currentPage: this.currentPage,
       // subtitle: this.subtitle.toString(),
       lastOpenCandidateDetailsTab: this.lastOpenCandidateDetailsTab,
       lastOpenCandidateFilter: this.lastOpenCandidateFilter,
