@@ -59,15 +59,21 @@
 
         <mat-divider></mat-divider>
 
+        <a mat-list-item 
+           (click)="restartOnboarding()">
+          <mat-icon matListIcon>help</mat-icon>
+          Näytä ohjeet
+        </a>
+
         <a *ngIf="enableMap || enableQuestions"
            mat-list-item 
            (click)="unsetVoterAnswers()">
-           <mat-icon matListIcon>highlight_off</mat-icon>
+           <mat-icon matListIcon>delete</mat-icon>
            Nollaa tallennetut vastaukset
         </a>
         <mat-list-item *ngIf="!(enableMap || enableQuestions)"
                        class="disabled">
-           <mat-icon matListIcon>highlight_off</mat-icon>
+           <mat-icon matListIcon>delete</mat-icon>
            Nollaa tallennetut vastaukset
         </mat-list-item>
 
@@ -78,7 +84,7 @@
         </a>
 
         <a mat-list-item 
-          [routerLink]="paths.about">
+           [routerLink]="paths.about">
           <mat-icon matListIcon>info</mat-icon>
           Tietoja palvelusta
         </a>

@@ -14,12 +14,13 @@ import { MatListModule } from '@angular/material/list';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTooltipModule } from '@angular/material/tooltip'; 
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { AppComponent } from './app.component';
 import { DatabaseModule,
          D3Service,
          MatcherService,
+         OnboardingModule,
          SharedService } from './core/services';
 import { ConstituencyPickerComponent,
          ConstituencyPickerModule,
@@ -87,6 +88,7 @@ const paths = [
     DatabaseModule, 
     FeedbackFormModule,
     FloatingCardModule,
+    OnboardingModule,
     TopBarModule,
     AboutScreenModule,
     ConstituencyPickerModule,

@@ -42,6 +42,11 @@ export type LoadingState = {
   value?: number
 }
 
+export type ToggleSideNavOptions = {
+  action: 'open' | 'close' | 'toggle',
+  onComplete?: () => void
+}
+
 export type PageName = 'constituencyPicker' | 'questions' | 'map' | 'browse' | 'titleScreen' | 'about';
 
 export const DEFAULT_LOADING_STATE: LoadingState = {type: 'default'};
@@ -75,7 +80,7 @@ export class SharedService {
   public disableForward = new EventEmitter<void>();
   public forwardProgress = new EventEmitter<number>();
   public navigateForward = new EventEmitter<ForwardOptions>();
-  public toggleSideNav = new EventEmitter<void>();
+  public toggleSideNav = new EventEmitter<ToggleSideNavOptions | void>();
   public locateSelf = new EventEmitter<void>();
   public openFeedback = new EventEmitter<void>();
   public minimiseTopBar = new EventEmitter<void>();
@@ -91,6 +96,7 @@ export class SharedService {
   }>();
   // A catch-all for all map interactions
   public mapInteraction = new EventEmitter<void>();
+  public restartOnboarding = new EventEmitter<void>();
 
   private _activeCandidateId: string = null;
   public _currentPage: PageName;

@@ -1,9 +1,7 @@
 import { Component, 
          DoCheck,
          ViewChild,
-         Type,  
-         ElementRef
-        } from '@angular/core';
+         ElementRef } from '@angular/core';
 import { Router, 
          NavigationStart } from '@angular/router';
 import { trigger,
@@ -30,7 +28,8 @@ import { SharedService,
          DEFAULT_LOADING_STATE,
          ForwardOptions,
          LoadingState,
-         MatcherService } from './core';
+         MatcherService, 
+         OnboardingService} from './core';
 
 import { DetailsQuestionComponent } from './pages/question-list';
 import { DetailsCandidateComponent,
@@ -166,12 +165,13 @@ export class AppComponent implements DoCheck {
   } = {};
   
   constructor(
-    private router: Router,
     private bottomSheet: MatBottomSheet,
     private dialog: MatDialog, 
-    private shared: SharedService,
-    private matcher: MatcherService,
     private fcService: FloatingCardService,
+    private matcher: MatcherService,
+    private onboarding: OnboardingService,
+    private router: Router,
+    private shared: SharedService,
     private snackBar: MatSnackBar
   ) {
 
@@ -219,9 +219,23 @@ export class AppComponent implements DoCheck {
       this.forwardOptions = {...options};
       this.goForward();
     });
-    this.shared.toggleSideNav.subscribe( () =>
-      this.sideNav.toggle()
-    );
+    this.shared.toggleSideNav.subscribe( (options?) => {
+
+      let promise: Promise<any>;
+
+      if (!options || options.action === 'toggle')
+        promise = this.sideNav.toggle();
+      else if (options.action === 'close')
+        promise = this.sideNav.close();
+      else if (options.action === 'open')
+        promise = this.sideNav.open();
+      else
+        throw new Error(`Unknown action '${options.action}' for toggleSideNav!`);
+
+      if (options?.onComplete)
+        promise.then(() => options.onComplete());
+
+    });
     this.shared.showMapTooltips.subscribe( () =>
       this.showHideMapTooltips(true)
     );
@@ -234,6 +248,9 @@ export class AppComponent implements DoCheck {
     this.router.events.pipe(
       filter(evt => evt instanceof NavigationStart)
       ).subscribe(() => this._resetState());
+    this.shared.restartOnboarding.subscribe( () =>
+      this.onboarding.restartOnboarding()
+    );
   }
 
   /*
@@ -316,11 +333,12 @@ export class AppComponent implements DoCheck {
       this._floatingCardRef.close();
   }
 
-  // TODO: Toggle sidenav on item click for all items
-  // TODO: Move bottom tools when sidenav is opened
   public unsetVoterAnswers() {
     this.matcher.unsetVoterAnswers();
-    this.router.navigate(['/']);
+    this.shared.toggleSideNav.emit({
+      action: 'close',
+      onComplete: () => this.router.navigate(['/'])
+    });
   }
 
   public goForward() {
@@ -330,7 +348,7 @@ export class AppComponent implements DoCheck {
     this.clearForward();
   }
 
-  public toggleSidNav(): void {
+  public toggleSideNav(): void {
     // For the sake consistency, this is done in a silly way by routing via the shared component
     // Cf. subscription in the constructor
     this.shared.toggleSideNav.emit();
@@ -421,6 +439,13 @@ export class AppComponent implements DoCheck {
 
     }
 
+  }
+
+  public restartOnboarding(): void {
+    this.shared.toggleSideNav.emit({
+      action: 'close',
+      onComplete: () => this.shared.restartOnboarding.emit()
+    });
   }
 
   get hideTopBar(): boolean {

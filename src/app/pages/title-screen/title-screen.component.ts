@@ -1,16 +1,31 @@
-import { Component, 
-         NgZone,
-         OnDestroy, 
-         OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { 
+  AfterViewInit,
+  Component, 
+  NgZone,
+  OnDestroy, 
+  OnInit 
+} from '@angular/core';
+import { 
+  Router 
+} from '@angular/router';
+import { 
+  Subscription 
+} from 'rxjs';
 
-import { AnimationItem } from 'lottie-web';
-import { AnimationOptions } from 'ngx-lottie';
+import { 
+  AnimationItem 
+} from 'lottie-web';
+import { 
+  AnimationOptions 
+} from 'ngx-lottie';
 
-import { MatcherService } from '../../core';
-import { SharedService, 
-         PATHS } from '../../core/services/shared';
+import { 
+  MatcherService,
+  OnboardingService,
+  SharedService,
+  StepOptions,
+  PATHS
+} from '../../core';
 
 // The delay in ms after animation has loaded to start playing it
 export const ANIMATION_DELAY: number = 250;
@@ -25,7 +40,9 @@ export const ANIMATION_PATH: string = 'assets/animations/map-vignette.json';
   //   "(click)": "onBackgroundClick($event)"
   // },
 })
-export class TitleScreenComponent implements OnInit, OnDestroy {
+export class TitleScreenComponent 
+  implements AfterViewInit, OnInit, OnDestroy {
+
   public aboutPath: string = PATHS.about;
   public animationOptions: AnimationOptions = {
     path: ANIMATION_PATH ,
@@ -36,10 +53,11 @@ export class TitleScreenComponent implements OnInit, OnDestroy {
   private _subscriptions: Subscription[] = [];
 
   constructor(
-    private router: Router,
     private matcher: MatcherService,
-    private shared: SharedService,
     private ngZone: NgZone,
+    private onboarding: OnboardingService,
+    private router: Router,
+    private shared: SharedService,
   ) {
     this.shared.currentPage = 'titleScreen';
     this.shared.hideTopBar = true;
@@ -48,6 +66,26 @@ export class TitleScreenComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this._subscriptions.push(this.matcher.constituencyCookieRead.subscribe(() => this.showCookieSnackbar()));
+  }
+
+  ngAfterViewInit() {
+
+    // Onboarding
+    
+    const steps: StepOptions[] = [
+      {
+        id: 'intro',
+        attachTo: { 
+          element: '#nextButton', 
+          on: 'bottom'
+        },
+        title: 'Tervetuloa Ehdokaskartalle!',
+        text:
+          `Ehdokaskartta tarjoaa kokeellisen näkymän Ylen vaalikoneen tietoihin. Sovellus käyttää evästeitä ainoastaan käytettävyyden parantamiseksi. Vastauksesti tallennetaan ainoastaan omiin evästeisiisi, jotta voit jatkaa käyttöä myöhemmin siitä, mihin jäit. Käyttötietoja kerätään ainoastaan tilastollisesti siten, ettei käyttäjiä voida yksilöidä.<br>
+          Avaa Ehdokaskartta painamalla painiketta.`
+      }
+    ];
+    this.onboarding.startOnboarding(steps);
   }
 
   ngOnDestroy(): void {
