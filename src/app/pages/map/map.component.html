@@ -63,3 +63,108 @@
                 [redrawEmitter]="redrawEmitter"
                 (onMarkerClick)="onMarkerClick($event)"
                 (onBgClick)="hideCandidate()"></app-map-canvas>
+
+<!-- Onboarding -->
+
+<app-onboarding-tour tourId="MapIntro"
+                     [modal]="true"
+                     [subTourIds]="['MapDetailsCandidate', 'MapFavouritesList', 'MapFilterCandidates']">
+
+  <app-onboarding-step title="Ehdokkaat kartalla">
+
+    <ng-container *ngIf="!voterDisabled">
+      <p>
+        Ehdokkaat on sijoiteltu kartalle sen perusteella, mitä he ovat vastanneet valitsemiisi kysymyksiin, ja kartan keskeltä löydät itsesi.
+      </p>
+      <figure>
+        <img src="assets/videos/onboarding-map-dimensions.gif" />
+      </figure>
+      <p>
+        <span class="circledGlyph">1</span> Ehdokkaat ovat sitä lähempänä sinua, mitä paremmin heidän mielipiteensä vastaavat sinun vastauksiasi.
+      </p>
+    </ng-container>
+
+    <ng-container *ngIf="voterDisabled">
+      <p>
+        Ehdokkaat on sijoiteltu kartalle sen perusteella, mitä he ovat vastanneet valitsemiisi kysymyksiin.
+      </p>
+      <figure>
+        <img src="assets/videos/onboarding-map-dimensions-browse.gif" />
+      </figure>
+      <p>
+        <span class="circledGlyph">1</span> Ehdokkaat ovat sitä lähempänä keskipistettä, mitä lähempänä heidän vastauksensa ovat kaikkien ehdokkaiden keskiarvoa.
+      </p>
+    </ng-container>
+
+    <p>
+      <span class="circledGlyph">2</span> Se, missä suunnassa ehdokkaat ovat, kuvastaa puolestaan sitä, mihin kohtaan poliittista kenttää he  sijoittuvat.
+    </p>
+  </app-onboarding-step>
+
+  <app-onboarding-step title="Karttanäkymän liikuttelu">
+    <figure>
+      <img src="assets/videos/onboarding-map-zoom.gif" />
+    </figure>
+    <p>
+      Näkymä toimii samalla tavalla kuin karttasovellukset. Voit lähentää karttaa hiiren rullalla tai  nipistämällä sormilla.
+    </p>
+    <p>
+      Oikean alareunan painikkeesta pääset takaisin omaan sijaintiisi.
+    </p>
+    <app-onboarding-hint>
+      Kun tuplaklikkaat karttaa, suurentuu näkymä niin paljon, että ehdokkaiden nimet tulevat näkyviin.
+    </app-onboarding-hint>
+  </app-onboarding-step>
+
+  <app-onboarding-step title="Ehdokkaat ja puolueet">
+    <figure>
+      <img src="assets/videos/onboarding-map-interactions.gif" />
+    </figure>
+    <p>
+      Klikkaamalla ehdokasta näet ehdokaskortin tiivistelmän. Sitä klikkaamalla pääset katsomaan ehdokkaan tarkemia tietoja.
+    </p>
+    <p>
+      Näet samalla myös ehdokkaan puoleen sijoittumisen kartalla. Lippua klikkaamalla voit suodattaa ehdokkaita puolueen mukaan.
+    </p>
+  </app-onboarding-step>
+
+  <app-onboarding-step attachTo="#topTools .rightColumn"
+                       attachOn="left-start"
+                       title="Kartan lisätoiminnot">
+    <p>
+      Oikean reunan painikkeiden avulla voit muokata karttanäkymää, suodattaa ehdokkaita tai näyttää puolueiden liput kartalla.
+    </p>
+    <app-onboarding-hint icon="map">
+      Karttanäkymän lisävalinnoista voit esimerkiksi vaihtaa sitä, millä perusteella ehdokkaat järjestetään kartalla.
+    </app-onboarding-hint>
+    <app-onboarding-hint icon="filter_list">
+      Suodattimien avulla voit valikoida ehdokkaita esimerkiksi iän, sukupuolen tai kynnyskysymysten perusteella.
+    </app-onboarding-hint>
+    <app-onboarding-hint icon="flag">
+      Lippua klikkaamalla voit näyttää kaikki puolueet kartalla.
+    </app-onboarding-hint>
+  </app-onboarding-step>
+
+  <app-onboarding-step attachTo="#feedbackButton"
+                       attachOn="left-end"
+                       title="Palaute">
+    <p>
+      Tämän painikkeen avulla voit antaa palautetta tästä sovelluksesta.
+    </p>
+    <p>
+      Kaikenlainen palaute on erittäin tervetullutta, sillä Ehdokaskartan ensisijaisena tarkoituksena on kerätä käyttäjien kokemuksia sen käytöstä.
+    </p>
+  </app-onboarding-step>
+
+  <app-onboarding-step attachTo="#topBar-menuButton"
+                       attachOn="right-start"
+                       title="Päävalikko">
+    <p>
+      Päävalikon löydät täältä. Sen kautta pääset muun muassa liikkumaan näkymien välillä sekä löydät lisätietoja palvelusta.
+    </p>
+    <p>
+      Kiitos kärsivällisyydestäsi! Nyt voit tutustua ehdokkaisiin.
+    </p>
+  </app-onboarding-step>
+
+</app-onboarding-tour>

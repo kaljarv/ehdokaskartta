@@ -91,6 +91,18 @@ export enum MapRedrawOptions {
 
 export type MapBackgroundType = 'none' | 'default' | 'radar';
 
+export type MapAxisAbsolute = 'x' | 'y';
+
+export type MapAxisRelative = 'smaller' | 'larger';
+
+export type MapAxis = MapAxisAbsolute | MapAxisRelative;
+
+export type ZoomProperties = {
+  x: number,
+  y: number, 
+  toScale?: number
+}
+
 
 /*  
  * Utility
@@ -110,7 +122,8 @@ function clamp(value: number, min: number = 0.0, max: number = 1.0): number {
     '(window:resize)': 'onWindowResize()'
   }
 })
-export class MapCanvasComponent implements AfterViewInit, OnChanges, OnInit, OnDestroy {
+export class MapCanvasComponent 
+  implements AfterViewInit, OnChanges, OnDestroy, OnInit {
 
   /*
    * The markers  to draw in any order
@@ -129,8 +142,9 @@ export class MapCanvasComponent implements AfterViewInit, OnChanges, OnInit, OnD
   @Input() redrawEmitter: EventEmitter<MapRedrawOptions>;
 
   /*
+   * The x and y coordinates are projected fractions (0-1)
    */
-  @Input() zoomEmitter: EventEmitter<{x: number, y: number}>;
+  @Input() zoomEmitter: EventEmitter<ZoomProperties>;
 
   /*
    * Animation speed in ms
@@ -236,15 +250,27 @@ export class MapCanvasComponent implements AfterViewInit, OnChanges, OnInit, OnD
 
   // Values controlling the coordinates and scales of markers
   private _coordinateFactors = {
-    coordinateScale: 1,
-    xOffset: 0, // Global offset
-    yOffset: 0,
+    // Scaling between 1:1 coords and projection scale
+    projectionScale: 1,
+    // Global offsets in 1:1 coord space
+    offset: {               
+      x: 0,
+      y: 0
+    },
+    // The larger and smaller dimensions
+    largerAxis: 'y' as MapAxisAbsolute,
+    smallerAxis: 'x' as MapAxisAbsolute, 
     zoomScale: 1,
-    zoomXOffset: 0,
-    zoomYOffset: 0,
-    marginFraction: 0.02, // Margin as fraction of total dim
+    // Zoom offsets in zoomed scale
+    zoomOffset: {
+      x: 0,
+      y: 0
+    },
+    // Margin as fraction of total dim, not  supported currently
+    // marginFraction: 0.0,
     markerScale: 1,
-    maxDistance: Math.sqrt(2), // Distance from corner to corner in the projection space
+    // Distance from corner to corner in the projection space
+    maxDistance: Math.sqrt(2), 
     minimizedMarkerScale: 1
   };
 
@@ -301,7 +327,7 @@ export class MapCanvasComponent implements AfterViewInit, OnChanges, OnInit, OnD
       (v: MapRedrawOptions) => this._applyDataChanges(v)
     ));
     this._subscriptions.push(this.zoomEmitter.subscribe(
-      (d: {x: number; y: number}) => this._zoomTo(d.x, d.y)
+      ({x, y, toScale}: ZoomProperties) => this._zoomTo(x, y, toScale)
     ));
   }
 
@@ -593,19 +619,34 @@ export class MapCanvasComponent implements AfterViewInit, OnChanges, OnInit, OnD
     const zoomed = () => {
       const transform = d3.event.transform;
       this._coordinateFactors.zoomScale = transform.k;
-      this._coordinateFactors.zoomXOffset = transform.x;
-      this._coordinateFactors.zoomYOffset = transform.y;
+      this._coordinateFactors.zoomOffset.x = transform.x;
+      this._coordinateFactors.zoomOffset.y = transform.y;
       this._calcCoordinateFactors();
       this._updateZoomed();
     };
 
     const dblClickZoom = () =>  {
+      
+      // This fires both on mouse and tap events in which the coordinates
+      // are accessed differently
+      let touch;
+      if (d3.event instanceof TouchEvent && d3.event.changedTouches.length > 0)
+        touch = d3.event.changedTouches[d3.event.changedTouches.length - 1];
+
       // Zoom to the level were labels are visible
-      const k = this.labelThreshholdZoomLevel;
-      const t = d3.zoomTransform(d3.event.target);
-      const x = (d3.event.offsetX - t.x) / t.k,
-            y = (d3.event.offsetY - t.y) / t.k;
-      this._zoomTo(x, y, k);
+      const x = touch ? touch.pageX : d3.event.x,
+            y = touch ? touch.pageY : d3.event.y;
+
+      // Check if we have coords
+      if (x == null || y == null)
+        return;
+      
+      // Convert to projection values and zoom
+      const k = this.labelThreshholdZoomLevel,
+            pX = this._absToProj(x, 'x'),
+            pY = this._absToProj(y, 'y');
+
+      this._zoomTo(pX, pY, k);
     }
 
     this._zoomFunction = d3.zoom()
@@ -817,24 +858,26 @@ export class MapCanvasComponent implements AfterViewInit, OnChanges, OnInit, OnD
    * Called on window resize and when initialising
    */
   private _calcCoordinateFactors(): void {
-    // TODO Take into account asymmetry of available width and height and compare that to the shape of the embedding space and scale accordingly
 
     const f = this._coordinateFactors;
 
     let diff = this.width - this.height;
+
     // If width > height
     if (diff > 0) {
-      f.xOffset = diff / 2;
-      f.yOffset = 0;
+      f.offset.x = diff / 2;
+      f.offset.y = 0;
+      f.projectionScale = this.height / this.coordinateScale;
+      f.smallerAxis = 'y';
+      f.largerAxis = 'x';
     } else {
-      f.yOffset = diff / -2;
-      f.xOffset = 0;
+      f.offset.x = 0;
+      f.offset.y = diff / -2;
+      f.projectionScale = this.width / this.coordinateScale;
+      f.smallerAxis = 'x';
+      f.largerAxis = 'y';
     }
 
-    f.xOffset = f.xOffset * f.zoomScale + f.zoomXOffset;
-    f.yOffset = f.yOffset * f.zoomScale + f.zoomYOffset;
-
-    f.coordinateScale = this.coordinateScale * f.zoomScale;
     f.markerScale = clamp(f.zoomScale ** (1 / this._zoomMarkerScalingRoot), ...this._zoomMarkerScalingRange)
                     * this.markerScale;
     f.minimizedMarkerScale = this._getMinimizedCandidateScale();
@@ -844,7 +887,7 @@ export class MapCanvasComponent implements AfterViewInit, OnChanges, OnInit, OnD
     // container (_zoomTranslateExtentMargin).
     // This is used by _drawBackground()
     const aspectRatio = this.width / this.height;
-    const translateMargin = this._zoomTranslateExtentMargin / this.coordinateScale;
+    const translateMargin = this._zoomTranslateExtentMargin / f.projectionScale;
     // One dimension has a projection distance of 1,
     // The other one is either bigger or smaller than that
     f.maxDistance = Math.sqrt(
@@ -853,18 +896,57 @@ export class MapCanvasComponent implements AfterViewInit, OnChanges, OnInit, OnD
     );
   }
 
+
+  /*
+   * Convert a projected value (0-1) to an absolute pixel value
+   * in the current zoom level
+   */
+  private _projToAbs(projValue: number, axis?: MapAxis): number {
+    const f = this._coordinateFactors;
+    if (!axis)
+      return projValue * f.projectionScale * f.zoomScale;
+    const absAxis = this._getAxis(axis);
+    const normValue = projValue * f.projectionScale + f.offset[absAxis];
+    return normValue * f.zoomScale + f.zoomOffset[absAxis];
+  }
+
+  /*
+   * Convert an absolute pixel value to a projected value (0-1)
+   * in the current zoom level
+   */
+  private _absToProj(absValue: number, axis?: MapAxis): number {
+    const f = this._coordinateFactors;
+    if (!axis)
+      return absValue / f.zoomScale / f.projectionScale;
+    const absAxis = this._getAxis(axis);
+    const normValue = (absValue - f.zoomOffset[absAxis]) / f.zoomScale - f.offset[absAxis];
+    return normValue / f.projectionScale;
+  }
+
+  
+  private _getAxis(axis: MapAxis): MapAxisAbsolute {
+    const f = this._coordinateFactors;
+    if (axis === 'smaller')
+      return f.smallerAxis;
+    if (axis === 'larger')
+      return f.largerAxis;
+    return axis;
+  }
+
   /*
    * Get a marker's x position on canvas
    */
   public convertX(x: number): number {
-    return (x * (1 - 2 * this._coordinateFactors.marginFraction) + this._coordinateFactors.marginFraction) * this._coordinateFactors.coordinateScale + this._coordinateFactors.xOffset;
+    return this._projToAbs(x, 'x');
+    // return (x * (1 - 2 * this._coordinateFactors.marginFraction) + this._coordinateFactors.marginFraction) * this._coordinateFactors.coordinateScale + this._coordinateFactors.xOffset;
   }
 
   /*
    * Get a marker's y position on canvas
    */
   public convertY(y: number): number {
-    return (y * (1 - 2 * this._coordinateFactors.marginFraction) + this._coordinateFactors.marginFraction) * this._coordinateFactors.coordinateScale + this._coordinateFactors.yOffset;
+    return this._projToAbs(y, 'y');
+    // return (y * (1 - 2 * this._coordinateFactors.marginFraction) + this._coordinateFactors.marginFraction) * this._coordinateFactors.coordinateScale + this._coordinateFactors.yOffset;
   }
 
   /*
@@ -1052,7 +1134,6 @@ export class MapCanvasComponent implements AfterViewInit, OnChanges, OnInit, OnD
     const radLength = this._coordinateFactors.maxDistance / 2;
     const nCircles = 6;
     const circleArcAngle = this.backgroundType === 'radar' ? Math.PI : 2 * Math.PI;
-    const scale = this._coordinateFactors.coordinateScale;
     const ctx = this._context;
 
     // Set style and start path
@@ -1078,7 +1159,7 @@ export class MapCanvasComponent implements AfterViewInit, OnChanges, OnInit, OnD
 
     // Draw circles
     for (let i = 0; i < nCircles; i++) {
-      const radius = (i + 1) * scale / 2 / nCircles;
+      const radius = this._projToAbs((i + 1) / 2 / nCircles);
       // We draw from circleArcAngle to zero because of the radar type
       ctx.moveTo(centre.x - radius, centre.y);
       ctx.arc(centre.x, centre.y, radius, circleArcAngle, 0);
@@ -1198,19 +1279,24 @@ export class MapCanvasComponent implements AfterViewInit, OnChanges, OnInit, OnD
 
   /*
    * Called by the zoomEmitter and onCanvasClick
-   * The x and y coordinates are the desired centre coordinates in 1:1 scale
+   * The x and y coordinates are the desired centre coordinates 
+   * as projected fractions
    */
-  private _zoomTo(x: number, y: number, toScale: number = this._coordinateFactors.zoomScale): void {
+  private _zoomTo(x: number, y: number, toScale?: number): void {
 
     if (!this._zoomElement)
       return;
 
-    let tX = -1 * (x * toScale - this.width / 2),
-        tY = -1 * (y * toScale - this.height / 2);
+    if (toScale == null)
+      toScale = this._coordinateFactors.zoomScale;
+
+    const f = this._coordinateFactors,
+          tX = (x * f.projectionScale + f.offset.x) * toScale - this.width / 2,
+          tY = (y * f.projectionScale + f.offset.y) * toScale - this.height / 2;
 
     this._zoomElement
       .transition()
       .duration(this.zoomDuration)
-      .call(this._zoomFunction.transform, this.d3.getTransform(toScale, tX, tY));
+      .call(this._zoomFunction.transform, this.d3.getTransform(toScale, -tX, -tY));
   }
 }

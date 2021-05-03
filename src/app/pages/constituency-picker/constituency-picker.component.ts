@@ -1,6 +1,8 @@
-import { Component, 
+import { AfterViewInit,
+         Component, 
          OnInit,
-         OnDestroy } from '@angular/core';
+         OnDestroy,
+         ViewChild } from '@angular/core';
 import { FormGroup, 
          FormControl } from '@angular/forms';
 import { Observable,
@@ -8,19 +10,23 @@ import { Observable,
 import { map, 
          startWith } from 'rxjs/operators';
 
-import { SharedService, 
+import { OnboardingTourComponent,
+         SharedService, 
          PATHS, 
-         ForwardOptions } from '../../core/services/shared';
-import { MatcherService } from '../../core';
-
-import { ConstituencyPickerTopBarContentComponent } from './constituency-picker-top-bar-content.component';
+         ForwardOptions,
+         MatcherService } from '../../core';
 
 @Component({
   selector: 'app-constituency-picker',
   templateUrl: './constituency-picker.component.html',
   styleUrls: ['./constituency-picker.component.sass']
 })
-export class ConstituencyPickerComponent implements OnInit, OnDestroy {
+export class ConstituencyPickerComponent 
+  implements AfterViewInit, OnInit, OnDestroy {
+
+  @ViewChild(OnboardingTourComponent)
+  onboardingTour: OnboardingTourComponent;
+
   public municipalities = new Array<any>();
   public municipalityForm = new FormGroup({
     voterMunicipality: new FormControl('')
@@ -36,17 +42,27 @@ export class ConstituencyPickerComponent implements OnInit, OnDestroy {
     private matcher: MatcherService,
     private shared: SharedService
   ) {
+
+    this.shared.reportPageOpen({
+      currentPage: 'constituencyPicker',
+      subtitle: null, // ConstituencyPickerTopBarContentComponent
+      onboarding: {restart: () => this.onboardingTour?.restart()},
+    });
+
     this._forwardOptions = {
       path: [PATHS.questions], 
       title: this.nextButtonText,
       onBefore: () => this.setMunicipality()
     };
-    this.shared.currentPage = 'constituencyPicker';
-    this.shared.subtitle = ConstituencyPickerTopBarContentComponent;
   }
 
   ngOnInit(): void {
     this._subscriptions.push(this.matcher.constituencyDataReady.subscribe(() => this.setupMunicipalities()));
+  }
+
+  ngAfterViewInit() {
+    // Onboarding
+    this.onboardingTour?.start();
   }
 
   ngOnDestroy() {

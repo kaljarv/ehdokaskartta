@@ -7,7 +7,7 @@ import { RouterModule } from '@angular/router';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-import { CorePipesModule } from '../../core';
+import { CorePipesModule, OnboardingModule } from '../../core';
 import { ProgressSpinnerModule } from '../../components';
 
 import { DetailsCandidateModule } from './details-candidate';
@@ -27,6 +27,7 @@ import { MapCanvasComponent } from './map-canvas.component';
     MatMenuModule,
     MatTooltipModule,
     CorePipesModule,
+    OnboardingModule,
     ProgressSpinnerModule,
     DetailsCandidateModule,
     FavouritesListModule,

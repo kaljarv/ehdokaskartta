@@ -3,7 +3,8 @@ import {
   Component, 
   NgZone,
   OnDestroy, 
-  OnInit 
+  OnInit,
+  ViewChild
 } from '@angular/core';
 import { 
   Router 
@@ -21,10 +22,9 @@ import {
 
 import { 
   MatcherService,
-  OnboardingService,
-  SharedService,
-  StepOptions,
-  PATHS
+  OnboardingTourComponent,
+  PATHS,
+  SharedService
 } from '../../core';
 
 // The delay in ms after animation has loaded to start playing it
@@ -43,6 +43,9 @@ export const ANIMATION_PATH: string = 'assets/animations/map-vignette.json';
 export class TitleScreenComponent 
   implements AfterViewInit, OnInit, OnDestroy {
 
+  @ViewChild(OnboardingTourComponent)
+  onboardingTour: OnboardingTourComponent;
+  
   public aboutPath: string = PATHS.about;
   public animationOptions: AnimationOptions = {
     path: ANIMATION_PATH ,
@@ -55,13 +58,15 @@ export class TitleScreenComponent
   constructor(
     private matcher: MatcherService,
     private ngZone: NgZone,
-    private onboarding: OnboardingService,
     private router: Router,
     private shared: SharedService,
   ) {
-    this.shared.currentPage = 'titleScreen';
-    this.shared.hideTopBar = true;
-    this.shared.showFeedbackButton = false;
+    this.shared.reportPageOpen({
+      currentPage: 'titleScreen',
+      hideTopBar: true,
+      showMapTools: false,
+      showFeedbackButton: false
+    });
   }
 
   ngOnInit(): void {
@@ -69,23 +74,8 @@ export class TitleScreenComponent
   }
 
   ngAfterViewInit() {
-
     // Onboarding
-    
-    const steps: StepOptions[] = [
-      {
-        id: 'intro',
-        attachTo: { 
-          element: '#nextButton', 
-          on: 'bottom'
-        },
-        title: 'Tervetuloa Ehdokaskartalle!',
-        text:
-          `Ehdokaskartta tarjoaa kokeellisen näkymän Ylen vaalikoneen tietoihin. Sovellus käyttää evästeitä ainoastaan käytettävyyden parantamiseksi. Vastauksesti tallennetaan ainoastaan omiin evästeisiisi, jotta voit jatkaa käyttöä myöhemmin siitä, mihin jäit. Käyttötietoja kerätään ainoastaan tilastollisesti siten, ettei käyttäjiä voida yksilöidä.<br>
-          Avaa Ehdokaskartta painamalla painiketta.`
-      }
-    ];
-    this.onboarding.startOnboarding(steps);
+    this.onboardingTour?.start();
   }
 
   ngOnDestroy(): void {

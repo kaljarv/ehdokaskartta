@@ -1,9 +1,6 @@
-import { Component,
-         OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
-  
-import { MatcherService,
-         Candidate } from '../../../core';
+import { MatcherService, Candidate } from '../../../core';
 import { SharedService } from '../../../core';
 
 
@@ -15,7 +12,9 @@ import { SharedService } from '../../../core';
   templateUrl: './favourites-list.component.html',
   styleUrls: ['./favourites-list.component.sass'],
 })
-export class FavouritesListComponent implements OnInit {
+export class FavouritesListComponent 
+  implements OnDestroy, OnInit {
+
   public favourites: Candidate[] = new Array<Candidate>();
 
   constructor(
@@ -23,6 +22,9 @@ export class FavouritesListComponent implements OnInit {
     private matcher: MatcherService,
     private shared: SharedService,
   ) {
+    this.shared.reportOverlayOpen({
+      // log() DEBUG TODO REM onboarding: {restart: () => this.onboardingTour?.restart()},
+    });
   }
 
   ngOnInit() {
@@ -31,6 +33,10 @@ export class FavouritesListComponent implements OnInit {
       const order = a.surname.localeCompare(b.surname);
       return order !== 0 ? order : a.givenName.localeCompare(b.givenName);
     });
+  }
+
+  ngOnDestroy() {
+    this.shared.reportOverlayClose();
   }
 
   public dismiss(event: MouseEvent = null): void {

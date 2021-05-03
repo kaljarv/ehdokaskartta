@@ -59,11 +59,17 @@
 
         <mat-divider></mat-divider>
 
-        <a mat-list-item 
+        <a *ngIf="onboardingAvailable"
+           mat-list-item 
            (click)="restartOnboarding()">
           <mat-icon matListIcon>help</mat-icon>
-          Näytä ohjeet
+          Näytä sivun ohjeet
         </a>
+        <mat-list-item *ngIf="!onboardingAvailable"
+                       class="disabled">
+          <mat-icon matListIcon>help</mat-icon>
+          Ei ohjeita tälle sivulle
+        </mat-list-item>
 
         <a *ngIf="enableMap || enableQuestions"
            mat-list-item 

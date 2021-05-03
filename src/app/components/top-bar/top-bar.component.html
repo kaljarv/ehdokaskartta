@@ -1,12 +1,13 @@
 <mat-card id="container"
           [class.expanded]="expanded">
   <header>
-    <button id="menuButton"
-            mat-icon-button 
-            aria-label="Avaa valikko"
-            (click)="onMenuButtonClick($event)">
-      <mat-icon>menu</mat-icon>
-    </button>
+    <div id="topBar-menuButton">
+      <button mat-icon-button 
+              aria-label="Avaa valikko"
+              (click)="onMenuButtonClick($event)">
+        <mat-icon>menu</mat-icon>
+      </button>
+    </div>
     <div class="title">
       <li (click)="followLink('constituencyPicker', $event)"
           [class.current]="currentPage == 'constituencyPicker'">
@@ -23,21 +24,31 @@
         <span>Kysymykset</span>
       </li>
       <li (click)="followLink('map', $event)"
-          [class.current]="currentPage == 'map' || currentPage == 'browse'"
-          [class.disabled]="!enableQuestions">
+          [class.current]="currentPage == 'map'"
+          [class.disabled]="!enableMap">
         <div class="marker">
-          <ng-container *ngIf="enableQuestions">3</ng-container>
-          <mat-icon *ngIf="!enableQuestions">block</mat-icon>
+          <ng-container *ngIf="enableMap">3</ng-container>
+          <mat-icon *ngIf="!enableMap">block</mat-icon>
         </div>
-          <span *ngIf="enableMap && currentPage != 'browse'"
-                @labelAppear>Tulokset</span>
-          <span *ngIf="!enableMap || currentPage == 'browse'"
-                @labelAppear>Selaa ehdokkaita</span>
+          <span>Tulokset</span>
+          <!--
+            * Allow access to browse
+            * Rembember to change enableMap above to enableQuestions
+            <span *ngIf="enableMap && currentPage != 'browse'"
+                  @labelAppear>Tulokset</span>
+            <span *ngIf="!enableMap || currentPage == 'browse'"
+                  @labelAppear>Selaa ehdokkaita</span> 
+          -->
       </li>
     </div>
-    <mat-icon [@toggleRotate]="expanded ? 'rotated' : 'normal'"
-              (click)="toggle()"
-              class="expandIcon">expand_more</mat-icon>
+    <div class="expandIcon">
+      <mat-icon *ngIf="this.hasContent"
+                [@toggleRotate]="expanded ? 'rotated' : 'normal'"
+                (click)="toggle()"
+                class="expandIcon">expand_more</mat-icon>
+      <mat-icon *ngIf="!this.hasContent"
+                class="expandIcon disabled">expand_more</mat-icon>
+    </div>
   </header>
   <section [@toggleExpand]="expanded ? 'open' : 'closed'"
            (click)="toggle()"

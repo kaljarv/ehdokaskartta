@@ -7,7 +7,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-import { CorePipesModule } from '../../../core';
+import { CorePipesModule,
+         OnboardingModule } from '../../../core';
 
 import { DetailsQuestionComponent,
          DetailsQuestionGlobalStylesComponent } from './details-question.component';
@@ -22,6 +23,7 @@ import { DetailsQuestionComponent,
     MatRadioModule,
     MatTooltipModule,
     CorePipesModule,
+    OnboardingModule
   ],
   exports: [
     DetailsQuestionComponent,

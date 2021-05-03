@@ -28,8 +28,8 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.sass",
-              "node_modules/shepherd.js/dist/css/shepherd.css"
+              "node_modules/shepherd.js/dist/css/shepherd.css",
+              "src/styles.sass"
             ],
             "stylePreprocessorOptions": {
               "includePaths": [
@@ -98,8 +98,8 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.sass",
-              "node_modules/shepherd.js/dist/css/shepherd.css"
+              "node_modules/shepherd.js/dist/css/shepherd.css",
+              "src/styles.sass"
             ],
             "scripts": []
           }

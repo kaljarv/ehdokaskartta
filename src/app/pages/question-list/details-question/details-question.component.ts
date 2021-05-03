@@ -1,6 +1,8 @@
 import { 
+  AfterViewInit,
   Component, 
   Inject,
+  OnDestroy,
   OnInit,
   ViewChild,
   QueryList,
@@ -30,6 +32,7 @@ import {
   MatcherService,
   SharedService,
   Candidate,
+  OnboardingTourComponent,
   QuestionLikert,
   QuestionLikertSeven,
   QuestionNumeric,
@@ -94,9 +97,12 @@ export class DetailsQuestionGlobalStylesComponent {
     ]),
   ]
 })
-export class DetailsQuestionComponent implements OnInit {
+export class DetailsQuestionComponent 
+  implements AfterViewInit, OnDestroy, OnInit {
 
   @ViewChild('columns') columns: QueryList<ElementRef>;
+  @ViewChild(OnboardingTourComponent)
+  onboardingTour: OnboardingTourComponent;
 
   public question: QuestionNumeric;
   public candidates: {
@@ -114,6 +120,9 @@ export class DetailsQuestionComponent implements OnInit {
     private matcher: MatcherService,
     private shared: SharedService,
   ) {
+    this.shared.reportOverlayOpen({
+      onboarding: {restart: () => this.onboardingTour?.restart()},
+    });
     // Get question object
     this.question = this.matcher.questions[data.id] as QuestionNumeric;
 
@@ -134,6 +143,17 @@ export class DetailsQuestionComponent implements OnInit {
     this._initDistributionChart();
 
     this.shared.logEvent('questions_show', {id: this.question.id, text: this.question.text});
+  }
+
+  ngAfterViewInit(): void {
+    // Onboarding
+    this.onboardingTour?.start();
+  }
+
+  ngOnDestroy(): void {
+    // We also do this in dismiss, but let's double check
+    this.onboardingTour?.complete();
+    this.shared.reportOverlayClose();
   }
 
   /*
@@ -168,9 +188,10 @@ export class DetailsQuestionComponent implements OnInit {
   }
 
   dismiss(event: MouseEvent = null) {
+    this.onboardingTour?.complete();
     this.bottomSheetRef.dismiss();
     if (event != null)
-      event.preventDefault();
+      event.stopPropagation();
   }
 
   openLink(event: MouseEvent): void {

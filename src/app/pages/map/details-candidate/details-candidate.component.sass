@@ -102,10 +102,9 @@ header
         max-width: 6rem
     
     label
+      @include allCaps
       font-size: $fontSize-XS
-      text-transform: uppercase
       margin-top: $margin-S
-      // letter-spacing: $fontSize-XS / 10
     
     mat-icon
       font-size: 20px
@@ -131,11 +130,10 @@ header
   margin-bottom: $margin-S * 1.2
 
 label
+  @include allCaps
   color: $color-secondary
   font-size: $fontSize-XS
   font-weight: 500
-  text-transform: uppercase
-  letter-spacing: 0.02rem
   hyphens: manual
   line-height: 1.0
 

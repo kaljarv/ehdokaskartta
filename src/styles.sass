@@ -70,6 +70,19 @@ mat-bottom-sheet-container
   &:last-of-type
     margin-right: 0rem
 
+.circledGlyph
+  display: inline-flex
+  justify-content: center
+  align-items: center
+  vertical-align: baseline
+  background-color: $color-primary
+  color: $color-nega
+  font-size: $fontSize-M
+  font-weight: 500
+  height: $fontSize-L
+  width: $fontSize-L
+  border-radius: $fontSize-L / 2
+
 /*
  * PARTY COLOURS
  */
@@ -199,11 +212,3 @@ app-top-bar
   margin: $margin-M
   position: relative // Needed for z-index
   z-index: $zIndex-7
-
-
-/*
- * ONBOARDING
- */
-
-.onboarding-button-complete
-  justify-self: flex-start

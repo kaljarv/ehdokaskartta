@@ -268,12 +268,11 @@ export class AppComponent implements DoCheck {
   }
 
   // Reset to default configuration (on NavigationStart mainly)
+  // Note that pages and overlays are required to call shared.reportPageOpen()
+  // or shared.reportOverlayOpen(), which handle resetting shared state
   private _resetState(): void {
-    this.shared.hideTopBar = false;
-    this.shared.loadingState.next(DEFAULT_LOADING_STATE);
     this.sideNav.close();
     this.showHideMapTooltips(false);
-    this.shared.showFeedbackButton = true;
     this.clearForward();
     this.clearBottomSheet();
     this.clearDetailsCard();
@@ -444,12 +443,16 @@ export class AppComponent implements DoCheck {
   public restartOnboarding(): void {
     this.shared.toggleSideNav.emit({
       action: 'close',
-      onComplete: () => this.shared.restartOnboarding.emit()
+      onComplete: () => this.shared.onboarding.restart()
     });
   }
 
   get hideTopBar(): boolean {
     return this.shared.hideTopBar;
+  }
+
+  get onboardingAvailable(): boolean {
+    return this.shared.onboarding != null;
   }
 
   get showMapTools(): boolean {

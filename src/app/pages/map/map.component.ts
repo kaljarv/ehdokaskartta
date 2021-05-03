@@ -1,44 +1,45 @@
 import {
+  AfterViewInit,
   Component,
+  EventEmitter,
   HostBinding,
   Input,
+  OnDestroy,
   OnInit,
   ViewChild,
-  EventEmitter,
-  OnDestroy
 } from '@angular/core';
 import {
   ActivatedRoute,
   Router
 } from '@angular/router';
 import { 
+  combineLatest,
   Subscription 
 } from 'rxjs';
-
 import { 
-  MatMenuTrigger 
-} from '@angular/material/menu';
-import { 
-  MatTooltip 
-} from '@angular/material/tooltip';
-
+  filter,
+  first 
+} from 'rxjs/operators';
+import { MatMenuTrigger } from '@angular/material/menu';
+import { MatTooltip } from '@angular/material/tooltip';
 import {
-  MatcherService,
+  AbbreviatePipe,
   Candidate,
+  D3Service,
+  MatcherService,
+  OnboardingTourComponent,
   Party,
   ProjectionMethod,
   SharedService,
-  AbbreviatePipe,
   ToClassNamePipe,
   ANIMATION_DURATION_MS,
-  PATHS,
-  D3Service
+  PATHS
 } from '../../core';
-
 import {
   MapBackgroundType,
   MapMarkerClickData,
-  MapRedrawOptions
+  MapRedrawOptions,
+  ZoomProperties
 } from './map-canvas.component';
 import {
   MapDatum,
@@ -46,9 +47,8 @@ import {
   MapDatumParty,
   MapDatumVoter
 } from './map-data/';
-import {
-  MAP_MARKER_CANDIDATE_HEAD_RADIUS
-} from './map-markers';
+import { MAP_MARKER_CANDIDATE_HEAD_RADIUS } from './map-markers';
+
 
 const SHOW_INFOS_DELAY = 100; // A small delay after the map has loaded before showing the infos, needed for the components to initialise
 const HIDE_TOOLTIPS_DELAY = ANIMATION_DURATION_MS;
@@ -68,7 +68,8 @@ type ColorDict = { [party: string]: string };
     '(window:resize)': 'onWindowResize()'
   },
 })
-export class MapComponent implements OnInit, OnDestroy {
+export class MapComponent 
+  implements AfterViewInit, OnInit, OnDestroy {
   /*
    * See matcher for projection methods
    */
@@ -90,9 +91,18 @@ export class MapComponent implements OnInit, OnDestroy {
     return window.innerWidth;
   }
 
-  @ViewChild('partyMenuTrigger', {read: MatMenuTrigger}) partyMenuTrigger: MatMenuTrigger;
-  @ViewChild('voterMenuTrigger', {read: MatMenuTrigger}) voterMenuTrigger: MatMenuTrigger;
-  @ViewChild('voterTooltip') voterTooltip: MatTooltip;
+  @ViewChild(OnboardingTourComponent)
+  onboardingTour: OnboardingTourComponent;
+
+  @ViewChild('partyMenuTrigger', {read: MatMenuTrigger}) 
+  partyMenuTrigger: MatMenuTrigger;
+
+  @ViewChild('voterMenuTrigger', {read: MatMenuTrigger}) 
+  voterMenuTrigger: MatMenuTrigger;
+
+  @ViewChild('voterTooltip') 
+  voterTooltip: MatTooltip;
+
 
   public colors: ColorDict = {}; // We fetch colors for parties from the stylesheets and store it here
   public candidates = new Array<Candidate>();
@@ -100,7 +110,7 @@ export class MapComponent implements OnInit, OnDestroy {
   // We might change this based on the voter position
   public mapCentre = {x: 0.5, y: 0.5};
   public markerData = new Array<MapDatum>(); // We'll conflate candidates and parties in this list for correct depth placement
-  public coordinateScale = 1.0; // This will be set later
+  public coordinateScale = 1.0;
   public markerScale = 1.0;
   public minimizedCandidateScale = 1.0;
   public zoomExtents = [0.8, 15];
@@ -125,9 +135,8 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   public windowResizeDelay: number = 500; // Call rescale after this delay for window resize (and supress further calls during that time)
-  private _windowResizeLock: boolean = false; // Used to track the above delay rescaling
   public redrawEmitter = new EventEmitter<MapRedrawOptions>();
-  public zoomEmitter = new EventEmitter<{x: number, y: number}>();
+  public zoomEmitter = new EventEmitter<ZoomProperties>();
   public showAllParties: boolean = false;
   public toolTipClassBase: string = "map-tooltip";
   // The multiplier applied to marker radius when setting dispersal radius for clustered markers.
@@ -138,10 +147,17 @@ export class MapComponent implements OnInit, OnDestroy {
   public dispersalMaxDuration: DOMHighResTimeStamp = 4000;
   public dispersalAlphaMin: number = 0.35;
   public d3: any; // Shortcut to D3Service.d3
+
   // Track first interaction
   private _userHasInteracted: boolean = false;
   // These will be cancelled onDestroy
   private _subscriptions: Subscription[] = [];
+  // Fire on afterViewInit
+  private _viewInitialized = new EventEmitter<boolean>();
+  // Used to track the above delay rescaling
+  private _windowResizeLock: boolean = false; 
+
+
 
   constructor(
     private matcher: MatcherService,
@@ -152,6 +168,21 @@ export class MapComponent implements OnInit, OnDestroy {
     private toClassName: ToClassNamePipe,
     private abbreviate: AbbreviatePipe
   ) {
+
+    this.shared.reportPageOpen({
+      currentPage: this.voterDisabled ? 'browse' : 'map',
+      subtitle: (this.voterDisabled ?
+                  "Ehdokkaat on sijoiteltu kartalle heidän mielipiteidensä perusteella." :
+                  "Ehdokkaat on sijoiteltu kartalle sen perusteella, mitä he ovat vastanneet valitsemiisi kysymyksiin, ja kartan keskeltä löydät itsesi."
+                ) + " Voit lähentää tai loitontaa karttaa, rajata ehdokkaita vaikkapa iän perusteella tai näyttää puolueet kartalla.",
+       // log() DEBUG TODO REM onboarding: {restart: () => this.onboardingTour?.restart()},
+      showMapTools: true,
+      loadingState: {
+        type: 'loading',
+        message: 'Ladataan tuloksia…',
+      }
+    });
+
     this.d3 = this.d3s.d3;
 
     // Start loading spinner
@@ -162,14 +193,6 @@ export class MapComponent implements OnInit, OnDestroy {
       this.matcher.voterDisabled = true;
     else
       this.matcher.voterDisabled = false;
-
-    // Topbar
-    this.shared.currentPage = this.voterDisabled ? 'browse' : 'map';
-    this.shared.subtitle = (this.voterDisabled ?
-      "Ehdokkaat on sijoiteltu kartalle heidän mielipiteidensä perusteella." :
-      "Ehdokkaat on sijoiteltu kartalle sen perusteella, mitä he ovat vastanneet valitsemiisi kysymyksiin, ja kartan keskeltä löydät itsesi."
-    ) + " Voit lähentää tai loitontaa karttaa, rajata ehdokkaita vaikkapa iän perusteella tai näyttää puolueet kartalla.";
-
   }
 
   get isRadar(): boolean {
@@ -194,6 +217,17 @@ export class MapComponent implements OnInit, OnDestroy {
       if (this.matcher.constituencyId == null)
         this.router.navigate([PATHS.constituencyPicker]);
     }));
+
+    // Onboarding
+    // Show only after data is loaded and the view is initialized
+    // First() will unsubscribe itself
+    combineLatest([this.shared.loadingState, this._viewInitialized]).pipe(
+      filter(([ls, _]) => ls.type === 'loaded'),
+      first()
+    ).subscribe(() => {
+      if (this.onboardingTour && !this.onboardingTour.active)
+        this.onboardingTour.start();
+    });
 
     // Map tools
     this._subscriptions.push(this.shared.locateSelf.subscribe(() => this.locateSelf()));
@@ -222,36 +256,29 @@ export class MapComponent implements OnInit, OnDestroy {
     this._subscriptions.push(this.shared.mapInteraction.subscribe(() => this.hideInfos()));
   }
 
+  ngAfterViewInit() {
+    // See sub in ngOnInit
+    this._viewInitialized.emit(true);
+  }
+
   ngOnDestroy() {
-    this.shared.showMapTools = false;
     // Cancel subscriptions
     this._subscriptions.forEach(s => s.unsubscribe());
   }
 
-  public showInfos(): void {
-    this.shared.showMapTooltips.emit();
-    if (this.voterTooltip != null)
-      this.voterTooltip.show();
-  }
-
-  private _reportProgress(value: number = null, complete = false) {
-    if (complete)
-      this.shared.loadingState.next({type: 'loaded'});
-    else
-      this.shared.loadingState.next({
-        type: 'loading',
-        message: 'Ladataan tuloksia…',
-        value
-      })
-  }
+  // public showInfos(): void {
+  //   this.shared.showMapTooltips.emit();
+  //   if (this.voterTooltip != null)
+  //     this.voterTooltip.show();
+  // }
 
   public hideInfos(): void {
     if (!this._userHasInteracted) {
       this._userHasInteracted = true;
       this.shared.minimiseTopBar.emit();
-      this.shared.hideMapTooltips.emit();
-      if (this.voterTooltip != null)
-        this.voterTooltip.hide(HIDE_TOOLTIPS_DELAY);
+      // this.shared.hideMapTooltips.emit();
+      // if (this.voterTooltip != null)
+      //   this.voterTooltip.hide(HIDE_TOOLTIPS_DELAY);
     }
   }
 
@@ -313,7 +340,7 @@ export class MapComponent implements OnInit, OnDestroy {
       this.shared.showMapTools = true;
 
       // Show tooltips and other infos for onboarding
-      setTimeout(() => this.showInfos(), SHOW_INFOS_DELAY);
+      // setTimeout(() => this.showInfos(), SHOW_INFOS_DELAY);
     });
 
   }
@@ -356,9 +383,6 @@ export class MapComponent implements OnInit, OnDestroy {
   * (or are initially set)
   */
   public async rescaleMap(): Promise<void> {
-
-    // Set the coordinate scale based on the smaller dimension
-    this.coordinateScale = this.width > this.height ? this.height : this.width;
 
     return new Promise<void>(resolve => {
       // Disperse clustered candidates
@@ -422,7 +446,8 @@ export class MapComponent implements OnInit, OnDestroy {
       const offsetRadius: number = this.dispersalRadiusMultiplier * this.markerScale * MAP_MARKER_CANDIDATE_HEAD_RADIUS;
 
       // We need to save the current scale, because the window size might change while we are running the simulation
-      const scale: number = this.coordinateScale;
+      // Set the scale based on the smaller dimension
+      const scale: number = this.width > this.height ? this.height : this.width;
 
       // For creating the nodes for dispersal
       const _makeNode = a => {
@@ -439,8 +464,10 @@ export class MapComponent implements OnInit, OnDestroy {
       }
 
       // Map candidates plus the possible voter to nodes
-      const nodes: any[] = this.candidates.map(_makeNode);
-      if (!this.voterDisabled)
+      // NB. The non-null checks are there to resolve issues with multiple 
+      // resize calls
+      const nodes: any[] = this.candidates.filter(c => c != null).map(_makeNode);
+      if (!this.voterDisabled && this.voter != null)
         nodes.push(_makeNode(this.voter));
 
       // Track time elapsed
@@ -564,13 +591,15 @@ export class MapComponent implements OnInit, OnDestroy {
     }
 
     // Finally we need to call updateMapMarkerData to check for filtering and the active candidate
+    // NB. This is redundant as the changes are caught by MapCanvas' ngOnChanges but maybe it's
+    // best to be sure...
     this.updateMapMarkerData(MapRedrawOptions.ReInitialize);
   }
 
   /*
-  * Perform a light update on the markerData list
-  * Includes activeCandidate and filters
-  */
+   * Perform a light update on the markerData list
+   * Includes activeCandidate and filters
+   */
   public updateMapMarkerData(options: MapRedrawOptions = MapRedrawOptions.RedrawOnly): void {
 
     this.markerData.forEach((m: MapDatum) => {
@@ -627,7 +656,7 @@ export class MapComponent implements OnInit, OnDestroy {
       }
     });
 
-    // Notify map canvas passing on true if this call came from initMapMarkerData()
+    // Notify map canvas passing from initMapMarkerData()
     this.redrawEmitter.emit(options);
   }
 
@@ -690,8 +719,9 @@ export class MapComponent implements OnInit, OnDestroy {
    */
   public locateSelf(): void {
     this.zoomEmitter.emit({
-      x: window.innerWidth  * (this.voterDisabled ? 0.5 : this.voter.projX),
-      y: window.innerHeight * (this.voterDisabled ? 0.5 : this.voter.projY)
+      x: this.voterDisabled ? 0.5 : this.voter.projX,
+      y: this.voterDisabled ? 0.5 : this.voter.projY,
+      toScale: 1.
     });
   }
 
@@ -724,4 +754,14 @@ export class MapComponent implements OnInit, OnDestroy {
     return this.matcher.hasPartyFilter;
   }
 
+  private _reportProgress(value: number = null, complete = false) {
+    if (complete || value >= 100)
+      this.shared.loadingState.next({type: 'loaded'});
+    else
+      this.shared.loadingState.next({
+        type: 'loading',
+        message: 'Ladataan tuloksia…',
+        value
+      })
+  }
 }

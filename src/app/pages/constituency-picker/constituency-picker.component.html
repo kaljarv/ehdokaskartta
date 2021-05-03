@@ -22,3 +22,14 @@
     Paina nappia ”{{ nextButtonText }}” edetäksesi.
   </div>
 </form>
+
+<app-onboarding-tour tourId="ConstituencyPicker">
+  <app-onboarding-step attachTo="#constituencyPicker-form"
+                       attachOn="bottom"
+                       advanceOnEvent="click"
+                       title="Aloita valitsemalla kotikuntasi">
+    <p>
+      Aloitetaan! Valitse ensin kotikuntasi. Tämän jälkeen pääset vastaamaan mielipidekysymyksiin.
+    </p>
+  </app-onboarding-step>
+</app-onboarding-tour>

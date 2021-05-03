@@ -1,62 +1,28 @@
+import { Injectable, EventEmitter } from '@angular/core';
+import { BehaviorSubject  } from 'rxjs';
+import { filter  } from 'rxjs/operators';
+import { CookieService  } from '../cookie';
 import { 
-  Injectable, 
-  EventEmitter
-} from '@angular/core';
-import { 
-  CookieService 
-} from 'ngx-cookie-service';
-import { 
-  BehaviorSubject 
-} from 'rxjs';
-import { 
-  filter 
-} from 'rxjs/operators';
-
-import {
-  CategoryDict,
-  Candidate,
-  CandidateDict,
-  GetAnswer,
-  Party,
-  PartyDict,
-  ConstituencyDict,
-  DatabaseService,
-  MunicipalityDict,
-  Question,
-  QuestionDict,
-  QuestionNumeric,
-  Municipality,
+  CategoryDict, Candidate, CandidateDict, GetAnswer, Party, PartyDict, ConstituencyDict, 
+  DatabaseService, MunicipalityDict, Question, QuestionDict, QuestionNumeric, Municipality 
 } from '../database';
 import { 
-  Coordinates,
-  DataProjector,
-  ManhattanProjector,
-  PcaProjector,
-  ProjectedMapping,
-  ProjectorDatum,
-  RadarProjector,
-  TsneProjector
+  Coordinates, DataProjector, ManhattanProjector, PcaProjector, ProjectedMapping, 
+  ProjectorDatum, RadarProjector, TsneProjector 
 } from './data-projector/';
 // import { TsneProjector } from './data-projector/';
-
 import { 
-  CandidateFilter,
-  CandidateFilterLogicOperator,
-  CandidateFilterSimple,
-  CandidateFilterNumberRange,
-  CandidateFilterMultiQuestion
+  CandidateFilter, CandidateFilterLogicOperator, CandidateFilterSimple, 
+  CandidateFilterNumberRange, CandidateFilterMultiQuestion 
 } from './candidate-filter';
 
-export const COOKIE_PREFIX = "CM-VoterAnswer-";
+
 export const COOKIE_MUNICIPALITY = "Municipality";
 export const COOKIE_FAVOURITES = "Favourites";
-export const COOKIE_VALUE_SEPARATOR = ",";
-export const COOKIE_PATH = "/";
-export const COOKIE_DOMAIN = null;
-export const COOKIE_LIFE = 1000 * 60 * 60 * 24 * 7; // Cookie lifetime in millisecs (the last number is day)
+
 export const MAX_MISSING_VALS = 10; // Set to 0 or greater to cull candidates based on number of missing vals, use -1 to include all candidates
 export const NONMISSING_CANDIDATE_MAX_MISSING_VALS = 9; // The max number of missing vals before a candidate is flagged as missing, set to -1 to mark none
-export const MIN_VALS_FOR_MAPPING = 1; // We are enabling tSNE for the first answer
+export const MIN_VALS_FOR_MAPPING = 5; // The min number of answers before mapping is allowed
 
 export interface QuestionAverageDict {
   [questionId: string]: {
@@ -85,11 +51,11 @@ export class MatcherService {
   public questions: QuestionDict = {};
   public radarCentre: Coordinates = [0.5, 0.8];
   public correlationMatrix: any;
-  public categories: CategoryDict;
-  public candidates: CandidateDict;
-  public parties: PartyDict;
-  public municipalities: MunicipalityDict;
-  public constituencies: ConstituencyDict;
+  public categories: CategoryDict = {};
+  public candidates: CandidateDict = {};
+  public parties: PartyDict = {};
+  public municipalities: MunicipalityDict = {};
+  public constituencies: ConstituencyDict = {};
   public favourites: string[] = new Array<string>();
   public filterOpts: {
     [name: string]: { 
@@ -159,6 +125,7 @@ export class MatcherService {
       }
     },
   };
+  
   public dataStatus = {
     constituencies:     new BehaviorSubject<DataStatus>(DataStatus.NotReady),
     questions:          new BehaviorSubject<DataStatus>(DataStatus.NotReady),
@@ -180,7 +147,7 @@ export class MatcherService {
 
   private _filters: {
     [name: string]: CandidateFilter
-  };
+  } = {};
   private _municipality: string;
   private _municipalityId: string;
   private _constituency: string;
@@ -231,6 +198,9 @@ export class MatcherService {
     return Object.values(this.questions);
   }
 
+  get hasEnoughAnswersForMapping(): boolean {
+    return this.countVoterAnswers() >= MIN_VALS_FOR_MAPPING;
+  }
 
   get municipality(): string {
     return this._municipality;
@@ -296,7 +266,7 @@ export class MatcherService {
     this._municipality = m.name;
     this._constituencyId = m.constituencyId;
     this._constituency = this.constituencies[this._constituencyId].name;
-    this.writeCookie(COOKIE_MUNICIPALITY, this._municipalityId);
+    this.cookie.write(COOKIE_MUNICIPALITY, this._municipalityId);
     await this.setConstituency(this._constituencyId);
   }
 
@@ -348,6 +318,22 @@ export class MatcherService {
     for (const id in this.parties)
       if (!partiesPresent.has(id))
         delete this.parties[id];
+
+
+    // DEBUG / TEST / REMOVE
+    console.log("WARNING: Anonymizing candidates! REMEMBER to edit getCandidatePortraitUrl too!");
+    const femaleNames = ["Maria", "Helena", "Anneli", "Johanna", "Kaarina", "Marjatta", "Hannele", "Kristiina", "Emilia", "Liisa", "Elina", "Sofia", "Tuulikki", "Maarit", "Susanna", "Annikki", "Leena", "Katariina", "Anna", "Marja", "Sinikka", "Inkeri", "Riitta", "Aino", "Kyllikki", "Anne", "Tuula", "Päivi", "Orvokki", "Ritva", "Maija", "Tellervo", "Karoliina", "Pauliina", "Pirjo", "Minna", "Sari", "Irmeli", "Tiina", "Eeva", "Eveliina", "Laura", "Marika", "Tarja", "Elisabet"],
+          maleNames = ["Juhani", "Olavi", "Antero", "Tapani", "Johannes", "Tapio", "Mikael", "Kalevi", "Matti", "Pekka", "Petteri", "Ilmari", "Sakari", "Matias", "Antti", "Juha", "Kristian", "Heikki", "Timo", "Mikko", "Kari", "Markus", "Jari", "Jukka", "Aleksi", "Markku", "Kalervo", "Jaakko", "Oskari", "Petri", "Mika", "Henrik", "Lauri", "Veikko", "Hannu"],
+          surnames = ["Korhonen", "Virtanen", "Mäkinen", "Nieminen", "Mäkelä", "Hämäläinen", "Laine", "Heikkinen", "Koskinen", "Järvinen", "Lehtonen", "Lehtinen", "Saarinen", "Salminen", "Heinonen", "Niemi", "Heikkilä", "Kinnunen", "Salonen", "Turunen", "Salo", "Laitinen", "Tuominen", "Rantanen", "Karjalainen", "Jokinen", "Mattila", "Savolainen", "Lahtinen", "Ahonen", "Ojala", "Leppänen", "Kallio", "Hiltunen", "Väisänen", "Leinonen", "Miettinen", "Pitkänen", "Aaltonen", "Manninen", "Koivisto", "Hakala", "Anttila", "Laaksonen", "Hirvonen", "Räsänen", "Lehto", "Laakso", "Toivonen"];
+    let i = 0;
+    for (const id in this.candidates) {
+      const c = this.candidates[id];
+      const gender = c.getAnswer('Q63');
+      c.givenName = gender === 'Mies' ? maleNames[i % maleNames.length] : femaleNames[i % femaleNames.length];
+      c.surname = surnames[i % surnames.length];
+      i++;
+    }
+    // END: DEBUG / TEST / REMOVE
         
     // DEBUG / TEST / REMOVE
     // Multiply candidates to test performance
@@ -489,6 +475,8 @@ export class MatcherService {
   }
 
   public getCandidatePortraitUrl(id: string): string {
+    // DEBUG / TEST / REMOVE
+    return this.candidates[id]?.getAnswer('Q63') === 'Mies' ?  'assets/images/debug-portrait-male.jpeg' : 'assets/images/debug-portrait.jpeg';
     return `assets/images/candidate-portraits/${id}.jpg`;
   }
 
@@ -518,17 +506,17 @@ export class MatcherService {
   public setVoterAnswer(question: Question, value: number | number[]): void {
     if (question instanceof QuestionNumeric) {
       question.voterAnswer = value;
-      this.writeCookie(question.id, question.convertAnswerToString());
+      this.cookie.write(question.id, question.convertAnswerToString());
       // Emit event
       this.dataStatus.questions.next(DataStatus.Updated);
     }
   }
 
   public deleteVoterAnswer(id: string): void {
-    let question = this.questions[id];
+    const question = this.questions[id];
     if (question && question instanceof QuestionNumeric) {
-      delete question.voterAnswer;
-      this.deleteCookie(id);
+      question.unsetVoterAnswer();
+      this.cookie.delete(id);
       // Emit event
       this.dataStatus.questions.next(DataStatus.Updated);
     }
@@ -539,7 +527,6 @@ export class MatcherService {
   }
 
   public getVoterAnsweredQuestions(): QuestionNumeric[] {
-
     return Object.values(this.questions).filter(q => q instanceof QuestionNumeric && q.voterAnswer != null) as QuestionNumeric[];
   }
 
@@ -720,61 +707,37 @@ export class MatcherService {
   }
 
   public saveFavouritesToCookie(): void {
-    if (this.favourites.length > 0) {
-      this.writeCookie(COOKIE_FAVOURITES, this.favourites.join(COOKIE_VALUE_SEPARATOR));
-    } else {
-      this.deleteCookie(COOKIE_FAVOURITES);
-    }
+    if (this.favourites.length > 0)
+      this.cookie.writeList(COOKIE_FAVOURITES, this.favourites);
+    else
+      this.cookie.delete(COOKIE_FAVOURITES);
   }
 
   public setFavouritesFromCookie(): void {
-    const favourites = this.readCookie(COOKIE_FAVOURITES)
-    if (favourites) {
-      this.favourites = favourites.split(COOKIE_VALUE_SEPARATOR).filter( id => id !== '' );
-    }
+    const favourites = this.cookie.readList(COOKIE_FAVOURITES, true)
+    if (favourites && favourites.length > 0)
+      this.favourites = favourites;
   }
 
-  get hasEnoughAnswersForMapping(): boolean {
-    return this.countVoterAnswers() >= MIN_VALS_FOR_MAPPING;
-  }
-
-  public writeCookie(name: string, value: string): void {
-    // Save in cookie
-    let expiry = new Date();
-    expiry.setTime(expiry.getTime() + COOKIE_LIFE);
-    // TODO Secure cookies don't currently work, maybe because of localhost?
-    this.cookie.set(COOKIE_PREFIX + name, value, expiry, COOKIE_PATH, COOKIE_DOMAIN, false, 'Strict');
-  }
-
-  public readCookie(name: string): string | null {
-    if (this.cookie.check(COOKIE_PREFIX + name)) {
-      return this.cookie.get(COOKIE_PREFIX + name);
-    } else {
-      return null;
-    }
-  }
-
-  public deleteCookie(name?: string): void {
-    if (name != null) {
-      this.cookie.delete(COOKIE_PREFIX + name, COOKIE_PATH, COOKIE_DOMAIN);
-    }
-  }
-
-  public deleteAllCookies(): void {
-    this.cookie.deleteAll(COOKIE_PATH, COOKIE_DOMAIN);
+  public deleteAllMatcherCookies(): void {
+    // We only want to delete all cookies set by matcher, so we do not call
+    // cookie.deleteAll()
+    const names = this.getAnswerableQuestionIds();
+          names.push(...[COOKIE_FAVOURITES, COOKIE_MUNICIPALITY]);
+    for (const n of names)
+      this.cookie.delete(n);
   }
 
   public async setMunicipalityFromCookie(): Promise<void> {
-    const municipality = this.readCookie(COOKIE_MUNICIPALITY);
-    if (municipality) {
+    const municipality = this.cookie.read(COOKIE_MUNICIPALITY);
+    if (municipality)
       await this.setMunicipality(municipality);
-    }
     this.dataStatus.constituencyCookie.next(DataStatus.Ready);
   }
 
   public readAnswersFromCookie(): void {
     for (const q of this.getAnswerableQuestions()) {
-      const answer = this.readCookie(q.id);
+      const answer = this.cookie.read(q.id);
       if (answer != null)
         // Use Numbers as cookie values are stored as text
         this.setVoterAnswer(q, q.parseAnswerFromString(answer));
@@ -782,13 +745,14 @@ export class MatcherService {
   }
 
   public unsetVoterAnswers(): void {
+    // We have to call this first, as it uses this.questions
+    this.deleteAllMatcherCookies();
     this.getVoterAnsweredQuestions().forEach(q => q.unsetVoterAnswer());
     this.questions = {};
     this._constituencyId = null;
     this._municipalityId = null;
     this.dataStatus.questions.next(DataStatus.NotReady);
     this.dataStatus.candidates.next(DataStatus.NotReady);
-    this.deleteAllCookies();
   }
 
   public getMappingQuestions(): QuestionNumeric[] {

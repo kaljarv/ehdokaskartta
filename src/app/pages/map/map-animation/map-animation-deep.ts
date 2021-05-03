@@ -23,7 +23,7 @@ export type MapAnimationPropertiesDeep = {
  * );
  */
 export class MapAnimationDeep extends MapAnimation {
-  protected _propertyCollections: MapAnimationPropertiesDeep;
+  protected _propertyCollections: MapAnimationPropertiesDeep = {};
 
   constructor(
     propertyCollections: MapAnimationPropertiesDeep,

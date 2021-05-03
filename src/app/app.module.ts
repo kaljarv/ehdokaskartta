@@ -19,7 +19,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { AppComponent } from './app.component';
 import { DatabaseModule,
          D3Service,
-         MatcherService,
+         MatcherModule,
          OnboardingModule,
          SharedService } from './core/services';
 import { ConstituencyPickerComponent,
@@ -93,6 +93,7 @@ const paths = [
     AboutScreenModule,
     ConstituencyPickerModule,
     MapModule,
+    MatcherModule,
     ProgressSpinnerModule,
     QuestionListModule,
     TitleScreenModule
@@ -103,12 +104,9 @@ const paths = [
   bootstrap: [ 
     AppComponent 
   ],
-  // NB. DatabaseModule provides DatabaseService itself as well as Firebase services
   providers: [
-    MatcherService, 
     SharedService,
-    D3Service,
-    CookieService
+    D3Service
   ]
 })
 export class AppModule {}

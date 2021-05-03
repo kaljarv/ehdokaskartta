@@ -1,4 +1,5 @@
-<div class="questionListContainer">
+<div id="questionList"
+     class="questionListContainer">
   <mat-chip-list>
     <mat-chip *ngFor="let question of questions"
               (click)="showQuestion(question)"
@@ -13,3 +14,39 @@
     </mat-chip>
   </mat-chip-list>
 </div>
+
+<app-onboarding-tour #defaultTour
+                     tourId="QuestionList"
+                     [subTourIds]="['DetailsQuestionLikert', 'DetailsQuestionPreferenceOrder']">
+  <app-onboarding-step attachTo="#questionList"
+                       attachOn="bottom"
+                       advanceOnEvent="click"
+                       advanceOnSelector="mat-chip"
+                       title="Vastaa kysymyksiin, jotka ovat tärkeitä sinulle">
+    <p>
+      Klikkaa aiheita ja voit vastata mielipidekysymyksiin. Ehdokaskartan tulokset lasketaan sen perusteella, miten lähellä ehdokkaiden vastaukset ovat sinun mielipiteitäsi. Vastattuasi vähintään {{ minAnswersForMapping }} kysymykseen, pääset katsomaan tuloksia.
+    </p>
+    <app-onboarding-hint>
+      Jos haluat nähdä ehdokkaat vastaamatta itse kysymyksiin, klikkaa linkkiä ”Selaa ehdokkaita” yläpalkissa.
+    </app-onboarding-hint>
+    <app-onboarding-hint icon="star">
+      Tähti osoittaa suositellun seuraavan kysymyksen sen perusteella, miten tehokkaasti se jakaa ehdokkaiden mielipiteet.
+    </app-onboarding-hint>
+  </app-onboarding-step>
+</app-onboarding-tour>
+
+<app-onboarding-tour #enoughAnswersTour
+                     tourId="QuestionListEnoughAnswers">
+  <app-onboarding-step attachTo="#nextButtonBar"
+                       attachOn="top"
+                       advanceOnEvent="click"
+                       advanceOnSelector="mat-chip"
+                       title="Nyt voit halutessasi siirtyä tuloksiin">
+    <p>
+      Olet nyt vastannut riittävän moneen kysymykseen, jotta voit siirtyä tuloksiin. Tulokset ovat kuitenkin sitä tarkemmat, mitä useampaan aiheeseen otat kantaa. Voit siis halutessasi jatkaa kysmyksiin vastaamista.
+    </p>
+    <app-onboarding-hint>
+      Voit palata kysymyksiin myös tuloksia katsottuasi klikkaamalla yläpalkin kohtaa Kysymykset.
+    </app-onboarding-hint>
+  </app-onboarding-step>
+</app-onboarding-tour>

@@ -24,7 +24,15 @@ header
   mat-icon
     cursor: pointer
 
-#menuButton
+  mat-icon.disabled
+    cursor: default
+    color: $color-negaSecondary
+
+#topBar-menuButton
+  flex-grow: 0
+  flex-basis: 2rem
+
+.expandIcon
   flex-grow: 0
   flex-basis: 2rem
 
@@ -95,12 +103,9 @@ header
     .marker
       border-color: transparent
 
-
-.expandIcon
-  flex-grow: 0
-  flex-basis: 2rem
-
 .content
+  margin: 0 auto
+  max-width: $maxWidth-M
   padding: $margin-S $margin-M $margin-M $margin-M
   overflow: hidden
   text-align: center

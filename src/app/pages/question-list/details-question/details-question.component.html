@@ -10,7 +10,7 @@
 
 <div class="question">
 
-  <h2>{{ question.text }}</h2>
+  <h2 id="questionDetails-title">{{ question.text }}</h2>
 
   <!-- Selector: Likert -->
 
@@ -83,7 +83,9 @@
 <!-- Distribution chart -->
 
 <div *ngIf="questionType == 'Likert' || questionType == 'Likert7'"
-      class="distribution {{ candidateSizingClass }}">
+     id="distributionChart"
+     class="distribution {{ candidateSizingClass }}"
+     (click)="toggleDistributionChart()">
 
   <div class="columns columns-{{ question.values.length }}"
        [@toggleExpand]="distributionChartExpanded ? 'open' : 'closed'">
@@ -97,10 +99,49 @@
 
   </div>
 
-  <label (click)="toggleDistributionChart()"
-         [class.expanded]="distributionChartExpanded">
+  <label [class.expanded]="distributionChartExpanded">
     {{ constituencyName | genitive: 'n' }} ehdokkaiden vastausten jakauma
     <mat-icon class="expandIcon">{{ distributionChartExpanded ? 'visibility' : 'visibility_off' }}</mat-icon>
   </label>
 
 </div>
+
+<app-onboarding-tour *ngIf="questionType != 'PreferenceOrder'"
+                        [modal]="true"
+                        tourId="DetailsQuestionLikert">
+  <app-onboarding-step attachTo=".answerSelector"
+                       attachOn="top"
+                       advanceOnEvent="click"
+                       title="Mitä mieltä olet tästä väittämästä?">
+    <p>
+      Valitse vaihtoehdoista se, joka parhaiten vastaa mielipidettäsi.
+    </p>
+  </app-onboarding-step>
+  <app-onboarding-step attachTo="#distributionChart"
+                       attachOn="top"
+                       title="Ehdokkaiden mielipidejakauma">
+    <p>
+      Kysymyksen alla näet myös vaalipiirin ehdokkaiden vastausten jakauman. Voit piilottaa jakauman. klikkaamalla sitä.
+    </p>
+    <app-onboarding-hint>
+      Vastausten keskisarake on yleensä tyhjä on sen vuoksi, että ehdokkaiden edellytetään ottavan selkeän kannan kaikkiin kysymyksiin. He eivät siksi ole voineet vastata neutraalisti.
+    </app-onboarding-hint>
+  </app-onboarding-step>
+</app-onboarding-tour>
+
+<app-onboarding-tour *ngIf="questionType == 'PreferenceOrder'"
+                        modal="true"
+                        tourId="DetailsQuestionPreferenceOrder">
+  <app-onboarding-step attachTo=".answerSelector"
+                       attachOn="top"
+                       advanceOnEvent="mousedown"
+                       advanceOnSelector=".question"
+                       title="Missä järjestyksessä vaihtoehtojen pitäisi olla?">
+    <p>
+      Järjestä vaihtoehdot haluaamasi järjestykseen vetämällä niitä sormalla tai hiirellä. Paina lopuksi Tallenna-nappia.
+    </p>
+    <app-onboarding-hint>
+      Vaihtoehdot ovat alustavasti satunnaisessa järjestyksessä.
+    </app-onboarding-hint>
+  </app-onboarding-step>
+<app-onboarding-tour>

@@ -42,6 +42,28 @@ export type LoadingState = {
   value?: number
 }
 
+export type Onboarding = {
+  restart?: () => void
+} | null;
+
+/*
+ * These must be reported with each view change
+ */
+export interface AppStateOptionsOverlay {
+  loadingState?: LoadingState;
+  onboarding?: Onboarding;
+}
+export interface AppStateOptionsPage extends AppStateOptionsOverlay {
+  currentPage: PageName;
+  subtitle?: string | Type<any>;
+  hideTopBar?: boolean;
+  showMapTools?: boolean;
+  showFeedbackButton?: boolean;
+}
+
+
+
+
 export type ToggleSideNavOptions = {
   action: 'open' | 'close' | 'toggle',
   onComplete?: () => void
@@ -51,42 +73,57 @@ export type PageName = 'constituencyPicker' | 'questions' | 'map' | 'browse' | '
 
 export const DEFAULT_LOADING_STATE: LoadingState = {type: 'default'};
 
+export const DEFAULT_APP_STATE_OPTIONS_OVERLAY: AppStateOptionsOverlay = {
+  loadingState: DEFAULT_LOADING_STATE,
+  onboarding: null
+}
+
+export const DEFAULT_APP_STATE_OPTIONS_PAGE: AppStateOptionsPage = {
+  ...DEFAULT_APP_STATE_OPTIONS_OVERLAY,
+  currentPage: null,
+  subtitle: null,
+  hideTopBar: false,
+  showMapTools: false,
+  showFeedbackButton: true
+}
+
 @Injectable()
 export class SharedService {
+
   public hideDistribution: boolean = false;
   public hideTopBar: boolean = false;
   public lastOpenCandidateDetailsTab: number = 0; // For details-candidate tabs
   public lastOpenCandidateFilter: number = null; // For filter-candidates expansion panels
+  public onboarding: Onboarding;
   public showMapTools: boolean = false;
   public showFeedbackButton: boolean = false;
   public showAllParties: boolean = false; // This will be set by MapComponent based on a subscription to toggleAllParties
   public userEmail: string = '';
 
-  public loadingState = new BehaviorSubject<LoadingState>(DEFAULT_LOADING_STATE);
-
-  public topBarDataChanged = new EventEmitter<{
+  readonly loadingState = new BehaviorSubject<LoadingState>(DEFAULT_LOADING_STATE);
+  readonly topBarDataChanged = new EventEmitter<{
     currentPage: PageName,
     subtitle: string | Type<any>
   }>();
-  public showQuestion = new EventEmitter<string>();
-  public showCandidate = new EventEmitter<string>();
-  public toggleCandidate = new EventEmitter<string>();
-  public hideCandidate = new EventEmitter<void>();
-  public activeCandidateChanged =  new EventEmitter<string | null>();
-  public showCandidateFilters = new EventEmitter<void>();
-  public showFavourites = new EventEmitter<void>();
-  public toggleAllParties = new EventEmitter<string>();
-  public enableForward = new EventEmitter<ForwardOptions>(true);
-  public disableForward = new EventEmitter<void>();
-  public forwardProgress = new EventEmitter<number>();
-  public navigateForward = new EventEmitter<ForwardOptions>();
-  public toggleSideNav = new EventEmitter<ToggleSideNavOptions | void>();
-  public locateSelf = new EventEmitter<void>();
-  public openFeedback = new EventEmitter<void>();
-  public minimiseTopBar = new EventEmitter<void>();
-  public showMapTooltips = new EventEmitter<void>();
-  public hideMapTooltips = new EventEmitter<void>();
-  public showSnackBar = new EventEmitter<{
+  readonly showQuestion = new EventEmitter<string>();
+  readonly showCandidate = new EventEmitter<string>();
+  readonly toggleCandidate = new EventEmitter<string>();
+  readonly hideCandidate = new EventEmitter<void>();
+  readonly activeCandidateChanged =  new EventEmitter<string | null>();
+  readonly showCandidateFilters = new EventEmitter<void>();
+  readonly showFavourites = new EventEmitter<void>();
+  readonly toggleAllParties = new EventEmitter<string>();
+  readonly enableForward = new EventEmitter<ForwardOptions>(true);
+  readonly disableForward = new EventEmitter<void>();
+  readonly forwardProgress = new EventEmitter<number>();
+  readonly navigateForward = new EventEmitter<ForwardOptions>();
+  readonly toggleSideNav = new EventEmitter<ToggleSideNavOptions | void>();
+  readonly locateSelf = new EventEmitter<void>();
+  readonly openFeedback = new EventEmitter<void>();
+  readonly minimiseTopBar = new EventEmitter<void>();
+  readonly showMapTooltips = new EventEmitter<void>();
+  readonly hideMapTooltips = new EventEmitter<void>();
+  readonly showSnackBar = new EventEmitter<{
     message: string, 
     emailTitle?: string, 
     emailBody?: string, 
@@ -95,12 +132,13 @@ export class SharedService {
     actionFunction?: Function,
   }>();
   // A catch-all for all map interactions
-  public mapInteraction = new EventEmitter<void>();
-  public restartOnboarding = new EventEmitter<void>();
+  readonly mapInteraction = new EventEmitter<void>();
+  readonly restartOnboarding = new EventEmitter<void>();
 
   private _activeCandidateId: string = null;
-  public _currentPage: PageName;
-  public _subtitle: string | Type<any> = '';
+  private _currentPage: PageName;
+  private _pageOnboarding: Onboarding;
+  private _subtitle: string | Type<any> = '';
 
   constructor(
     private database: DatabaseService,
@@ -202,6 +240,33 @@ export class SharedService {
       showAllParties: this.showAllParties,
       // userEmail: this.userEmail,
     }
+  }
+
+  /*
+   * Call either of these on each page load
+   * and on overlay close
+   */
+  public reportPageOpen(options: AppStateOptionsPage): void {
+    this._resetState({...DEFAULT_APP_STATE_OPTIONS_PAGE, ...options});
+    // We cache the possible onboarding here so that we can restore it
+    // on overlay close
+    this._pageOnboarding = options.onboarding || null;
+  }
+
+  public reportOverlayOpen(options: AppStateOptionsOverlay): void {
+    this._resetState({...DEFAULT_APP_STATE_OPTIONS_OVERLAY, ...options});
+  }
+
+  public reportOverlayClose(): void {
+    // Restore onboarding for the currently open page
+    this.onboarding = this._pageOnboarding || null;
+  }
+
+  private _resetState(options: any): void {
+    const {loadingState, ...otherOpts} = options;
+    for (const o in otherOpts)
+      this[o] = options[o];
+    this.loadingState.next(loadingState);
   }
 
   public clamp(value: number, min: number = 0.0, max: number = 1.0): number {

@@ -92,10 +92,10 @@ export class TopBarComponent implements AfterViewInit, OnDestroy, OnInit {
 
   @ViewChild('contentTemplate', {read: ViewContainerRef}) contentTemplate: ViewContainerRef;
   @ViewChild('stringContentTemplate', {read: TemplateRef}) stringContentTemplate: TemplateRef<undefined>;
-  public expanded: boolean = true;
 
-  private _prevContent: string | Type<any>;
   private _componentWaiting: boolean = false;
+  private _expanded: boolean = true;
+  private _prevContent: string | Type<any>;
   // These will be cancelled onDestroy
   private _subscriptions: Subscription[] = [];
 
@@ -119,6 +119,18 @@ export class TopBarComponent implements AfterViewInit, OnDestroy, OnInit {
 
   get enableMap(): boolean {
     return this.shared.enableMap;
+  }
+
+  get expanded(): boolean {
+    return this.hasContent && this._expanded;
+  }
+
+  set expanded(value: boolean) {
+    this._expanded = value;
+  }
+
+  get hasContent(): boolean {
+    return this.content != null;
   }
 
   get voterDisabled(): boolean {
@@ -146,7 +158,8 @@ export class TopBarComponent implements AfterViewInit, OnDestroy, OnInit {
     if (this._prevContent !== this.content) {
       this._prevContent = this.content;
       // We set this flag, as the ng-template may not have yet initialized
-      this._componentWaiting = true;
+      if (this.hasContent)
+        this._componentWaiting = true;
     }
 
     // Attempt to load component and clear waiting flag if succesful

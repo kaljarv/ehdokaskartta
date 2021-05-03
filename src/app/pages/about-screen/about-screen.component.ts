@@ -15,8 +15,11 @@ export class AboutScreenComponent {
     private router: Router,
     private shared: SharedService,
   ) {
-    this.shared.currentPage = 'about';
-    this.shared.hideTopBar = true;
+    this.shared.reportPageOpen({
+      currentPage: 'about',
+      subtitle: null,
+      hideTopBar: true
+    });
   }
 
   public toggleSideNav(event: MouseEvent): void {

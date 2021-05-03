@@ -109,10 +109,13 @@ export class DetailsCandidateGlobalStylesComponent {
     ]),
   ]
 })
-export class DetailsCandidateComponent implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
+export class DetailsCandidateComponent 
+  implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
+
   @ViewChild('header') header: ElementRef<HTMLElement>;
   @ViewChild('tabGroup', {read: ElementRef}) tabGroup: ElementRef;
   @ViewChild('expanderDisagreed') expanderDisagreed: CustomExpanderComponent;
+
   public candidate: Candidate;
   public party: Party;
   public opinions: { [key: string]: QuestionNumeric[] } = { // Will house question lists
@@ -134,6 +137,7 @@ export class DetailsCandidateComponent implements OnInit, AfterViewInit, AfterVi
   public peekOffset: string = '1rem';
   public opinionsTabIndex: number = 2;
   public detailsLoaded: boolean = false;
+
   private _tabBodies: NodeList;
   private _tabBodyHeight: string = '';
   // These will be cancelled onDestroy
@@ -153,6 +157,9 @@ export class DetailsCandidateComponent implements OnInit, AfterViewInit, AfterVi
     private lcFirst: LcFirstPipe,
     private sentencify: SentencifyPipe,
   ) {
+    this.shared.reportOverlayOpen({
+       // log() DEBUG TODO REM onboarding: {restart: () => this.onboardingTour?.restart()},
+    });
   }
 
   ngOnInit() {
@@ -183,11 +190,11 @@ export class DetailsCandidateComponent implements OnInit, AfterViewInit, AfterVi
 
   ngOnDestroy() {
     // We use this to signal the map avatars
-    if (this.shared.activeCandidateId === this.data.id) {
+    if (this.shared.activeCandidateId === this.data.id)
       this.shared.activeCandidateId = null;
-    }
     // Cancel subscriptions
     this._subscriptions.forEach(s => s.unsubscribe());
+    this.shared.reportOverlayClose();
   }
 
   private _initQuestions(): void {
