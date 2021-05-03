@@ -101,7 +101,8 @@
         <mat-action-row class="filterButtons">
           <button mat-button
                   type="button"
-                  (click)="dismiss()">Peruuta</button>
+                  [disabled]="!filter.active"
+                  (click)="clearFilter(filter)">Nollaa</button>
           <button mat-raised-button color="primary"
                   type="submit" 
                   [disabled]="!filtersForm.valid">Tallenna kaikki suodattimet</button>

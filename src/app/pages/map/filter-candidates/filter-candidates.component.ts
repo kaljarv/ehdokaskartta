@@ -109,6 +109,9 @@ export class FilterCandidatesComponent implements OnInit, OnDestroy {
     private shared: SharedService,
     private fb: FormBuilder,
   ) {
+    this.shared.reportOverlayOpen({
+       // log() DEBUG TODO REM onboarding: {restart: () => this.onboardingTour?.restart()},
+    });
     this._subscriptions.push(this.matcher.filterDataReady.subscribe(() => this.initFilters()));
   }
 
@@ -126,6 +129,7 @@ export class FilterCandidatesComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     // Cancel subscriptions
     this._subscriptions.forEach(s => s.unsubscribe());
+    this.shared.reportOverlayClose();
   }
 
   public dismiss(event: MouseEvent = null): void {
@@ -241,6 +245,13 @@ export class FilterCandidatesComponent implements OnInit, OnDestroy {
   public onSubmit(): void {
     this.mergeChanges();
     setTimeout(() => this.dismiss(), 250);
+  }
+
+  public clearFilter(filter: CandidateFilter): void {
+    if (filter.active)
+      filter.clearRules();
+    setTimeout(() => this.dismiss(), 250);
+    this.shared.logEvent('filters_clear', {title: filter.title});
   }
 
   public clearAllFilters(): void {
