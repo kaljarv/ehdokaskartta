@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { ShepherdService } from 'angular-shepherd';
 
-import { CookieModule } from '../cookie';
+import { CookieModule } from '../../core';
 
 import { OnboardingService } from './onboarding.service';
 import { OnboardingHintComponent } from './onboarding-hint.component';

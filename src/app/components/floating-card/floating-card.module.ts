@@ -6,8 +6,10 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatCardModule } from '@angular/material/card';
 
 import { FloatingCardService } from './floating-card.service';
-import { FloatingCardGlobalStylesComponent,
-         FloatingCardComponent } from './floating-card.component';
+import { 
+  FloatingCardGlobalStylesComponent,
+  FloatingCardComponent 
+} from './floating-card.component';
 
 @NgModule({
   imports: [

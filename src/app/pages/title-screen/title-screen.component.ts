@@ -1,10 +1,8 @@
 import { 
-  AfterViewInit,
   Component, 
   NgZone,
   OnDestroy, 
   OnInit,
-  ViewChild
 } from '@angular/core';
 import { 
   Router 
@@ -22,7 +20,6 @@ import {
 
 import { 
   MatcherService,
-  OnboardingTourComponent,
   PATHS,
   SharedService
 } from '../../core';
@@ -41,10 +38,7 @@ export const ANIMATION_PATH: string = 'assets/animations/map-vignette.json';
   // },
 })
 export class TitleScreenComponent 
-  implements AfterViewInit, OnInit, OnDestroy {
-
-  @ViewChild(OnboardingTourComponent)
-  onboardingTour: OnboardingTourComponent;
+  implements OnInit, OnDestroy {
   
   public aboutPath: string = PATHS.about;
   public animationOptions: AnimationOptions = {
@@ -71,11 +65,6 @@ export class TitleScreenComponent
 
   ngOnInit(): void {
     this._subscriptions.push(this.matcher.constituencyCookieRead.subscribe(() => this.showCookieSnackbar()));
-  }
-
-  ngAfterViewInit() {
-    // Onboarding
-    this.onboardingTour?.start();
   }
 
   ngOnDestroy(): void {

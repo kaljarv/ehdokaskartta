@@ -1,18 +1,11 @@
-import { ComponentRef,
-         Injectable, 
-         Injector, 
-         StaticProvider } from '@angular/core';
-import { Overlay, 
-         OverlayConfig, } from '@angular/cdk/overlay';
-import { ComponentPortal } from '@angular/cdk/portal';
+import { 
+  Injectable, 
+  Injector
+} from '@angular/core';
 import { DragDrop } from '@angular/cdk/drag-drop';
-
-import { FloatingCardConfig,
-         FLOATING_CARD_DATA } from './floating-card.config';
-import { FloatingCardComponent } from './floating-card.component';
-import { FloatingCardRef,
-         FloatingCardState,
-         FLOATING_CARD_PANEL_CLASS } from './floating-card-ref';
+import { Overlay } from '@angular/cdk/overlay';
+import { FloatingCardConfig } from './floating-card-options';
+import { FloatingCardRef } from './floating-card-ref';
 
 /*
  * Allow opening of Google Maps-esque overlay cards with custom components.
@@ -24,15 +17,6 @@ import { FloatingCardRef,
  * by Google
  */
 
-const DEFAULT_OVERLAY_CONFIG: any = {
-  hasBackdrop: false,
-  backdropClass: 'floatingCard-backdrop', // NB. we don't have a backdrop by default, though
-  disposeOnNavigation: true, 
-  maxWidth: '42rem',
-  panelClass: FLOATING_CARD_PANEL_CLASS, 
-  width: '100%',
-}
-
 @Injectable({
   providedIn: 'root'
 })
@@ -41,57 +25,10 @@ export class FloatingCardService {
   constructor(
     private injector: Injector,
     private overlay: Overlay,
-    private dragDrop: DragDrop,
-  ) { }
+    private dragDrop: DragDrop
+  ) {}
 
-  public open(config: FloatingCardConfig): FloatingCardRef {
-
-    // Create overlay config
-    let overlayConfig = {...DEFAULT_OVERLAY_CONFIG};
-
-    if (config.options.panelClass)
-      overlayConfig.panelClass = config.options.panelClass;
-
-    let positionStrategy = this.overlay.position()
-      .global()
-      .centerHorizontally();
-    
-    // TODO These are redundantly defined here and implicitly in FloatingCardRef: move defs there and use those.
-    //      Actually, also check if most of this stuff with the overlayRef should actually be moved to within
-    //      the FloatingCardRef, because passing these refs to the constructor is messy.
-    if (config.options.hiddenWhenOpened) {
-      positionStrategy = positionStrategy.top(`${window.innerHeight}px`);
-    } else {
-      positionStrategy = positionStrategy.top(`calc(${window.innerHeight}px - ${config.options.minimizedHeight})`);
-    }
-    overlayConfig.positionStrategy = positionStrategy;
-    overlayConfig.scrollStrategy = this.overlay.scrollStrategies.block();
-
-    // Create overlay
-    const floatingCardRef = new FloatingCardRef(this.overlay.create(new OverlayConfig(overlayConfig)), this.overlay, this.dragDrop);
-
-    // Create injector
-    const providers: StaticProvider[] = [
-      {provide: FloatingCardConfig, useValue: config},
-      {provide: FloatingCardRef, useValue: floatingCardRef}
-    ];
-
-    const injector = Injector.create({parent: this.injector, providers});
-
-    // Create content component
-    const containerPortal = new ComponentPortal(FloatingCardComponent, null, injector);
-    floatingCardRef.attach(containerPortal);
-
-    // const containerRef: ComponentRef<FloatingCardComponent> = floatingCardRef.attach(containerPortal);
-    // const overlayComponent = containerRef.instance;
-
-    if (!config.options.hiddenWhenOpened) {
-      // Initialise unless the card stays hidden, in which case
-      // setPeekElement will handle init
-      floatingCardRef.init();
-      floatingCardRef.state = FloatingCardState.Peeking;
-    }
-
-    return floatingCardRef;
+  public open(config: FloatingCardConfig): FloatingCardRef {
+    return new FloatingCardRef(config, this.injector, this.overlay, this.dragDrop);
   }
 }

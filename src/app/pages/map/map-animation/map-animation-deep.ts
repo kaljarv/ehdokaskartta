@@ -14,7 +14,7 @@ export type MapAnimationPropertiesDeep = {
  *
  * const a = MapAnimationDeep(
  *    { markerOptions: {
- *        state: { from: "minimized", to: "active" }
+ *        state: { from: "minimised", to: "active" }
  *      },
  *      drawingOptions: {
  *        opacity: { from: 0, to: 1 }

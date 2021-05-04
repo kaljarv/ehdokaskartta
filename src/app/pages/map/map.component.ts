@@ -27,7 +27,6 @@ import {
   Candidate,
   D3Service,
   MatcherService,
-  OnboardingTourComponent,
   Party,
   ProjectionMethod,
   SharedService,
@@ -35,6 +34,7 @@ import {
   ANIMATION_DURATION_MS,
   PATHS
 } from '../../core';
+import { OnboardingTourComponent } from '../../components';
 import {
   MapBackgroundType,
   MapMarkerClickData,
@@ -112,7 +112,7 @@ export class MapComponent
   public markerData = new Array<MapDatum>(); // We'll conflate candidates and parties in this list for correct depth placement
   public coordinateScale = 1.0;
   public markerScale = 1.0;
-  public minimizedCandidateScale = 1.0;
+  public minimisedCandidateScale = 1.0;
   public zoomExtents = [0.8, 15];
   public showLabelFactor = 0.8 * 10;
   public voter: any; // We'll save the voter here
@@ -326,10 +326,10 @@ export class MapComponent
     let f = (Math.sqrt(this.candidates.length) - Math.sqrt(100)) / Math.sqrt(900);
         f = this.shared.clamp(f, 0, 1);
     // Nb. this runs from 0.4 to 0.8
-    this.minimizedCandidateScale = 0.4 + (1 - f) * 0.4;
+    this.minimisedCandidateScale = 0.4 + (1 - f) * 0.4;
     this.zoomExtents = [1, 12 + (f * 3)**2];
-    this.showLabelFactor = 8 / this.minimizedCandidateScale;
-    console.log("Dynamic scale", f, this.showLabelFactor, this.minimizedCandidateScale, this.zoomExtents);
+    this.showLabelFactor = 8 / this.minimisedCandidateScale;
+    console.log("Dynamic scale", f, this.showLabelFactor, this.minimisedCandidateScale, this.zoomExtents);
 
     // This is async so we need to wait
     this.rescaleMap().then(() => {
@@ -570,7 +570,7 @@ export class MapComponent
               color: this.colors[a.partyName],
               label: this.getCandidateLabel(a),
               transition: { 
-                state: "minimized"
+                state: "minimised"
               }
             });
             break;
@@ -633,11 +633,11 @@ export class MapComponent
         } else {
           // Reset other previously active or disabled candidates
           o.layer = 10;
-          if (state !== "minimized" && toState !== "minimized") {
+          if (state !== "minimised" && toState !== "minimised") {
             if (o.showLabel)
-              o.transition = { state: "minimized", showLabel: false };
+              o.transition = { state: "minimised", showLabel: false };
             else
-              o.transition = { state: "minimized" };
+              o.transition = { state: "minimised" };
           }
         }
 

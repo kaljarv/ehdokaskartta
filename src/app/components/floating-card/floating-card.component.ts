@@ -1,16 +1,17 @@
-import { Component,
-         Injector,
-         OnInit,
-         StaticProvider,
-         ViewEncapsulation } from '@angular/core';
+import { 
+  Component,
+  Injector,
+  OnInit,
+  Type,
+  ViewEncapsulation 
+} from '@angular/core';
 import { ComponentPortal } from '@angular/cdk/portal';
-
-import { FloatingCardConfig,
-         FLOATING_CARD_DATA } from './floating-card.config';
-import { FloatingCardRef,
-         FLOATING_CARD_ANIMATION_TIMING,
-         FLOATING_CARD_PANEL_CLASS,
-         FLOATING_CARD_INITIALISED_CLASS } from './floating-card-ref';
+import { 
+  FLOATING_CARD_ANIMATION_TIMING,
+  FLOATING_CARD_INITIALISED_CLASS,
+  FLOATING_CARD_PANEL_CLASS,
+} from './floating-card-options';
+import { FloatingCardRefBase } from './floating-card-ref-base';
 
 /*
  * A simple wrapper for floating card content providing styles
@@ -55,7 +56,14 @@ export class FloatingCardGlobalStylesComponent {
   },
 })
 export class FloatingCardComponent implements OnInit {
+
   public contentPortal: ComponentPortal<any>;
+
+  constructor(
+    private floatingCardRef: FloatingCardRefBase,
+    private injector: Injector,
+    private type: Type<any>
+  ) {}
 
   public get isMaximised(): boolean {
     return this.floatingCardRef.isMaximised;
@@ -68,22 +76,9 @@ export class FloatingCardComponent implements OnInit {
     return window.innerHeight;
   }
 
-  constructor(
-    private config: FloatingCardConfig,
-    private floatingCardRef: FloatingCardRef,
-    private injector: Injector,
-  ) {}
-
   ngOnInit() {
-    // Create injector
-    const providers: StaticProvider[] = [
-      {provide: FloatingCardRef, useValue: this.floatingCardRef},
-      {provide: FLOATING_CARD_DATA, useValue: this.config.data}
-    ];
-    const injector = Injector.create({parent: this.injector, providers});
-
     // Create content component
-    this.contentPortal = new ComponentPortal(this.config.component, null, injector);
+    this.contentPortal = new ComponentPortal(this.type, null, this.injector);
   }
 
   public onWindowResize(): void {

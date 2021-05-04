@@ -8,8 +8,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatRippleModule } from '@angular/material/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-import { CorePipesModule,
-         OnboardingModule } from '../../core';
+import { CorePipesModule } from '../../core';
+import { OnboardingModule } from '../../components';
 
 import { QuestionListComponent } from './question-list.component';
 import { QuestionListTopBarContentComponent } from './question-list-top-bar-content.component';

@@ -21,17 +21,15 @@ import { LcFirstPipe,
 import { MatcherService, 
          Candidate, 
          ANIMATION_TIMING,
-         ANIMATION_DURATION_MS,
          INDEPENDENT_PARTY_ID, 
          Question,
          QuestionNumeric, 
-         QuestionPreferenceOrder,
          Party,
          SharedService } from '../../../core';
-import { FloatingCardRef,
+import { FloatingCardRefBase,
          FLOATING_CARD_DATA,
-         FLOATING_CARD_ANIMATION_DURATION_MS } from '../../../components/floating-card';
-import { CustomExpanderComponent } from '../../../components';
+         FLOATING_CARD_ANIMATION_DURATION_MS,
+         CustomExpanderComponent } from '../../../components';
 
 export const DATA_CONTENT_CLASS = "content";
 export const MISSING_DATA_INFO_CLASS = "detailsCandidateMissingData";
@@ -149,7 +147,7 @@ export class DetailsCandidateComponent
   }
 
   constructor(
-    private floatingCardRef: FloatingCardRef,
+    private floatingCardRef: FloatingCardRefBase,
     @Inject(FLOATING_CARD_DATA) public data: any,
     private matcher: MatcherService,
     private shared: SharedService,

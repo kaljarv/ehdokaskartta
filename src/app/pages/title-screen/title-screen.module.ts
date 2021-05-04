@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { LottieModule } from 'ngx-lottie';
 
-import { OnboardingModule } from '../../core';
+import { OnboardingModule } from '../../components';
 
 // Note we need a separate function as it's required by the AOT compiler.
 export function playerFactory() {

@@ -25,14 +25,12 @@ import {
   moveItemInArray
 } from '@angular/cdk/drag-drop';
 
-
 import { 
   ANIMATION_TIMING,
   ANIMATION_DURATION_MS,
   MatcherService,
   SharedService,
   Candidate,
-  OnboardingTourComponent,
   QuestionLikert,
   QuestionLikertSeven,
   QuestionNumeric,
@@ -40,6 +38,8 @@ import {
   QuestionPreferenceOrder, 
   QuestionType
 } from '../../../core';
+import { OnboardingTourComponent } from '../../../components';
+
 
 // Delay in ms before closing the bottom sheet after setting answer
 export const CLOSE_DELAY: number = 2 * ANIMATION_DURATION_MS;

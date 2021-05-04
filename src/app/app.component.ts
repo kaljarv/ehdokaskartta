@@ -25,11 +25,9 @@ import { SharedService,
          ADMIN_EMAIL,
          ANIMATION_TIMING,
          ANIMATION_DURATION_MS,
-         DEFAULT_LOADING_STATE,
          ForwardOptions,
          LoadingState,
-         MatcherService, 
-         OnboardingService} from './core';
+         MatcherService } from './core';
 
 import { DetailsQuestionComponent } from './pages/question-list';
 import { DetailsCandidateComponent,
@@ -37,9 +35,9 @@ import { DetailsCandidateComponent,
          FavouritesListComponent } from './pages/map';
 import { FloatingCardService,
          FloatingCardRef,
-         FloatingCardConfig,
-         FloatingCardConfigOptions } from './components/floating-card';
-import { FeedbackFormComponent } from './components';
+         FloatingCardOptions } from './components/floating-card';
+import { FeedbackFormComponent, 
+         OnboardingService } from './components';
 
 export const HIDE_TOOLTIPS_DELAY = ANIMATION_DURATION_MS;
 export const DIALOG_CONFIG: MatDialogConfig = {
@@ -320,11 +318,10 @@ export class AppComponent implements DoCheck {
   public openDetailsCard(type, data): void {
     // If one is already open, close it
     this.clearDetailsCard();
-    const fcOptions: FloatingCardConfigOptions = {
+    const options: FloatingCardOptions = {
       hiddenWhenOpened: true,
     };
-    this._floatingCardRef = this.fcService.open(new FloatingCardConfig(type, data, fcOptions));
-    // this._floatingCardRef.dismissed.subscribe(() => this._floatingCardRef = null);
+    this._floatingCardRef = this.fcService.open({type, data, options});
   }
 
   public clearDetailsCard(): void {

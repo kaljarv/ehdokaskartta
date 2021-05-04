@@ -6,7 +6,7 @@ import {
   MapMarkerOptions
 } from './map-marker';
 
-export type MapMarkerCandidateState = MapMarkerCommonState | "active" | "minimized" | "disabled";
+export type MapMarkerCandidateState = MapMarkerCommonState | "active" | "minimised" | "disabled";
 
 export interface MapMarkerCandidateDrawingOptions extends MapMarkerDrawingOptions {
   dontFillBody?: boolean,
@@ -21,14 +21,14 @@ export interface MapMarkerCandidateOptions extends MapMarkerOptions {
   state?: MapMarkerCandidateState,
   transitionTo?: MapMarkerCandidateState,
   disabledHeadScale?: number,
-  minimizedHeadScale?: number,
+  minimisedHeadScale?: number,
   drawingOptions?: MapMarkerCandidateDrawingOptions[]
 }
 
 export const MAP_MARKER_CANDIDATE_DEFAULT_OPTIONS: MapMarkerCandidateOptions = {
-  state: "minimized",
+  state: "minimised",
   disabledHeadScale: 0.5,
-  minimizedHeadScale: 1.0
+  minimisedHeadScale: 1.0
 }
 
 export const MAP_MARKER_CANDIDATE_HEAD_RADIUS = 5;
@@ -145,8 +145,8 @@ export class MapMarkerCandidate extends MapMarker {
         expansion = this.options.disabledHeadScale;
         break;
 
-      case "minimized":
-        expansion = this.options.minimizedHeadScale;
+      case "minimised":
+        expansion = this.options.minimisedHeadScale;
         break;
 
       case "normal":

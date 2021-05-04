@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { ShepherdService } from 'angular-shepherd';
-import { CookieService } from '../cookie';
+import { CookieService } from '../../core';
 
 
 

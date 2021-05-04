@@ -1,36 +1,56 @@
-import { ComponentRef,
-         ElementRef,
-         EventEmitter } from '@angular/core';
-import { Overlay,
-         OverlayRef,
-         GlobalPositionStrategy } from '@angular/cdk/overlay';
+import { 
+  ComponentRef,
+  ElementRef,
+  EventEmitter,
+  Injector, 
+  StaticProvider,
+  Type
+} from '@angular/core';
+import { 
+  Overlay,
+  OverlayRef,
+  GlobalPositionStrategy, 
+  OverlayConfig
+} from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
-import { DragDrop,
-         DragRef } from '@angular/cdk/drag-drop';
+import { 
+  DragDrop,
+  DragRef
+} from '@angular/cdk/drag-drop';
 import { Observable } from 'rxjs';
-
-import { ANIMATION_DURATION_MS,
-         ANIMATION_TIMING } from '../../core';
-
 import { FloatingCardComponent } from './floating-card.component';
-import { FloatingCardPeekElementOptions,
-         DEFAULT_FLOATING_CARD_PEEK_ELEMENT_OPTIONS } from './floating-card.config';
+import { 
+  FloatingCardConfig,
+  FloatingCardOptions,
+  FloatingCardPeekElementOptions,
+  FloatingCardState,
+  PositionStrategyType,
+  DEFAULT_FLOATING_CARD_OPTIONS,
+  DEFAULT_FLOATING_CARD_PEEK_ELEMENT_OPTIONS,
+  FLOATING_CARD_ANIMATION_DURATION_MS,
+  FLOATING_CARD_ANIMATION_TIMING,
+  FLOATING_CARD_DATA,
+  FLOATING_CARD_PANEL_CLASS,
+  FLOATING_CARD_INITIALISED_CLASS,
+  FLOATING_CARD_MAXIMISED_CLASS,
+  FLOATING_CARD_DEFAULT_PEEK_HEIGHT
+} from './floating-card-options';
+import { FloatingCardRefBase } from './floating-card-ref-base';
 
-export const FLOATING_CARD_PANEL_CLASS = 'floatingCard-panel';
-export const FLOATING_CARD_INITIALISED_CLASS = FLOATING_CARD_PANEL_CLASS + '--initialised';
-export const FLOATING_CARD_MAXIMISED_CLASS = FLOATING_CARD_PANEL_CLASS + '--maximised';
-export const FLOATING_CARD_DEFAULT_PEEK_HEIGHT: string = '6rem';
+
 export const CLICK_CANCEL_DURATION = 300; // ms
-export const CLOSE_DELAY = 500; // ms to allow for transitioning at close before disposing overlay
-export const FLOATING_CARD_ANIMATION_DURATION_MS = ANIMATION_DURATION_MS;
-export const FLOATING_CARD_ANIMATION_TIMING = ANIMATION_TIMING;
 
-export enum FloatingCardState {
-  Hidden,
-  Peeking,
-  Maximised,
-  Dismissed,
-};
+export const CLOSE_DELAY = 500; // ms to allow for transitioning at close before disposing overlay
+
+export const DEFAULT_OVERLAY_CONFIG: any = {
+  hasBackdrop: false,
+  backdropClass: 'floatingCard-backdrop', // NB. we don't have a backdrop by default, though
+  disposeOnNavigation: true, 
+  maxWidth: '42rem',
+  panelClass: FLOATING_CARD_PANEL_CLASS, 
+  width: '100%',
+}
+
 
 /*
  * Controls the floating card CDK Overlay, which contains
@@ -39,20 +59,91 @@ export enum FloatingCardState {
  * to FloatingCardService.open().
  */
 
-export class FloatingCardRef {
+export class FloatingCardRef 
+  extends FloatingCardRefBase {
+
+  public card: ComponentRef<FloatingCardComponent>;
+  public data: any;
+  public dismissed: EventEmitter<void> = new EventEmitter<void>();
+  public dragRef: DragRef;
+  public minDragDistance: number = 30;
+  public options: FloatingCardOptions;
+  public overlayRef: OverlayRef;
+  public peekElement: ElementRef<HTMLElement>;
+  public peekElementOffset: string = '0px';
+  public state: FloatingCardState = FloatingCardState.Hidden;
+  public type: Type<any>;
+
   private _peekHeight: string;
   private _dragStartY: number;
   private _dragStartPointerY: number;
   private _cancelClick: boolean = false; // To disable drag end click event on header
   private _initialised: boolean = false;
   private _savedTransition: string;
-  public card: ComponentRef<FloatingCardComponent>;
-  public dragRef: DragRef;
-  public minDragDistance: number = 30;
-  public peekElement: ElementRef<HTMLElement>;
-  public peekElementOffset: string = '0px';
-  public state: FloatingCardState = FloatingCardState.Hidden;
-  public dismissed: EventEmitter<void> = new EventEmitter<void>();
+
+  constructor(
+    config: FloatingCardConfig,
+    private injector: Injector,
+    private overlay: Overlay,
+    private dragDrop: DragDrop,
+  ) {
+    super();
+
+    this.options = {...DEFAULT_FLOATING_CARD_OPTIONS, ...(config.options || {})};
+    this.type = config.type;
+    this.data = config.data;
+
+    this._createOverlay();
+    this._createComponent();
+
+    if (!this.options.hiddenWhenOpened) {
+      // Initialise unless the card stays hidden, in which case
+      // setPeekElement will handle init
+      this.init();
+      this.state = FloatingCardState.Maximised;
+    }
+
+  }
+
+  private _createOverlay(): void {
+    // Create overlay config
+    const overlayConfig: OverlayConfig = {...DEFAULT_OVERLAY_CONFIG};
+
+    if (this.options.panelClass != null)
+      overlayConfig.panelClass = this.options.panelClass;
+
+    // Create positioning strategy
+    const posStrategy = this.overlay.position().global();
+
+    if (this.options.hiddenWhenOpened)
+      this._setPositionStrategy(posStrategy, 'hidden');
+    else
+      this._setPositionStrategy(posStrategy, 'maximised');
+
+    overlayConfig.positionStrategy = posStrategy;
+    overlayConfig.scrollStrategy = this.overlay.scrollStrategies.block();
+
+    // Create overlay
+    this.overlayRef = this.overlay.create(overlayConfig)
+  }
+
+  private _createComponent(): void {
+
+    // Create injector
+    const providers: StaticProvider[] = [
+      {provide: Type, useValue: this.type},
+      {provide: FloatingCardRefBase, useValue: this},
+      {provide: FLOATING_CARD_DATA, useValue: this.data}
+    ];
+    const injector = Injector.create({parent: this.injector, providers});
+
+    // Create content component
+    const containerPortal = new ComponentPortal(FloatingCardComponent, null, injector);
+    this.card = this.overlayRef.attach(containerPortal);
+
+    // const containerRef: ComponentRef<FloatingCardComponent> = floatingCardRef.attach(containerPortal);
+    // const overlayComponent = containerRef.instance;
+  }
 
   get peekHeight(): string {
     if (this._peekHeight != null)
@@ -83,14 +174,8 @@ export class FloatingCardRef {
     return this.state === FloatingCardState.Dismissed;
   }
 
-  constructor(
-    private overlayRef: OverlayRef,
-    private overlay: Overlay,
-    private dragDrop: DragDrop,
-  ) { }
-
-  public attach(portal: ComponentPortal<FloatingCardComponent>): ComponentRef<FloatingCardComponent> {
-    return this.card = this.overlayRef.attach(portal);
+  get usePortrait(): boolean {
+    return window.innerWidth < this.options.landscapeBreakpointPx;
   }
 
   public init(): void {
@@ -102,24 +187,13 @@ export class FloatingCardRef {
     }
   }
 
-  private _dispose(): void {
-    this.overlayRef.dispose();
-    this.state = FloatingCardState.Dismissed;
-    this.dismissed.emit();
-  }
-
   public close(dontAnimate: boolean = false): void {
 
     // Move down before disposal
     if (!dontAnimate) {
 
-      const closePos = this.overlayRef.getConfig().positionStrategy as GlobalPositionStrategy;
-      closePos.top('110vh'); // We go a bit overboard to counter possible easing
-      this.overlayRef.updatePositionStrategy(closePos);
-      // Need to update position manually, as the it's not called automatically because only the pos offset is changed, not the main method
-      this.overlayRef.updatePosition();  
+      this._applyPositionStrategy('closed');
       this.dragRef.reset();
-
       setTimeout( () => this._dispose(), CLOSE_DELAY );
 
     } else {
@@ -137,7 +211,7 @@ export class FloatingCardRef {
    */
   public onWindowResize(): void {
     if (this.isPeeking)
-      this._updatePeekPosition();
+      this._applyPositionStrategy('peek');
   }
 
   public toggle(): void {
@@ -152,16 +226,10 @@ export class FloatingCardRef {
     if (this._cancelClick && !dragged)
       return;
 
-    const position = this.overlayRef.getConfig().positionStrategy as GlobalPositionStrategy;
-    position.top();
-    this.overlayRef.updatePositionStrategy(position);
-    // Need to update position manually, as the it's not called automatically because only the pos offset is changed, not the main method
-    this.overlayRef.updatePosition();
+    this._applyPositionStrategy('maximised');
     this.overlayRef.addPanelClass(FLOATING_CARD_MAXIMISED_CLASS);
     this.overlayRef.updateScrollStrategy(this.overlay.scrollStrategies.reposition());
     this.state = FloatingCardState.Maximised;
-
-    // this.dragRef.reset();
   }
 
   public peek(dragged: boolean = false): void {
@@ -169,23 +237,10 @@ export class FloatingCardRef {
     if (this._cancelClick && !dragged)
       return;
 
-    this._updatePeekPosition();
+    this._applyPositionStrategy('peek');
     this.overlayRef.removePanelClass(FLOATING_CARD_MAXIMISED_CLASS);
     this.overlayRef.updateScrollStrategy(this.overlay.scrollStrategies.block());
     this.state = FloatingCardState.Peeking;
-
-    // this.dragRef.reset();
-  }
-
-  /*
-   * Update the peek position based on window.innerHeight and the peek element height
-   */
-  private _updatePeekPosition(): void {
-    const position = this.overlayRef.getConfig().positionStrategy as GlobalPositionStrategy;
-    position.top(`calc(${window.innerHeight}px - ${this.peekHeight} - ${this.peekElementOffset})`);
-    this.overlayRef.updatePositionStrategy(position);
-    // Need to update position manually, as the it's not called automatically because only the pos offset is changed, not the main method
-    this.overlayRef.updatePosition();
   }
 
   public setPeekElement(element: ElementRef<HTMLElement>, peekElementOptions: FloatingCardPeekElementOptions = {}): void {
@@ -225,13 +280,16 @@ export class FloatingCardRef {
       this.init();
   }
 
+  public getBoundingClientRect(): DOMRect {
+    return this.card.location.nativeElement.getBoundingClientRect();
+  }
+
   /* Constrain the dragging to the top of the viewport when maximised.
    * The points are Point types defined in drag-drop 
    * but the definition cannot be easily imported */
   private _constrainAtTop(point, dragRef: DragRef): {x: number, y: number} {
 
     if (this.isMaximised) {
-
       if (this._dragStartPointerY == null) {
         // We reset this when dragging started
         // NB. this will result in an error of +/- 1px but that's okay
@@ -241,16 +299,20 @@ export class FloatingCardRef {
         // Otherwise calculate movement
         const deltaY = point.y - this._dragStartPointerY;
         // Change the y coordinate if the total of this drag session would  be negative
-        if (deltaY < 0) {
+        if (deltaY < 0)
           return {
             x: point.x,
             y: point.y - deltaY
           };
-        }
       }
-
     }
     return point;
+  }
+
+  private _dispose(): void {
+    this.overlayRef.dispose();
+    this.state = FloatingCardState.Dismissed;
+    this.dismissed.emit();
   }
 
   private _onDragStart(): void {
@@ -305,13 +367,13 @@ export class FloatingCardRef {
     this._savedTransition = this.dragRef.getRootElement().style.transition;
 
     // Set transition to handle removing drag
-    this.dragRef.getRootElement().style.transition = 'transform ' + ANIMATION_TIMING;
+    this.dragRef.getRootElement().style.transition = 'transform ' + FLOATING_CARD_ANIMATION_TIMING;
 
     // Reset drag
     this.dragRef.reset();
 
     // Set timeout to revert to original transition
-    setTimeout(() => this.dragRef.getRootElement().style.transition = this._savedTransition, ANIMATION_DURATION_MS);
+    setTimeout(() => this.dragRef.getRootElement().style.transition = this._savedTransition, FLOATING_CARD_ANIMATION_DURATION_MS);
     
     // Tried making this nicely by using reposition but that didn't work out.
     // 
@@ -343,7 +405,50 @@ export class FloatingCardRef {
     // this.overlayRef.removePanelClass(FLOATING_CARD_NO_TRANSITION_CLASS);
   }
 
-  public getBoundingClientRect(): DOMRect {
-    return this.card.location.nativeElement.getBoundingClientRect();
+
+  /*
+   * Set pos strategy and update position
+   */
+  private _applyPositionStrategy(strategyType: PositionStrategyType): void {
+    
+    const strategy = this._getPositionStrategy();
+
+    this._setPositionStrategy(strategy, strategyType);
+
+    this.overlayRef.updatePositionStrategy(strategy);
+    // Need to update position manually, as the it's not called automatically because only the pos offset is changed, not the main method
+    this.overlayRef.updatePosition();
   }
+
+  private _getPositionStrategy(): GlobalPositionStrategy {
+    return this.overlayRef.getConfig().positionStrategy as GlobalPositionStrategy;
+  }
+
+  private _setPositionStrategy(strategy: GlobalPositionStrategy, strategyType: PositionStrategyType): GlobalPositionStrategy {
+    
+    // Horisontal
+    if (this.usePortrait)
+      strategy.centerHorizontally();
+    else
+      strategy.left(this.options.landscapeMargin);
+    
+    // Vertical
+    switch (strategyType) {
+      case 'closed':
+        // To counteract possible easing
+        return strategy.top('110vh');
+      case 'hidden':
+        return strategy.top(`${window.innerHeight}px`);
+      case 'maximised':
+        if (this.usePortrait)
+          return strategy.top();
+        else
+          return strategy.top(this.options.landscapeMargin);
+      case 'minimised':
+        return strategy.top(`calc(${window.innerHeight}px - ${this.options.minimisedHeight})`);
+      case 'peek':
+        return strategy.top(`calc(${window.innerHeight}px - ${this.peekHeight} - ${this.peekElementOffset})`);
+    }
+  }
+
 }

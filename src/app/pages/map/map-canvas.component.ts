@@ -205,10 +205,10 @@ export class MapCanvasComponent
   @Input() markerScale: number = 1.0;
 
   /*
-   * This controls the scaling of the minimized candidate markers at lower zoom levels.
+   * This controls the scaling of the minimised candidate markers at lower zoom levels.
    * Set this below 1 when there are many candidates (> 200).
    */
-  @Input() minimizedCandidateScale: number = 1.0;
+  @Input() minimisedCandidateScale: number = 1.0;
 
   /*
    * The minimun unitless dimension factor to show labels at, set lower to show them sooner
@@ -231,7 +231,7 @@ export class MapCanvasComponent
   @Input() zoomDuration: number = 500;
 
   /*
-   * The threshold value for computed minimizedMarkerScale under which
+   * The threshold value for computed minimisedMarkerScale under which
    * all clicks are treated as calls to zoom
    */
   @Input() zoomOnClickThreshold: number = 0.6;
@@ -271,7 +271,7 @@ export class MapCanvasComponent
     markerScale: 1,
     // Distance from corner to corner in the projection space
     maxDistance: Math.sqrt(2), 
-    minimizedMarkerScale: 1
+    minimisedMarkerScale: 1
   };
 
   // The additional offset of a shape's clickable area
@@ -291,7 +291,7 @@ export class MapCanvasComponent
   // The min and max values for zoom based scaling calculated by the root above
   private _zoomMarkerScalingRange = [0.8, 1.6];
 
-  // Used to calculate disabled marker size based on minimizedCandidateScale
+  // Used to calculate disabled marker size based on minimisedCandidateScale
   private _disabledCandidateHeadScalingFactor = 0.5;
 
   private _animations = new Set<MapAnimationDeep>();
@@ -457,7 +457,7 @@ export class MapCanvasComponent
     // Convert decimal to rgb
     const _toRgb = (v: number) => [v/256**2, v/256, v].map(x => Math.floor(x) % 256);
 
-    // Now we assign colors randomly so as to minimized the chance that neighbouring
+    // Now we assign colors randomly so as to minimised the chance that neighbouring
     // markers have similar colors, which can get mixed up because of antialiasing
     this._shuffle(colors);
     for (let i = 0; i < this.markerData.length; i++) {
@@ -538,9 +538,9 @@ export class MapCanvasComponent
         m.initMarker(
           ctx,
           { ...opts,
-            // Nb. We set this, as this._updateMinimizedCandidateScale() won't be called
-            // if this.minimizedCandidateScale === 1
-            minimizedHeadScale: this._disabledCandidateHeadScalingFactor,
+            // Nb. We set this, as this._updateMinimisedCandidateScale() won't be called
+            // if this.minimisedCandidateScale === 1
+            minimisedHeadScale: this._disabledCandidateHeadScalingFactor,
             drawingOptions: [
               // Visible canvas
               { ...drawingOpts,
@@ -689,7 +689,7 @@ export class MapCanvasComponent
 
     this.markerData.forEach(m => {
       this._updateTransitions(m, idRoot);
-      this._updateMinimizedCandidateScale(m, idRoot);
+      this._updateMinimisedCandidateScale(m, idRoot);
       this._updateLabels(m, idRoot);
     });
 
@@ -705,9 +705,9 @@ export class MapCanvasComponent
     const idRoot = performance.now() + "_";
 
     this.markerData.forEach(m => {
-      // Labels and minimized cand scale are dependent on the zoom level
+      // Labels and minimised cand scale are dependent on the zoom level
       // TODO Only check if there's a change in the global zoom label factor
-      this._updateMinimizedCandidateScale(m, idRoot);
+      this._updateMinimisedCandidateScale(m, idRoot);
       this._updateLabels(m, idRoot);
     });
 
@@ -804,13 +804,13 @@ export class MapCanvasComponent
   }
 
   /*
-   * Set the minimizedHeadScale value for candidate markers based on the zoom level
+   * Set the minimisedHeadScale value for candidate markers based on the zoom level
    */
-  private _updateMinimizedCandidateScale(m: MapDatum, idRoot: string): void {
+  private _updateMinimisedCandidateScale(m: MapDatum, idRoot: string): void {
 
-    if (this._coordinateFactors.minimizedMarkerScale !== 1 && m instanceof MapDatumCandidate) {
-      m.marker.options.minimizedHeadScale = this._coordinateFactors.minimizedMarkerScale;
-      m.marker.options.disabledHeadScale = this._disabledCandidateHeadScalingFactor * m.marker.options.minimizedHeadScale;
+    if (this._coordinateFactors.minimisedMarkerScale !== 1 && m instanceof MapDatumCandidate) {
+      m.marker.options.minimisedHeadScale = this._coordinateFactors.minimisedMarkerScale;
+      m.marker.options.disabledHeadScale = this._disabledCandidateHeadScalingFactor * m.marker.options.minimisedHeadScale;
     }
 
   }
@@ -880,7 +880,7 @@ export class MapCanvasComponent
 
     f.markerScale = clamp(f.zoomScale ** (1 / this._zoomMarkerScalingRoot), ...this._zoomMarkerScalingRange)
                     * this.markerScale;
-    f.minimizedMarkerScale = this._getMinimizedCandidateScale();
+    f.minimisedMarkerScale = this._getMinimisedCandidateScale();
 
     // The distance from one corner to the opposite in the projection scale
     // including possible margins caused by dragging the canvas outside the
@@ -950,22 +950,22 @@ export class MapCanvasComponent
   }
 
   /*
-   * Get the calculated scale for minimized candidate markers
+   * Get the calculated scale for minimised candidate markers
    */
-  private _getMinimizedCandidateScale(): number {
+  private _getMinimisedCandidateScale(): number {
     // We use a modified _zoomMarkerScalingRoot for expansion here so that the scaling
-    // goes from minimizedCandidateScale to 1 when the zoom level is between 1 and 
+    // goes from minimisedCandidateScale to 1 when the zoom level is between 1 and 
     // 2**(_zoomMarkerScalingRoot/1.25)
     // NB. If this is changed, be sure to update the inverse hereof below
-    const m = this.minimizedCandidateScale;
+    const m = this.minimisedCandidateScale;
     return m + (1 - m) * (clamp(this._coordinateFactors.zoomScale ** (1.25 / this._zoomMarkerScalingRoot), 1, 2) - 1);
   }
 
   /*
-   * Get the zoomScale needed for a particular minimized marker scale
+   * Get the zoomScale needed for a particular minimised marker scale
    */
-  private _calcZoomScaleForMinimizedCandidateScale(scale: number): number | undefined {
-    const m = this.minimizedCandidateScale;
+  private _calcZoomScaleForMinimisedCandidateScale(scale: number): number | undefined {
+    const m = this.minimisedCandidateScale;
     // These are incomputable
     if (m === 1 || m > scale || scale > 1)
       return undefined;
@@ -1239,10 +1239,10 @@ export class MapCanvasComponent
       // If the zoom threshold is set, we zoom closer in addition 
       // to possibly eliciting a marker click
       if (this.zoomOnClickThreshold != null && 
-          this._coordinateFactors.minimizedMarkerScale < this.zoomOnClickThreshold) {
+          this._coordinateFactors.minimisedMarkerScale < this.zoomOnClickThreshold) {
         
         // The zoom level at the threshold
-        let zoomLevel = this._calcZoomScaleForMinimizedCandidateScale(this.zoomOnClickThreshold);
+        let zoomLevel = this._calcZoomScaleForMinimisedCandidateScale(this.zoomOnClickThreshold);
 
         // If this is computable, don't do anything
         if (zoomLevel) {

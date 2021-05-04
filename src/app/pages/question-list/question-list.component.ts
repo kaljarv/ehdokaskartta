@@ -16,12 +16,12 @@ import { filter,
          first } from 'rxjs/operators';
 
 import { MatcherService,
-         OnboardingTourComponent,
          QuestionNumeric,
          SharedService, 
          ANIMATION_TIMING,
          MIN_VALS_FOR_MAPPING,
          PATHS } from '../../core';
+import { OnboardingTourComponent } from '../../components';
 
 import { QuestionListTopBarContentComponent } from './question-list-top-bar-content.component';
 

@@ -7,8 +7,11 @@ import { RouterModule } from '@angular/router';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-import { CorePipesModule, OnboardingModule } from '../../core';
-import { ProgressSpinnerModule } from '../../components';
+import { CorePipesModule } from '../../core';
+import { 
+  ProgressSpinnerModule,
+  OnboardingModule 
+} from '../../components';
 
 import { DetailsCandidateModule } from './details-candidate';
 import { FavouritesListModule } from './favourites-list';

@@ -10,11 +10,11 @@ import { Observable,
 import { map, 
          startWith } from 'rxjs/operators';
 
-import { OnboardingTourComponent,
-         SharedService, 
+import { SharedService, 
          PATHS, 
          ForwardOptions,
          MatcherService } from '../../core';
+import { OnboardingTourComponent } from '../../components';
 
 @Component({
   selector: 'app-constituency-picker',
