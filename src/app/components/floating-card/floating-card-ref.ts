@@ -10,7 +10,8 @@ import {
   Overlay,
   OverlayRef,
   GlobalPositionStrategy, 
-  OverlayConfig
+  OverlayConfig,
+  OverlaySizeConfig
 } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { 
@@ -26,30 +27,20 @@ import {
   FloatingCardState,
   PositionStrategyType,
   DEFAULT_FLOATING_CARD_OPTIONS,
+  DEFAULT_FLOATING_CARD_OVERLAY_CONFIG,
   DEFAULT_FLOATING_CARD_PEEK_ELEMENT_OPTIONS,
   FLOATING_CARD_ANIMATION_DURATION_MS,
   FLOATING_CARD_ANIMATION_TIMING,
+  FLOATING_CARD_CLICK_CANCEL_DURATION,
+  FLOATING_CARD_CLOSE_DELAY,
   FLOATING_CARD_DATA,
-  FLOATING_CARD_PANEL_CLASS,
   FLOATING_CARD_INITIALISED_CLASS,
+  FLOATING_CARD_MAX_WIDTH_LANDSCAPE,
+  FLOATING_CARD_MAX_WIDTH_PORTRAIT,
   FLOATING_CARD_MAXIMISED_CLASS,
   FLOATING_CARD_DEFAULT_PEEK_HEIGHT
 } from './floating-card-options';
 import { FloatingCardRefBase } from './floating-card-ref-base';
-
-
-export const CLICK_CANCEL_DURATION = 300; // ms
-
-export const CLOSE_DELAY = 500; // ms to allow for transitioning at close before disposing overlay
-
-export const DEFAULT_OVERLAY_CONFIG: any = {
-  hasBackdrop: false,
-  backdropClass: 'floatingCard-backdrop', // NB. we don't have a backdrop by default, though
-  disposeOnNavigation: true, 
-  maxWidth: '42rem',
-  panelClass: FLOATING_CARD_PANEL_CLASS, 
-  width: '100%',
-}
 
 
 /*
@@ -57,6 +48,12 @@ export const DEFAULT_OVERLAY_CONFIG: any = {
  * a FloatingCardComponent, which in turn contains any
  * Component defined in the FloatingCardConfig passed on
  * to FloatingCardService.open().
+ * 
+ * TODO:
+ * 1. Now we need to call either initPeek or initMaximise
+ *    to show the card. We should have just one init chain
+ *    that would accept a promise to get the peek element
+ *    if this.usePortrait or call initMaximise if not.
  */
 
 export class FloatingCardRef 
@@ -95,33 +92,25 @@ export class FloatingCardRef
 
     this._createOverlay();
     this._createComponent();
-
-    if (!this.options.hiddenWhenOpened) {
-      // Initialise unless the card stays hidden, in which case
-      // setPeekElement will handle init
-      this.init();
-      this.state = FloatingCardState.Maximised;
-    }
-
   }
 
   private _createOverlay(): void {
     // Create overlay config
-    const overlayConfig: OverlayConfig = {...DEFAULT_OVERLAY_CONFIG};
+    const overlayConfig: OverlayConfig = {...  DEFAULT_FLOATING_CARD_OVERLAY_CONFIG};
 
     if (this.options.panelClass != null)
       overlayConfig.panelClass = this.options.panelClass;
 
-    // Create positioning strategy
+    // Create positioning strategy, which is hidden by default
     const posStrategy = this.overlay.position().global();
-
-    if (this.options.hiddenWhenOpened)
-      this._setPositionStrategy(posStrategy, 'hidden');
-    else
-      this._setPositionStrategy(posStrategy, 'maximised');
+    this._setPositionStrategy(posStrategy, 'hidden');
 
     overlayConfig.positionStrategy = posStrategy;
     overlayConfig.scrollStrategy = this.overlay.scrollStrategies.block();
+
+    // Change max-width if not using portrait layout
+    if (!this.usePortrait)
+      overlayConfig.maxWidth = FLOATING_CARD_MAX_WIDTH_LANDSCAPE;
 
     // Create overlay
     this.overlayRef = this.overlay.create(overlayConfig)
@@ -175,7 +164,7 @@ export class FloatingCardRef
   }
 
   get usePortrait(): boolean {
-    return window.innerWidth < this.options.landscapeBreakpointPx;
+    return window.innerWidth < this.options.landscapeBreakpoint;
   }
 
   public init(): void {
@@ -193,8 +182,8 @@ export class FloatingCardRef
     if (!dontAnimate) {
 
       this._applyPositionStrategy('closed');
-      this.dragRef.reset();
-      setTimeout( () => this._dispose(), CLOSE_DELAY );
+      this.dragRef?.reset();
+      setTimeout( () => this._dispose(), FLOATING_CARD_CLOSE_DELAY );
 
     } else {
       this._dispose();
@@ -210,13 +199,17 @@ export class FloatingCardRef
    * If the window is resized we need to update the peeking position because it's based on window.innerHeight
    */
   public onWindowResize(): void {
+    this._updateSize();
     if (this.isPeeking)
       this._applyPositionStrategy('peek');
   }
 
   public toggle(): void {
     if (this.isMaximised)
-      this.peek();
+      if (this.usePortrait)
+        this.peek();
+      else
+        this.close();
     else
       this.maximise();
   }
@@ -243,7 +236,7 @@ export class FloatingCardRef
     this.state = FloatingCardState.Peeking;
   }
 
-  public setPeekElement(element: ElementRef<HTMLElement>, peekElementOptions: FloatingCardPeekElementOptions = {}): void {
+  public initPeek(element: ElementRef<HTMLElement>, peekElementOptions: FloatingCardPeekElementOptions = {}): void {
     let options = {...DEFAULT_FLOATING_CARD_PEEK_ELEMENT_OPTIONS, ...peekElementOptions};
 
     // Reset possibly set persistent height
@@ -253,7 +246,8 @@ export class FloatingCardRef
     this.peekElement = element;
     
     // Offset to add below the peeking element
-    if (options.offset != null) this.peekElementOffset = options.offset;
+    if (options.offset != null)
+      this.peekElementOffset = options.offset;
     
     // Setup dragging to the overlay's host
     this.dragRef = this.dragDrop.createDrag(this.overlayRef.hostElement)
@@ -278,6 +272,15 @@ export class FloatingCardRef
       }, 10);
     else
       this.init();
+  }
+
+  public initMaximise(): void {
+    // We add a small timeout to allow for the overlay to originally position itself,
+    // as init will set some transitions which would otherwise cause glitches
+    setTimeout( () => {
+      this.init();
+      this.maximise();
+    }, 10);
   }
 
   public getBoundingClientRect(): DOMRect {
@@ -352,7 +355,7 @@ export class FloatingCardRef
       // this.dragRef.reset();
     }
 
-    setTimeout(() => this._cancelClick = false, CLICK_CANCEL_DURATION);
+    setTimeout(() => this._cancelClick = false, FLOATING_CARD_CLICK_CANCEL_DURATION);
   }
 
   /*
@@ -410,7 +413,7 @@ export class FloatingCardRef
    * Set pos strategy and update position
    */
   private _applyPositionStrategy(strategyType: PositionStrategyType): void {
-    
+
     const strategy = this._getPositionStrategy();
 
     this._setPositionStrategy(strategy, strategyType);
@@ -430,7 +433,7 @@ export class FloatingCardRef
     if (this.usePortrait)
       strategy.centerHorizontally();
     else
-      strategy.left(this.options.landscapeMargin);
+      strategy.left(`${this.options.landscapeMarginLeft}px`);
     
     // Vertical
     switch (strategyType) {
@@ -443,12 +446,22 @@ export class FloatingCardRef
         if (this.usePortrait)
           return strategy.top();
         else
-          return strategy.top(this.options.landscapeMargin);
+          return strategy.top(`${this.options.landscapeMarginTop}px`);
       case 'minimised':
         return strategy.top(`calc(${window.innerHeight}px - ${this.options.minimisedHeight})`);
       case 'peek':
         return strategy.top(`calc(${window.innerHeight}px - ${this.peekHeight} - ${this.peekElementOffset})`);
     }
+  }
+
+  /*
+   * Update the overlay's size config based on layout
+   */
+  private _updateSize(): void {
+    const sizeConfig: OverlaySizeConfig = {
+      maxWidth: this.usePortrait ? FLOATING_CARD_MAX_WIDTH_PORTRAIT : FLOATING_CARD_MAX_WIDTH_LANDSCAPE
+    };
+    this.overlayRef.updateSize(sizeConfig);
   }
 
 }

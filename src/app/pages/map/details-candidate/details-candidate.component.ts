@@ -1,5 +1,6 @@
 import { Component, 
          ElementRef, 
+         EventEmitter, 
          Inject,
          OnInit,
          OnDestroy,
@@ -14,18 +15,21 @@ import { trigger,
          animate,
          transition,
        } from '@angular/animations';
-import { Subscription } from 'rxjs';
+import { combineLatest,
+         Subscription 
+       } from 'rxjs';
+import { first } from 'rxjs/operators';
 
 import { LcFirstPipe,
-         SentencifyPipe } from '../../../core/pipes';
-import { MatcherService, 
+         SentencifyPipe,
+         MatcherService, 
          Candidate, 
-         ANIMATION_TIMING,
-         INDEPENDENT_PARTY_ID, 
          Question,
          QuestionNumeric, 
          Party,
-         SharedService } from '../../../core';
+         SharedService,
+         ANIMATION_TIMING,
+         INDEPENDENT_PARTY_ID } from '../../../core';
 import { FloatingCardRefBase,
          FLOATING_CARD_DATA,
          FLOATING_CARD_ANIMATION_DURATION_MS,
@@ -140,11 +144,8 @@ export class DetailsCandidateComponent
   private _tabBodyHeight: string = '';
   // These will be cancelled onDestroy
   private _subscriptions: Subscription[] = [];
-  private _viewInitialized: boolean = false;
-
-  public get isMaximised(): boolean {
-    return this.floatingCardRef.isMaximised;
-  }
+  // Fire on afterViewInit
+  private _viewInitialized = new EventEmitter<boolean>();
 
   constructor(
     private floatingCardRef: FloatingCardRefBase,
@@ -160,25 +161,38 @@ export class DetailsCandidateComponent
     });
   }
 
+  public get isMaximised(): boolean {
+    return this.floatingCardRef.isMaximised;
+  }
+
+  public get usePortrait(): boolean {
+    return this.floatingCardRef.usePortrait;
+  }
+
   ngOnInit() {
     this._subscriptions.push(
       this.matcher.constituencyDataReady.subscribe(async () => {
         this.candidate = this.matcher.getCandidate(this.data.id);
         this.party = this.matcher.getParty(this.candidate.partyId);
         this._initQuestions();
-        // We try to set the peek element here just in case the view was already initialized
-        this._setPeekElement();
+        // We try to show the card here just in case the view was already initialized
         await this.candidate.loadDetails();
         this.detailsLoaded = true;
       })
+    );
+    // Show only after data is loaded and the view is initialized
+    // First() will unsubscribe itself
+    combineLatest([this.matcher.constituencyDataReady, this._viewInitialized]).pipe(
+      first()
+    ).subscribe(() =>
+      this._showCardInitially()
     );
     // We use this to signal the map avatars
     this.shared.activeCandidateId = this.data.id;
   }
 
   ngAfterViewInit() {
-    this._viewInitialized = true;
-    this._setPeekElement();
+    this._viewInitialized.emit(true);
   }
 
   ngAfterViewChecked() {
@@ -195,19 +209,31 @@ export class DetailsCandidateComponent
     this.shared.reportOverlayClose();
   }
 
+  private _ensureVisibleOnMap(): void {
+
+    // We need this to calculate the occluded areas
+    const fc = this.floatingCardRef;
+    const offset = fc.getBoundingClientRect();
+
+    this.shared.ensureVisibleOnMap.emit({
+      x: this.candidate.projX,
+      y: this.candidate.projY,
+      margin: 20,
+      occluded: {
+        // This is the top bar height with margins
+        top: fc.options.landscapeMarginTop,
+        left: fc.usePortrait ? 0 : offset.right,
+        bottom: fc.usePortrait ? offset.top : 0,
+        right: 0
+      }
+    });
+  }
+
   private _initQuestions(): void {
     this.opinions.agreed = this.matcher.getAgreedQuestionsAsList(this.candidate, true);
     this.opinions.disagreed = this.matcher.getDisagreedQuestionsAsList(this.candidate, true);
     this.opinions.unanswered = this.matcher.getUnansweredQuestionsAsList(this.candidate);
     
-    // DEBUG / TODO / REMOVE
-    let d = 0;
-    this.matcher.getDisagreedQuestionsAsList(this.candidate, false).forEach(q =>
-      d += q.getDistance(q.voterAnswer, this.candidate.getAnswer(q))
-    );
-    console.log(`Total disagreement: ${d}`);
-
-
     // Setup excerpts
     for (const key in this.opinions) {
       if (this.opinions[key].length <= this.excerptMaxLength + 1) {
@@ -219,18 +245,26 @@ export class DetailsCandidateComponent
     }
   }
 
-  private _setPeekElement(): void {
-    // Header needs to be initialized before this is done
-    if (!this._viewInitialized)
-      return;
-      
+  private _setPeekElement(): void {      
     // This will also set up draggability
-    this.floatingCardRef.setPeekElement(this.header, {
+    this.floatingCardRef.initPeek(this.header, {
       offset: this.peekOffset,
       // Use persistentHeight as the header height will be miscalculated on minimise because
       // the lower part of the header is not rendered in the maximised state
       persistentHeight: true
     });
+  }
+
+  private _showCardInitially(): void {
+
+    // This will initialize the card
+    if (this.usePortrait)
+      this._setPeekElement();
+    else
+      this.floatingCardRef.initMaximise();
+
+    // Scroll map to ensure candidate marker is in view
+    this._ensureVisibleOnMap();
   }
 
   /*
@@ -309,7 +343,6 @@ export class DetailsCandidateComponent
   public getVoterAnswer(question: QuestionNumeric): number | number[] {
     return question.voterAnswer;
   }
-
 
   private _getQuestion(questionOrId: Question | string): Question {
     const question: Question = questionOrId instanceof Question ? 

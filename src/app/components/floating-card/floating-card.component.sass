@@ -15,7 +15,10 @@
 
 .maximised
   overflow-y: hidden // We'll handle scrolling within the inner component
-  border-radius: 0px
+  border-radius: $borderRadius-M
+
+  &.inPortraitLayout
+    border-radius: 0px
 
 .noTransition
   transition: none

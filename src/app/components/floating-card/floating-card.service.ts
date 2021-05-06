@@ -28,7 +28,7 @@ export class FloatingCardService {
     private dragDrop: DragDrop
   ) {}
 
-  public open(config: FloatingCardConfig): FloatingCardRef {
+  public create(config: FloatingCardConfig): FloatingCardRef {
     return new FloatingCardRef(config, this.injector, this.overlay, this.dragDrop);
   }
 }

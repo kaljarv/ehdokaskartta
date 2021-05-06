@@ -26,6 +26,7 @@ import {
   AbbreviatePipe,
   Candidate,
   D3Service,
+  EnsureVisibleOnMapOptions,
   MatcherService,
   Party,
   ProjectionMethod,
@@ -208,6 +209,7 @@ export class MapComponent
   }
 
   ngOnInit() {
+
     // Initialisation chain
     this._subscriptions.push(this.matcher.progressChanged.subscribe(v => this._reportProgress(v)))
     this._subscriptions.push(this.matcher.mappingDataReady.subscribe(() => this.initMap()));
@@ -250,7 +252,15 @@ export class MapComponent
     );
 
     // Subscribe to changes in the active candidate to signal map canvas
-    this._subscriptions.push(this.shared.activeCandidateChanged.subscribe(() => this.updateMapMarkerData(MapRedrawOptions.RedrawOnly)));
+    this._subscriptions.push(this.shared.activeCandidateChanged.subscribe(() => 
+      this.updateMapMarkerData(MapRedrawOptions.RedrawOnly))
+    );
+
+    // Subscribe to ensuring markers' visibility on map canvas
+    // The Event is initiated by DetailsCandidate onInit
+    this._subscriptions.push(this.shared.ensureVisibleOnMap.subscribe((options: EnsureVisibleOnMapOptions) => 
+      this.ensureVisibleOnMap(options))
+    );
 
     // Subscribe to all interactions to hide infos on first interaction
     this._subscriptions.push(this.shared.mapInteraction.subscribe(() => this.hideInfos()));
@@ -723,6 +733,14 @@ export class MapComponent
       y: this.voterDisabled ? 0.5 : this.voter.projY,
       toScale: 1.
     });
+  }
+
+  /*
+   * Ensure that the given point is visible
+   */
+  public ensureVisibleOnMap(options: EnsureVisibleOnMapOptions): void {
+    // Add margin to occlusions
+    console.log(options);
   }
 
   public goToQuestions(): void {

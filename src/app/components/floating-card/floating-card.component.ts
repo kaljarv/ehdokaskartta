@@ -29,7 +29,11 @@ import { FloatingCardRefBase } from './floating-card-ref-base';
   selector: 'app-floating-card-global-styles',
   template: '',
   styles: [
-    `.${FLOATING_CARD_PANEL_CLASS} {
+    `
+    app-floating-card-global-styles {
+      display: none;
+    }
+    .${FLOATING_CARD_PANEL_CLASS} {
       margin-top: 100vh;
     }
     .${FLOATING_CARD_INITIALISED_CLASS} {
@@ -55,7 +59,8 @@ export class FloatingCardGlobalStylesComponent {
     '(window:resize)': 'onWindowResize()'
   },
 })
-export class FloatingCardComponent implements OnInit {
+export class FloatingCardComponent 
+  implements OnInit {
 
   public contentPortal: ComponentPortal<any>;
 
@@ -65,15 +70,15 @@ export class FloatingCardComponent implements OnInit {
     private type: Type<any>
   ) {}
 
-  public get isMaximised(): boolean {
-    return this.floatingCardRef.isMaximised;
-  }
-
   /*
    * Need to use this instead of 100vh because of mobile
    */
-  public get height(): number {
+  get height(): number {
     return window.innerHeight;
+  }
+
+  get isMaximised(): boolean {
+    return this.floatingCardRef.isMaximised;
   }
 
   ngOnInit() {

@@ -33,11 +33,13 @@ import { DetailsQuestionComponent } from './pages/question-list';
 import { DetailsCandidateComponent,
          FilterCandidatesComponent,
          FavouritesListComponent } from './pages/map';
-import { FloatingCardService,
-         FloatingCardRef,
-         FloatingCardOptions } from './components/floating-card';
 import { FeedbackFormComponent, 
-         OnboardingService } from './components';
+         FloatingCardService,
+         FloatingCardRef,
+         FloatingCardOptions,
+         OnboardingService,
+         TopBarComponent,
+         DEFAULT_TOP_BAR_NEXT_ELEMENT_OFFSET } from './components';
 
 export const HIDE_TOOLTIPS_DELAY = ANIMATION_DURATION_MS;
 export const DIALOG_CONFIG: MatDialogConfig = {
@@ -140,12 +142,15 @@ export const SNACK_BAR_DURATION_WITH_ACTION = 7500;
   ]
 })
 export class AppComponent implements DoCheck {
-  @ViewChild('sideNav') sideNav;
+
   @ViewChild('filterButtonTooltip') filterButtonTooltip: MatTooltip;
-  @ViewChild('partyButtonTooltip') partyButtonTooltip: MatTooltip;
   @ViewChild('favouritesButtonTooltip') favouritesButtonTooltip: MatTooltip;
   @ViewChild('locateButtonTooltip') locateButtonTooltip: MatTooltip;
   @ViewChild('nextButtonBar') nextButtonBar: ElementRef<HTMLElement>;
+  @ViewChild('partyButtonTooltip') partyButtonTooltip: MatTooltip;
+  @ViewChild('sideNav') sideNav;
+  @ViewChild('topBar') topBar: TopBarComponent;
+  
   public forwardOptions: ForwardOptions;
   public showNextButtonBar: boolean;
   public showNextProgress: boolean;
@@ -155,6 +160,7 @@ export class AppComponent implements DoCheck {
   public loadingMessage: string = 'Ladataan…';
   public loadingMode: string = 'indeterminate';
   public loadingValue: number;
+
   private _floatingCardRef: FloatingCardRef;
   private _dialogRef: MatDialogRef<any>;
   private _snackBarRef: MatSnackBarRef<any>;
@@ -180,17 +186,16 @@ export class AppComponent implements DoCheck {
       this.openBottomSheet(DetailsQuestionComponent, {id: id})
     );
     this.shared.showCandidate.subscribe( id => 
-      this.openDetailsCard(DetailsCandidateComponent, {id: id})
+      this.createDetailsCard(DetailsCandidateComponent, {id: id})
     );
     this.shared.hideCandidate.subscribe( () => 
       this.clearDetailsCard()
     );
     this.shared.toggleCandidate.subscribe( id => {
-      if (this.shared.activeCandidateId === id) {
+      if (this.shared.activeCandidateId === id)
         this.clearDetailsCard();
-      } else {
-        this.openDetailsCard(DetailsCandidateComponent, {id: id});
-      }
+      else
+        this.createDetailsCard(DetailsCandidateComponent, {id: id});
     });
     this.shared.showCandidateFilters.subscribe( () => 
       this.openBottomSheet(FilterCandidatesComponent, {})
@@ -229,6 +234,9 @@ export class AppComponent implements DoCheck {
         promise = this.sideNav.open();
       else
         throw new Error(`Unknown action '${options.action}' for toggleSideNav!`);
+
+      // We can't have this visible at the same time
+      this.clearDetailsCard();
 
       if (options?.onComplete)
         promise.then(() => options.onComplete());
@@ -315,13 +323,23 @@ export class AppComponent implements DoCheck {
     this.dialog.closeAll();
   }
 
-  public openDetailsCard(type, data): void {
+  /*
+   * NB. This only creates the card which will be hidden until
+   * initialized by initPeek or initMaximise
+   */
+  public createDetailsCard(type, data): void {
+
     // If one is already open, close it
     this.clearDetailsCard();
+
+    // Set proper top margin to account for the top bar
+    const offset = this.topBar ? this.topBar.getOffsetForNextElement() : DEFAULT_TOP_BAR_NEXT_ELEMENT_OFFSET;
     const options: FloatingCardOptions = {
-      hiddenWhenOpened: true,
-    };
-    this._floatingCardRef = this.fcService.open({type, data, options});
+      landscapeMarginLeft: offset.left,
+      landscapeMarginTop:  offset.top,
+    }
+
+    this._floatingCardRef = this.fcService.create({type, data, options});
   }
 
   public clearDetailsCard(): void {

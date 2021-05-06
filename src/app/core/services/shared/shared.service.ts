@@ -47,6 +47,26 @@ export type Onboarding = {
 } | null;
 
 /*
+ * MapCanvasComponent listens to events with these data
+ * Used when opening a CandidiateDetails card
+ * - x and y are projection values (0-1)
+ * - occluded sets the areas hidden by overlays
+ * - marging is the margin in pixels to leave between the marker
+ *   and the visible area
+ */
+export interface EnsureVisibleOnMapOptions {
+  x: number;
+  y: number;
+  margin?: number;
+  occluded?: {
+    top?: number;
+    left?: number;
+    bottom?: number;
+    right?: number;
+  }
+}
+
+/*
  * These must be reported with each view change
  */
 export interface AppStateOptionsOverlay {
@@ -60,9 +80,6 @@ export interface AppStateOptionsPage extends AppStateOptionsOverlay {
   showMapTools?: boolean;
   showFeedbackButton?: boolean;
 }
-
-
-
 
 export type ToggleSideNavOptions = {
   action: 'open' | 'close' | 'toggle',
@@ -119,6 +136,7 @@ export class SharedService {
   readonly navigateForward = new EventEmitter<ForwardOptions>();
   readonly toggleSideNav = new EventEmitter<ToggleSideNavOptions | void>();
   readonly locateSelf = new EventEmitter<void>();
+  readonly ensureVisibleOnMap = new EventEmitter<EnsureVisibleOnMapOptions>();
   readonly openFeedback = new EventEmitter<void>();
   readonly minimiseTopBar = new EventEmitter<void>();
   readonly showMapTooltips = new EventEmitter<void>();

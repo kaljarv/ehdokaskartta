@@ -1,6 +1,6 @@
 <mat-sidenav-container>
 
-  <mat-sidenav #sideNav 
+  <mat-sidenav #sideNav
                mode="push">
     <mat-nav-list>
         <a mat-list-item 
@@ -100,7 +100,8 @@
 
   <mat-sidenav-content>
 
-    <app-top-bar *ngIf="!hideTopBar"></app-top-bar>
+    <app-top-bar *ngIf="!hideTopBar"
+                 #topBar></app-top-bar>
 
     <div *ngIf="showMapTools"
          id="topTools">

@@ -100,15 +100,13 @@ export class CustomExpanderComponent implements DoCheck {
       let setDisabled = true;
       const children = this.contentDiv.nativeElement.childNodes;
       // The element is empty either if it has no child nodes or all of them are comments
-      for (let i = 0; i < children.length; i++) {
+      for (let i = 0; i < children.length; i++)
         if (children[i].nodeType !== Node.COMMENT_NODE) {
           setDisabled = false;
           break;
         }
-      }
-      if (setDisabled) {
+      if (setDisabled)
         this.disabled = true;
-      }
     }
   }
 

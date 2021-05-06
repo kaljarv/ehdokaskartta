@@ -2,7 +2,7 @@ import {
   AfterViewInit,
   Component, 
   ComponentFactoryResolver,
-  OnChanges,
+  ElementRef,
   OnDestroy,
   OnInit,
   TemplateRef,
@@ -30,6 +30,12 @@ import {
   PageName,
   SharedService 
 } from '../../core';
+
+
+export const DEFAULT_TOP_BAR_NEXT_ELEMENT_OFFSET: {top: number, left: number} = {
+  top: 56 + 2 * 16,
+  left: 16
+}
 
 /*
  * <app-top-bar>
@@ -91,6 +97,7 @@ import {
 export class TopBarComponent implements AfterViewInit, OnDestroy, OnInit {
 
   @ViewChild('contentTemplate', {read: ViewContainerRef}) contentTemplate: ViewContainerRef;
+  @ViewChild('header') header: ElementRef<HTMLElement>;
   @ViewChild('stringContentTemplate', {read: TemplateRef}) stringContentTemplate: TemplateRef<undefined>;
 
   private _componentWaiting: boolean = false;
@@ -100,9 +107,10 @@ export class TopBarComponent implements AfterViewInit, OnDestroy, OnInit {
   private _subscriptions: Subscription[] = [];
 
   constructor(
+    private componentFactoryResolver: ComponentFactoryResolver,
+    private host: ElementRef,
     private router: Router,
     private shared: SharedService,
-    private componentFactoryResolver: ComponentFactoryResolver,
   ) {}
 
   get currentPage(): PageName {
@@ -231,5 +239,17 @@ export class TopBarComponent implements AfterViewInit, OnDestroy, OnInit {
     }
     if (event)
       event.stopPropagation();
+  }
+
+  /*
+   * Returns offsetTop and offsetLeft for an element based under the top bar
+   */
+  public getOffsetForNextElement(): {top: number, left: number} {
+    if (this.host?.nativeElement && this.header?.nativeElement)
+      return {
+        top: this.header.nativeElement.offsetHeight + 2 * this.host.nativeElement.offsetTop,
+        left: this.host.nativeElement.offsetLeft
+      }
+    return DEFAULT_TOP_BAR_NEXT_ELEMENT_OFFSET;
   }
 }

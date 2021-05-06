@@ -1,5 +1,6 @@
 <mat-card class="floatingCard"
           [class.maximised]="isMaximised"
+          [class.inPortraitLayout]="usePortrait"
           [style.height.px]="height">
   <ng-template [cdkPortalOutlet]="contentPortal"></ng-template>
 </mat-card>

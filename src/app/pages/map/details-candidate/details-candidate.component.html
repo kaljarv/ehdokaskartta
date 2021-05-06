@@ -3,11 +3,13 @@
 <header #header
         (click)="toggle()"
         [class.maximised]="isMaximised">
+
   <div *ngIf="!isMaximised"
        @fadeIn
        class="grabBar"><!-- Bar 'icon' indicating dragging --></div>
+
   <div class="header-upperPart">
-    <div *ngIf="isMaximised"
+    <div *ngIf="isMaximised && usePortrait"
          @appearHorisontally
          class="header-tools">
       <mat-icon class="candidate-expand">expand_less</mat-icon>
@@ -37,6 +39,7 @@
                 class="candidate-favourite candidate-favourite--isFavourite">bookmark</mat-icon>
     </div>
   </div>
+
   <div *ngIf="!isMaximised"
        @appearVertically
        class="header-lowerPart">
@@ -53,7 +56,7 @@
     <ng-container *ngIf="!candidate.missing">
 
       <ng-container *ngIf="opinions.disagreed.length > 0">
-        <div class="topicChipList">
+        <div class="topicChipList topicChipList-disagreementSummary">
           <div *ngFor="let question of opinions.disagreed"
               (click)="maximiseAndGoToQuestion('answer-' + question.id)"
               class="topicChip customChip category-{{ question.categoryName | toClassName }}">
@@ -83,7 +86,39 @@
   <mat-tab label="Perustiedot">
     <section class="candidate-data candidate-data--primary">
 
-      <div *ngIf="candidate.missing"
+      <ng-container *ngIf="!usePortrait">
+        
+        <ng-container *ngIf="candidate.missing">
+
+          <label>
+            <mat-icon>warning</mat-icon>
+            Tämä ehdokas ei ole vastannut Ehdokaskartan kysymyksiin
+          </label>
+    
+        </ng-container>
+    
+        <ng-container *ngIf="!candidate.missing">
+    
+          <ng-container *ngIf="opinions.disagreed.length > 0">
+            <label>Merkittävästi eri mieltä {{ opinions.disagreed.length }} kysymyksestä</label>
+            <div class="topicChipList topicChipList-disagreementSummary">
+              <div *ngFor="let question of opinions.disagreed"
+                  (click)="maximiseAndGoToQuestion('answer-' + question.id)"
+                  class="topicChip customChip category-{{ question.categoryName | toClassName }}">
+                {{ question.topic }}
+              </div>
+            </div>
+          </ng-container>
+    
+          <ng-container *ngIf="opinions.disagreed.length == 0">
+            <label>Ei kysymyksiä, joista olette merkittävästi eri mieltä</label>
+          </ng-container>
+    
+        </ng-container>
+
+      </ng-container>
+
+      <div *ngIf="candidate.missing && usePortrait"
            class="candidate-datum missingWarning {{ dataContentClass }}">
         <mat-icon>warning</mat-icon> 
         Ehdokas ei ole vastannut Ehdokaskartan kysymyksiin
