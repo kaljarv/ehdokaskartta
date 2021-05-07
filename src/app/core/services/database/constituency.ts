@@ -1,7 +1,7 @@
 export const DEFAULT_CONSTITUENCY_ID = '-1';
 
-export type Constituency = {
-  id?: string,
+export interface Constituency {
+  id: string,
   name: string
 }
 

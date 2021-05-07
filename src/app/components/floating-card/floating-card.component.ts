@@ -81,6 +81,10 @@ export class FloatingCardComponent
     return this.floatingCardRef.isMaximised;
   }
 
+  get usePortrait(): boolean {
+    return this.floatingCardRef.usePortrait;
+  }
+
   ngOnInit() {
     // Create content component
     this.contentPortal = new ComponentPortal(this.type, null, this.injector);

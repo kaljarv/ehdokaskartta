@@ -210,8 +210,12 @@ export class MatcherService {
 
   private async initData(): Promise<void> {
 
-    this.municipalities = await this.database.getMunicipalities();
-    this.constituencies = await this.database.getConstituencies();
+    if (this.config.useMunicipalityAsConstituency) {
+      this.constituencies = this.municipalities = await this.database.getMunicipalitiesAsConstituencies();
+    } else {
+      this.municipalities = await this.database.getMunicipalities();
+      this.constituencies = await this.database.getConstituencies();
+    }
 
     this.dataStatus.constituencies.next(DataStatus.Ready);
 
@@ -223,17 +227,6 @@ export class MatcherService {
     // Set municipality if it was saved in the cookie
     await this.setMunicipalityFromCookie();
   }
-
-  // Getters and setters
-  // get questions(): QuestionDict {
-  //   // if (! this._questions)
-  //   //   throw Error("Constituency must be defined before getting Questions");
-  //   return this._questions;
-  // }
-
-  // set questions(value: QuestionDict) {
-  //   this._questions = value;
-  // }
 
   get questionsAsList(): Question[] {
     return Object.values(this.questions);
@@ -293,13 +286,11 @@ export class MatcherService {
 
   public async setMunicipality(id: string): Promise<void> {
 
-    if (!(id in this.municipalities)) {
+    if (!(id in this.municipalities))
       throw new Error(`Municipality id '${id}' cannot be found in municipality list.`)
-    }
     // Return if we don't change the municipality as setting the constituency will reset all answers
-    if (id === this._municipalityId && this.candidates && this.questions) {
+    if (id === this._municipalityId && this.candidates && this.questions)
       return;
-    }
 
     // Set municipality
     let m = this.municipalities[id];

@@ -141,11 +141,19 @@ export class ConstituencyPickerComponent
     this.shared.enableForward.emit(this._forwardOptions);
   }
 
+  public get useMunicipalityAsConstituency(): boolean {
+    return this.matcher.config.useMunicipalityAsConstituency;
+  }
+
   public get constituencyName(): string | null {
-    let id = this.getSelectedMunicipalityId();
-    if (id == null) {
+
+    if (this.useMunicipalityAsConstituency)
       return null;
-    }
+
+    let id = this.getSelectedMunicipalityId();
+    if (id == null)
+      return null;
+      
     return this.matcher.getConstituencyNameByMunicipalityId(id);
   }
 }

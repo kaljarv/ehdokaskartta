@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { MatcherService } from '../../core';
 
 @Component({
   selector: 'constituency-picker-top-bar-content',
@@ -6,5 +7,11 @@ import { Component } from '@angular/core';
   styleUrls: ['./constituency-picker-top-bar-content.component.sass'],
 })
 export class ConstituencyPickerTopBarContentComponent {
-  constructor() {}
+  constructor(
+    private matcher: MatcherService
+  ) {}
+
+  public get useMunicipalityAsConstituency(): boolean {
+    return this.matcher.config.useMunicipalityAsConstituency;
+  }
 }

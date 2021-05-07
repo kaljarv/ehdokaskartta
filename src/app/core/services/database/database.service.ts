@@ -45,6 +45,8 @@ import {
   ConstituencyDict,
 } from './constituency';
 import {
+  Municipality,
+  MunicipalityOptions,
   MunicipalityDict
 } from './municipality';
 import {
@@ -123,7 +125,20 @@ export class DatabaseService {
    * Shorthand methods for gettings specific collections (once)
    */
   public async getMunicipalities(): Promise<MunicipalityDict> {
-    return this.getCollectionOnce('municipalities');
+
+    // Data converter
+    // AngularFire doesn't implement the withConverter method, so we'll have to
+    // process the data ourselves.
+    const municipalityConverter = (data: any): Municipality => new Municipality(data);
+
+    // Return Promise
+    return new Promise<MunicipalityDict>(async (resolve, reject) => {
+      const data = await this.getCollectionOnce('municipalities');
+      const dict: MunicipalityDict = {};
+      for (const id in data)
+        dict[id] = municipalityConverter(data[id]);
+      resolve(dict);
+    });
   }
 
   public async getCategories(): Promise<CategoryDict> {
@@ -134,6 +149,12 @@ export class DatabaseService {
 
   public async getConstituencies(): Promise<ConstituencyDict> {
     const promise = this.getCollectionOnce('constituencies');
+    promise.then(data => this._cache.constituencies = data);
+    return promise;
+  }
+
+  public async getMunicipalitiesAsConstituencies(): Promise<MunicipalityDict> {
+    const promise = this.getMunicipalities();
     promise.then(data => this._cache.constituencies = data);
     return promise;
   }
