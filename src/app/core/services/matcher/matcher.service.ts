@@ -478,8 +478,11 @@ export class MatcherService {
     return this.getAnswerableQuestions().map(q => q.id);
   }
  
-  public getAnswerableQuestions(): QuestionNumeric[] {
-    return Object.values(this.questions).filter(q => q instanceof QuestionNumeric) as QuestionNumeric[];
+  public getAnswerableQuestions(sort: boolean = false): QuestionNumeric[] {
+    const questions = Object.values(this.questions).filter(q => q instanceof QuestionNumeric) as QuestionNumeric[];
+    if (sort)
+      questions.sort((a, b) => this.compareQuestions(a, b));
+    return questions;
   }
 
   public compareQuestions(a: Question, b: Question): number {

@@ -17,12 +17,9 @@
 
 <app-onboarding-tour #defaultTour
                      tourId="QuestionList"
+                     [modal]="true"
                      [subTourIds]="['DetailsQuestionLikert', 'DetailsQuestionPreferenceOrder']">
-  <app-onboarding-step attachTo="#questionList"
-                       attachOn="bottom"
-                       advanceOnEvent="click"
-                       advanceOnSelector="mat-chip"
-                       title="Vastaa kysymyksiin, jotka ovat tärkeitä sinulle">
+  <app-onboarding-step title="Vastaa kysymyksiin, jotka ovat tärkeitä sinulle">
     <p>
       Klikkaa aiheita ja voit vastata mielipidekysymyksiin. Ehdokaskartan tulokset lasketaan sen perusteella, miten lähellä ehdokkaiden vastaukset ovat sinun mielipiteitäsi. Vastattuasi vähintään {{ minAnswersForMapping }} kysymykseen, pääset katsomaan tuloksia.
     </p>
@@ -39,8 +36,6 @@
                      tourId="QuestionListEnoughAnswers">
   <app-onboarding-step attachTo="#nextButtonBar"
                        attachOn="top"
-                       advanceOnEvent="click"
-                       advanceOnSelector="mat-chip"
                        title="Nyt voit halutessasi siirtyä tuloksiin">
     <p>
       Olet nyt vastannut riittävän moneen kysymykseen, jotta voit siirtyä tuloksiin. Tulokset ovat kuitenkin sitä tarkemmat, mitä useampaan aiheeseen otat kantaa. Voit siis halutessasi jatkaa kysmyksiin vastaamista.

@@ -18,6 +18,7 @@ import { filter,
 import { MatcherService,
          QuestionNumeric,
          SharedService, 
+         ANIMATION_DURATION_MS,
          ANIMATION_TIMING,
          PATHS } from '../../core';
 import { OnboardingTourComponent } from '../../components';
@@ -149,7 +150,7 @@ export class QuestionListComponent
   }
 
   public showQuestion(question: QuestionNumeric): void {
-    this.onboardingTour?.complete();
+    this._closeOnboarding();
     this.shared.showQuestion.emit(question.id);
     this.hideInfos();
   }
@@ -164,7 +165,7 @@ export class QuestionListComponent
 
   private _fetchQuestions(): void {
     this._updateInformationValues();
-    this.questions = this.matcher.getAnswerableQuestions();
+    this.questions = this.matcher.getAnswerableQuestions(true);
     this.shared.loadingState.next({ type: 'loaded' });
   }
 
@@ -182,9 +183,9 @@ export class QuestionListComponent
     if (this.matcher.hasEnoughAnswersForMapping) {
 
       // Show the secong onboarding tour
+      // We add a bit of a delay for the bar to apper
       if (!this.onboardingTour?.getCurrentStep())
-        this.onboardingTourEnoughAnswers?.start();
-        // setTimeout(() => this.onboardingTourEnoughAnswers?.start(), 1000);
+        setTimeout(() => this.onboardingTourEnoughAnswers?.start(), ANIMATION_DURATION_MS * 2);
 
       this.shared.enableForward.emit({
         path: [PATHS.map],
@@ -195,5 +196,10 @@ export class QuestionListComponent
     } else {
       this.shared.disableForward.emit();
     }
+  }
+
+  private _closeOnboarding(): void {
+    this.onboardingTour?.complete();
+    this.onboardingTourEnoughAnswers?.complete();
   }
 }

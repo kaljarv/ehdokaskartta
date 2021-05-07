@@ -1,6 +1,7 @@
 import { 
   AfterViewInit,
   Component, 
+  EventEmitter,
   Inject,
   OnDestroy,
   OnInit,
@@ -24,6 +25,8 @@ import {
   CdkDragDrop,
   moveItemInArray
 } from '@angular/cdk/drag-drop';
+import { combineLatest } from 'rxjs';
+import { first } from 'rxjs/operators';
 
 import { 
   ANIMATION_TIMING,
@@ -104,15 +107,17 @@ export class DetailsQuestionComponent
   @ViewChild(OnboardingTourComponent)
   onboardingTour: OnboardingTourComponent;
 
-  public question: QuestionNumeric;
   public candidates: {
     [value: number]: Candidate[]
   } = {};
-  public showDeleteButton: boolean;
   public candidateSizingClass: string = 'candidateSize-medium';
-
   // For preference order data
   public preferenceOrder: QuestionNumericValue[];
+  public question: QuestionNumeric;
+  public showDeleteButton: boolean;
+
+  // Fire on afterViewInit
+  private _viewInitialized = new EventEmitter<boolean>();
 
   constructor(
     private bottomSheetRef: MatBottomSheetRef,
@@ -120,6 +125,7 @@ export class DetailsQuestionComponent
     private matcher: MatcherService,
     private shared: SharedService,
   ) {
+
     this.shared.reportOverlayOpen({
       onboarding: {restart: () => this.onboardingTour?.restart()},
     });
@@ -140,14 +146,24 @@ export class DetailsQuestionComponent
   }
 
   ngOnInit(): void {
+
+    // Onboarding
+    // Show only after the bottom sheet is fully open and the view is initialized
+    // First() will unsubscribe itself
+    combineLatest([this.bottomSheetRef.afterOpened(), this._viewInitialized]).pipe(
+      first()
+    ).subscribe(() => {
+      if (this.onboardingTour && !this.onboardingTour.active)
+        this.onboardingTour.start();
+    });
+
     this._initDistributionChart();
 
     this.shared.logEvent('questions_show', {id: this.question.id, text: this.question.text});
   }
 
   ngAfterViewInit(): void {
-    // Onboarding
-    this.onboardingTour?.start();
+    this._viewInitialized.emit(true);
   }
 
   ngOnDestroy(): void {
