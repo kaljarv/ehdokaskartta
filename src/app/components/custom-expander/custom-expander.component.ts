@@ -5,6 +5,7 @@ import {
   ElementRef, 
   EventEmitter, 
   Input, 
+  OnDestroy,
   Output, 
   ViewChild
 } from '@angular/core';
@@ -78,7 +79,9 @@ import {
     ]),
   ]
 })
-export class CustomExpanderComponent implements DoCheck {
+export class CustomExpanderComponent 
+  implements DoCheck, OnDestroy {
+
   @Input() expanded: boolean = false;
   @Input() subtitleMaxHeight: string = "none";
   @Input() disabled: boolean = false;
@@ -108,6 +111,12 @@ export class CustomExpanderComponent implements DoCheck {
       if (setDisabled)
         this.disabled = true;
     }
+  }
+
+  ngOnDestroy(): void {
+    this.afterCollapse = null;
+    this.afterExpand = null;
+    this.contentDiv = null;
   }
 
   public toggle(): void {

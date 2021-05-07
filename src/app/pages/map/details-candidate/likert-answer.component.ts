@@ -1,10 +1,9 @@
 import { 
-  AfterViewChecked,
-  AfterViewInit, 
   Component, 
   DoCheck,
   ElementRef, 
   Input,
+  OnDestroy,
   ViewChild
 } from '@angular/core';
 
@@ -43,7 +42,9 @@ export const ANSWER_AVATAR_DIMENSIONS = {
   templateUrl: './likert-answer.component.html',
   styleUrls: ['./likert-answer.component.sass'],
 })
-export class LikertAnswerComponent implements DoCheck {
+export class LikertAnswerComponent 
+  implements DoCheck, OnDestroy {
+
   // The coloured background's height in pixels
   @Input() backgroundHeight: number = 24;
   @Input() question: QuestionLikert;
@@ -66,18 +67,21 @@ export class LikertAnswerComponent implements DoCheck {
    */
   public svgWidth: number = 0;
 
-  constructor(
-    private hostElement: ElementRef
-  ) {}
+  constructor() {}
   
   /*
    * Update svgWidth here. We can't use the other loops because that would result in value
    * changed after checked errors.
    * TODO: Allow this also on resize
    */
-  public ngDoCheck() {
+  ngDoCheck() {
     if (this.svgWidth === 0 && this.svgContainer && this.svgContainer.nativeElement.clientWidth > 0)
       this.svgWidth = this.svgContainer.nativeElement.clientWidth;
+  }
+
+  ngOnDestroy() {
+    this.question = null;
+    this.svgContainer = null;
   }
 
   get svgHeight(): number {

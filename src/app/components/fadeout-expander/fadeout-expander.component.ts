@@ -1,9 +1,10 @@
 import { 
   Component,
-  Input,
-  ViewChild,
-  ElementRef, 
   DoCheck, 
+  ElementRef, 
+  Input,
+  OnDestroy,
+  ViewChild
 } from '@angular/core';
 import { 
   trigger,
@@ -44,7 +45,9 @@ export const OVERFLOW_CLASS = "app-fadeout-expander--overflow";
     ]),
   ],
 })
-export class FadeoutExpanderComponent implements DoCheck {
+export class FadeoutExpanderComponent 
+  implements DoCheck, OnDestroy {
+
   @Input() fadedMaxHeight: string = "4.35rem";
   @Input() expanded: boolean = false;
   @ViewChild('expander') expanderDiv: ElementRef;
@@ -77,5 +80,9 @@ export class FadeoutExpanderComponent implements DoCheck {
       this.expanderDiv.nativeElement.classList.add(OVERFLOW_CLASS);
       this.hasOverflow = true;
     }
+  }
+
+  ngOnDestroy() {
+    this.expanderDiv = null;
   }
 }

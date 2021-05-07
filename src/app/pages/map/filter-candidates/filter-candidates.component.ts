@@ -86,21 +86,21 @@ function atLeastOneUnchecked(fa: FormArray): {} | null {
     ]),
   ]
 })
-export class FilterCandidatesComponent implements OnInit, OnDestroy {
-  @ViewChildren(MatExpansionPanel) expansionPanels: QueryList<MatExpansionPanel>;
-  // These will be cancelled onDestroy
-  private _subscriptions: Subscription[] = [];
+export class FilterCandidatesComponent 
+  implements OnInit, OnDestroy {
+
+  @ViewChildren(MatExpansionPanel) 
+  expansionPanels: QueryList<MatExpansionPanel>;
 
   public filtersForm = this.fb.group({
     all: this.fb.array([]),
   });
   public filters: CandidateFilter[];
   public anyFilterActive: boolean = false;
-  private _toggleRotations: number[] = new Array<number>(); // Tracks the state of the rotations 
 
-  get filtersArray(): FormArray {
-    return this.filtersForm.get('all') as FormArray;
-  }
+  // These will be cancelled onDestroy
+  private _subscriptions: Subscription[] = [];
+  private _toggleRotations: number[] = new Array<number>(); // Tracks the state of the rotations 
 
   constructor(
     private bottomSheetRef: MatBottomSheetRef,
@@ -127,9 +127,23 @@ export class FilterCandidatesComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+
+    this.shared.reportOverlayClose();
+    
     // Cancel subscriptions
     this._subscriptions.forEach(s => s.unsubscribe());
-    this.shared.reportOverlayClose();
+    this._subscriptions = null;
+
+    this.bottomSheetRef = null;
+    this.data = null;
+    this.expansionPanels = null;
+    this.filtersForm = null;
+    this.filters = null;
+    this._toggleRotations = null;
+  }
+
+  get filtersArray(): FormArray {
+    return this.filtersForm.get('all') as FormArray;
   }
 
   public dismiss(event: MouseEvent = null): void {

@@ -2,6 +2,7 @@ import {
   Component, 
   ContentChildren, 
   Input, 
+  OnDestroy,
   QueryList,
   ViewEncapsulation
 } from '@angular/core';
@@ -43,7 +44,8 @@ import {
   // We need this to target Shepherd's internal styles
   encapsulation: ViewEncapsulation.None
 })
-export class OnboardingTourComponent {
+export class OnboardingTourComponent
+  implements OnDestroy {
 
   /*
    * Default to use for steps.
@@ -81,6 +83,10 @@ export class OnboardingTourComponent {
 
   get active(): boolean {
     return this.onboarding.active;
+  }
+
+  ngOnDestroy(): void {
+    this.steps = null;
   }
 
   public start(overrideCookie?: boolean): void {

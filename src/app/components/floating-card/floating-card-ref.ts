@@ -178,6 +178,9 @@ export class FloatingCardRef
 
   public close(dontAnimate: boolean = false): void {
 
+    if (this.state === FloatingCardState.Dismissed)
+      return;
+
     // Move down before disposal
     if (!dontAnimate) {
 
@@ -316,6 +319,15 @@ export class FloatingCardRef
     this.overlayRef.dispose();
     this.state = FloatingCardState.Dismissed;
     this.dismissed.emit();
+
+    // Clean up
+    this.card = null;
+    this.data = null;
+    this.dismissed = null;
+    this.dragRef = null;
+    this.options = null;
+    this.overlayRef = null;
+    this.peekElement = null;
   }
 
   private _onDragStart(): void {

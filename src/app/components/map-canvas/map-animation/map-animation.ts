@@ -159,14 +159,13 @@ export class MapAnimation {
     if (f === 1)
       return "finally" in range ? range.finally : range.to;
     
-    if (range.from instanceof MapAnimationColor) {
+    if (range.from instanceof MapAnimationColor)
       return (range.to as MapAnimationColor).mix(range.from, f);
-    } else if (typeof range.from === "number") {
+    else if (typeof range.from === "number")
       return range.from + f * (range.to as number - range.from);
-    } else {
+    else
       // We don't do anything to strings or booleans unless f === 1, as above
       return range.from;
-    }
   }
 
   /*

@@ -1,8 +1,9 @@
 import { Component, 
+         OnDestroy,
          OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
-
+import { Subscription } from 'rxjs';
 import { MatcherService,
          SharedService } from '../../core';
 import { DatabaseService,
@@ -14,9 +15,14 @@ import { DatabaseService,
   templateUrl: './feedback-form.component.html',
   styleUrls: ['./feedback-form.component.sass']
 })
-export class FeedbackFormComponent implements OnInit {
+export class FeedbackFormComponent 
+  implements OnDestroy, OnInit {
+
   public feedbackText = new FormControl('');
   public email = new FormControl('');
+
+  private _subscriptions:  Subscription[];
+    
 
   constructor(
     public dialogRef: MatDialogRef<FeedbackFormComponent>,
@@ -32,6 +38,15 @@ export class FeedbackFormComponent implements OnInit {
     });
     if (this.shared.userEmail)
       this.email.setValue(this.shared.userEmail);
+  }
+
+  ngOnDestroy(): void {
+    this._subscriptions.forEach(s => s.unsubscribe());
+    this._subscriptions = null;
+
+    this.feedbackText = null;
+    this.email = null;
+    this.dialogRef = null;
   }
 
   public saveFeedback(): void {

@@ -2,6 +2,7 @@ import {
   Component, 
   ElementRef,
   Input, 
+  OnDestroy,
   ViewChild
 } from '@angular/core';
 
@@ -25,7 +26,8 @@ import {
     </div>
   `
 })
-export class OnboardingStepComponent {
+export class OnboardingStepComponent
+  implements OnDestroy {
 
   @Input() advanceOnEvent: string;
   @Input() advanceOnSelector: string;
@@ -36,6 +38,10 @@ export class OnboardingStepComponent {
   @ViewChild('content') content!: ElementRef<HTMLElement>;
 
   constructor() {}
+
+  ngOnDestroy(): void {
+    this.content = null;
+  }
 
   public getStepOptions(): StepOptions {
 

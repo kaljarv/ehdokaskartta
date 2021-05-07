@@ -1,6 +1,7 @@
 import { 
   Component, 
-  Input
+  Input,
+  OnDestroy
 } from '@angular/core';
 
 import {
@@ -17,7 +18,8 @@ import {
   templateUrl: './candidate-answer.component.html',
   styleUrls: ['./candidate-answer.component.sass'],
 })
-export class CandidateAnswerComponent {
+export class CandidateAnswerComponent
+  implements OnDestroy {
 
   @Input() question: QuestionNumeric ;
   // The label used next to the party flag
@@ -45,5 +47,9 @@ export class CandidateAnswerComponent {
 
   get showMissingAnswerInfo(): boolean {
     return this.showMissingInfo && this.candidateAnswer == null && this.voterAnswer != null;
+  }
+
+  ngOnDestroy(): void {
+    this.question = null;
   }
 }

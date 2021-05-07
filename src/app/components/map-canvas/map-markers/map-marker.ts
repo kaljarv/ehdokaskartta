@@ -354,6 +354,11 @@ export abstract class MapMarker {
     this.options.showLabel = v;
   }
 
+  public dispose(): void {
+    this.options = null;
+    this.contexts = null;
+  }
+
   /*
    * Test if click is a point is inside the bounding rectangle
    * N.B. This doesn't include the possible label, so if checking for

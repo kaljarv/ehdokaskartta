@@ -2,7 +2,7 @@
 
 :host
   display: block
-  max-width: $maxWidth-L
+  max-width: $maxWidth-S
 
 header
   margin: $margin-S 0
@@ -38,3 +38,19 @@ header
 .buttons
   margin: $margin-M 0
   text-align: right
+
+.notice
+  // @include allCaps
+  color: $color-secondary
+  // font-size: $fontSize-M
+  text-align: center
+  min-height: 40vh
+  padding: $margin-L
+  display: flex
+  align-items: center
+
+  mat-icon
+    font-size: 16px
+    height: 16px
+    width: 16px
+    vertical-align: middle

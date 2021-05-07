@@ -70,6 +70,9 @@ export class TitleScreenComponent
   ngOnDestroy(): void {
     // Cancel subscriptions
     this._subscriptions.forEach(s => s.unsubscribe());
+    this._subscriptions = null;
+
+    this._animationItem = null;
   }
 
   animationCreated(animationItem: AnimationItem): void {

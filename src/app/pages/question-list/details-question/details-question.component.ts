@@ -170,6 +170,15 @@ export class DetailsQuestionComponent
     // We also do this in dismiss, but let's double check
     this.onboardingTour?.complete();
     this.shared.reportOverlayClose();
+
+    this.columns = null;
+    this.onboardingTour = null;
+    this.candidates = null;
+    this.preferenceOrder = null;
+    this.question = null;
+    this._viewInitialized = null;
+    this.bottomSheetRef = null;
+    this.data = null;
   }
 
   /*

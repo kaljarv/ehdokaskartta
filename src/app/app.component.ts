@@ -345,6 +345,7 @@ export class AppComponent implements DoCheck {
   public clearDetailsCard(): void {
     if (this._floatingCardRef)
       this._floatingCardRef.close();
+    this._floatingCardRef = null;
   }
 
   public unsetVoterAnswers() {

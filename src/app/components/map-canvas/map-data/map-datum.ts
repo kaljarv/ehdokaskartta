@@ -57,6 +57,7 @@ export const MAP_DATUM_ANIMATION_COLLECTIONS = [
 ];
 
 export abstract class MapDatum {
+
   public animations = new Set<MapAnimationDeep>();
   public marker: MapMarker;
   public options: MapDatumOptions;
@@ -174,5 +175,13 @@ export abstract class MapDatum {
     }
 
     return datumChanged;
+  }
+
+  public dispose(): void {
+    this.animations = null;
+    this.marker?.dispose();
+    this.marker = null;
+    this.options.source = null;
+    this.options = null;
   }
 }

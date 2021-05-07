@@ -1,39 +1,53 @@
 <header>
-  <h2><mat-icon>bookmarks</mat-icon> Ehdokkaat muistilistallasi</h2>
+  <h2><mat-icon>bookmarks</mat-icon> Muistilistasi</h2>
 </header>
 
-<mat-list class="candidates">
+<ng-container *ngIf="hasFavourites">
 
-  <mat-list-item *ngFor="let candidate of favourites"
-                 (click)="showCandidate(candidate)"
-                 class="candidate">
-    <img matListAvatar
-         [src]="getPortraitUrl(candidate)"
-         appFallbackImage
-         class="portrait">
-    <div mat-line
-         class="name">{{ candidate.givenName }} {{ candidate.surname }}</div>
-    <div mat-line
-         class="party">
-      <mat-icon class="party-{{ candidate.party | toClassName }}">flag</mat-icon>
-      {{ candidate.party }}
+  <mat-list class="candidates">
+
+    <mat-list-item *ngFor="let candidate of favourites"
+                  (click)="showCandidate(candidate)"
+                  class="candidate">
+      <img matListAvatar
+          [src]="getPortraitUrl(candidate)"
+          appFallbackImage
+          class="portrait">
+      <div mat-line
+          class="name">{{ candidate.givenName }} {{ candidate.surname }}</div>
+      <div mat-line
+          class="party">
+        <mat-icon class="party-{{ candidate.partyName | toClassName }}">flag</mat-icon>
+        {{ candidate.partyName }}
+      </div>
+      <div class="number party-{{ candidate.partyName | toClassName }}">
+        {{ candidate.number }}
+      </div>
+
+    </mat-list-item>  
+
+  </mat-list>
+
+  <section class="buttons">
+
+    <button mat-button 
+            (click)="clearFavourites()"
+            color="warn"
+            id="clearButton">
+      <mat-icon>highlight_off</mat-icon>
+      Tyhjennä muistilista
+    </button>
+
+  </section>
+
+</ng-container>
+<ng-container *ngIf="!hasFavourites">
+
+  <div class="notice">
+    <div class="wrapper">
+      Muistilistallasi ei ole vielä yhtään ehdokasta.<br>
+      Voit lisätä ehdokkaita listalle klikkaamalla ehdokasnumeron alla olevaa <mat-icon>bookmark_border</mat-icon>-ikonia.
     </div>
-    <div class="number party-{{ candidate.party | toClassName }}">
-      {{ candidate.number }}
-    </div>
+  </div>
 
-  </mat-list-item>  
-
-</mat-list>
-
-<section class="buttons">
-
-  <button mat-button 
-          (click)="clearFavourites()"
-          color="warn"
-          id="clearButton">
-    <mat-icon>highlight_off</mat-icon>
-    Tyhjennä muistilista
-  </button>
-
-</section>
+</ng-container>

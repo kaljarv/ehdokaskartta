@@ -63,9 +63,9 @@ type ColorDict = { [party: string]: string };
   selector: 'app-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.sass'],
-  host: {
-    '(window:resize)': 'onWindowResize()'
-  },
+  // host: {
+  //   '(window:resize)': 'onWindowResize()'
+  // },
 })
 export class MapComponent 
   implements AfterViewInit, OnInit, OnDestroy {
@@ -272,6 +272,25 @@ export class MapComponent
   ngOnDestroy() {
     // Cancel subscriptions
     this._subscriptions.forEach(s => s.unsubscribe());
+    this._subscriptions = null;
+      
+    this.onboardingTour = null;
+    this.partyMenuTrigger = null;
+    this.voterMenuTrigger = null;
+    this.voterTooltip = null;
+    this.colors = null;
+    this.candidates = null;
+    this.ensureVisibleEmitter = null;
+    this.parties = null;
+    this.markerData?.forEach(m => m.dispose());
+    this.markerData = null;
+    this.voter = null;
+    this.partyMenuTriggerProperties = null;
+    this.voterMenuTriggerProperties = null;
+    this.redrawEmitter = null;
+    this.zoomEmitter = null;
+    this.d3 = null;
+    this._viewInitialized = null;
   }
 
   // public showInfos(): void {
@@ -418,40 +437,41 @@ export class MapComponent
   /*
   * On window resize, call rescaleMap while preventing multiple calls
   */
-  public onWindowResize(): void {
+  // // Causes performance leaks, so it's disabled
+  // public onWindowResize(): void {
 
-    // If a call hasn't already been made
-    if (!this._windowResizeLock) {
+  //   // If a call hasn't already been made
+  //   if (!this._windowResizeLock) {
 
-      // Lock resizing for the delay
-      this._windowResizeLock = true;
+  //     // Lock resizing for the delay
+  //     this._windowResizeLock = true;
 
-      setTimeout(() => {
+  //     setTimeout(() => {
 
-        // Save the current dimensions, so that we can check after the async operation
-        // if they've been changed meanwhile
-        const dimensions = [window.innerWidth, window.innerHeight];
+  //       // Save the current dimensions, so that we can check after the async operation
+  //       // if they've been changed meanwhile
+  //       const dimensions = [window.innerWidth, window.innerHeight];
 
-        const checkAgain = () => {
-          // ...release lock
-          this._windowResizeLock = false;
-          // But if the window size was changed while we were busy, start over
-          if (dimensions[0] !== window.innerWidth || dimensions[1] !== window.innerHeight)
-            this.onWindowResize();
-        }
+  //       const checkAgain = () => {
+  //         // ...release lock
+  //         this._windowResizeLock = false;
+  //         // But if the window size was changed while we were busy, start over
+  //         if (dimensions[0] !== window.innerWidth || dimensions[1] !== window.innerHeight)
+  //           this.onWindowResize();
+  //       }
 
-        // RescaleMap might return null if the map isn't initialized
-        const promiseOrNull = this.rescaleMap();
+  //       // RescaleMap might return null if the map isn't initialized
+  //       const promiseOrNull = this.rescaleMap();
 
-        if (!promiseOrNull)
-          checkAgain();
-        else
-          promiseOrNull.then(checkAgain);
+  //       if (!promiseOrNull)
+  //         checkAgain();
+  //       else
+  //         promiseOrNull.then(checkAgain);
 
-      }, this.windowResizeDelay);
-    }
+  //     }, this.windowResizeDelay);
+  //   }
 
-  }
+  // }
 
   /*
   * Disperse candidates clustered too close together or too close to 
@@ -546,6 +566,8 @@ export class MapComponent
   public initMapMarkerData(): void {
 
     // Reset
+    if (this.markerData)
+      this.markerData.forEach(m => m.dispose());
     this.markerData = [];
 
     // Conflate markers: candidates, parties and the possible voter

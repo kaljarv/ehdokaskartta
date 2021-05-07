@@ -156,6 +156,14 @@ export class TopBarComponent implements AfterViewInit, OnDestroy, OnInit {
 
   ngOnDestroy() {
     this._subscriptions.forEach(s => s.unsubscribe());
+    this._subscriptions = null;
+
+    this.contentTemplate = null;
+    this.header = null;
+    this.stringContentTemplate = null;
+    this._prevContent = null;
+    this.componentFactoryResolver = null;
+    this.host = null;
   }
 
   private _updateContent(): void {

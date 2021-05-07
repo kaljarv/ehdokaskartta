@@ -204,9 +204,20 @@ export class DetailsCandidateComponent
     // We use this to signal the map avatars
     if (this.shared.activeCandidateId === this.data.id)
       this.shared.activeCandidateId = null;
+
     // Cancel subscriptions
     this._subscriptions.forEach(s => s.unsubscribe());
+    this._subscriptions = null;
     this.shared.reportOverlayClose();
+
+    // Delete props
+    this.floatingCardRef = null;
+    this._tabBodies = null;
+    this.candidate = null;
+    this.party = null;
+    this.opinions = null;
+    this.excerpts = null;
+    this.excerptMores = null;
   }
 
   private _ensureVisibleOnMap(): void {
@@ -263,8 +274,9 @@ export class DetailsCandidateComponent
     else
       this.floatingCardRef.initMaximise();
 
-    // Scroll map to ensure candidate marker is in view
-    this._ensureVisibleOnMap();
+    // Scroll map to ensure candidate marker is in view,
+    // but add a small delay so that thing don't happen simultaneously
+    setTimeout(() => this._ensureVisibleOnMap(), FLOATING_CARD_ANIMATION_DURATION_MS * 2);
   }
 
   /*

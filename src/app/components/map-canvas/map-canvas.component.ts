@@ -369,6 +369,27 @@ export class MapCanvasComponent
   ngOnDestroy() {
     // Cancel subscriptions
     this._subscriptions.forEach(s => s.unsubscribe());
+    this._subscriptions = null;
+
+    this.markerData = null;
+    this.ensureVisibleEmitter = null;
+    this.redrawEmitter = null;
+    this.zoomEmitter = null;
+    this.onBgClick = null;
+    this.onMarkerClick = null;
+    this.canvasRef = null;
+    this._coordinateFactors = null;
+    this._zoomElement = null;
+    this._zoomFunction.on("zoom", null);
+    this._zoomFunction = null;
+    this._animations  = null;
+    this._requestRedrawFlag = null;
+    this._voterDatum = null;
+    this._hitColor2Marker = null;
+    this._canvas = null;
+    this._context = null;
+    this._hitCanvas = null;
+    this._hitContext = null;
   }
 
   public onWindowResize(): void {

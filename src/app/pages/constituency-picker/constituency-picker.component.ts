@@ -68,6 +68,13 @@ export class ConstituencyPickerComponent
   ngOnDestroy() {
     // Cancel subscriptions
     this._subscriptions.forEach(s => s.unsubscribe());
+    this._subscriptions = null;
+
+    this.onboardingTour = null;
+    this.municipalities = null;
+    this.municipalityForm = null;
+    this.filteredMunicipalities = null;
+    this._forwardOptions = null;
   }
 
   private setupMunicipalities(): void {

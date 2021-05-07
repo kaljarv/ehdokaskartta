@@ -1,6 +1,7 @@
 import { 
   Component, 
   Input,
+  OnDestroy,
   OnInit
 } from '@angular/core';
 
@@ -29,7 +30,9 @@ type PreferenceValue = {
   templateUrl: './preference-order-answer.component.html',
   styleUrls: ['./preference-order-answer.component.sass'],
 })
-export class PreferenceOrderAnswerComponent implements OnInit {
+export class PreferenceOrderAnswerComponent 
+  implements OnDestroy, OnInit {
+
   @Input() avatarHeight: number = 47;
   @Input() question: QuestionPreferenceOrder;
   // The label used next to the party flag
@@ -61,6 +64,12 @@ export class PreferenceOrderAnswerComponent implements OnInit {
             }
         return {orderIndex, ...value}
       }); 
+  }
+
+  ngOnDestroy() {
+    this.question = null;
+    this.candidatePreferences = null;
+    this.voterPreferences = null;
   }
 
   get svgWidth(): number {

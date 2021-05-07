@@ -136,6 +136,12 @@ export class QuestionListComponent
   ngOnDestroy() {
     // Cancel subscriptions
     this._subscriptions.forEach(s => s.unsubscribe());
+    this._subscriptions = null;
+
+    this.onboardingTour = null;
+    this.onboardingTourEnoughAnswers = null;
+    this.questions = null;
+    this._viewInitialized = null;
   }
 
   /*

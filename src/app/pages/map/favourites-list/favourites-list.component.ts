@@ -1,4 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { 
+  Component, 
+  OnDestroy, 
+  OnInit 
+} from '@angular/core';
 import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { MatcherService, Candidate } from '../../../core';
 import { SharedService } from '../../../core';
@@ -37,6 +41,8 @@ export class FavouritesListComponent
 
   ngOnDestroy() {
     this.shared.reportOverlayClose();
+    this.bottomSheetRef = null;
+    this.favourites = null;
   }
 
   public dismiss(event: MouseEvent = null): void {
@@ -62,4 +68,7 @@ export class FavouritesListComponent
     this.dismiss();
   }
   
+  get hasFavourites(): boolean {
+    return this.favourites.length > 0;
+  }
 }

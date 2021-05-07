@@ -1,6 +1,7 @@
 import { 
   Component,
   Injector,
+  OnDestroy,
   OnInit,
   Type,
   ViewEncapsulation 
@@ -60,7 +61,7 @@ export class FloatingCardGlobalStylesComponent {
   },
 })
 export class FloatingCardComponent 
-  implements OnInit {
+  implements OnDestroy, OnInit {
 
   public contentPortal: ComponentPortal<any>;
 
@@ -88,6 +89,12 @@ export class FloatingCardComponent
   ngOnInit() {
     // Create content component
     this.contentPortal = new ComponentPortal(this.type, null, this.injector);
+  }
+
+  ngOnDestroy() {
+    this.contentPortal = null;
+    this.floatingCardRef = null;
+    this.injector = null;
   }
 
   public onWindowResize(): void {
