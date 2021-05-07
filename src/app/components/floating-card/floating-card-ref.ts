@@ -67,11 +67,11 @@ export class FloatingCardRef
   public options: FloatingCardOptions;
   public overlayRef: OverlayRef;
   public peekElement: ElementRef<HTMLElement>;
-  public peekElementOffset: string = '0px';
+  public peekElementOffset: number = 0;
   public state: FloatingCardState = FloatingCardState.Hidden;
   public type: Type<any>;
 
-  private _peekHeight: string;
+  private _peekHeight: number;
   private _dragStartY: number;
   private _dragStartPointerY: number;
   private _cancelClick: boolean = false; // To disable drag end click event on header
@@ -134,16 +134,16 @@ export class FloatingCardRef
     // const overlayComponent = containerRef.instance;
   }
 
-  get peekHeight(): string {
+  get peekHeight(): number {
     if (this._peekHeight != null)
       return this._peekHeight;
     else if (this.peekElement != null)
-      return this.peekElement.nativeElement.clientHeight + 'px';
+      return this.peekElement.nativeElement.clientHeight;
     else
       return FLOATING_CARD_DEFAULT_PEEK_HEIGHT;
   }
 
-  set peekHeight(height: string) {
+  set peekHeight(height: number) {
     this._peekHeight = height;
   }
 
@@ -448,9 +448,9 @@ export class FloatingCardRef
         else
           return strategy.top(`${this.options.landscapeMarginTop}px`);
       case 'minimised':
-        return strategy.top(`calc(${window.innerHeight}px - ${this.options.minimisedHeight})`);
+        return strategy.top(`${window.innerHeight - this.options.minimisedHeight}px`);
       case 'peek':
-        return strategy.top(`calc(${window.innerHeight}px - ${this.peekHeight} - ${this.peekElementOffset})`);
+        return strategy.top(`${window.innerHeight - this.peekHeight - this.peekElementOffset}px`);
     }
   }
 

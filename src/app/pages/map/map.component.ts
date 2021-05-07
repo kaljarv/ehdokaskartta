@@ -26,7 +26,6 @@ import {
   AbbreviatePipe,
   Candidate,
   D3Service,
-  EnsureVisibleOnMapOptions,
   MatcherService,
   Party,
   ProjectionMethod,
@@ -35,20 +34,19 @@ import {
   ANIMATION_DURATION_MS,
   PATHS
 } from '../../core';
-import { OnboardingTourComponent } from '../../components';
-import {
+import { 
   MapBackgroundType,
-  MapMarkerClickData,
-  MapRedrawOptions,
-  ZoomProperties
-} from './map-canvas.component';
-import {
   MapDatum,
   MapDatumCandidate,
   MapDatumParty,
-  MapDatumVoter
-} from './map-data/';
-import { MAP_MARKER_CANDIDATE_HEAD_RADIUS } from './map-markers';
+  MapDatumVoter,
+  MapEnsureVisibleOptions,
+  MapMarkerClickData,
+  MapRedrawOptions,
+  OnboardingTourComponent, 
+  ZoomProperties,
+  MAP_MARKER_CANDIDATE_HEAD_RADIUS
+} from '../../components';
 
 
 const SHOW_INFOS_DELAY = 100; // A small delay after the map has loaded before showing the infos, needed for the components to initialise
@@ -107,6 +105,7 @@ export class MapComponent
 
   public colors: ColorDict = {}; // We fetch colors for parties from the stylesheets and store it here
   public candidates = new Array<Candidate>();
+  public ensureVisibleEmitter: EventEmitter<MapEnsureVisibleOptions>;
   public parties = new Array<Party>();
   // We might change this based on the voter position
   public mapCentre = {x: 0.5, y: 0.5};
@@ -149,6 +148,8 @@ export class MapComponent
   public dispersalAlphaMin: number = 0.35;
   public d3: any; // Shortcut to D3Service.d3
 
+  // Used by rescale
+  private _mapInitialized: boolean = false;
   // Track first interaction
   private _userHasInteracted: boolean = false;
   // These will be cancelled onDestroy
@@ -185,6 +186,9 @@ export class MapComponent
     });
 
     this.d3 = this.d3s.d3;
+
+    // Route the events directly from shared
+    this.ensureVisibleEmitter = this.shared.ensureVisibleOnMap;
 
     // Start loading spinner
     this._reportProgress();
@@ -254,12 +258,6 @@ export class MapComponent
     // Subscribe to changes in the active candidate to signal map canvas
     this._subscriptions.push(this.shared.activeCandidateChanged.subscribe(() => 
       this.updateMapMarkerData(MapRedrawOptions.RedrawOnly))
-    );
-
-    // Subscribe to ensuring markers' visibility on map canvas
-    // The Event is initiated by DetailsCandidate onInit
-    this._subscriptions.push(this.shared.ensureVisibleOnMap.subscribe((options: EnsureVisibleOnMapOptions) => 
-      this.ensureVisibleOnMap(options))
     );
 
     // Subscribe to all interactions to hide infos on first interaction
@@ -341,6 +339,9 @@ export class MapComponent
     this.showLabelFactor = 8 / this.minimisedCandidateScale;
     console.log("Dynamic scale", f, this.showLabelFactor, this.minimisedCandidateScale, this.zoomExtents);
 
+    // Set this to true to allow rescaleMap to continue
+    this._mapInitialized = true;
+
     // This is async so we need to wait
     this.rescaleMap().then(() => {
       // Init view and hide spinner
@@ -392,9 +393,14 @@ export class MapComponent
   * Handle operations needed when the map dimensions change 
   * (or are initially set)
   */
-  public async rescaleMap(): Promise<void> {
+  public async rescaleMap(): Promise<void> | null {
+
+    // This might be called prematurely by onWindowResize
+    if (!this._mapInitialized)
+      return null;
 
     return new Promise<void>(resolve => {
+
       // Disperse clustered candidates
       // This is async so we need to wait
       this.disperseAvatars().then(() => {
@@ -426,16 +432,21 @@ export class MapComponent
         // if they've been changed meanwhile
         const dimensions = [window.innerWidth, window.innerHeight];
 
-        // Perform rescaling and then...
-        this.rescaleMap().then(() => {
-
+        const checkAgain = () => {
           // ...release lock
           this._windowResizeLock = false;
-
           // But if the window size was changed while we were busy, start over
           if (dimensions[0] !== window.innerWidth || dimensions[1] !== window.innerHeight)
             this.onWindowResize();
-        });
+        }
+
+        // RescaleMap might return null if the map isn't initialized
+        const promiseOrNull = this.rescaleMap();
+
+        if (!promiseOrNull)
+          checkAgain();
+        else
+          promiseOrNull.then(checkAgain);
 
       }, this.windowResizeDelay);
     }
@@ -470,7 +481,7 @@ export class MapComponent
           // and a flag which will be used below when defining the forces
           return { fx: x, fy: y, isVoter: true };
         else
-          return { x, y };
+          return { x, y, source: a };
       }
 
       // Map candidates plus the possible voter to nodes
@@ -497,17 +508,19 @@ export class MapComponent
       // Call this when simulation is ready
       const _onSimulationReady = () => {
 
-        // If we reached manually set max iterations
+        // Purge
+        simulation.on('end', null);
+        simulation.on('tick', null);
         simulation.stop();
+        simulation.nodes = [];
 
         // Ensure that all candidates are still in the 0-1 range after dispersal
         // and apply revised values to candidates' x and y properties
         // NB. We don't edit the projected values themselves as this would mess 
         // up things when the window is rescaled
-        for (let i = 0; i < this.candidates.length; i++) {
-          // if (isNaN(nodes[i].x)) console.log(scale, this.candidates[i]);
-          this.candidates[i].x = nodes[i].x / scale;
-          this.candidates[i].y = nodes[i].y / scale;
+        for (let n of nodes.filter(n => n.source)) {
+          n.source.x = n.x / scale;
+          n.source.y = n.y / scale;
         }
 
         // Ready
@@ -551,6 +564,11 @@ export class MapComponent
     for (const type in lists) {
 
       lists[type].forEach(a => {
+
+        // Check this avoid errors, when the page is resized
+        // during loading
+        if (!a)
+          return;
 
         let m: MapDatum;
 
@@ -728,19 +746,12 @@ export class MapComponent
    * Center map (on voter)
    */
   public locateSelf(): void {
+    this.hideCandidate();
     this.zoomEmitter.emit({
       x: this.voterDisabled ? 0.5 : this.voter.projX,
       y: this.voterDisabled ? 0.5 : this.voter.projY,
       toScale: 1.
     });
-  }
-
-  /*
-   * Ensure that the given point is visible
-   */
-  public ensureVisibleOnMap(options: EnsureVisibleOnMapOptions): void {
-    // Add margin to occlusions
-    console.log(options);
   }
 
   public goToQuestions(): void {

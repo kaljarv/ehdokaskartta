@@ -29,14 +29,14 @@ export abstract class FloatingCardRefBase {
   public options: FloatingCardOptions;
   public overlayRef: OverlayRef;
   public peekElement: ElementRef<HTMLElement>;
-  public peekElementOffset: string;
+  public peekElementOffset: number;
   public state: FloatingCardState;
   public type: Type<any>;
 
   constructor() {}
 
-  abstract get peekHeight(): string;
-  abstract set peekHeight(height: string);
+  abstract get peekHeight(): number;
+  abstract set peekHeight(height: number);
   abstract get isMaximised(): boolean;
   abstract get isPeeking(): boolean;
   abstract get isHidden(): boolean;

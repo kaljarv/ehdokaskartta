@@ -16,14 +16,14 @@ export interface FloatingCardConfig {
 
 export interface FloatingCardOptions {
   panelClass?: string;
-  minimisedHeight?: string;
+  minimisedHeight?: number;
   landscapeBreakpoint?: number;
   landscapeMarginLeft?: number;
   landscapeMarginTop?: number;
 }
 
 export interface FloatingCardPeekElementOptions {
-  offset?: string;
+  offset?: number;
   dontPeek?: boolean;
   persistentHeight?: boolean;
 }
@@ -47,7 +47,7 @@ export const FLOATING_CARD_CLOSE_DELAY = 500; // ms to allow for transitioning a
 
 export const FLOATING_CARD_DATA = new InjectionToken<any>('FLOATING_CARD_DATA');
 
-export const FLOATING_CARD_DEFAULT_PEEK_HEIGHT: string = '6rem';
+export const FLOATING_CARD_DEFAULT_PEEK_HEIGHT: number = 6 * 16;
 
 export const FLOATING_CARD_MAX_WIDTH_PORTRAIT: string = '42rem';
 
@@ -69,7 +69,7 @@ export const DEFAULT_FLOATING_CARD_OVERLAY_CONFIG: any = {
 }
 
 export const DEFAULT_FLOATING_CARD_OPTIONS: FloatingCardOptions = {
-  minimisedHeight: '6rem',
+  minimisedHeight: 6 * 16,
   landscapeBreakpoint: 900,
   // This should match the top bar margin
   landscapeMarginLeft: 16,
@@ -78,7 +78,7 @@ export const DEFAULT_FLOATING_CARD_OPTIONS: FloatingCardOptions = {
 }
 
 export const DEFAULT_FLOATING_CARD_PEEK_ELEMENT_OPTIONS: FloatingCardPeekElementOptions = {
-  offset: null,
+  offset: 0,
   dontPeek: false,
   persistentHeight: false,
 }

@@ -9,6 +9,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { CorePipesModule } from '../../core';
 import { 
+  MapCanvasModule,
   ProgressSpinnerModule,
   OnboardingModule 
 } from '../../components';
@@ -18,7 +19,6 @@ import { FavouritesListModule } from './favourites-list';
 import { FilterCandidatesModule } from './filter-candidates';
 
 import { MapComponent } from './map.component';
-import { MapCanvasComponent } from './map-canvas.component';
 
 
 @NgModule({
@@ -30,6 +30,7 @@ import { MapCanvasComponent } from './map-canvas.component';
     MatMenuModule,
     MatTooltipModule,
     CorePipesModule,
+    MapCanvasModule,
     OnboardingModule,
     ProgressSpinnerModule,
     DetailsCandidateModule,
@@ -37,12 +38,10 @@ import { MapCanvasComponent } from './map-canvas.component';
     FilterCandidatesModule,
   ],
   exports: [
-    MapComponent,
-    MapCanvasComponent,
+    MapComponent
   ],
   declarations: [
-    MapComponent,
-    MapCanvasComponent,
+    MapComponent
   ],
 })
 export class MapModule {}

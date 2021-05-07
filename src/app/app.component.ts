@@ -509,7 +509,7 @@ export class AppComponent implements DoCheck {
 
   get peekHeight(): string | null {
     if (this._floatingCardRef && this._floatingCardRef.isPeeking)
-      return this._floatingCardRef.peekHeight;
+      return `${this._floatingCardRef.peekHeight}px`;
     if (this.showNextButtonBar && this.nextButtonBar != null)
       return `${this.nextButtonBar.nativeElement.clientHeight}px`;
     return null;

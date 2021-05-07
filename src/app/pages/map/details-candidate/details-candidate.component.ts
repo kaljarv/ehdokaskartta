@@ -136,7 +136,7 @@ export class DetailsCandidateComponent
     unanswered: 0
   }
   public excerptMaxLength: number = 9;
-  public peekOffset: string = '1rem';
+  public peekOffset: number = 16;
   public opinionsTabIndex: number = 2;
   public detailsLoaded: boolean = false;
 
@@ -218,12 +218,12 @@ export class DetailsCandidateComponent
     this.shared.ensureVisibleOnMap.emit({
       x: this.candidate.projX,
       y: this.candidate.projY,
-      margin: 20,
+      margin: 40,
       occluded: {
         // This is the top bar height with margins
         top: fc.options.landscapeMarginTop,
-        left: fc.usePortrait ? 0 : offset.right,
-        bottom: fc.usePortrait ? offset.top : 0,
+        left: fc.usePortrait ? 0 : offset.width + fc.options.landscapeMarginLeft,
+        bottom: fc.usePortrait ? fc.peekHeight : 0,
         right: 0
       }
     });

@@ -11,33 +11,23 @@ import {
   Output,
   ViewChild
 } from '@angular/core';
-
-import { 
-  Subscription 
-} from 'rxjs';
-
+import { Subscription } from 'rxjs';
 import { 
   ANIMATION_DURATION_MS,
   D3Service
 } from '../../core';
-
-import {
-  MapMarkerCommonState
-} from './map-markers/';
-
+import { MapMarkerCommonState } from './map-markers';
 import {
   MapDatum,
   MapDatumCandidate,
   MapDatumParty,
   MapDatumVoter
-} from './map-data/';
-
+} from './map-data';
 import {
-  MapAnimationColor,
   MapAnimationDeep,
   MapAnimationOptions,
   MapAnimationPropertiesDeep
-} from './map-animation/';
+} from './map-animation';
 
 /*
  * MapCanvasComponent
@@ -103,6 +93,25 @@ export type ZoomProperties = {
   toScale?: number
 }
 
+/*
+ * Used when opening a CandidiateDetails card
+ * - x and y are projection values (0-1)
+ * - occluded sets the areas hidden by overlays
+ * - marging is the margin in pixels to leave between the marker
+ *   and the visible area
+ */
+export interface MapEnsureVisibleOptions {
+  x: number;
+  y: number;
+  margin?: number;
+  occluded?: {
+    top?: number;
+    left?: number;
+    bottom?: number;
+    right?: number;
+  }
+}
+
 
 /*  
  * Utility
@@ -134,6 +143,12 @@ export class MapCanvasComponent
    * This controls the scaling of the x and y coordinates
    */
   @Input() coordinateScale: number = 1;
+
+  /*
+   * Emit this whenever redraw is needed
+   * NB. This will reinitialize and re-sort the markers
+   */
+  @Input() ensureVisibleEmitter: EventEmitter<MapEnsureVisibleOptions>;
 
   /*
    * Emit this whenever redraw is needed
@@ -282,8 +297,8 @@ export class MapCanvasComponent
   private _zoomElement: any;
   private _zoomFunction: any;
   // How much further (on zoom level 1 dimensions) than the window size to allow zooming
-  // TODO: Change to a dynamically calculated one
-  private _zoomTranslateExtentMargin = 250;
+  // NB. This is set by ngOnInit
+  private _zoomTranslateExtentMargin: number;
 
   // How to scale markers when zooming
   // The nth root of zoomScale which is used to scale the avatar
@@ -323,12 +338,20 @@ export class MapCanvasComponent
   }
 
   ngOnInit() {
-    this._subscriptions.push(this.redrawEmitter.subscribe(
-      (v: MapRedrawOptions) => this._applyDataChanges(v)
-    ));
-    this._subscriptions.push(this.zoomEmitter.subscribe(
-      ({x, y, toScale}: ZoomProperties) => this._zoomTo(x, y, toScale)
-    ));
+    if (this.redrawEmitter)
+      this._subscriptions.push(this.redrawEmitter.subscribe(
+        (v: MapRedrawOptions) => this._applyDataChanges(v)
+      ));
+
+    if (this.zoomEmitter)
+      this._subscriptions.push(this.zoomEmitter.subscribe(
+        ({x, y, toScale}: ZoomProperties) => this._zoomTo(x, y, toScale)
+      ));
+
+    if (this.ensureVisibleEmitter)
+      this._subscriptions.push(this.ensureVisibleEmitter.subscribe(
+        (options: MapEnsureVisibleOptions) => this._ensureVisibleOnMap(options)
+      ));
   }
 
   ngAfterViewInit() {
@@ -665,12 +688,23 @@ export class MapCanvasComponent
    * Update zoom extents when dimensions change
    */
   private _updateZoomExtents(): void {
+
+    // We crudely just allow panning one screen width, which
+    // should leave enough room for the cand details overlay
+    this._zoomTranslateExtentMargin = this.width || 0;
+
     if (this._zoomFunction)
       this._zoomFunction
         .scaleExtent(this.zoomExtents)
         .translateExtent([
-          [-this._zoomTranslateExtentMargin, -this._zoomTranslateExtentMargin],
-          [window.innerWidth + this._zoomTranslateExtentMargin, window.innerHeight + this._zoomTranslateExtentMargin]
+          [
+            -this._zoomTranslateExtentMargin, 
+            -this._zoomTranslateExtentMargin
+          ], 
+          [
+            window.innerWidth + this._zoomTranslateExtentMargin, 
+            window.innerHeight + this._zoomTranslateExtentMargin
+          ]
         ]);
   }
 
@@ -1278,6 +1312,50 @@ export class MapCanvasComponent
    ****************************************************************/
 
   /*
+   * Ensure the marker at the projected coordinates is visible
+   */
+  private _ensureVisibleOnMap(options: MapEnsureVisibleOptions): void {
+
+    const x = this._projToAbs(options.x, 'x'),
+          y = this._projToAbs(options.y, 'y'),
+          m = options.margin || 0;
+
+    // Check if point is in any of the occluded areas
+    // A negative value means it is
+    const top    = y - (options.occluded?.top || 0) - m,
+          left   = x - (options.occluded?.left || 0) - m,
+          bottom = (this.height - (options.occluded?.bottom || 0)) - m - y,
+          right  = (this.width - (options.occluded?.right || 0)) - m - x;
+
+    // Calculate the translation
+    let tX = 0, 
+        tY = 0;
+
+    if (top < 0)
+      tY = -top;
+    else if (bottom < 0)
+      tY = bottom;
+
+    if (left < 0)
+      tX = -left;
+    else if (right < 0)
+      tX = right;
+
+    // Scale by the inverse of zoom as translateBy will take 
+    // the zoom scale in to account
+    tX /= this._coordinateFactors.zoomScale;
+    tY /= this._coordinateFactors.zoomScale;
+
+    // We also need to adjust to translate extent margins
+    this._zoomTranslateExtentMargin
+
+    this._zoomElement
+      .transition()
+      .duration(this.zoomDuration * 2)
+      .call(this._zoomFunction.translateBy, tX, tY);
+  }
+
+  /*
    * Called by the zoomEmitter and onCanvasClick
    * The x and y coordinates are the desired centre coordinates 
    * as projected fractions
@@ -1287,11 +1365,12 @@ export class MapCanvasComponent
     if (!this._zoomElement)
       return;
 
-    if (toScale == null)
-      toScale = this._coordinateFactors.zoomScale;
+    const f = this._coordinateFactors;
 
-    const f = this._coordinateFactors,
-          tX = (x * f.projectionScale + f.offset.x) * toScale - this.width / 2,
+    if (toScale == null)
+      toScale = f.zoomScale;
+
+    const tX = (x * f.projectionScale + f.offset.x) * toScale - this.width / 2,
           tY = (y * f.projectionScale + f.offset.y) * toScale - this.height / 2;
 
     this._zoomElement
