@@ -20,6 +20,7 @@ import {
   D3Service,
   MatcherModule,
   SharedService,
+  MATCHER_CONFIG,
   PATHS
 } from './core';
 import { 
@@ -109,7 +110,13 @@ const paths = [
   ],
   providers: [
     SharedService,
-    D3Service
+    D3Service,
+    {
+      provide: MATCHER_CONFIG,
+      useValue: {
+        useMunicipalityAsConstituency: true
+      }
+    }
   ]
 })
 export class AppModule {}

@@ -19,7 +19,6 @@ import { MatcherService,
          QuestionNumeric,
          SharedService, 
          ANIMATION_TIMING,
-         MIN_VALS_FOR_MAPPING,
          PATHS } from '../../core';
 import { OnboardingTourComponent } from '../../components';
 
@@ -75,7 +74,6 @@ export class QuestionListComponent
   onboardingTourEnoughAnswers: OnboardingTourComponent;
   
   public informationValueOrder: {id: string, value: number }[];
-  public minAnswersForMapping = MIN_VALS_FOR_MAPPING;
   public paths = PATHS;
   public questions: QuestionNumeric[] = [];
 
@@ -101,6 +99,10 @@ export class QuestionListComponent
         message: 'Ladataan kysymyksiä…'
       }
     });
+  }
+
+  get minAnswersForMapping(): number {
+    return this.matcher.config.minValsForMapping;
   }
 
   ngOnInit() {

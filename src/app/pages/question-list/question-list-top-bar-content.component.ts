@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
-import { MIN_VALS_FOR_MAPPING, PATHS } from '../../core';
+import { 
+  MatcherService, 
+  PATHS 
+} from '../../core';
 
 @Component({
   selector: 'question-list-top-bar-content',
@@ -8,8 +11,13 @@ import { MIN_VALS_FOR_MAPPING, PATHS } from '../../core';
 })
 export class QuestionListTopBarContentComponent {
   
-  public minAnswersForMapping = MIN_VALS_FOR_MAPPING;
   public paths = PATHS;
 
-  constructor() {}
+  constructor(
+    private matcher: MatcherService,
+  ) {}
+
+  get minAnswersForMapping(): number {
+    return this.matcher.config.minValsForMapping;
+  }
 }

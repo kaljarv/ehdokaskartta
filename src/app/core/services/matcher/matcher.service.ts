@@ -1,34 +1,46 @@
-import { Injectable, EventEmitter } from '@angular/core';
+import { 
+  Inject,
+  Injectable, 
+  InjectionToken, 
+  EventEmitter 
+} from '@angular/core';
 import { BehaviorSubject  } from 'rxjs';
 import { filter  } from 'rxjs/operators';
 import { CookieService  } from '../cookie';
 import { 
-  CategoryDict, Candidate, CandidateDict, GetAnswer, Party, PartyDict, ConstituencyDict, 
-  DatabaseService, MunicipalityDict, Question, QuestionDict, QuestionNumeric, Municipality 
+  CategoryDict, 
+  Candidate, 
+  CandidateDict, 
+  GetAnswer, 
+  Party, 
+  PartyDict, 
+  ConstituencyDict, 
+  DatabaseService, 
+  MunicipalityDict, 
+  Question, 
+  QuestionDict, 
+  QuestionNumeric, 
+  Municipality 
 } from '../database';
 import { 
-  Coordinates, DataProjector, ManhattanProjector, PcaProjector, ProjectedMapping, 
-  ProjectorDatum, RadarProjector, TsneProjector 
+  Coordinates, 
+  DataProjector, 
+  ManhattanProjector, 
+  PcaProjector, 
+  ProjectedMapping, 
+  ProjectorDatum, 
+  RadarProjector, 
+  TsneProjector 
 } from './data-projector/';
 // import { TsneProjector } from './data-projector/';
 import { 
-  CandidateFilter, CandidateFilterLogicOperator, CandidateFilterSimple, 
-  CandidateFilterNumberRange, CandidateFilterMultiQuestion 
+  CandidateFilter, 
+  CandidateFilterLogicOperator, 
+  CandidateFilterSimple, 
+  CandidateFilterNumberRange, 
+  CandidateFilterMultiQuestion 
 } from './candidate-filter';
 
-
-export const COOKIE_MUNICIPALITY = "Municipality";
-export const COOKIE_FAVOURITES = "Favourites";
-
-export const MAX_MISSING_VALS = 10; // Set to 0 or greater to cull candidates based on number of missing vals, use -1 to include all candidates
-export const NONMISSING_CANDIDATE_MAX_MISSING_VALS = 9; // The max number of missing vals before a candidate is flagged as missing, set to -1 to mark none
-export const MIN_VALS_FOR_MAPPING = 5; // The min number of answers before mapping is allowed
-
-export interface QuestionAverageDict {
-  [questionId: string]: {
-    [partyName: string]: number
-  }
-}
 
 export enum DataStatus {
   NotReady,
@@ -36,7 +48,33 @@ export enum DataStatus {
   Updated,
 }
 
+export interface MatcherConfig {
+  useMunicipalityAsConstituency?: boolean;
+  maxMissingVals?: number;
+  nonmissingCandidateMaxMissingVals?: number;
+  minValsForMapping?: number;
+}
+
 export type ProjectionMethod = 'PCA' | 'RadarPCA' | 'TSNE' | 'Manhattan';
+
+export interface QuestionAverageDict {
+  [questionId: string]: {
+    [partyName: string]: number
+  }
+}
+
+
+export const COOKIE_MUNICIPALITY = "Municipality";
+export const COOKIE_FAVOURITES = "Favourites";
+
+export const DEFAULT_MATCHER_CONFIG: MatcherConfig = {
+  useMunicipalityAsConstituency: false,
+  maxMissingVals: 10,
+  nonmissingCandidateMaxMissingVals: 9,
+  minValsForMapping: 5
+}
+
+export const MATCHER_CONFIG = new InjectionToken<MatcherConfig>('MATCHER_CONFIG');
 
 
 /**********************************************************************
@@ -51,6 +89,7 @@ export class MatcherService {
   public questions: QuestionDict = {};
   public radarCentre: Coordinates = [0.5, 0.8];
   public correlationMatrix: any;
+  public config: MatcherConfig;
   public categories: CategoryDict = {};
   public candidates: CandidateDict = {};
   public parties: PartyDict = {};
@@ -156,9 +195,11 @@ export class MatcherService {
   private _voterDisabled: boolean = false;
 
   constructor(
+    @Inject(MATCHER_CONFIG) config: MatcherConfig,
     private cookie: CookieService,
     private database: DatabaseService,
   ) {
+    this.config = {...DEFAULT_MATCHER_CONFIG, ...(config || {})};
     // Add subscriptions to take care of data status updates
     // See also setConstituency(), which resets statuses
     // QuestionDataUpdated is fired whenever the voter's answer change, so that annuls tsne, too
@@ -199,7 +240,7 @@ export class MatcherService {
   }
 
   get hasEnoughAnswersForMapping(): boolean {
-    return this.countVoterAnswers() >= MIN_VALS_FOR_MAPPING;
+    return this.countVoterAnswers() >= this.config.minValsForMapping;
   }
 
   get municipality(): string {
@@ -396,7 +437,7 @@ export class MatcherService {
 
     // Cull candidates with too many missing values
     // and flag candidates with missing values above the threshold
-    if (MAX_MISSING_VALS > -1 || NONMISSING_CANDIDATE_MAX_MISSING_VALS > -1) {
+    if (this.config.maxMissingVals > -1 || this.config.nonmissingCandidateMaxMissingVals > -1) {
 
       let qq = this.getAnswerableQuestions();
  
@@ -404,9 +445,9 @@ export class MatcherService {
 
         let missing = qq.filter(q => q.isMissing(this.candidates[id].getAnswer(q))).length;
 
-        if (MAX_MISSING_VALS > -1 && missing > MAX_MISSING_VALS)
+        if (this.config.maxMissingVals > -1 && missing > this.config.maxMissingVals)
           delete this.candidates[id];
-        else if (NONMISSING_CANDIDATE_MAX_MISSING_VALS > -1 && missing > NONMISSING_CANDIDATE_MAX_MISSING_VALS)
+        else if (this.config.nonmissingCandidateMaxMissingVals > -1 && missing > this.config.nonmissingCandidateMaxMissingVals)
           this.candidates[id].missing = true;
       }
     }
