@@ -86,18 +86,15 @@
   <mat-tab label="Perustiedot">
     <section class="candidate-data candidate-data--primary">
 
-      <ng-container *ngIf="!usePortrait">
-        
-        <ng-container *ngIf="candidate.missing">
+      <div *ngIf="candidate.missing"
+           class="candidate-datum missingWarning {{ dataContentClass }}">
+        <mat-icon>warning</mat-icon> 
+        Ehdokas ei ole vastannut Ehdokaskartan kysymyksiin
+      </div>
 
-          <label>
-            <mat-icon>warning</mat-icon>
-            Tämä ehdokas ei ole vastannut Ehdokaskartan kysymyksiin
-          </label>
-    
-        </ng-container>
-    
-        <ng-container *ngIf="!candidate.missing">
+      <ng-container *ngIf="!candidate.missing && !usePortrait">
+  
+        <div class="candidate-datum">
     
           <ng-container *ngIf="opinions.disagreed.length > 0">
             <label>Merkittävästi eri mieltä {{ opinions.disagreed.length }} kysymyksestä</label>
@@ -113,16 +110,10 @@
           <ng-container *ngIf="opinions.disagreed.length == 0">
             <label>Ei kysymyksiä, joista olette merkittävästi eri mieltä</label>
           </ng-container>
-    
-        </ng-container>
+
+        </div>
 
       </ng-container>
-
-      <div *ngIf="candidate.missing && usePortrait"
-           class="candidate-datum missingWarning {{ dataContentClass }}">
-        <mat-icon>warning</mat-icon> 
-        Ehdokas ei ole vastannut Ehdokaskartan kysymyksiin
-      </div>
 
       <img class="candidate-portrait" 
            [src]="portraitUrl"

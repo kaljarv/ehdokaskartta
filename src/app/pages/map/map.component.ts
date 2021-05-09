@@ -177,7 +177,7 @@ export class MapComponent
                   "Ehdokkaat on sijoiteltu kartalle heidän mielipiteidensä perusteella." :
                   "Ehdokkaat on sijoiteltu kartalle sen perusteella, mitä he ovat vastanneet valitsemiisi kysymyksiin, ja kartan keskeltä löydät itsesi."
                 ) + " Voit lähentää tai loitontaa karttaa, rajata ehdokkaita vaikkapa iän perusteella tai näyttää puolueet kartalla.",
-       // log() DEBUG TODO REM onboarding: {restart: () => this.onboardingTour?.restart()},
+      onboarding: {restart: () => this.onboardingTour?.restart()},
       showMapTools: true,
       loadingState: {
         type: 'loading',

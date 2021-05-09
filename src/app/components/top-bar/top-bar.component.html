@@ -51,6 +51,7 @@
     </div>
   </header>
   <section [@toggleExpand]="expanded ? 'open' : 'closed'"
+           (@toggleExpand.done)="emitExpansionChange()"
            (click)="toggle()"
            class="content">
     <ng-template #stringContentTemplate>

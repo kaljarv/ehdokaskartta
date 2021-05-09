@@ -11,6 +11,7 @@ import {
   ViewContainerRef
 } from '@angular/core';
 import { 
+  AnimationEvent,
   trigger,
   style,
   state,
@@ -28,8 +29,10 @@ import {
   ANIMATION_TIMING,
   PATHS,
   PageName,
-  SharedService 
+  SharedService,
+  TopBarExpansionState
 } from '../../core';
+
 
 
 export const DEFAULT_TOP_BAR_NEXT_ELEMENT_OFFSET: {top: number, left: number} = {
@@ -158,6 +161,9 @@ export class TopBarComponent implements AfterViewInit, OnDestroy, OnInit {
     this._subscriptions.forEach(s => s.unsubscribe());
     this._subscriptions = null;
 
+    // This defaults to 'destroyed'
+    this.emitExpansionChange('destroyed');
+
     this.contentTemplate = null;
     this.header = null;
     this.stringContentTemplate = null;
@@ -188,8 +194,14 @@ export class TopBarComponent implements AfterViewInit, OnDestroy, OnInit {
 
     // If there were changes (and in case of a component content we managed to load them)
     // expand the top bar
-    if (hasChanged)
-      this.expanded = true;
+    if (hasChanged) {
+
+      if (this.expanded)
+        this.emitExpansionChange();
+      else
+        // This will emit an expansion change event when the animation is done
+        this.expanded = true;
+    }
   }
 
   private _loadComponent(): boolean {
@@ -213,6 +225,7 @@ export class TopBarComponent implements AfterViewInit, OnDestroy, OnInit {
           const componentFactory = this.componentFactoryResolver.resolveComponentFactory(this.content as Type<any>);
           this.contentTemplate.createComponent(componentFactory);
         }
+
       }, 1);
 
       return true;
@@ -258,12 +271,19 @@ export class TopBarComponent implements AfterViewInit, OnDestroy, OnInit {
   /*
    * Returns offsetTop and offsetLeft for an element based under the top bar
    */
-  public getOffsetForNextElement(): {top: number, left: number} {
+  public getOffsetForNextElement(includeExpansion: boolean = false): {top: number, left: number} {
     if (this.host?.nativeElement && this.header?.nativeElement)
       return {
-        top: this.header.nativeElement.offsetHeight + 2 * this.host.nativeElement.offsetTop,
+        top: (includeExpansion ? this.host : this.header).nativeElement.offsetHeight + 2 * this.host.nativeElement.offsetTop,
         left: this.host.nativeElement.offsetLeft
       }
     return DEFAULT_TOP_BAR_NEXT_ELEMENT_OFFSET;
   }
+
+  public emitExpansionChange(state?: TopBarExpansionState): void {
+    if (!state)
+      state = this.expanded ? 'open' : 'closed';
+    this.shared.topBarExpansionChanged.emit(state);
+  }
+
 }

@@ -839,7 +839,7 @@ export class MatcherService {
       let answer: number | number[] = source.getAnswer(q);
 
       if (q.isMissing(answer))
-        answer = this.voterDisabled ? 
+        answer = this.voterDisabled || q.voterAnswer == null ? 
                  q.neutralAnswer : 
                  q.getInvertedVoterAnswer();
 

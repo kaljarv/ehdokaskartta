@@ -1,6 +1,6 @@
 // Includes mat-theming providing the functions used below
 @import 'variables.scss'
-  
+
 mat-sidenav-container
   min-height: 100vh
 
@@ -15,25 +15,37 @@ mat-sidenav
     font-style: italic
 
 mat-sidenav-content
+  display: block
+  max-height: 100vh
   min-height: 100vh
-  overflow-y: visible !important
+  overflow-y: scroll !important
+  transition: padding $transition-M
+
+app-top-bar
+  position: fixed
+  display: block
+  margin: $margin-M
+  top: 0
+  left: 0
+  right: 0
+  z-index: $zIndex-7
+
+#topTools
+  margin: 0 $margin-M $margin-M $margin-M
+  position: fixed
+  right: 0
+  transition: top $transition-M
+
+#bottomTools
+  margin: $margin-M
+  position: relative
 
 #topTools,
 #bottomTools
-  position: relative
-  margin: $margin-M
   z-index: $zIndex-8
   hyphens: manual
-  
-  .leftColumn,
-  .rightColumn
-    float: left
-    display: flex
-    flex-flow: column nowrap
-    align-items: center
-
-  .rightColumn
-    float: right
+  display: flex
+  flex-flow: column nowrap
   
   button
     background-color: $color-nega

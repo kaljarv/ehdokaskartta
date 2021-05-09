@@ -1062,18 +1062,22 @@ export class MapCanvasComponent
 
   private _checkAnimations(time: DOMHighResTimeStamp = performance.now()): boolean {
     // Remove completed
-    this._animations.forEach(a => {
+    this._animations?.forEach(a => {
       if (a.isPast(time, true))
         this._animations.delete(a);
     });
     // Check if any are running
-    return this._animations.size > 0;
+    return this._animations?.size > 0;
   }
 
   /*
    * Do the actual drawing of the canvas
    */
   private _draw(time: DOMHighResTimeStamp): void {
+
+    // To ward off errors, if we are navigating away from the map
+    if (!this._context)
+      return;
 
     // Clear
     this._clearCanvases();

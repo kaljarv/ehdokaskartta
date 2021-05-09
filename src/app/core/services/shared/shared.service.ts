@@ -60,6 +60,8 @@ export type ToggleSideNavOptions = {
   onComplete?: () => void
 }
 
+export type TopBarExpansionState = 'open' | 'closed' | 'destroyed';
+
 export type PageName = 'constituencyPicker' | 'questions' | 'map' | 'browse' | 'titleScreen' | 'about';
 
 export const DEFAULT_LOADING_STATE: LoadingState = {type: 'default'};
@@ -113,6 +115,7 @@ export class SharedService {
   readonly ensureVisibleOnMap = new EventEmitter<MapEnsureVisibleOptions>();
   readonly openFeedback = new EventEmitter<void>();
   readonly minimiseTopBar = new EventEmitter<void>();
+  readonly topBarExpansionChanged = new EventEmitter<TopBarExpansionState>();
   readonly showMapTooltips = new EventEmitter<void>();
   readonly hideMapTooltips = new EventEmitter<void>();
   readonly showSnackBar = new EventEmitter<{

@@ -4,7 +4,10 @@ import { Component,
          ElementRef } from '@angular/core';
 import { Router, 
          NavigationStart } from '@angular/router';
-import { trigger,
+import { animateChild,
+         group,
+         query,
+         trigger,
          style,
          state,
          animate,
@@ -28,7 +31,8 @@ import { SharedService,
          ForwardOptions,
          LoadingState,
          MatcherService,
-         ToggleSideNavOptions } from './core';
+         ToggleSideNavOptions, 
+         TopBarExpansionState } from './core';
 
 import { DetailsQuestionComponent } from './pages/question-list';
 import { DetailsCandidateComponent,
@@ -112,9 +116,9 @@ export const SNACK_BAR_DURATION_WITH_ACTION = 5000;
         {params: {
           offset: '0px',
         }}),
-      transition('* => *',
+      transition('* => *', [
         animate(ANIMATION_TIMING)
-      ),
+      ]),
     ]),
     trigger('fadeInOut', [
       transition(':enter', [
@@ -152,6 +156,7 @@ export class AppComponent implements DoCheck {
   @ViewChild('sideNav') sideNav;
   @ViewChild('topBar') topBar: TopBarComponent;
   
+  public contentTopMargin: string = '0px';
   public forwardOptions: ForwardOptions;
   public showNextButtonBar: boolean;
   public showNextProgress: boolean;
@@ -243,6 +248,9 @@ export class AppComponent implements DoCheck {
         promise.then(() => options.onComplete());
 
     });
+    this.shared.topBarExpansionChanged.subscribe( () => 
+      this.updateContentTopMargin()
+    );
     this.shared.showMapTooltips.subscribe( () =>
       this.showHideMapTooltips(true)
     );
@@ -334,7 +342,7 @@ export class AppComponent implements DoCheck {
     this.clearDetailsCard();
 
     // Set proper top margin to account for the top bar
-    const offset = this.topBar ? this.topBar.getOffsetForNextElement() : DEFAULT_TOP_BAR_NEXT_ELEMENT_OFFSET;
+    const offset = this.getTopBarOffset();
     const options: FloatingCardOptions = {
       landscapeMarginLeft: offset.left,
       landscapeMarginTop:  offset.top,
@@ -471,6 +479,15 @@ export class AppComponent implements DoCheck {
     });
   }
 
+  public updateContentTopMargin(): void {
+    // We need a small timeout for the topbar to reach it's final height
+    setTimeout(() => this.contentTopMargin = `${this.topBar ? this.getTopBarOffset(true).top : 0}px`, 25);
+  }
+
+  public getTopBarOffset(includeExpansion: boolean = false): {top: number, left: number} {
+    return this.topBar ? this.topBar.getOffsetForNextElement(includeExpansion) : DEFAULT_TOP_BAR_NEXT_ELEMENT_OFFSET
+  }
+
   get hideTopBar(): boolean {
     return this.shared.hideTopBar;
   }
@@ -489,11 +506,6 @@ export class AppComponent implements DoCheck {
 
   get loadingState(): BehaviorSubject<LoadingState> {
     return this.shared.loadingState;
-  }
-
-  get isAlternativeMap(): boolean {
-    // TODO
-    return false;
   }
   
   get showAllParties(): boolean {

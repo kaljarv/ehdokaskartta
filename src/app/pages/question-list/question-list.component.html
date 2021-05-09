@@ -33,8 +33,9 @@
 </app-onboarding-tour>
 
 <app-onboarding-tour #enoughAnswersTour
-                     tourId="QuestionListEnoughAnswers">
-  <app-onboarding-step attachTo="#nextButtonBar"
+                     tourId="QuestionListEnoughAnswers"
+                     [modal]="true">
+  <app-onboarding-step attachTo="#nextButton"
                        attachOn="top"
                        title="Nyt voit halutessasi siirtyä tuloksiin">
     <p>

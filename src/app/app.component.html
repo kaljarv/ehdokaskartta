@@ -98,65 +98,61 @@
     </mat-nav-list>
   </mat-sidenav>
 
-  <mat-sidenav-content>
+  <mat-sidenav-content [style.paddingTop]="contentTopMargin">
 
     <app-top-bar *ngIf="!hideTopBar"
                  #topBar></app-top-bar>
 
     <div *ngIf="showMapTools"
-         id="topTools">
-      <div class="leftColumn">
-        <!-- Nothing here yet -->
-      </div>
-      <div class="rightColumn">
-        <!--
-        <button id="mapTypeButton"
-                mat-mini-fab 
-                (click)="toggleMapType()"
-                #mapTypeButtonTooltip="matTooltip"
-                [matTooltip]="isAlternativeMap ? 'Vaihda kartta ehdokkaiden itse ilmoittamaan sijaintiin perustuvaan' : 'Palaa ehdokkaiden vastauksiin perustuvaan karttaan' "
-                matTooltipClass="tools-tooltip"
-                matTooltipPosition="left"
-                [class.active]="isAlternativeMap"
-                @buttonAppear>
-          <mat-icon>map</mat-icon>
-        </button>
-        -->
-        <button id="filterButton"
-                mat-mini-fab 
-                (click)="openCandidateFilters()"
-                #filterButtonTooltip="matTooltip"
-                matTooltip="Suodata ehdokkaita"
-                matTooltipClass="tools-tooltip"
-                matTooltipPosition="left"
-                [class.active]="hasActiveFilters"
-                @buttonAppear>
-          <mat-icon>filter_list</mat-icon>
-        </button>
-        <button id="partyButton"
-                mat-mini-fab 
-                (click)="toggleShowAllParties()"
-                #partyButtonTooltip="matTooltip"
-                [matTooltip]="showAllParties ? 'Älä näytä puolueita kartalla' : 'Näytä puolueet kartalla'"
-                matTooltipClass="tools-tooltip"
-                matTooltipPosition="left"
-                [class.active]="showAllParties"
-                @buttonAppear>
-          <mat-icon>flag</mat-icon>
-        </button>
-        <!-- Was: *ngIf="hasFavourites" -->
-        <button id="favouritesButton"
-                (click)="openFavourites()"
-                mat-mini-fab 
-                #favouritesButtonTooltip="matTooltip"
-                matTooltip="Avaa muistilista"
-                matTooltipClass="tools-tooltip"
-                matTooltipPosition="left"
-                [class.active]="hasFavourites"
-                @buttonAppear>
-          <mat-icon>bookmarks</mat-icon>
-        </button>
-      </div>
+         id="topTools"
+         [style.top]="contentTopMargin">
+      <!--
+      <button id="mapTypeButton"
+              mat-mini-fab 
+              (click)="toggleMapType()"
+              #mapTypeButtonTooltip="matTooltip"
+              [matTooltip]="isAlternativeMap ? 'Vaihda kartta ehdokkaiden itse ilmoittamaan sijaintiin perustuvaan' : 'Palaa ehdokkaiden vastauksiin perustuvaan karttaan' "
+              matTooltipClass="tools-tooltip"
+              matTooltipPosition="left"
+              [class.active]="isAlternativeMap"
+              @buttonAppear>
+        <mat-icon>map</mat-icon>
+      </button>
+      -->
+      <button id="filterButton"
+              mat-mini-fab 
+              (click)="openCandidateFilters()"
+              #filterButtonTooltip="matTooltip"
+              matTooltip="Suodata ehdokkaita"
+              matTooltipClass="tools-tooltip"
+              matTooltipPosition="left"
+              [class.active]="hasActiveFilters"
+              @buttonAppear>
+        <mat-icon>filter_list</mat-icon>
+      </button>
+      <button id="partyButton"
+              mat-mini-fab 
+              (click)="toggleShowAllParties()"
+              #partyButtonTooltip="matTooltip"
+              [matTooltip]="showAllParties ? 'Älä näytä puolueita kartalla' : 'Näytä puolueet kartalla'"
+              matTooltipClass="tools-tooltip"
+              matTooltipPosition="left"
+              [class.active]="showAllParties"
+              @buttonAppear>
+        <mat-icon>flag</mat-icon>
+      </button>
+      <!-- Was: *ngIf="hasFavourites" -->
+      <button id="favouritesButton"
+              (click)="openFavourites()"
+              mat-mini-fab 
+              #favouritesButtonTooltip="matTooltip"
+              matTooltip="Avaa muistilista"
+              matTooltipClass="tools-tooltip"
+              matTooltipPosition="left"
+              [class.active]="hasFavourites"
+              @buttonAppear>
+        <mat-icon>bookmarks</mat-icon>
+      </button>
     </div>
 
     <!-- ================================================================= 
