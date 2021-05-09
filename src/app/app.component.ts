@@ -27,7 +27,8 @@ import { SharedService,
          ANIMATION_DURATION_MS,
          ForwardOptions,
          LoadingState,
-         MatcherService } from './core';
+         MatcherService,
+         ToggleSideNavOptions } from './core';
 
 import { DetailsQuestionComponent } from './pages/question-list';
 import { DetailsCandidateComponent,
@@ -49,7 +50,7 @@ export const DIALOG_CONFIG: MatDialogConfig = {
   maxHeight: '80vh',
 };
 export const SNACK_BAR_DURATION = 5000;
-export const SNACK_BAR_DURATION_WITH_ACTION = 7500;
+export const SNACK_BAR_DURATION_WITH_ACTION = 5000;
 
 /*
  * Handles main UI, tools, routing and opening of overlays.
@@ -356,6 +357,13 @@ export class AppComponent implements DoCheck {
     });
   }
 
+  public followLink(link: string, event?: Event): void {
+    const path = link in PATHS ? PATHS[link] : link;
+    this.router.navigate([path]);
+    this.toggleSideNav({action: 'close'});
+    event?.stopPropagation();
+  }
+
   public goForward() {
     if (this.forwardOptions.onBefore)
       this.forwardOptions.onBefore();
@@ -363,10 +371,10 @@ export class AppComponent implements DoCheck {
     this.clearForward();
   }
 
-  public toggleSideNav(): void {
+  public toggleSideNav(options?: ToggleSideNavOptions): void {
     // For the sake consistency, this is done in a silly way by routing via the shared component
     // Cf. subscription in the constructor
-    this.shared.toggleSideNav.emit();
+    this.shared.toggleSideNav.emit(options ?? null);
   }
 
   public openCandidateFilters(): void {

@@ -4,20 +4,20 @@
                mode="push">
     <mat-nav-list>
         <a mat-list-item 
-           routerLink="/">
+           (click)="followLink('/')">
           <!-- <mat-icon matListIcon>home</mat-icon> -->
           Palaa alkuun
         </a>
 
         <a mat-list-item 
-           [routerLink]="paths.constituencyPicker">
+           (click)="followLink('constituencyPicker')">
           <!-- <mat-icon matListIcon>place</mat-icon> -->
           Siirry vaalipiirin valintaan
         </a>
 
         <a *ngIf="enableQuestions"
            mat-list-item 
-           [routerLink]="paths.questions">
+           (click)="followLink('questions')">
            <!-- <mat-icon matListIcon>help</mat-icon> -->
            Siirry kysymyksiin
         </a>
@@ -31,7 +31,7 @@
 
         <a *ngIf="enableMap"
            mat-list-item 
-           [routerLink]="paths.map">
+           (click)="followLink('map')">
           <!-- <mat-icon matListIcon>map</mat-icon> -->
           Siirry tuloksiin
         </a>
@@ -45,7 +45,7 @@
 
         <a *ngIf="enableQuestions"
            mat-list-item 
-           [routerLink]="paths.browse">
+           (click)="followLink('browse')">
           <!-- <mat-icon matListIcon>map</mat-icon> -->
           Selaa ehdokkaita vastaamatta kysymyksiin
         </a>
@@ -90,7 +90,7 @@
         </a>
 
         <a mat-list-item 
-           [routerLink]="paths.about">
+           (click)="followLink('about')">
           <mat-icon matListIcon>info</mat-icon>
           Tietoja palvelusta
         </a>

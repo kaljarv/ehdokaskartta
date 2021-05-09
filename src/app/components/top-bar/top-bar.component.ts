@@ -199,6 +199,12 @@ export class TopBarComponent implements AfterViewInit, OnDestroy, OnInit {
 
       // To ward off content changed after checked errors
       setTimeout(() => {
+
+        // We have to recheck here, because top bar might've been cleared
+        // during the timeout
+        if (!this.contentTemplate)
+          return;
+
         this.contentTemplate.clear();
       
         if (this.content == null || typeof this.content === 'string') {

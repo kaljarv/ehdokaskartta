@@ -20,7 +20,8 @@ import {
   Question, 
   QuestionDict, 
   QuestionNumeric, 
-  Municipality 
+  Municipality, 
+  QuestionPreferenceOrder
 } from '../database';
 import { 
   Coordinates, 
@@ -53,9 +54,10 @@ export interface MatcherConfig {
   maxMissingVals?: number;
   nonmissingCandidateMaxMissingVals?: number;
   minValsForMapping?: number;
+  projectionMethod?: ProjectionMethod;
 }
 
-export type ProjectionMethod = 'PCA' | 'RadarPCA' | 'TSNE' | 'Manhattan';
+export type ProjectionMethod = 'PCA' | 'RadarPCA' | 'RadarPCAFull' | 'TSNE' | 'Manhattan';
 
 export interface QuestionAverageDict {
   [questionId: string]: {
@@ -71,7 +73,8 @@ export const DEFAULT_MATCHER_CONFIG: MatcherConfig = {
   useMunicipalityAsConstituency: false,
   maxMissingVals: 10,
   nonmissingCandidateMaxMissingVals: 9,
-  minValsForMapping: 5
+  minValsForMapping: 5,
+  projectionMethod: 'RadarPCAFull'
 }
 
 export const MATCHER_CONFIG = new InjectionToken<MatcherConfig>('MATCHER_CONFIG');
@@ -790,8 +793,14 @@ export class MatcherService {
     this.dataStatus.candidates.next(DataStatus.NotReady);
   }
 
+  /*
+   * Return the questions that will be used for projection.
+   * We will use all answerable questions if voter is disabled
+   * or we have a projection method uses all questions. 
+   * Otherwise, only questions already answered by the voter are used.
+   */
   public getMappingQuestions(): QuestionNumeric[] {
-    return this.voterDisabled ? 
+    return this.voterDisabled || this.config.projectionMethod === 'RadarPCAFull' ? 
            this.getAnswerableQuestions() :
            this.getVoterAnsweredQuestions();
   }
@@ -827,12 +836,15 @@ export class MatcherService {
   /*
    * Project candidates on the map
    */
-  public initMapping(method: ProjectionMethod = 'RadarPCA'): void {
+  public initMapping(method?: ProjectionMethod): void {
+
+    if (method)
+      this.config.projectionMethod = method;
 
     // Prepare raw data for mapping
-    const data = new Array<Array<number>>();
-    const questions = this.getMappingQuestions();
-    const candidates = this.getCandidatesAsList();
+    const data = new Array<Array<number>>(),
+          questions = this.getMappingQuestions(),
+          candidates = this.getCandidatesAsList();
     let voter: ProjectorDatum;
 
     // Treat values
@@ -842,9 +854,24 @@ export class MatcherService {
     // Add the voter as the last item
     // TODO:  Move voterAnswer away from Questions and convert Voter to a subclass of Candidate
     if (!this.voterDisabled) {
+
       voter = [];
+      // We have to check for missing voter answers in case of useAll
+      // If we are missing pref orders, we must multiply undefs
       questions.forEach(q => {
-        let answer: number | number[] = q.normalizeValue(q.voterAnswer);
+        let answer: number | number[];
+
+        if (q.voterAnswer != null) {
+          answer = q.normalizeValue(q.voterAnswer);
+        } else {
+          if (q instanceof QuestionPreferenceOrder) {
+            answer = [];
+            for (let i = 0; i < q.getPairwisePreferencesLength(); i++)
+              answer.push(null);
+          } else {
+            answer = null;
+          } 
+        }
         if (Array.isArray(answer))
           voter.push(...answer);
         else
@@ -853,7 +880,7 @@ export class MatcherService {
     }
 
     // Create the projector
-    switch (method) {
+    switch (this.config.projectionMethod) {
       case 'Manhattan':
         this._projector = new ManhattanProjector();
         break;
@@ -861,6 +888,7 @@ export class MatcherService {
         this._projector = new PcaProjector();
         break;
       case 'RadarPCA':
+      case 'RadarPCAFull':
         this._projector = new RadarProjector({
           angularMethod: 'PCA',
           centreOn: this.radarCentre
@@ -872,9 +900,12 @@ export class MatcherService {
       case 'TSNE':
         this._projector = new TsneProjector();
         break;
+      default:
+        throw new Error(`Unsupported projection method '${this.config.projectionMethod}'!`);
     }
     
     // Call the projector
+    // Voter might be undefined, which is handled by the projectors
     // NB. with PCA the progress emitter is not used
     this._projector.project(data, voter, (progress) => {
       this.progressChanged.emit(progress);

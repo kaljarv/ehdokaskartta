@@ -5,28 +5,26 @@
   <mat-icon>menu</mat-icon>
 </button>
 
-<section class="content">
-
-  <div class="clickableArea"
-       (click)="goForward()">
-
-    <h1>
-      Ehdokaskartta
-    </h1>
+<section class="title clickableArea"
+         (click)="goForward()">
 
     <div id="vignette">
-      <ng-lottie width="10rem"
-                 height="12.6866rem"
-                 [options]="animationOptions" 
-                 (animationCreated)="animationCreated($event)"
-                 (domLoaded)="animationDomLoaded()"
-                 (loopComplete)="animationLoopCompleted()"></ng-lottie>
+      <ng-lottie [options]="animationOptions" 
+                (animationCreated)="animationCreated($event)"
+                (domLoaded)="animationDomLoaded()"
+                (loopComplete)="animationLoopCompleted()"></ng-lottie>
       <!--
-        <img src="assets/images/map-vignette.svg" />
+      <img src="assets/images/map-vignette.svg" />
       -->
     </div>
 
-  </div>
+    <h1>
+      Ehdokas&shy;kartta
+    </h1>
+
+</section>
+
+<section class="description">
 
   <button id="nextButton"
           mat-stroked-button 
@@ -36,10 +34,7 @@
   </button>
 
   <p class="info">
-    Ehdokaskartta tarjoaa toisenlaisen, kokeellisen näkymän Ylen Eduskuntavaalien 2019 Vaalikoneen tietoihin.<br />
-    <mat-icon>phone_iphone</mat-icon> Sovellus on tarkoitettu ensisijaisesti käytettäväksi kännykällä.<br />
-    <mat-icon>feedback</mat-icon> Kaikenlainen palaute tästä prototyypistä erittäin tervetullutta.
-    <br />
+    Ehdokaskartta tarjoaa kokeellisen, avoimeen lähdekoodiin perustuvan näkymän Ylen kuntavaalien 2021 Vaalikoneen tietoihin. Sen ensisijaisena tarkoituksena on kerätä käyttäjien kokemuksia, joten kaikenlainen palaute on tervetullutta.<br>
     <a mat-button
        [routerLink]="aboutPath"
        class="readMore">

@@ -118,7 +118,7 @@ $fontSize-S:   mat-font-size($app-typography, caption);
 $fontSize-M:   mat-font-size($app-typography, body-1);
 $fontSize-L:   mat-font-size($app-typography, subheading-2);
 $fontSize-XL:  mat-font-size($app-typography, title);
-$fontSize-XXL: mat-font-size($app-typography, headline);
+$fontSize-XXL: 2.5rem; // mat-font-size($app-typography, headline);
 
 $fontSize-iconL: 32px;
 

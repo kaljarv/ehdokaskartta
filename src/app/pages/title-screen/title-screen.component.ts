@@ -26,8 +26,8 @@ import {
 
 // The delay in ms after animation has loaded to start playing it
 export const ANIMATION_DELAY: number = 250;
-export const ANIMATION_LOOP_START_FRAME: number = 157; // 156
-export const ANIMATION_PATH: string = 'assets/animations/map-vignette.json';
+export const ANIMATION_LOOP_START_FRAME: number = 160;
+export const ANIMATION_PATH: string = 'assets/animations/map-vignette-radar.json';
 
 @Component({
   selector: 'app-title-screen',
@@ -46,6 +46,7 @@ export class TitleScreenComponent
     autoplay: false,
     loop: true,
   };
+
   private _animationItem: AnimationItem;
   private _subscriptions: Subscription[] = [];
 
@@ -61,6 +62,14 @@ export class TitleScreenComponent
       showMapTools: false,
       showFeedbackButton: false
     });
+  }
+
+  get animationWidth(): string {
+    return 'max(100vw, 100rem)';
+  }
+
+  get animationHeight(): string {
+    return `calc(${this.animationWidth} * 8/14)`;
   }
 
   ngOnInit(): void {

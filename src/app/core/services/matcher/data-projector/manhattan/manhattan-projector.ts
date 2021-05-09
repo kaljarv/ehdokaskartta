@@ -22,13 +22,15 @@ export class ManhattanProjector extends DataProjector {
    */
 
   public get progress(): number {
-    // We don't unfortunately have access to the internal progress
     return 0;
   }
 
   /*
    * If voter is not supplied the average of the data is used
-   * NB. Progress is not reported
+   * NB. 
+   * - If voter has any nullish values, those data do not
+   *   add to the distance.
+   * - Progress is not reported
    */
   protected _project(data: ProjectorData, voter: ProjectorDatum = undefined, onUpdate?: (number) => void): Promise<ProjectedMapping> {
 
@@ -65,7 +67,11 @@ export class ManhattanProjector extends DataProjector {
   protected _getDistance(datum: ProjectorDatum): number {
     if (!this._origo)
       throw new Error("Call project before _getDistance!");
-    return datum.reduce((p, c, i) => p + Math.abs(c - this._origo[i]), 0);
+    return datum.reduce((p, c, i) => {
+      if (this._origo[i] == null)
+        return p;
+      return p + Math.abs(c - this._origo[i]);
+    }, 0);
   }
 
   protected _predict(datum: ProjectorDatum): Coordinates {

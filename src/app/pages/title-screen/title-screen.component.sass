@@ -1,5 +1,7 @@
 @import 'variables.scss'
 
+$titleHeight: 55vh
+
 :host
   display: flex
   padding: $margin-L
@@ -8,55 +10,62 @@
   background-color: $color-primary
   color: $color-nega
   text-align: center
-  // cursor: pointer
   flex-flow: column nowrap
   justify-content: space-between
-  align-items: center
+  align-items: stretch
+  align-content: center
 
 #menuButton
-  align-self: flex-start
+  position: absolute
+  top: $margin-L
+  left: $margin-L
+  z-index: $zIndex-7
 
-.clickableArea
-  cursor: pointer
+.title
+  flex: 0 0 $titleHeight
 
-h1 
-  font-size: $fontSize-XXL
-  font-weight: bold
+  h1 
+    position: relative
+    font-size: $fontSize-XXL
+    font-weight: bold
+    margin-top: 10vh
+    text-shadow: -2px -2px 0 $color-primary, 2px -2px 0 $color-primary, -2px  2px 0 $color-primary, 2px 2px 0 $color-primary
 
-.content
-  margin: $margin-M
+  #vignette
+    position: absolute
+    --width: max(100vw, 90rem)
+    width: var(--width)
+    top: calc(#{$titleHeight} - var(--width) * 7/14)
+    left: calc((100vw - var(--width)) / 2)
 
-#vignette
-  display: flex
-  flex-flow: row nowrap
-  justify-content: center
-  margin: $margin-XL auto
+  .clickableArea
+    cursor: pointer
 
-  img
-    width: 100%
-    height: auto
+.description
+  flex: 1 1 auto
 
-.info
-  font-size: $fontSize-S
-  hyphens: none
-  margin-top: $margin-M
+  .info
+    font-size: $fontSize-S
+    hyphens: none
+    margin: $margin-M auto $margin-S auto
+    max-width: $maxWidth-S
 
-  mat-icon
-    height: 16px
-    width: 16px
-    font-size: 16px
-    vertical-align: text-top
+    mat-icon
+      height: 16px
+      width: 16px
+      font-size: 16px
+      vertical-align: text-top
 
-.readMore
-  color: $color-nega
+  .readMore
+    color: $color-nega
 
-#nextButton
-  border-color: $color-nega
-  color: $color-nega
-  font-size: $fontSize-XL
-  // color: $color-primary
-  // background-color: $color-nega
-  margin-bottom: $margin-M
+  #nextButton
+    border-color: $color-nega
+    color: $color-nega
+    font-size: $fontSize-XL
+    // color: $color-primary
+    // background-color: $color-nega
+    margin-bottom: $margin-M
 
 .logos
   // position: absolute
@@ -65,6 +74,7 @@ h1
   // bottom: 0
   // left: 0
   // width: 100%
+  flex: 0 1 auto
   display: flex
   flex-flow: row nowrap
   justify-content: center
@@ -73,11 +83,11 @@ h1
   > *
     margin: 0 0.75rem
 
-#logos-yle
-  height: 0.9 * 2.5rem
+  #logos-yle
+    height: 0.9 * 2.5rem
 
-#logos-aalto
-  height: 0.9 * 1.5rem
+  #logos-aalto
+    height: 0.9 * 1.5rem
 
-#logos-kaljarv
-  height: 0.9 * 1.25rem
+  #logos-kaljarv
+    height: 0.9 * 1.25rem
