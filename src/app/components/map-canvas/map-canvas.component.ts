@@ -674,7 +674,7 @@ export class MapCanvasComponent
       // This fires both on mouse and tap events in which the coordinates
       // are accessed differently
       let touch;
-      if (d3.event instanceof TouchEvent && d3.event.changedTouches.length > 0)
+      if (d3.event.changedTouches && d3.event.changedTouches.length > 0)
         touch = d3.event.changedTouches[d3.event.changedTouches.length - 1];
 
       // Zoom to the level were labels are visible

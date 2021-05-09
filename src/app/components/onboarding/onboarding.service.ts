@@ -146,9 +146,8 @@ export class OnboardingService {
 
     // Check if the user has already seen this tour, 
     // unless forcibly restarted with overrideCookie
-    console.log("WARNING: Overriding tour complete cookie!"); // DEBUG TODO REMOVE
-    // if (!overrideCookie && tourId != null && this.checkCompletion(tourId))
-    //   return;
+    if (!overrideCookie && tourId != null && this.checkCompletion(tourId))
+      return;
 
     // Save current tour id so we can check for it when calling complete
     this._currentTourId = tourId || undefined;

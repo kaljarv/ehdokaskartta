@@ -292,7 +292,10 @@ export class DetailsCandidateComponent
     if (this._tabBodies.length > 0) {
 
       // Update tab body height
-      const bodyOffset = (this._tabBodies[0] as HTMLElement).getBoundingClientRect().top - this.floatingCardRef.getBoundingClientRect().top;
+      // If we are using landscape mode, we need to add the offset as we are not using
+      // the full viewport height
+      let bodyOffset = (this._tabBodies[0] as HTMLElement).getBoundingClientRect().top - this.floatingCardRef.getBoundingClientRect().top;
+      bodyOffset += this.floatingCardRef.usePortrait ? 0 : this.floatingCardRef.options.landscapeMarginTop;
       const bodyHeight = `calc(100vh - ${bodyOffset}px)`;
 
       // Only update style if height has changed

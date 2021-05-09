@@ -114,7 +114,7 @@ export class MapComponent
   public markerScale = 1.0;
   public minimisedCandidateScale = 1.0;
   public zoomExtents = [0.8, 15];
-  public showLabelFactor = 0.8 * 10;
+  public showLabelFactor = 0.8 * 8;
   public voter: any; // We'll save the voter here
 
   // These are used to control mat-menus dynamically
