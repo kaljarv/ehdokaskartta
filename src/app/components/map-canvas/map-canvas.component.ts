@@ -125,7 +125,7 @@ function clamp(value: number, min: number = 0.0, max: number = 1.0): number {
  */
 @Component({
   selector: 'app-map-canvas',
-  template: '<canvas #canvas [width]="width" [height]="height" (click)="onCanvasClick($event)"></canvas>',
+  template: '<canvas #canvas (click)="onCanvasClick($event)"></canvas>',
   styleUrls: ['./map-canvas.component.sass'],
   host: {
     '(window:resize)': 'onWindowResize()'
@@ -425,7 +425,7 @@ export class MapCanvasComponent
     const h = this.height;
     const r = this._pixelRatio;
 
-    [this._canvas, this._hitCanvas].forEach(c => {
+    for (const c of [this._canvas, this._hitCanvas]) {
       // Set style width in CSS units
       c.style.width = w + "px";
       c.style.height = h + "px";
@@ -436,7 +436,7 @@ export class MapCanvasComponent
 
       // Normalize coordinate system to use css pixels.
       c.getContext("2d").scale(r, r);
-    })
+    }
 
     this.redraw();
   }
