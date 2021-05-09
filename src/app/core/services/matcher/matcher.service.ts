@@ -57,6 +57,9 @@ export interface MatcherConfig {
   projectionMethod?: ProjectionMethod;
 }
 
+/*
+ * See also the const below
+ */
 export type ProjectionMethod = 'PCA' | 'RadarPCA' | 'RadarPCAFull' | 'TSNE' | 'Manhattan';
 
 export interface QuestionAverageDict {
@@ -78,6 +81,21 @@ export const DEFAULT_MATCHER_CONFIG: MatcherConfig = {
 }
 
 export const MATCHER_CONFIG = new InjectionToken<MatcherConfig>('MATCHER_CONFIG');
+
+/*
+ * Every allowed projetion method should have a setting here just 
+ * to ward off errors.
+ */
+export const PROJECTION_METHOD_PROPERTIES: {
+  [key: string]: {useAll: boolean}
+} = {
+  PCA: {useAll: false},
+  RadarPCA: {useAll: false},
+  RadarPCAFull: {useAll: true},
+  TSNE: {useAll: false},
+  Manhattan: {useAll: false}
+}
+
 
 
 /**********************************************************************
@@ -800,7 +818,11 @@ export class MatcherService {
    * Otherwise, only questions already answered by the voter are used.
    */
   public getMappingQuestions(): QuestionNumeric[] {
-    return this.voterDisabled || this.config.projectionMethod === 'RadarPCAFull' ? 
+
+    if (!(this.config.projectionMethod in PROJECTION_METHOD_PROPERTIES))
+      throw new Error(`Unsupported projection method '${this.config.projectionMethod}'!`);
+      
+    return this.voterDisabled || PROJECTION_METHOD_PROPERTIES[this.config.projectionMethod].useAll ? 
            this.getAnswerableQuestions() :
            this.getVoterAnsweredQuestions();
   }
