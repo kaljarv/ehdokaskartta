@@ -1,6 +1,7 @@
 <canvas #canvas 
         (click)="onCanvasClick($event)"
-        (mousemove)="onCanvasMousemove($event)"></canvas>
+        (mousemove)="onCanvasMousemove($event)"
+        [style.cursor]="mapTooltipData.visible ? 'pointer' : 'default'"></canvas>
 
 <div id="mapTooltip"
      [class.visible]="mapTooltipData.visible"

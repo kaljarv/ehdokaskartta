@@ -22,6 +22,7 @@ export interface MapMarkerCandidateOptions extends MapMarkerOptions {
   transitionTo?: MapMarkerCandidateState,
   disabledHeadScale?: number,
   minimisedHeadScale?: number,
+  favourite?: boolean,
   drawingOptions?: MapMarkerCandidateDrawingOptions[]
 }
 
@@ -53,6 +54,8 @@ export class MapMarkerCandidate extends MapMarker {
   protected _width  = 21.9099;
   // We need to add headR here as when there's no body the head's centre is at the feet's origin
   protected _height = this._bodyY + this._headR;
+  protected _favouriteHeadX = 8.5;
+  protected _favouriteHeadY = 8.5;
   protected _anchor = {
     x: this._width / 2, 
     y: this._bodyY
@@ -171,10 +174,44 @@ export class MapMarkerCandidate extends MapMarker {
           // bodyExpansion affects the location of the head only when there is a body
           y = this._headY + (this.hasBody ? 1 - b : 1) * (this._bodyY - this._headY),
           r = e * this._headR;
+
+    if (this.options.favourite)
+      this._drawFavouriteHead(ctx, x, y, r);
+    else
+      this._drawNormalHead(ctx, x, y, r);
+  }
+
+  protected _drawNormalHead(ctx: CanvasRenderingContext2D, x: number, y: number, r: number): void {
     ctx.beginPath();
     ctx.moveTo(x + r, y);
     ctx.arc(x, y, r, 0, Math.PI * 2, false);
     ctx.closePath();
+  }
+
+  protected _drawFavouriteHead(ctx: CanvasRenderingContext2D, x: number, y: number, r: number): void {
+
+    const scale = r / MAP_MARKER_CANDIDATE_HEAD_RADIUS;
+          
+    ctx.save();
+    // Translate to move to the top left corner of the star bounding box
+    ctx.translate(x - this._favouriteHeadX, y - this._favouriteHeadY);
+    ctx.scale(scale, scale);
+
+    ctx.beginPath();
+    ctx.moveTo(8.5,12.2);
+    ctx.lineTo(13.3,15.1);
+    ctx.lineTo(12,9.6);
+    ctx.lineTo(16.3,5.8999999999999995);
+    ctx.lineTo(10.700000000000001,5.3999999999999995);
+    ctx.lineTo(8.5,0.2);
+    ctx.lineTo(6.3,5.4);
+    ctx.lineTo(0.7,5.9);
+    ctx.lineTo(5,9.600000000000001);
+    ctx.lineTo(3.7,15.100000000000001);
+    ctx.lineTo(8.5,12.2);
+    ctx.closePath();
+
+    ctx.restore();
   }
 
   protected _drawNormalBody(ctx: CanvasRenderingContext2D): void {

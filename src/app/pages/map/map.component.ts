@@ -45,7 +45,8 @@ import {
   MapRedrawOptions,
   OnboardingTourComponent, 
   ZoomProperties,
-  MAP_MARKER_CANDIDATE_HEAD_RADIUS
+  MAP_MARKER_CANDIDATE_HEAD_RADIUS,
+  MapDatumCandidateOptions
 } from '../../components';
 
 
@@ -258,9 +259,14 @@ export class MapComponent
 
     // Subscribe to changes in the active candidate to signal map canvas
     this._subscriptions.push(this.shared.activeCandidateChanged.subscribe(() => 
-      this.updateMapMarkerData(MapRedrawOptions.RedrawOnly))
-    );
+      this.updateMapMarkerData(MapRedrawOptions.RedrawOnly)
+    ));
 
+    // Subscribe to changes in favourites
+    this._subscriptions.push(this.matcher.favouritesDataUpdated.subscribe(() => 
+      this.updateMapMarkerData(MapRedrawOptions.RedrawOnly)
+    ));
+    
     // Subscribe to all interactions to hide infos on first interaction
     this._subscriptions.push(this.shared.mapInteraction.subscribe(() => this.hideInfos()));
   }
@@ -354,7 +360,7 @@ export class MapComponent
     let f = (Math.sqrt(this.candidates.length) - Math.sqrt(100)) / Math.sqrt(900);
         f = this.shared.clamp(f, 0, 1);
     // Nb. this runs from 0.4 to 0.8
-    this.minimisedCandidateScale = 0.4 + (1 - f) * 0.4;
+    this.minimisedCandidateScale = 0.5 + (1 - f) * 0.5;
     this.zoomExtents = [1, 12 + (f * 3)**2];
     this.showLabelFactor = 8 / this.minimisedCandidateScale;
     console.log("Dynamic scale", f, this.showLabelFactor, this.minimisedCandidateScale, this.zoomExtents);
@@ -653,14 +659,22 @@ export class MapComponent
    */
   public updateMapMarkerData(options: MapRedrawOptions = MapRedrawOptions.RedrawOnly): void {
 
+    const favourites = this.matcher.getFavourites();
+
     this.markerData.forEach((m: MapDatum) => {
 
       // Shorthands
-      const o = m.options;
       const state = m.marker?.state;
       const toState = m.marker?.transitionTo;
 
       if (m instanceof MapDatumCandidate) {
+
+        const o = m.options;
+
+        if (favourites.includes(o.source.id))
+          o.favourite = true;
+        else if (o.favourite)
+          o.favourite = false;
 
         if (o.source.filteredOut) {
           // Candidates filtered out 
@@ -693,6 +707,8 @@ export class MapComponent
         }
 
       } else if (m instanceof MapDatumParty) {
+
+        const o = m.options;
 
         if (this.showPartyAvatar(o.source.name)) {
           // Show parties that should be visible

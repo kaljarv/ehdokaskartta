@@ -17,6 +17,7 @@ import {
 export interface MapDatumCandidateOptions extends MapDatumOptions {
   source: Candidate,
   transition?: MapDatumCandidateTransition,
+  favourite?: boolean
 }
 
 export interface MapDatumCandidateTransition extends MapDatumTransition {

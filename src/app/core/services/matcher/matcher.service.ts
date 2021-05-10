@@ -190,6 +190,7 @@ export class MatcherService {
     constituencies:     new BehaviorSubject<DataStatus>(DataStatus.NotReady),
     questions:          new BehaviorSubject<DataStatus>(DataStatus.NotReady),
     candidates:         new BehaviorSubject<DataStatus>(DataStatus.NotReady),
+    favourites:         new BehaviorSubject<DataStatus>(DataStatus.NotReady),
     mapping:            new BehaviorSubject<DataStatus>(DataStatus.NotReady),
     filters:            new BehaviorSubject<DataStatus>(DataStatus.NotReady),
     constituencyCookie: new BehaviorSubject<DataStatus>(DataStatus.NotReady),
@@ -199,6 +200,7 @@ export class MatcherService {
   public questionDataReady =       this.dataStatus.questions.pipe(filter(          t => t !== DataStatus.NotReady ));
   public questionDataUpdated =     this.dataStatus.questions.pipe(filter(          t => t === DataStatus.Updated ));
   public candidateDataReady =      this.dataStatus.candidates.pipe(filter(         t => t !== DataStatus.NotReady ));
+  public favouritesDataUpdated =   this.dataStatus.favourites.pipe(filter(         t => t !== DataStatus.NotReady ));
   public mappingDataReady =        this.dataStatus.mapping.pipe(filter(            t => t === DataStatus.Ready ));
   public filterDataReady =         this.dataStatus.filters.pipe(filter(            t => t !== DataStatus.NotReady ));
   public filterDataUpdated =       this.dataStatus.filters.pipe(filter(            t => t === DataStatus.Updated ));
@@ -242,6 +244,7 @@ export class MatcherService {
 
     this.dataStatus.candidates.pipe(filter( t => t !== DataStatus.NotReady )).subscribe(() => {
       this.setFavouritesFromCookie();
+      this.dataStatus.favourites.next(DataStatus.Ready);
       this.initFilters();
     });
 
@@ -741,6 +744,7 @@ export class MatcherService {
   public addFavourite(id: string): void {
     if (!this.favourites.includes(id)) {
       this.favourites.push(id);
+      this.dataStatus.favourites.next(DataStatus.Updated);
       this.saveFavouritesToCookie();
       this.logEvent('favourites_add', {id});
     }
@@ -749,6 +753,7 @@ export class MatcherService {
   public removeFavourite(id: string): void {
     if (this.favourites.includes(id)) {
       this.favourites.splice(this.favourites.indexOf(id), 1);
+      this.dataStatus.favourites.next(DataStatus.Updated);
       this.saveFavouritesToCookie();
       this.logEvent('favourites_remove', {id});
     }
@@ -758,6 +763,7 @@ export class MatcherService {
     if (this.favourites.length) {
       this.favourites = [];
       this.saveFavouritesToCookie();
+      this.dataStatus.favourites.next(DataStatus.Updated);
       this.logEvent('favourites_clear');
     }
   }

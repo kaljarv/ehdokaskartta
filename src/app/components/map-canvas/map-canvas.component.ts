@@ -758,6 +758,7 @@ export class MapCanvasComponent
     const idRoot = performance.now() + "_";
 
     this.markerData.forEach(m => {
+      this._updateFavourites(m, idRoot);
       this._updateTransitions(m, idRoot);
       this._updateMinimisedCandidateScale(m, idRoot);
       this._updateLabels(m, idRoot);
@@ -871,6 +872,17 @@ export class MapCanvasComponent
 
     // Clear transition now that we've converted it to an animation
     delete m.options.transition;
+  }
+
+
+  /*
+   * Set possible favourite option
+   */
+  private _updateFavourites(m: MapDatum, idRoot: string): void {
+
+    if (m instanceof MapDatumCandidate)
+      m.marker.options.favourite = m.options.favourite;
+      
   }
 
   /*
