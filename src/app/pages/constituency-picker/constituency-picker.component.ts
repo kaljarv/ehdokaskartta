@@ -9,7 +9,7 @@ import { Observable,
          Subscription } from 'rxjs';
 import { map, 
          startWith } from 'rxjs/operators';
-
+import { MatInput } from '@angular/material/input';
 import { SharedService, 
          PATHS, 
          ForwardOptions,
@@ -26,6 +26,8 @@ export class ConstituencyPickerComponent
 
   @ViewChild('voterMunicipality')
   onboardingTour: OnboardingTourComponent;
+  @ViewChild('voterMunicipalityInput') 
+  voterMunicipalityInput: MatInput;
 
   public municipalities = new Array<any>();
   public municipalityForm = new FormGroup({
@@ -63,6 +65,7 @@ export class ConstituencyPickerComponent
   ngAfterViewInit() {
     // Onboarding
     this.onboardingTour?.start();
+    setTimeout(() => this.voterMunicipalityInput.focus(), 25);
   }
 
   ngOnDestroy() {

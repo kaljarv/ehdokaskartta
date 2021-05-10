@@ -3,11 +3,12 @@
       (ngSubmit)="goForward($event)">
   <mat-form-field>
     <input type="text" 
-          [placeholder]="constituencyName ? constituencyName : 'Valitse kotikuntasi'"
-          aria-label="Kotikuntasi"
-          matInput 
-          formControlName="voterMunicipality"
-          [matAutocomplete]="auto">
+           [placeholder]="constituencyName ? constituencyName : 'Valitse kotikuntasi'"
+           aria-label="Kotikuntasi"
+           matInput 
+           #voterMunicipalityInput="matInput"
+           formControlName="voterMunicipality"
+           [matAutocomplete]="auto">
   </mat-form-field>
 
   <mat-autocomplete #auto="matAutocomplete"
