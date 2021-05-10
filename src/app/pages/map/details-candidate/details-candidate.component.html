@@ -31,12 +31,12 @@
                 (click)="setFavourite(true, $event)"
                 title="Lisää muistilistalle"
                 aria-label="Lisää muistilistalle -ikoni"
-                class="candidate-favourite candidate-favourite--isNotFavourite">bookmark_border</mat-icon>
+                class="candidate-favourite candidate-favourite--isNotFavourite">star_border</mat-icon>
       <mat-icon *ngIf="isFavourite == true"
                 (click)="setFavourite(false, $event)"
                 title="Poista muistilistalta"
                 aria-label="Poista muistilistalta -ikoni"
-                class="candidate-favourite candidate-favourite--isFavourite">bookmark</mat-icon>
+                class="candidate-favourite candidate-favourite--isFavourite">star</mat-icon>
     </div>
   </div>
 
@@ -77,6 +77,7 @@
 
 <mat-tab-group *ngIf="detailsLoaded"
                [(selectedIndex)]="lastOpenTab"
+               [disablePagination]="true"
                #tabGroup>
 
   <!----------------------------------------------

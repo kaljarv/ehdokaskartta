@@ -45,11 +45,11 @@ export type Onboarding = {
  */
 export interface AppStateOptionsOverlay {
   loadingState?: LoadingState;
-  onboarding?: Onboarding;
 }
 export interface AppStateOptionsPage extends AppStateOptionsOverlay {
   currentPage: PageName;
   subtitle?: string | Type<any>;
+  onboarding?: Onboarding;
   hideTopBar?: boolean;
   showMapTools?: boolean;
   showFeedbackButton?: boolean;
@@ -67,8 +67,7 @@ export type PageName = 'constituencyPicker' | 'questions' | 'map' | 'browse' | '
 export const DEFAULT_LOADING_STATE: LoadingState = {type: 'default'};
 
 export const DEFAULT_APP_STATE_OPTIONS_OVERLAY: AppStateOptionsOverlay = {
-  loadingState: DEFAULT_LOADING_STATE,
-  onboarding: null
+  loadingState: DEFAULT_LOADING_STATE
 }
 
 export const DEFAULT_APP_STATE_OPTIONS_PAGE: AppStateOptionsPage = {
@@ -132,7 +131,6 @@ export class SharedService {
 
   private _activeCandidateId: string = null;
   private _currentPage: PageName;
-  private _pageOnboarding: Onboarding;
   private _subtitle: string | Type<any> = '';
 
   constructor(
@@ -243,9 +241,6 @@ export class SharedService {
    */
   public reportPageOpen(options: AppStateOptionsPage): void {
     this._resetState({...DEFAULT_APP_STATE_OPTIONS_PAGE, ...options});
-    // We cache the possible onboarding here so that we can restore it
-    // on overlay close
-    this._pageOnboarding = options.onboarding || null;
   }
 
   public reportOverlayOpen(options: AppStateOptionsOverlay): void {
@@ -253,8 +248,7 @@ export class SharedService {
   }
 
   public reportOverlayClose(): void {
-    // Restore onboarding for the currently open page
-    this.onboarding = this._pageOnboarding || null;
+    // Currently not doing anything
   }
 
   private _resetState(options: any): void {
