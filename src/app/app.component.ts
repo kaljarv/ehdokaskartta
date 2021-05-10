@@ -25,11 +25,11 @@ import { SharedService,
          ADMIN_EMAIL,
          ANIMATION_TIMING,
          ANIMATION_DURATION_MS,
+         LANDSCAPE_BREAKPOINT_PX,
          ForwardOptions,
          LoadingState,
          MatcherService,
-         ToggleSideNavOptions, 
-         TopBarExpansionState } from './core';
+         ToggleSideNavOptions } from './core';
 
 import { DetailsQuestionComponent } from './pages/question-list';
 import { CandidateSearchComponent,
@@ -345,6 +345,7 @@ export class AppComponent implements DoCheck {
     // Set proper top margin to account for the top bar
     const offset = this.getTopBarOffset();
     const options: FloatingCardOptions = {
+      landscapeBreakpoint: LANDSCAPE_BREAKPOINT_PX,
       landscapeMarginLeft: offset.left,
       landscapeMarginTop:  offset.top,
     }

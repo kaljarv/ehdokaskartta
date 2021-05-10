@@ -156,9 +156,6 @@ export class MapComponent
   private _subscriptions: Subscription[] = [];
   // Fire on afterViewInit
   private _viewInitialized = new EventEmitter<boolean>();
-  // Used to track the above delay rescaling
-  private _windowResizeLock: boolean = false; 
-
 
 
   constructor(
@@ -206,6 +203,10 @@ export class MapComponent
 
   get mapBackgroundType(): MapBackgroundType {
     return this.isRadar ? 'radar' : 'default';
+  }
+
+  get usePortrait(): boolean {
+    return this.shared.usePortrait;
   }
 
   get voterDisabled(): boolean {

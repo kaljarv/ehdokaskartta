@@ -121,8 +121,11 @@
     <figure>
       <img src="assets/videos/onboarding-map-interactions.gif" />
     </figure>
-    <p>
+    <p *ngIf="usePortrait">
       Klikkaamalla ehdokasta näet ehdokaskortin tiivistelmän. Sitä klikkaamalla pääset katsomaan ehdokkaan tarkemia tietoja.
+    </p>
+    <p *ngIf="!usePortrait">
+      Klikkaamalla ehdokasta näet ehdokkaan tiedot.
     </p>
     <p>
       Näet samalla myös ehdokkaan puoleen sijoittumisen kartalla. Lippua klikkaamalla voit suodattaa ehdokkaita puolueen mukaan.

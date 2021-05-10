@@ -8,19 +8,22 @@ import { MatcherService } from '../matcher';
 import { DatabaseService } from '../database';
 import { MapEnsureVisibleOptions } from '../../../components';
 
-export const PATHS = {
-  constituencyPicker: 'constituency-picker',
-  map: 'map',
-  questions: 'questions',
-  about: 'about',
-  browse: 'browse',
+
+/*
+ * These must be reported with each view change
+ */
+export interface AppStateOptionsOverlay {
+  loadingState?: LoadingState;
 }
 
-export const ADMIN_EMAIL = 'info@kaljarv.com';
-
-export const ANIMATION_DURATION_MS = 225;
-export const ANIMATION_EASING = 'cubic-bezier(0.4, 0, 0.2, 1)';
-export const ANIMATION_TIMING = `${ANIMATION_DURATION_MS}ms ${ANIMATION_EASING}`;
+export interface AppStateOptionsPage extends AppStateOptionsOverlay {
+  currentPage: PageName;
+  subtitle?: string | Type<any>;
+  onboarding?: Onboarding;
+  hideTopBar?: boolean;
+  showMapTools?: boolean;
+  showFeedbackButton?: boolean;
+}
 
 export interface ForwardOptions {
   path: any[],            // The path array to navigate
@@ -40,21 +43,6 @@ export type Onboarding = {
   restart?: () => void
 } | null;
 
-/*
- * These must be reported with each view change
- */
-export interface AppStateOptionsOverlay {
-  loadingState?: LoadingState;
-}
-export interface AppStateOptionsPage extends AppStateOptionsOverlay {
-  currentPage: PageName;
-  subtitle?: string | Type<any>;
-  onboarding?: Onboarding;
-  hideTopBar?: boolean;
-  showMapTools?: boolean;
-  showFeedbackButton?: boolean;
-}
-
 export type ToggleSideNavOptions = {
   action: 'open' | 'close' | 'toggle',
   onComplete?: () => void
@@ -63,6 +51,16 @@ export type ToggleSideNavOptions = {
 export type TopBarExpansionState = 'open' | 'closed' | 'destroyed';
 
 export type PageName = 'constituencyPicker' | 'questions' | 'map' | 'browse' | 'titleScreen' | 'about';
+
+
+
+export const ADMIN_EMAIL = 'info@kaljarv.com';
+
+export const ANIMATION_DURATION_MS = 225;
+
+export const ANIMATION_EASING = 'cubic-bezier(0.4, 0, 0.2, 1)';
+
+export const ANIMATION_TIMING = `${ANIMATION_DURATION_MS}ms ${ANIMATION_EASING}`;
 
 export const DEFAULT_LOADING_STATE: LoadingState = {type: 'default'};
 
@@ -78,6 +76,18 @@ export const DEFAULT_APP_STATE_OPTIONS_PAGE: AppStateOptionsPage = {
   showMapTools: false,
   showFeedbackButton: true
 }
+
+export const LANDSCAPE_BREAKPOINT_PX: number = 900;
+
+export const PATHS = {
+  constituencyPicker: 'constituency-picker',
+  map: 'map',
+  questions: 'questions',
+  about: 'about',
+  browse: 'browse',
+}
+
+
 
 @Injectable()
 export class SharedService {
@@ -215,10 +225,6 @@ export class SharedService {
     return this.matcher.constituencyId != null;
   }
 
-  get voterDisabled(): boolean {
-    return this.matcher.voterDisabled;
-  }
-
   /*
    * Return a dump of the shared state for feedback
    */
@@ -235,6 +241,15 @@ export class SharedService {
       // userEmail: this.userEmail,
     }
   }
+
+  get usePortrait(): boolean {
+    return window.innerWidth < LANDSCAPE_BREAKPOINT_PX;
+  }
+
+  get voterDisabled(): boolean {
+    return this.matcher.voterDisabled;
+  }
+
 
   /*
    * Call either of these on each page load
