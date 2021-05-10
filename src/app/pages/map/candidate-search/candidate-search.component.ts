@@ -82,7 +82,12 @@ export class CandidateSearchComponent
     return this.matcher.getCandidatePortraitUrl(candidate.id);
   }
 
-  public showCandidate(candidate: Candidate): void {
+  public showCandidate(event?: any): void {
+    const candidate = this.candidateSearchForm.controls.candidateNameOrNumber.value;
+
+    if (!candidate || !(candidate instanceof Candidate))
+      return;
+
     this.shared.showCandidate.emit(candidate.id);
     this.dismiss();
   }
