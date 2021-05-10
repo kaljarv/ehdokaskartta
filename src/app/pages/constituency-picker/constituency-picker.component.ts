@@ -129,7 +129,7 @@ export class ConstituencyPickerComponent
   }
 
   // This is called by form.onSubmit and mat-autocomplete.optionSelected
-  public goForward(e?:any): void {
+  public goForward(event?: any): void {
     // We have to setTimeout here as otherwise app component might receive
     // the enableForward event after this one :O
     setTimeout(() => this.shared.navigateForward.emit(this._forwardOptions), 5);
