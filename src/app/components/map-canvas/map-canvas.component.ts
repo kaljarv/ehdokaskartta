@@ -14,7 +14,8 @@ import {
 import { Subscription } from 'rxjs';
 import { 
   ANIMATION_DURATION_MS,
-  D3Service
+  D3Service,
+  GenitivePipe
 } from '../../core';
 import { MapMarkerCommonState } from './map-markers';
 import {
@@ -125,7 +126,7 @@ function clamp(value: number, min: number = 0.0, max: number = 1.0): number {
  */
 @Component({
   selector: 'app-map-canvas',
-  template: '<canvas #canvas (click)="onCanvasClick($event)"></canvas>',
+  templateUrl: './map-canvas.component.html',
   styleUrls: ['./map-canvas.component.sass'],
   host: {
     '(window:resize)': 'onWindowResize()'
@@ -263,6 +264,18 @@ export class MapCanvasComponent
 
   @ViewChild('canvas') canvasRef: ElementRef<HTMLCanvasElement>;
 
+  public mapTooltipData: {
+    visible: boolean,
+    x: string,
+    y: string,
+    text: string
+  } = {
+    visible: false,
+    x: '0px',
+    y: '0px',
+    text: ''
+  };
+
   // Values controlling the coordinates and scales of markers
   private _coordinateFactors = {
     // Scaling between 1:1 coords and projection scale
@@ -326,6 +339,7 @@ export class MapCanvasComponent
 
   constructor(
     private d3: D3Service,
+    private genitive: GenitivePipe,
     private ngZone: NgZone
   ) {}
 
@@ -661,6 +675,7 @@ export class MapCanvasComponent
     this._zoomElement = d3.select(this._canvas);
 
     const zoomed = () => {
+      this._hideTooltip();
       const transform = d3.event.transform;
       this._coordinateFactors.zoomScale = transform.k;
       this._coordinateFactors.zoomOffset.x = transform.x;
@@ -1279,7 +1294,7 @@ export class MapCanvasComponent
   }
 
   /****************************************************************
-   * CLICKS
+   * CLICKS AND MOUSEMOVE
    ****************************************************************/
 
   /*
@@ -1289,47 +1304,96 @@ export class MapCanvasComponent
    */
   public onCanvasClick(event: MouseEvent): void {
 
-    if (this._canvasInitialized) {
+    if (!this._canvasInitialized)
+      return;
 
-      // Position on canvas
-      const x = event.clientX - this._canvas.offsetLeft;
-      const y = event.clientY - this._canvas.offsetTop;
+    const coords = this._calcCanvasCoords(event.clientX, event.clientY);
 
-      // If the zoom threshold is set, we zoom closer in addition 
-      // to possibly eliciting a marker click
-      if (this.zoomOnClickThreshold != null && 
-          this._coordinateFactors.minimisedMarkerScale < this.zoomOnClickThreshold) {
-        
-        // The zoom level at the threshold
-        let zoomLevel = this._calcZoomScaleForMinimisedCandidateScale(this.zoomOnClickThreshold);
-
-        // If this is computable, don't do anything
-        if (zoomLevel) {
-          // However, if we are zooming, we want there to be at least a 0.5 factor change
-          zoomLevel = Math.max(zoomLevel, this._coordinateFactors.zoomScale + 0.5);
-          this._zoomTo(x, y, zoomLevel);
-        }
-      }
-
-      // Pixel color on hit canvas
-      const rgba = this._hitContext.getImageData(x * this._pixelRatio, y * this._pixelRatio, 1, 1).data;
-
-      // Use as key to get datum from dict
-      const key = rgba.slice(0, 3).join(",");
-      const datum = this._hitColor2Marker?.[key];
+    // If the zoom threshold is set, we zoom closer in addition 
+    // to possibly eliciting a marker click
+    if (this.zoomOnClickThreshold != null && 
+        this._coordinateFactors.minimisedMarkerScale < this.zoomOnClickThreshold) {
       
-      // Ensure that click is within the bounding box of the marker and
-      // emit matching click
-      if (datum && datum.marker.isInside(x, y, this._hitContext, 5))
-        return this._emitMarkerClick(datum, x, y);
+      // The zoom level at the threshold
+      let zoomLevel = this._calcZoomScaleForMinimisedCandidateScale(this.zoomOnClickThreshold);
+
+      // If this is computable, don't do anything
+      if (zoomLevel) {
+        // However, if we are zooming, we want there to be at least a 0.5 factor change
+        zoomLevel = Math.max(zoomLevel, this._coordinateFactors.zoomScale + 0.5);
+        this._zoomTo(coords.x, coords.y, zoomLevel);
+      }
     }
 
-    // If there was not appropriate match, emit bg click
-    this.onBgClick.emit();
+    const datum = this._getMapDatumAt(coords.x, coords.y);
+
+    if (datum)
+      this._emitMarkerClick(datum,coords.x, coords.y);
+    else
+      // If there was not appropriate match, emit bg click
+      this.onBgClick.emit();
+  }
+
+  private _calcCanvasCoords(x: number, y: number): {x: number, y: number} {
+    return {
+      x: x - this._canvas.offsetLeft,
+      y: y - this._canvas.offsetTop
+    }
+  }
+
+  private _getMapDatumAt(x: number, y: number): MapDatum | null {
+
+    // Pixel color on hit canvas
+    const rgba = this._hitContext.getImageData(x * this._pixelRatio, y * this._pixelRatio, 1, 1).data;
+
+    // Use as key to get datum from dict
+    const key = rgba.slice(0, 3).join(",");
+    const datum = this._hitColor2Marker?.[key];
+
+    // Ensure that click is within the bounding box of the marker and
+    // emit matching click
+    if (datum && datum.marker.isInside(x, y, this._hitContext, 5))
+      return datum;
+
+    return null;
   }
 
   private _emitMarkerClick(datum: MapDatum, x: number, y: number): void {
     this.onMarkerClick.emit({datum: datum, x, y});
+  }
+
+  public onCanvasMousemove(event: MouseEvent): void {
+
+    const coords = this._calcCanvasCoords(event.clientX, event.clientY);
+    const datum = this._getMapDatumAt(coords.x, coords.y);
+
+    if (datum)
+      this._showTooltip(datum);
+    else 
+      this._hideTooltip();
+  }
+
+  private _hideTooltip(): void {
+    this.mapTooltipData.visible = false;
+  }
+
+  private _showTooltip(datum: MapDatum): void {
+
+    let text: string;
+
+    if (datum instanceof MapDatumCandidate)
+      text = `${datum.source.givenName}\u00a0${datum.source.surname}`;
+    else if (datum instanceof MapDatumParty)
+      text = `${this.genitive.transform(datum.source.name)} ehdokkaiden keskipiste`;
+    else if (datum instanceof MapDatumVoter)
+      text = 'Olet tässä';
+
+    this.mapTooltipData = {
+      visible: true,
+      x: this.convertX(datum.x) + 'px',
+      y: this.convertY(datum.y) + 'px',
+      text
+    };
   }
 
   /****************************************************************

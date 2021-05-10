@@ -142,6 +142,7 @@ $maxWidth-S: 25rem; // For Likert forms and displays
 $maxWidth-M: 38rem; // For body text
 $maxWidth-L: 40rem; // For overlays
 
+$transition-S: 125ms cubic-bezier(0.4, 0, 0.2, 1);
 $transition-M: 225ms cubic-bezier(0.4, 0, 0.2, 1);
 
 $zIndex-10: 1000;

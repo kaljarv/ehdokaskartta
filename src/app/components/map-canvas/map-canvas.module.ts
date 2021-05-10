@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import { CorePipesModule } from '../../core';
+
 import { MapCanvasComponent } from './map-canvas.component';
 
 
@@ -10,7 +12,8 @@ import { MapCanvasComponent } from './map-canvas.component';
   imports: [
     CommonModule,
     BrowserModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    CorePipesModule
   ],
   exports: [
     MapCanvasComponent

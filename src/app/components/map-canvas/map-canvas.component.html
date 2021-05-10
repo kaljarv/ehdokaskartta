@@ -1,0 +1,10 @@
+<canvas #canvas 
+        (click)="onCanvasClick($event)"
+        (mousemove)="onCanvasMousemove($event)"></canvas>
+
+<div id="mapTooltip"
+     [class.visible]="mapTooltipData.visible"
+     [style.left]="mapTooltipData.x"
+     [style.top]="mapTooltipData.y">
+  {{ mapTooltipData.text }}
+</div>

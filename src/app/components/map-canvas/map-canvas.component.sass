@@ -7,3 +7,21 @@ canvas
   position: fixed
   left: 0
   top: 0
+
+#mapTooltip
+  position: fixed
+  background-color: $color-secondary
+  color: $color-nega
+  font-size: $fontSize-S
+  line-height: $lineHeight-S
+  padding: $margin-XS $margin-S
+  border-radius: $borderRadius-M
+  display: block
+  pointer-events: none
+  text-align: center
+  transform: translate(-50%, #{$margin-M}) scale(0)
+  transition: transform $transition-S
+  z-index: $zIndex-8
+
+  &.visible
+    transform: translate(-50%, #{$margin-M}) scale(1)
