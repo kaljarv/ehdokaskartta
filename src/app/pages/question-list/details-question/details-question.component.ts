@@ -126,9 +126,7 @@ export class DetailsQuestionComponent
     private shared: SharedService,
   ) {
 
-    this.shared.reportOverlayOpen({
-      onboarding: {restart: () => this.onboardingTour?.restart()},
-    });
+    this.shared.reportOverlayOpen({});
     // Get question object
     this.question = this.matcher.questions[data.id] as QuestionNumeric;
 

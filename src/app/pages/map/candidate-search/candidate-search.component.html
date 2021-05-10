@@ -1,0 +1,61 @@
+<header>
+  <h2><mat-icon>person_search</mat-icon> Hae ehdokasta</h2>
+</header>
+
+<form id="candidateSearch-form"
+      [formGroup]="candidateSearchForm" 
+      (ngSubmit)="showCandidate($event)">
+
+  <mat-form-field>
+    <input type="text" 
+           placeholder="Hae ehdokasta nimellä tai numerolla"
+           aria-label="Hae ehdokasta nimellä tai numerolla"
+           matInput 
+           #candidateNameOrNumberInput="matInput"
+           formControlName="candidateNameOrNumber"
+           [matAutocomplete]="auto">
+  </mat-form-field>
+
+  <mat-autocomplete #auto="matAutocomplete"
+                    [displayWith]="displayCandidate"
+                    (optionSelected)="showCandidate($event)">
+    <mat-option *ngFor="let candidate of filteredCandidates  | async" 
+                [value]="candidate">
+      <img [src]="getPortraitUrl(candidate)"
+           appFallbackImage
+           class="portrait">
+      <span class="number">
+        {{ candidate.number }}
+      </span>
+      <span class="name">
+        {{ candidate.givenName }} {{ candidate.surname }}
+      </span>
+      <span class="party">
+        <mat-icon class="party-{{ candidate.partyName | toClassName }}">flag</mat-icon>
+        {{ candidate.party.abbreviation }}
+      </span>
+    </mat-option>
+  </mat-autocomplete>
+
+</form>
+
+    <!-- <mat-list-item *ngFor="let candidate of favourites"
+                  (click)="showCandidate(candidate)"
+                  class="candidate">
+      <img matListAvatar
+          [src]="getPortraitUrl(candidate)"
+          appFallbackImage
+          class="portrait">
+      <div mat-line
+          class="name">{{ candidate.givenName }} {{ candidate.surname }}</div>
+      <div mat-line
+          class="party">
+        <mat-icon class="party-{{ candidate.partyName | toClassName }}">flag</mat-icon>
+        {{ candidate.partyName }}
+      </div>
+      <div class="number party-{{ candidate.partyName | toClassName }}">
+        {{ candidate.number }}
+      </div>
+
+    </mat-list-item>   -->
+

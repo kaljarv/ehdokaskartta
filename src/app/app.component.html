@@ -119,6 +119,16 @@
         <mat-icon>map</mat-icon>
       </button>
       -->
+      <button id="searchButton"
+              mat-mini-fab 
+              (click)="openCandidateSearch()"
+              #filterButtonTooltip="matTooltip"
+              matTooltip="Hae ehdokasta nimellä tai numerolla"
+              matTooltipClass="tools-tooltip"
+              matTooltipPosition="left"
+              @buttonAppear>
+        <mat-icon>person_search</mat-icon>
+      </button>
       <button id="filterButton"
               mat-mini-fab 
               (click)="openCandidateFilters()"

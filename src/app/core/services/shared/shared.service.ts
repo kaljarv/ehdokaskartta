@@ -103,6 +103,7 @@ export class SharedService {
   readonly hideCandidate = new EventEmitter<void>();
   readonly activeCandidateChanged =  new EventEmitter<string | null>();
   readonly showCandidateFilters = new EventEmitter<void>();
+  readonly showCandidateSearch = new EventEmitter<void>();
   readonly showFavourites = new EventEmitter<void>();
   readonly toggleAllParties = new EventEmitter<string>();
   readonly enableForward = new EventEmitter<ForwardOptions>(true);

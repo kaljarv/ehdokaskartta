@@ -4,10 +4,7 @@ import { Component,
          ElementRef } from '@angular/core';
 import { Router, 
          NavigationStart } from '@angular/router';
-import { animateChild,
-         group,
-         query,
-         trigger,
+import { trigger,
          style,
          state,
          animate,
@@ -35,7 +32,8 @@ import { SharedService,
          TopBarExpansionState } from './core';
 
 import { DetailsQuestionComponent } from './pages/question-list';
-import { DetailsCandidateComponent,
+import { CandidateSearchComponent,
+         DetailsCandidateComponent,
          FilterCandidatesComponent,
          FavouritesListComponent } from './pages/map';
 import { FeedbackFormComponent, 
@@ -205,6 +203,9 @@ export class AppComponent implements DoCheck {
     });
     this.shared.showCandidateFilters.subscribe( () => 
       this.openBottomSheet(FilterCandidatesComponent, {})
+    );
+    this.shared.showCandidateSearch.subscribe( () => 
+      this.openBottomSheet(CandidateSearchComponent, {})
     );
     this.shared.showFavourites.subscribe( () => 
       this.openBottomSheet(FavouritesListComponent, {})
@@ -389,6 +390,12 @@ export class AppComponent implements DoCheck {
     // For the sake consistency, this is done in a silly way by routing via the shared component
     // Cf. subscription in the constructor
     this.shared.showCandidateFilters.emit();
+  }
+
+  public openCandidateSearch(): void {
+    // For the sake consistency, this is done in a silly way by routing via the shared component
+    // Cf. subscription in the constructor
+    this.shared.showCandidateSearch.emit();
   }
 
   public openFavourites(): void {
