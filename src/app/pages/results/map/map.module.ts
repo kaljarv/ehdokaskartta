@@ -7,16 +7,15 @@ import { RouterModule } from '@angular/router';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-import { CorePipesModule } from '../../core';
+import { CorePipesModule } from '../../../core';
 import { 
   MapCanvasModule,
-  ProgressSpinnerModule,
   OnboardingModule 
-} from '../../components';
+} from '../../../components';
 
-import { DetailsCandidateModule } from './details-candidate';
-import { FavouritesListModule } from './favourites-list';
-import { FilterCandidatesModule } from './filter-candidates';
+import { DetailsCandidateModule } from '../details-candidate';
+import { FavouritesListModule } from '../favourites-list';
+import { FilterCandidatesModule } from '../filter-candidates';
 
 import { MapComponent } from './map.component';
 
@@ -32,7 +31,6 @@ import { MapComponent } from './map.component';
     CorePipesModule,
     MapCanvasModule,
     OnboardingModule,
-    ProgressSpinnerModule,
     DetailsCandidateModule,
     FavouritesListModule,
     FilterCandidatesModule,

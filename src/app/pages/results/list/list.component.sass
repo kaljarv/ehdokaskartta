@@ -1,0 +1,145 @@
+@import 'variables.scss'
+
+@import 'variables.scss'
+
+$transitionDelay: 500ms
+
+:host
+  display: block
+  width: 100%
+  background-color: $color-background
+
+cdk-virtual-scroll-viewport
+  position: fixed
+  left: 0
+  top: 0
+  width: 100vw
+  height: 100vh
+
+header
+  margin: $margin-S 0
+
+.candidateEmpty,
+.candidate
+  display: flex
+  flex-flow: column nowrap
+  text-overflow: ellipsis
+  min-height: 165px
+  max-height: 165px
+  margin-bottom: $margin-M
+  border-radius: $borderRadius-M
+  padding: $margin-M
+  transition: margin $transition-M, background-color $transition-S, opacity $transition-M
+  transition-delay: 0ms, 0ms, $transitionDelay
+
+.candidate
+  @include mat-elevation(1)
+  cursor: pointer
+
+  &:not(.filteredOut):hover
+    background-color: $color-secondaryBg
+
+  &.active
+    @include mat-elevation(3)
+    background-color: $color-selectedBg
+
+  &.filteredOut
+    @include mat-elevation(0)
+    opacity: 0.2
+
+.topRow
+  display: flex
+  flex-flow: row nowrap
+
+.leftColumn
+  flex: 0 0 auto
+  margin-right: $margin-M
+
+.portrait
+  width: 50px
+  height: 50px
+  border-radius: 25px
+
+.centreColumn
+  flex: 1 1 auto
+  display: flex
+  flex-flow: column nowrap
+  margin-right: $margin-M
+
+h2
+  margin-bottom: $margin-S
+
+  @media (max-width: $breakpoint-XS)
+    font-size: $fontSize-L
+
+.party
+  mat-icon
+    font-size: 20px
+    height: 20px
+    width: 20px
+    vertical-align: bottom
+
+.rightColumn
+  flex: 0 0 2rem
+  display: flex
+  flex-direction: column
+  align-items: center
+
+.number
+  font-size: $fontIncrement-M
+  font-weight: bold
+  padding: 0.5rem
+  border-radius: 2rem
+  min-width: 3rem
+  text-align: center
+
+  @media (max-width: $breakpoint-XS)
+    font-size: $fontIncrement-S
+
+.candidate-favourite
+  margin-top: $margin-XS
+
+.candidate-favourite--isFavourite
+  color: $color-primary
+
+.disagreed
+  display: block
+  margin-top: $margin-S
+
+  mat-icon
+    margin-right: $margin-S
+    vertical-align: bottom
+
+label
+  @include allCaps
+  color: $color-secondary
+  font-size: $fontSize-XS
+  font-weight: 500
+  hyphens: manual
+  line-height: 1.0
+
+.topicChipList
+  // Edge-to-edge with padding on the left
+  margin-left: -16px
+  margin-top: $margin-S
+  padding: 0 16px 
+  max-height: 3rem
+  width: calc(100% + 32px)
+  display: flex
+  flex-direction: row
+  flex-wrap: nowrap
+  overflow-x: scroll
+  position: relative
+  scrollbar-width: none
+
+  &::-webkit-scrollbar
+    display: none
+
+.customChipList::webkit-scrollbar
+  display: none
+
+.customChip
+  flex-shrink: 0
+  max-width: 20vw
+  @media (max-width: 30rem)
+    max-width: 6rem

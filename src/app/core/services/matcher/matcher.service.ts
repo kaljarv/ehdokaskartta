@@ -100,6 +100,9 @@ export const PROJECTION_METHOD_PROPERTIES: {
 
 /**********************************************************************
  * MATCHER SERVICE
+ * 
+ * TODO
+ * Convert the unseemly data status mess into Promises
  **********************************************************************/
 
 @Injectable({
@@ -863,11 +866,13 @@ export class MatcherService {
 
   /*
    * Project candidates on the map
+   * If useMethod is supplied, the results are not applied to the
+   * candidates but the coordinates can be fetched from the promise
+   * returned.
    */
-  public initMapping(method?: ProjectionMethod): void {
+  public initMapping(useMethodAndDontApply?: ProjectionMethod): Promise<{ candidates: Candidate[], coordinates: ProjectedMapping }> {
 
-    if (method)
-      this.config.projectionMethod = method;
+    const method = useMethodAndDontApply ?? this.config.projectionMethod;
 
     // Prepare raw data for mapping
     const data = new Array<Array<number>>(),
@@ -908,7 +913,7 @@ export class MatcherService {
     }
 
     // Create the projector
-    switch (this.config.projectionMethod) {
+    switch (method) {
       case 'Manhattan':
         this._projector = new ManhattanProjector();
         break;
@@ -929,18 +934,23 @@ export class MatcherService {
         this._projector = new TsneProjector();
         break;
       default:
-        throw new Error(`Unsupported projection method '${this.config.projectionMethod}'!`);
+        throw new Error(`Unsupported projection method '${method}'!`);
     }
     
-    // Call the projector
-    // Voter might be undefined, which is handled by the projectors
-    // NB. with PCA the progress emitter is not used
-    this._projector.project(data, voter, (progress) => {
-      this.progressChanged.emit(progress);
-    }).then((coordinates) => {
-      this.setCandidateCoordinates(candidates, coordinates);
-      this.placeParties();
-      this.dataStatus.mapping.next(DataStatus.Ready);
+    return new Promise<{ candidates: Candidate[], coordinates: ProjectedMapping }>((resolve, reject) => {
+      // Call the projector
+      // Voter might be undefined, which is handled by the projectors
+      // NB. with PCA the progress emitter is not used
+      this._projector.project(data, voter, (progress) => {
+        this.progressChanged.emit(progress);
+      }).then((coordinates) => {
+        if (!useMethodAndDontApply) {
+          this.setCandidateCoordinates(candidates, coordinates);
+          this.placeParties();
+          this.dataStatus.mapping.next(DataStatus.Ready);
+        }
+        resolve({candidates, coordinates});
+      });
     });
   }
 

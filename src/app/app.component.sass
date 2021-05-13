@@ -46,11 +46,15 @@ app-top-bar
   hyphens: manual
   display: flex
   flex-flow: column nowrap
+
+  &.horisontal
+    flex-flow: row nowrap
   
   button
     background-color: $color-nega
     color: $color-primary
     margin-bottom: $margin-S + $margin-XS
+    margin-left: $margin-S + $margin-XS
     transition: background-color $transition-M, color $transition-M
 
   button.active

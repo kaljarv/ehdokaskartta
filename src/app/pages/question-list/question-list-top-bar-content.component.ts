@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import { 
+  Component,
+  ElementRef
+} from '@angular/core';
 import { 
   MatcherService, 
   PATHS 
@@ -15,6 +18,7 @@ export class QuestionListTopBarContentComponent {
 
   constructor(
     private matcher: MatcherService,
+    private host: ElementRef
   ) {}
 
   get minAnswersForMapping(): number {

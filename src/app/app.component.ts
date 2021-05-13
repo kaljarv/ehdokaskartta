@@ -21,28 +21,28 @@ import { MatSnackBar,
 import { MatTooltip } from '@angular/material/tooltip';
 
 import { SharedService, 
-         PATHS,
+         ForwardOptions,
+         LoadingState,
+         MatcherService,
+         ResultViewType,
+         ToggleSideNavOptions,
          ADMIN_EMAIL,
          ANIMATION_TIMING,
          ANIMATION_DURATION_MS,
          LANDSCAPE_BREAKPOINT_PX,
-         ForwardOptions,
-         LoadingState,
-         MatcherService,
-         ToggleSideNavOptions } from './core';
+         PATHS } from './core';
 
 import { DetailsQuestionComponent } from './pages/question-list';
 import { CandidateSearchComponent,
          DetailsCandidateComponent,
          FilterCandidatesComponent,
-         FavouritesListComponent } from './pages/map';
+         FavouritesListComponent } from './pages/results';
 import { FeedbackFormComponent, 
          FloatingCardService,
          FloatingCardRef,
          FloatingCardOptions,
          OnboardingService,
-         TopBarComponent,
-         DEFAULT_TOP_BAR_NEXT_ELEMENT_OFFSET } from './components';
+         TopBarComponent } from './components';
 
 export const HIDE_TOOLTIPS_DELAY = ANIMATION_DURATION_MS;
 export const DIALOG_CONFIG: MatDialogConfig = {
@@ -144,7 +144,8 @@ export const SNACK_BAR_DURATION_WITH_ACTION = 5000;
     ])
   ]
 })
-export class AppComponent implements DoCheck {
+export class AppComponent 
+  implements DoCheck {
 
   @ViewChild('filterButtonTooltip') filterButtonTooltip: MatTooltip;
   @ViewChild('favouritesButtonTooltip') favouritesButtonTooltip: MatTooltip;
@@ -189,17 +190,17 @@ export class AppComponent implements DoCheck {
     this.shared.showQuestion.subscribe( id => 
       this.openBottomSheet(DetailsQuestionComponent, {id: id})
     );
-    this.shared.showCandidate.subscribe( id => 
-      this.createDetailsCard(DetailsCandidateComponent, {id: id})
+    this.shared.showCandidate.subscribe( data => 
+      this.createDetailsCard(DetailsCandidateComponent, data)
     );
     this.shared.hideCandidate.subscribe( () => 
       this.clearDetailsCard()
     );
-    this.shared.toggleCandidate.subscribe( id => {
-      if (this.shared.activeCandidateId === id)
+    this.shared.toggleCandidate.subscribe( data => {
+      if (this.shared.activeCandidateId === data.id)
         this.clearDetailsCard();
       else
-        this.createDetailsCard(DetailsCandidateComponent, {id: id});
+        this.createDetailsCard(DetailsCandidateComponent, data);
     });
     this.shared.showCandidateFilters.subscribe( () => 
       this.openBottomSheet(FilterCandidatesComponent, {})
@@ -343,7 +344,7 @@ export class AppComponent implements DoCheck {
     this.clearDetailsCard();
 
     // Set proper top margin to account for the top bar
-    const offset = this.getTopBarOffset();
+    const offset = this.shared.topBarOffset.withoutExpansion;
     const options: FloatingCardOptions = {
       landscapeBreakpoint: LANDSCAPE_BREAKPOINT_PX,
       landscapeMarginLeft: offset.left,
@@ -405,8 +406,11 @@ export class AppComponent implements DoCheck {
     this.shared.showFavourites.emit();
   }
   
-  public toggleMapType(): void {
-    throw new Error("Not implemented!");
+  public toggleResultView(viewType: ResultViewType): void {
+    const path = viewType === 'list' ?
+                 (this.shared.currentPage === 'browse' ? 'browse-list' : 'list') :
+                 (this.shared.currentPage === 'browse-list' ? 'browse' : 'map');
+    this.followLink(path);
   }
 
   public toggleShowAllParties(): void {
@@ -488,12 +492,11 @@ export class AppComponent implements DoCheck {
   }
 
   public updateContentTopMargin(): void {
-    // We need a small timeout for the topbar to reach it's final height
-    setTimeout(() => this.contentTopMargin = `${this.topBar ? this.getTopBarOffset(true).top : 0}px`, 25);
+    this.contentTopMargin = `${this.shared.topBarOffset.withExpansion.top}px`;
   }
 
-  public getTopBarOffset(includeExpansion: boolean = false): {top: number, left: number} {
-    return this.topBar ? this.topBar.getOffsetForNextElement(includeExpansion) : DEFAULT_TOP_BAR_NEXT_ELEMENT_OFFSET
+  get resultViewType(): ResultViewType {
+    return this.shared.resultViewType;
   }
 
   get hideTopBar(): boolean {
@@ -506,6 +509,10 @@ export class AppComponent implements DoCheck {
 
   get showMapTools(): boolean {
     return this.shared.showMapTools;
+  }
+
+  get showListTools(): boolean {
+    return this.shared.showListTools;
   }
 
   get showFeedbackButton(): boolean {

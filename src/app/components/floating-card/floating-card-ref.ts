@@ -71,6 +71,7 @@ export class FloatingCardRef
   public state: FloatingCardState = FloatingCardState.Hidden;
   public type: Type<any>;
 
+  private _peekEnabled: boolean = false;
   private _peekHeight: number;
   private _dragStartY: number;
   private _dragStartPointerY: number;
@@ -106,7 +107,7 @@ export class FloatingCardRef
     this._setPositionStrategy(posStrategy, 'hidden');
 
     overlayConfig.positionStrategy = posStrategy;
-    overlayConfig.scrollStrategy = this.overlay.scrollStrategies.block();
+    // overlayConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
 
     // Change max-width if not using portrait layout
     if (!this.usePortrait)
@@ -209,7 +210,7 @@ export class FloatingCardRef
 
   public toggle(): void {
     if (this.isMaximised)
-      if (this.usePortrait)
+      if (this._peekEnabled)
         this.peek();
       else
         this.close();
@@ -247,6 +248,7 @@ export class FloatingCardRef
 
     // Set the element
     this.peekElement = element;
+    this._peekEnabled = true;
     
     // Offset to add below the peeking element
     if (options.offset != null)

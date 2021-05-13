@@ -11,7 +11,6 @@ import {
   ViewContainerRef
 } from '@angular/core';
 import { 
-  AnimationEvent,
   trigger,
   style,
   state,
@@ -29,21 +28,23 @@ import {
   ANIMATION_TIMING,
   PATHS,
   PageName,
-  SharedService,
-  TopBarExpansionState
+  SharedService
 } from '../../core';
-
-
 
 export const DEFAULT_TOP_BAR_NEXT_ELEMENT_OFFSET: {top: number, left: number} = {
   top: 56 + 2 * 16,
   left: 16
 }
 
+export const EXPANSION_CHANGE_TIMEOUT_MS: number = 25;
+
 /*
  * <app-top-bar>
  * @Input title is the main title text
  * @Input content is the content and can be either text or a component which is inserted dynamically
+ * 
+ * TODO:
+ * - Remove the ugly setTimeouts and replace with event listener to component loaded
  */
 @Component({
   selector: 'app-top-bar',
@@ -97,13 +98,15 @@ export const DEFAULT_TOP_BAR_NEXT_ELEMENT_OFFSET: {top: number, left: number} = 
     ]),
   ]
 })
-export class TopBarComponent implements AfterViewInit, OnDestroy, OnInit {
+export class TopBarComponent 
+  implements AfterViewInit, OnDestroy, OnInit {
 
   @ViewChild('contentTemplate', {read: ViewContainerRef}) contentTemplate: ViewContainerRef;
   @ViewChild('header') header: ElementRef<HTMLElement>;
   @ViewChild('stringContentTemplate', {read: TemplateRef}) stringContentTemplate: TemplateRef<undefined>;
 
   private _componentWaiting: boolean = false;
+  private _destroyed: boolean = false;
   private _expanded: boolean = true;
   private _prevContent: string | Type<any>;
   // These will be cancelled onDestroy
@@ -161,8 +164,8 @@ export class TopBarComponent implements AfterViewInit, OnDestroy, OnInit {
     this._subscriptions.forEach(s => s.unsubscribe());
     this._subscriptions = null;
 
-    // This defaults to 'destroyed'
-    this.emitExpansionChange('destroyed');
+    this._destroyed = true;
+    this.emitExpansionChange();
 
     this.contentTemplate = null;
     this.header = null;
@@ -194,14 +197,8 @@ export class TopBarComponent implements AfterViewInit, OnDestroy, OnInit {
 
     // If there were changes (and in case of a component content we managed to load them)
     // expand the top bar
-    if (hasChanged) {
-
-      if (this.expanded)
-        this.emitExpansionChange();
-      else
-        // This will emit an expansion change event when the animation is done
+    if (hasChanged)
         this.expanded = true;
-    }
   }
 
   private _loadComponent(): boolean {
@@ -225,6 +222,8 @@ export class TopBarComponent implements AfterViewInit, OnDestroy, OnInit {
           const componentFactory = this.componentFactoryResolver.resolveComponentFactory(this.content as Type<any>);
           this.contentTemplate.createComponent(componentFactory);
         }
+
+        this.emitExpansionChange();
 
       }, 1);
 
@@ -280,10 +279,30 @@ export class TopBarComponent implements AfterViewInit, OnDestroy, OnInit {
     return DEFAULT_TOP_BAR_NEXT_ELEMENT_OFFSET;
   }
 
-  public emitExpansionChange(state?: TopBarExpansionState): void {
-    if (!state)
-      state = this.expanded ? 'open' : 'closed';
-    this.shared.topBarExpansionChanged.emit(state);
+  public emitExpansionChange(): void {
+
+    // We add a timeout here for the content to load
+    // TODO: Refactor to get rid of timeout
+    setTimeout(() => {
+      const state = this._destroyed ? 'destroyed' : 
+                    this.expanded ? 'open' : 'closed';
+      const setToZero = state === 'destroyed';
+      this._updateOffset(setToZero);
+      this.shared.topBarExpansionChanged.emit(state);
+    }, EXPANSION_CHANGE_TIMEOUT_MS);
+  }
+
+  private _updateOffset(setToZero: boolean = false): void {
+    if (setToZero)
+      this.shared.topBarOffset = {
+        withExpansion: { top: 0, left: 0},
+        withoutExpansion: { top: 0, left: 0},
+      };
+    else
+      this.shared.topBarOffset = {
+        withExpansion: this.getOffsetForNextElement(true),
+        withoutExpansion: this.getOffsetForNextElement(false)
+      };
   }
 
 }

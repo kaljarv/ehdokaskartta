@@ -1,0 +1,142 @@
+<cdk-virtual-scroll-viewport [itemSize]="165 + 16"
+                             minBufferPx="1200" 
+                             maxBufferPx="1800">
+
+    <ng-container *cdkVirtualFor="let candidate of visibleCandidates; let index = index">
+
+      <!-- We test for candidate, as we are prepending the list with an empty item 
+           to add a top offset -->
+
+      <div *ngIf="!candidate"
+           class="candidateEmpty"></div>
+
+      <div *ngIf="candidate"
+           (click)="toggleCandidate(candidate, $event)"
+           class="candidate"
+           [class.active]="candidate.id == activeCandidateId"
+           [class.filteredOut]="candidate.filteredOut"
+           [style.maxWidth]="cardWidth"
+           [style.marginLeft]="marginLeft">
+
+        <div class="topRow">
+
+          <!-- Top left column -->
+
+          <img *ngIf="!candidate.filteredOut"
+               [src]="getPortraitUrl(candidate)"
+               appFallbackImage
+               class="portrait leftColumn">
+
+
+          <!-- Top centre column -->
+
+          <div class="centreColumn">
+
+            <h2 class="name">{{ candidate.givenName }} {{ candidate.surname }}</h2>
+
+            <div class="party">
+              <mat-icon class="party-{{ candidate.partyName | toClassName }}">flag</mat-icon>
+              {{ candidate.partyName }}
+            </div>
+
+          </div>
+
+          <!-- Top right column -->
+
+          <div class="rightColumn">
+            <div class="number party-{{ candidate.partyName | toClassName }}">
+              {{ candidate.number }}
+            </div>
+            <mat-icon *ngIf="isFavourite(candidate) == false"
+                      (click)="setFavourite(candidate, true, $event)"
+                      title="Lisää muistilistalle"
+                      aria-label="Lisää muistilistalle -ikoni"
+                      class="candidate-favourite candidate-favourite--isNotFavourite">star_border</mat-icon>
+            <mat-icon *ngIf="isFavourite(candidate) == true"
+                      (click)="setFavourite(candidate, false, $event)"
+                      title="Poista muistilistalta"
+                      aria-label="Poista muistilistalta -ikoni"
+                      class="candidate-favourite candidate-favourite--isFavourite">star</mat-icon>
+          </div>
+
+        </div>
+
+        <!-- Bottom row -->
+
+        <div class="disagreed topRow">
+
+          <ng-container *ngIf="candidate.filteredOut">
+
+            <label>
+              <mat-icon>filter_list</mat-icon>
+              Ehdokas piilotettu suodattimien vuoksi
+            </label>
+
+          </ng-container>
+
+          <ng-container *ngIf="!candidate.filteredOut">
+
+            <div *ngIf="candidate.missing">
+
+              <label>
+                <mat-icon>warning</mat-icon>
+                Tämä ehdokas ei ole vastannut Ehdokaskartan kysymyksiin
+              </label>
+        
+            </div>
+        
+            <ng-container *ngIf="!candidate.missing">
+        
+              <ng-container *ngIf="disagreed[candidate.id]?.length > 0">
+                
+                <div class="topicChipList">
+                  <div *ngFor="let question of disagreed[candidate.id]"
+                      class="topicChip customChip category-{{ question.categoryName | toClassName }}">
+                    {{ question.topic }}
+                  </div>
+                </div>
+                <label>
+                  Merkittävästi eri mieltä {{ disagreed[candidate.id]?.length }} kysymyksestä
+                </label>
+
+              </ng-container>
+
+              <div *ngIf="disagreed[candidate.id]?.length == 0">
+                <label>
+                  Ei kysymyksiä, joista olette merkittävästi eri mieltä
+                </label>
+              </div>
+
+            </ng-container>
+
+          </ng-container>
+
+        </div>
+
+      </div>
+
+    </ng-container>
+
+</cdk-virtual-scroll-viewport>
+
+
+<!-- Onboarding -->
+
+<app-onboarding-tour tourId="ListIntro1"
+                     [modal]="true">
+
+  <app-onboarding-step attachTo="#topTools"
+                       attachOn="bottom-end"
+                       title="Listanäkymän lisätoiminnot">
+    <p>
+      Listalla ovat käytössä samat toiminnot kuin karttanäkymässäkin. Ne ovat vain aseteltu eri lailla.
+    </p>
+    <app-onboarding-hint icon="list">
+      Pääset takaisin karttanäkymään klikkaamalla nappia uudelleen.
+    </app-onboarding-hint>
+    <app-onboarding-hint icon="filter_list">
+      Jos olit jo suodattanut ehdokkaita kartalla, ovat samat suodattimet käytössä tässäkin näkymässä.
+    </app-onboarding-hint>
+  </app-onboarding-step>
+
+</app-onboarding-tour>

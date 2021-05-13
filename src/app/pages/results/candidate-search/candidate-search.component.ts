@@ -88,7 +88,10 @@ export class CandidateSearchComponent
     if (!candidate || !(candidate instanceof Candidate))
       return;
 
-    this.shared.showCandidate.emit(candidate.id);
+    this.shared.showCandidate.emit({
+      id: candidate.id,
+      maximise: ['list', 'browse-list'].includes(this.shared.currentPage)
+    });
     this.dismiss();
   }
 

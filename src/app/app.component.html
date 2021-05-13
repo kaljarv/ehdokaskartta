@@ -103,22 +103,32 @@
     <app-top-bar *ngIf="!hideTopBar"
                  #topBar></app-top-bar>
 
-    <div *ngIf="showMapTools"
+    <div *ngIf="showMapTools || showListTools"
          id="topTools"
+         [class.horisontal]="showListTools"
          [style.top]="contentTopMargin">
-      <!--
-      <button id="mapTypeButton"
+      <button id="resultViewListButton"
               mat-mini-fab 
-              (click)="toggleMapType()"
+              (click)="toggleResultView(resultViewType == 'map' ? 'list' : 'map')"
               #mapTypeButtonTooltip="matTooltip"
-              [matTooltip]="isAlternativeMap ? 'Vaihda kartta ehdokkaiden itse ilmoittamaan sijaintiin perustuvaan' : 'Palaa ehdokkaiden vastauksiin perustuvaan karttaan' "
+              matTooltip="Näytä ehdokkaat {{ resultViewType == 'map' ? 'listana' : 'kartalla' }}"
               matTooltipClass="tools-tooltip"
               matTooltipPosition="left"
-              [class.active]="isAlternativeMap"
+              [class.active]="resultViewType == 'list'"
+              @buttonAppear>
+        <mat-icon>list</mat-icon>
+      </button>
+      <!-- <button *ngIf="resultViewType == 'list'"
+              id="resultViewMapButton"
+              mat-mini-fab 
+              (click)="toggleResultView('map')"
+              #mapTypeButtonTooltip="matTooltip"
+              matTooltip="Näytä ehdokkaat kartalla"
+              matTooltipClass="tools-tooltip"
+              matTooltipPosition="left"
               @buttonAppear>
         <mat-icon>map</mat-icon>
-      </button>
-      -->
+      </button> -->
       <button id="searchButton"
               mat-mini-fab 
               (click)="openCandidateSearch()"
@@ -140,7 +150,8 @@
               @buttonAppear>
         <mat-icon>filter_list</mat-icon>
       </button>
-      <button id="partyButton"
+      <button *ngIf="showMapTools"
+              id="partyButton"
               mat-mini-fab 
               (click)="toggleShowAllParties()"
               #partyButtonTooltip="matTooltip"
@@ -181,10 +192,10 @@
 
 
 
-    <div *ngIf="showMapTools || showFeedbackButton"
+    <div *ngIf="showMapTools || showListTools || showFeedbackButton"
          [@bottomToolsShift]="bottomToolsShiftTrigger"
          id="bottomTools">
-      <button *ngIf=" showFeedbackButton"
+      <button *ngIf="showFeedbackButton"
               id="feedbackButton"
               mat-mini-fab 
               (click)="openFeedback()"

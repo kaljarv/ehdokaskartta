@@ -96,6 +96,7 @@ $background: map-get($app-theme, background);
 // These could be merged into theme, 
 // see: https://stackoverflow.com/questions/49642098/angular-material-global-color-variables
 
+$fontIncrement-S:   110%;
 $fontIncrement-M:   120%;
 
 $color-text:        map-get($foreground, text);
@@ -110,6 +111,7 @@ $color-warnBg:      mat-color($warn, 100); // color.mix(white, $color-warn, 80%)
 $color-secondary:   mat-color($secondary);
 $color-secondaryBg: mat-color($secondary, 50); // color.mix(white, $color-secondary, 80%)
 $color-background:  map-get($background, background);
+$color-selectedBg:  mat-color($secondary, 100);
 
 $alpha-overlay: 0.8;
 
@@ -131,6 +133,11 @@ $borderRadius-M: 4px;
 $borderRadius-XL: 1.5rem;
 
 $boxShadow-M: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+
+$breakpoint-XS: 400px;
+$breakpoint-S: 500px;
+$breakpoint-M: 600px;
+$breakpoint-L: 900px;
 
 $margin-XS: 0.25rem;
 $margin-S: 0.5rem;

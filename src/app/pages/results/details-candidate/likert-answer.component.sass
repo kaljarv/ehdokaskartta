@@ -38,11 +38,17 @@
   text-align: center
 
 // NB. These are not inside the svg element
-.titles,
-.partyTitle
+.titles
   position: relative
-  height: 2rem
   width: 100%
+  height: 2rem
+
+  // Make room for hyhenated labels
+  @media (max-width: $breakpoint-S)
+    height: 3rem
+
+  @media (max-width: $breakpoint-XS)
+    height: 4rem
 
   label
     @include allCaps

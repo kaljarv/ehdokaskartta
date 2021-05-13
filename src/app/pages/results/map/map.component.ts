@@ -25,6 +25,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 import {
   AbbreviatePipe,
   Candidate,
+  GenitivePipe,
   D3Service,
   MatcherService,
   Party,
@@ -33,7 +34,7 @@ import {
   ToClassNamePipe,
   ANIMATION_DURATION_MS,
   PATHS
-} from '../../core';
+} from '../../../core';
 import { 
   MapBackgroundType,
   MapDatum,
@@ -45,13 +46,10 @@ import {
   MapRedrawOptions,
   OnboardingTourComponent, 
   ZoomProperties,
-  MAP_MARKER_CANDIDATE_HEAD_RADIUS,
-  MapDatumCandidateOptions
-} from '../../components';
+  MAP_MARKER_CANDIDATE_HEAD_RADIUS
+} from '../../../components';
 
 
-const SHOW_INFOS_DELAY = 100; // A small delay after the map has loaded before showing the infos, needed for the components to initialise
-const HIDE_TOOLTIPS_DELAY = ANIMATION_DURATION_MS;
 const PARTY_SELECTOR_PREFIX = "party-";
 const PARTY_COLOR_PROPERTY = "fill";
 
@@ -166,8 +164,15 @@ export class MapComponent
     private shared: SharedService,
     private d3s: D3Service,
     private toClassName: ToClassNamePipe,
-    private abbreviate: AbbreviatePipe
+    private abbreviate: AbbreviatePipe,
+    private genitive: GenitivePipe
   ) {
+
+    // Check if we are browsing or not
+    if (this.route.snapshot.data.voterDisabled)
+      this.matcher.voterDisabled = true;
+    else
+      this.matcher.voterDisabled = false;
 
     this.shared.reportPageOpen({
       currentPage: this.voterDisabled ? 'browse' : 'map',
@@ -176,7 +181,8 @@ export class MapComponent
                   "Ehdokkaat on sijoiteltu kartalle sen perusteella, mitä he ovat vastanneet valitsemiisi kysymyksiin, ja kartan keskeltä löydät itsesi."
                 ) + " Voit lähentää tai loitontaa karttaa, rajata ehdokkaita vaikkapa iän perusteella tai näyttää puolueet kartalla.",
       onboarding: {restart: () => this.onboardingTour?.restart()},
-      showMapTools: true,
+      // NB. We'll only show these when we've initialised
+      // showMapTools: true,
       loadingState: {
         type: 'loading',
         message: 'Ladataan tuloksia…',
@@ -190,12 +196,6 @@ export class MapComponent
 
     // Start loading spinner
     this._reportProgress();
-
-    // Check if we are browsing or not
-    if (this.route.snapshot.data.voterDisabled)
-      this.matcher.voterDisabled = true;
-    else
-      this.matcher.voterDisabled = false;
   }
 
   get isRadar(): boolean {
@@ -370,14 +370,12 @@ export class MapComponent
 
     // This is async so we need to wait
     this.rescaleMap().then(() => {
+
       // Init view and hide spinner
       this._reportProgress(100, true);
 
-      // This will show the filtering tools
+      // Show map tools
       this.shared.showMapTools = true;
-
-      // Show tooltips and other infos for onboarding
-      // setTimeout(() => this.showInfos(), SHOW_INFOS_DELAY);
     });
 
   }
@@ -636,7 +634,7 @@ export class MapComponent
             m = new MapDatumParty({
               ...opts,
               color: this.colors[a.name],
-              label: a.name, // `${this.genitive.transform(a.name)} ehdokkaiden keskipiste`,
+              label: `${this.genitive.transform(a.name)} ehdokkaiden keskipiste`,
               text: this.abbreviate.transform(a.name)
               // Parties are hidden by default, so we don't set any transitionTo
             });
@@ -731,7 +729,9 @@ export class MapComponent
 
     if (data.datum instanceof MapDatumCandidate) {
 
-      this.shared.toggleCandidate.emit(data.datum.source.id);
+      this.shared.toggleCandidate.emit({
+        id: data.datum.source.id
+      });
 
     } else if (data.datum instanceof MapDatumParty) {
 

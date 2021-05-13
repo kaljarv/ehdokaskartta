@@ -1393,13 +1393,11 @@ export class MapCanvasComponent
 
     let text: string;
 
-    if (datum instanceof MapDatumCandidate)
-      text = `${datum.source.givenName}\u00a0${datum.source.surname}`;
-    else if (datum instanceof MapDatumParty)
-      text = `${this.genitive.transform(datum.source.name)} ehdokkaiden keskipiste`;
-    else if (datum instanceof MapDatumVoter)
+    if (datum instanceof MapDatumVoter)
       text = 'Olet tässä';
-
+    else
+      text = datum.options.label;
+      
     this.mapTooltipData = {
       visible: true,
       x: this.convertX(datum.x) + 'px',

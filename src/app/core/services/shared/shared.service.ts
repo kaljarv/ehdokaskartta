@@ -7,6 +7,7 @@ import { BehaviorSubject } from 'rxjs';
 import { MatcherService } from '../matcher';
 import { DatabaseService } from '../database';
 import { MapEnsureVisibleOptions } from '../../../components';
+import { DetailsCandidateOptions } from '../../../pages';
 
 
 /*
@@ -21,6 +22,7 @@ export interface AppStateOptionsPage extends AppStateOptionsOverlay {
   subtitle?: string | Type<any>;
   onboarding?: Onboarding;
   hideTopBar?: boolean;
+  showListTools?: boolean;
   showMapTools?: boolean;
   showFeedbackButton?: boolean;
 }
@@ -43,6 +45,8 @@ export type Onboarding = {
   restart?: () => void
 } | null;
 
+export type ResultViewType = 'map' | 'list' | null;
+
 export type ToggleSideNavOptions = {
   action: 'open' | 'close' | 'toggle',
   onComplete?: () => void
@@ -50,7 +54,8 @@ export type ToggleSideNavOptions = {
 
 export type TopBarExpansionState = 'open' | 'closed' | 'destroyed';
 
-export type PageName = 'constituencyPicker' | 'questions' | 'map' | 'browse' | 'titleScreen' | 'about';
+export type PageName = 'about'| 'browse' | 'browse-list' | 'constituencyPicker' | 
+                       'list' | 'map'  | 'questions' | 'titleScreen';
 
 
 
@@ -73,6 +78,7 @@ export const DEFAULT_APP_STATE_OPTIONS_PAGE: AppStateOptionsPage = {
   currentPage: null,
   subtitle: null,
   hideTopBar: false,
+  showListTools: false,
   showMapTools: false,
   showFeedbackButton: true
 }
@@ -80,11 +86,13 @@ export const DEFAULT_APP_STATE_OPTIONS_PAGE: AppStateOptionsPage = {
 export const LANDSCAPE_BREAKPOINT_PX: number = 900;
 
 export const PATHS = {
-  constituencyPicker: 'constituency-picker',
-  map: 'map',
-  questions: 'questions',
   about: 'about',
   browse: 'browse',
+  browseList: 'browse-list',
+  constituencyPicker: 'constituency-picker',
+  list: 'list',
+  map: 'map',
+  questions: 'questions'
 }
 
 
@@ -98,8 +106,13 @@ export class SharedService {
   public lastOpenCandidateFilter: number = null; // For filter-candidates expansion panels
   public onboarding: Onboarding;
   public showMapTools: boolean = false;
+  public showListTools: boolean = false;
   public showFeedbackButton: boolean = false;
   public showAllParties: boolean = false; // This will be set by MapComponent based on a subscription to toggleAllParties
+  public topBarOffset = {
+    withExpansion: { top: 0, left: 0 },
+    withoutExpansion: { top: 0, left: 0}
+  };
   public userEmail: string = '';
 
   readonly loadingState = new BehaviorSubject<LoadingState>(DEFAULT_LOADING_STATE);
@@ -108,8 +121,8 @@ export class SharedService {
     subtitle: string | Type<any>
   }>();
   readonly showQuestion = new EventEmitter<string>();
-  readonly showCandidate = new EventEmitter<string>();
-  readonly toggleCandidate = new EventEmitter<string>();
+  readonly showCandidate = new EventEmitter<DetailsCandidateOptions>();
+  readonly toggleCandidate = new EventEmitter<DetailsCandidateOptions>();
   readonly hideCandidate = new EventEmitter<void>();
   readonly activeCandidateChanged =  new EventEmitter<string | null>();
   readonly showCandidateFilters = new EventEmitter<void>();
@@ -209,20 +222,25 @@ export class SharedService {
     this._emitTopBarDataChanged();
   }
 
-  get subtitle(): string | Type<any> {
-    return this._subtitle;
-  }
-  set subtitle(value: string | Type<any>) {
-    this._subtitle = value;
-    this._emitTopBarDataChanged();
-  }
-
   get enableMap(): boolean {
     return this.matcher.hasEnoughAnswersForMapping;
   }
 
   get enableQuestions(): boolean {
     return this.matcher.constituencyId != null;
+  }
+
+  get resultViewType(): ResultViewType {
+    switch (this.currentPage) {
+      case 'map':
+      case 'browse':
+        return 'map';
+      case 'list':
+      case 'browse-list':
+        return 'list';
+      default:
+        return null;
+    }
   }
 
   /*
@@ -242,6 +260,14 @@ export class SharedService {
     }
   }
 
+  get subtitle(): string | Type<any> {
+    return this._subtitle;
+  }
+  set subtitle(value: string | Type<any>) {
+    this._subtitle = value;
+    this._emitTopBarDataChanged();
+  }
+
   get usePortrait(): boolean {
     return window.innerWidth < LANDSCAPE_BREAKPOINT_PX;
   }
@@ -249,7 +275,6 @@ export class SharedService {
   get voterDisabled(): boolean {
     return this.matcher.voterDisabled;
   }
-
 
   /*
    * Call either of these on each page load

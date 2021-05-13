@@ -35,6 +35,13 @@ import { FloatingCardRefBase,
          FLOATING_CARD_ANIMATION_DURATION_MS,
          CustomExpanderComponent } from '../../../components';
 
+
+
+export interface DetailsCandidateOptions {
+  id: string;
+  maximise?: boolean;
+}
+
 export const DATA_CONTENT_CLASS = "content";
 export const MISSING_DATA_INFO_CLASS = "detailsCandidateMissingData";
 export const MISSING_DATA_INFO = "Ei vastausta";
@@ -149,7 +156,7 @@ export class DetailsCandidateComponent
 
   constructor(
     private floatingCardRef: FloatingCardRefBase,
-    @Inject(FLOATING_CARD_DATA) public data: any,
+    @Inject(FLOATING_CARD_DATA) public data: DetailsCandidateOptions,
     private matcher: MatcherService,
     private shared: SharedService,
     private sanitizer:  DomSanitizer,
@@ -269,7 +276,7 @@ export class DetailsCandidateComponent
   private _showCardInitially(): void {
 
     // This will initialize the card
-    if (this.usePortrait)
+    if (this.usePortrait && !this.data.maximise)
       this._setPeekElement();
     else
       this.floatingCardRef.initMaximise();

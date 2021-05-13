@@ -64,7 +64,9 @@ export class FavouritesListComponent
   }
 
   public showCandidate(candidate: Candidate): void {
-    this.shared.showCandidate.emit(candidate.id);
+    this.shared.showCandidate.emit({
+      id: candidate.id
+    });
     this.dismiss();
   }
   
