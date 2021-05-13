@@ -9,10 +9,16 @@
        class="grabBar"><!-- Bar 'icon' indicating dragging --></div>
 
   <div class="header-upperPart">
-    <div *ngIf="isMaximised && usePortrait"
+    <div *ngIf="isMaximised"
          @appearHorisontally
          class="header-tools">
       <mat-icon class="candidate-expand">expand_less</mat-icon>
+    </div>
+    <div *ngIf="!isMaximised"
+         @portraitAppear
+         class="header-portrait">
+      <img [src]="portraitUrl"
+           appFallbackImage />
     </div>
     <div class="header-titles">
       <h2>

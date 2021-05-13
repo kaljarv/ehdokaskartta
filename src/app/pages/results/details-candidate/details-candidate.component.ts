@@ -116,6 +116,24 @@ export class DetailsCandidateGlobalStylesComponent {
         }))
       ]),
     ]),
+    trigger('portraitAppear', [
+      transition(':enter', [
+        style({
+          marginRight: '0rem',
+          width: '0px',
+        }),
+        animate(ANIMATION_TIMING, style({
+          marginRight: '0.5rem',
+          width: '50px',
+        })),
+      ]),
+      transition(':leave', [
+        animate(ANIMATION_TIMING, style({
+          marginRight: '0rem',
+          width: '0px',
+        }))
+      ]),
+    ]),
   ]
 })
 export class DetailsCandidateComponent 
