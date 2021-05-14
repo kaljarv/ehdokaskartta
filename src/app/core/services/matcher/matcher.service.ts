@@ -814,6 +814,12 @@ export class MatcherService {
     this.deleteAllMatcherCookies();
     this.getVoterAnsweredQuestions().forEach(q => q.unsetVoterAnswer());
     this.questions = {};
+    this.getFilters().forEach(filter => {
+      if (filter.active)
+        filter.clearRules();
+    });
+    this.correlationMatrix = null;
+    this.favourites = [];
     this._constituencyId = null;
     this._municipalityId = null;
     this.dataStatus.questions.next(DataStatus.NotReady);
