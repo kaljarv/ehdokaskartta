@@ -30,21 +30,30 @@ $titleHeight: 55vh
     font-weight: bold
     margin-top: 10vh
     // To offset the badge
-    padding-left: $fontSize-XS * 3
+    // padding-left: $fontSize-XS * 3
     text-shadow: -2px -2px 0 $color-primary, 2px -2px 0 $color-primary, -2px  2px 0 $color-primary, 2px 2px 0 $color-primary
     
+    .badgeAnchor
+      position: relative
+
     .betaBadge
       @include allCaps
       background-color: $color-nega
       border-radius: $fontSize-XS
+      border: 2px solid $color-primary
       color: $color-primary
       font-size: $fontSize-XS
       font-weight: bold
       padding: $margin-XS $margin-S
-      position: relative
+      position: absolute
       text-shadow: none
-      top: $fontSize-XS * -2
-      right: $fontSize-XS * 0.75
+      top: 0px
+      right: 0px
+      transform: scale(0.8) translate(80%, -25%)
+
+    .subtitle
+      @include allCaps
+      font-size: $fontSize-L
 
   #vignette
     position: absolute
