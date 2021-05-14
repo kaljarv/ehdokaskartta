@@ -29,7 +29,22 @@ $titleHeight: 55vh
     font-size: $fontSize-XXL
     font-weight: bold
     margin-top: 10vh
+    // To offset the badge
+    padding-left: $fontSize-XS * 3
     text-shadow: -2px -2px 0 $color-primary, 2px -2px 0 $color-primary, -2px  2px 0 $color-primary, 2px 2px 0 $color-primary
+    
+    .betaBadge
+      @include allCaps
+      background-color: $color-nega
+      border-radius: $fontSize-XS
+      color: $color-primary
+      font-size: $fontSize-XS
+      font-weight: bold
+      padding: $margin-XS $margin-S
+      position: relative
+      text-shadow: none
+      top: $fontSize-XS * -2
+      right: $fontSize-XS * 0.75
 
   #vignette
     position: absolute
@@ -38,8 +53,8 @@ $titleHeight: 55vh
     top: calc(#{$titleHeight} - var(--width) * 7/14)
     left: calc((100vw - var(--width)) / 2)
 
-  .clickableArea
-    cursor: pointer
+.clickableArea
+  cursor: pointer
 
 .description
   flex: 1 1 auto
@@ -49,6 +64,11 @@ $titleHeight: 55vh
     hyphens: none
     margin: $margin-M auto $margin-S auto
     max-width: $maxWidth-S
+    position: relative
+    z-index: $zIndex-6
+
+    a
+      color: inherit !important
 
     mat-icon
       height: 16px
@@ -58,14 +78,23 @@ $titleHeight: 55vh
 
   .readMore
     color: $color-nega
+    position: relative
+    z-index: $zIndex-6
 
   #nextButton
     border-color: $color-nega
     color: $color-nega
     font-size: $fontSize-XL
-    // color: $color-primary
-    // background-color: $color-nega
     margin-bottom: $margin-M
+    transition: background-color $transition-S
+    position: relative
+    z-index: $zIndex-6
+
+    &:hover
+      background-color: $color-negaSelectedBg
+
+.clickableArea:hover + * #nextButton
+  background-color: $color-negaSelectedBg
 
 .logos
   // position: absolute

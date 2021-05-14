@@ -20,6 +20,7 @@
 
     <h1>
       Ehdokas&shy;kartta
+      <span class="betaBadge">Beta</span>
     </h1>
 
 </section>
@@ -27,18 +28,19 @@
 <section class="description">
 
   <button id="nextButton"
-          mat-stroked-button 
+          color="white"
+          mat-stroked-button
           (click)="goForward()">
     Aloita
     <mat-icon>navigate_next</mat-icon>
   </button>
 
   <p class="info">
-    Ehdokaskartta tarjoaa kokeellisen, avoimeen lähdekoodiin perustuvan näkymän Ylen kuntavaalien 2021 Vaalikoneen tietoihin. Sen ensisijaisena tarkoituksena on kerätä käyttäjien kokemuksia, joten kaikenlainen palaute on tervetullutta.<br>
+    Ehdokaskartta on kokeellinen, avoimeen lähdekoodiin perustuva vaalikone, joka käyttää Ylen kuntavaalien 2021 Vaalikoneen tietoja. Sen keskeisenä tarkoituksena on kerätä käyttäjien kokemuksia, joten kaikenlainen palaute on tervetullutta. <a href="https://vaalit.fi/kuntavaalit" target="_blank">Kuntavaalien</a> vaalipäivä on sunnuntai 13.6.2021.<br>
     <a mat-button
        [routerLink]="aboutPath"
        class="readMore">
-      Lue lisää
+      Lue lisää Ehdokaskartasta
     </a>
   </p>
 
