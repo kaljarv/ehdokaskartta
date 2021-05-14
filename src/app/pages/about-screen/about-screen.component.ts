@@ -1,7 +1,10 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { SharedService } from '../../core';
+import { 
+  SharedService,
+  ADMIN_EMAIL 
+} from '../../core';
 
 
 @Component({
@@ -10,6 +13,8 @@ import { SharedService } from '../../core';
   styleUrls: ['./about-screen.component.sass']
 })
 export class AboutScreenComponent {
+
+  public adminEmail = ADMIN_EMAIL;
 
   constructor(
     private router: Router,
