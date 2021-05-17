@@ -231,6 +231,10 @@ export class DetailsQuestionComponent
     throw new Error(`Unimplemented question type '${this.question.constructor.name}'!`);
   }
 
+  get useMunicipalityAsConstituency(): boolean {
+    return this.matcher.config.useMunicipalityAsConstituency;
+  }
+
   get voterAnswer(): string | number[] {
     let a = this.question.voterAnswer;
     // We have to convert the answer to string for ngModel to work

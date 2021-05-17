@@ -100,7 +100,12 @@
   </div>
 
   <label [class.expanded]="distributionChartExpanded">
-    {{ constituencyName | genitive: 'n' }} ehdokkaiden vastausten jakauma
+    <ng-container *ngIf="useMunicipalityAsConstituency">
+      Kunnan ehdokkaiden vastausten jakauma
+    </ng-container>
+    <ng-container *ngIf="!useMunicipalityAsConstituency">
+      {{ constituencyName | genitive: 'n' }} ehdokkaiden vastausten jakauma
+    </ng-container>
     <mat-icon class="expandIcon">{{ distributionChartExpanded ? 'visibility' : 'visibility_off' }}</mat-icon>
   </label>
 
