@@ -181,9 +181,7 @@ export class DetailsCandidateComponent
     private lcFirst: LcFirstPipe,
     private sentencify: SentencifyPipe,
   ) {
-    this.shared.reportOverlayOpen({
-       // log() DEBUG TODO REM onboarding: {restart: () => this.onboardingTour?.restart()},
-    });
+    this.shared.reportOverlayOpen({});
   }
 
   public get isMaximised(): boolean {

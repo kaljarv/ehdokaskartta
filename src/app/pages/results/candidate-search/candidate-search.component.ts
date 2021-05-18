@@ -48,9 +48,7 @@ export class CandidateSearchComponent
     private matcher: MatcherService,
     private shared: SharedService,
   ) {
-    this.shared.reportOverlayOpen({
-      // log() DEBUG TODO REM onboarding: {restart: () => this.onboardingTour?.restart()},
-    });
+    this.shared.reportOverlayOpen({});
   }
 
   ngOnInit() {

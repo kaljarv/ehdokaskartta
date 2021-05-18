@@ -363,7 +363,7 @@ export class MapComponent
     this.minimisedCandidateScale = 0.5 + (1 - f) * 0.5;
     this.zoomExtents = [1, 12 + (f * 3)**2];
     this.showLabelFactor = 8 / this.minimisedCandidateScale;
-    console.log("Dynamic scale", f, this.showLabelFactor, this.minimisedCandidateScale, this.zoomExtents);
+    // console.log("Dynamic scale", f, this.showLabelFactor, this.minimisedCandidateScale, this.zoomExtents);
 
     // Set this to true to allow rescaleMap to continue
     this._mapInitialized = true;

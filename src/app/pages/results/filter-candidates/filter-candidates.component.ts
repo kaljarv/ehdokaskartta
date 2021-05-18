@@ -109,9 +109,7 @@ export class FilterCandidatesComponent
     private shared: SharedService,
     private fb: FormBuilder,
   ) {
-    this.shared.reportOverlayOpen({
-       // log() DEBUG TODO REM onboarding: {restart: () => this.onboardingTour?.restart()},
-    });
+    this.shared.reportOverlayOpen({});
     this._subscriptions.push(this.matcher.filterDataReady.subscribe(() => this.initFilters()));
   }
 
