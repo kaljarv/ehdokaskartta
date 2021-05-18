@@ -60,7 +60,7 @@ export const ONBOARDING_BUTTONS = {
   nextLast: {
     classes: "onboardingButton onboardingButton-next onboardingButton-nextLast",
     text: "Valmis!",
-    action: function next() { this.next(); }
+    action: function complete() { this.complete(); }
   },
   back: {
     classes: "onboardingButton onboardingButton-back",
@@ -74,7 +74,7 @@ export const ONBOARDING_BUTTONS = {
     text: "Edellinen",
     disabled: true
   },
-  complete: {
+  cancel: {
     classes: "onboardingButton onboardingButton-complete",
     secondary: true,
     text: "Sulje esittely",
@@ -97,7 +97,7 @@ export const DEFAULT_STEP_OPTIONS: PartialStepOptions = {
   //   });
   // },
   buttons: [
-    ONBOARDING_BUTTONS.complete,
+    ONBOARDING_BUTTONS.cancel,
     ONBOARDING_BUTTONS.back, 
     ONBOARDING_BUTTONS.next, 
   ],
@@ -112,13 +112,7 @@ export const DEFAULT_STEP_OPTIONS: PartialStepOptions = {
       { name: 'offset', options: { offset: [0, 20] } }
     ]
   },
-  scrollTo: true,
-  when: {
-    cancel: () => console.log('cancel', this),
-    complete: () => console.log('complete', this),
-    next: () => console.log('next', this),
-    back: () => console.log('back', this)
-  }
+  scrollTo: true
 }
 
 export const ONBOARDING_MODAL_OVERLAY_SELECTOR = ".shepherd-modal-overlay-container";
@@ -209,6 +203,11 @@ export class OnboardingService {
 
     this.shepherd.addSteps(steps);
 
+    // Setup event logging
+    this.shepherd.tourObject.on('cancel', () => this.logEvent('onboarding_cancel'));
+    this.shepherd.tourObject.on('complete',  () => this.logEvent('onboarding_complete'));
+    this.shepherd.tourObject.on('show',  () => this.logEvent('onboarding_show'));
+
     // Set up listeners to save completion to cookie
     if (tourId != null) {
       const saveCompletion = () => this.saveCompletion(tourId);
@@ -288,5 +287,11 @@ export class OnboardingService {
 
   public getCurrentStep(): any {
     return this.shepherd.tourObject?.getCurrentStep();
+  }
+
+  public logEvent(eventName: string): void {
+    this.shared.logEvent(eventName, {
+      tourId: this._currentTourId,
+    })
   }
 }

@@ -304,7 +304,10 @@ export class SharedService {
   }
 
   public logEvent(eventName: string, eventParams: any = {}): void {
-    this.database.logEvent(eventName, eventParams);
+    this.database.logEvent(eventName, {
+      currentPage: this.currentPage,
+      ...eventParams
+    });
   }
 
   private _emitTopBarDataChanged(): void {

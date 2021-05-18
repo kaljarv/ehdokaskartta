@@ -489,6 +489,7 @@ export class AppComponent
       action: 'close',
       onComplete: () => this.shared.onboarding.restart()
     });
+    this.shared.logEvent('onboarding_restart');
   }
 
   public updateContentTopMargin(): void {

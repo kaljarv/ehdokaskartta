@@ -1124,7 +1124,10 @@ export class MatcherService {
   }
 
   public logEvent(eventName: string, eventParams: any = {}): void {
-    this.database.logEvent(eventName, eventParams);
+    this.database.logEvent(eventName, {
+      currentPage: '_matcher',
+      ...eventParams
+    });
   }
 
   /*
