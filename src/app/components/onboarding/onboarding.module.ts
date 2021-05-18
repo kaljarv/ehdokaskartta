@@ -6,7 +6,10 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { ShepherdService } from 'angular-shepherd';
 
-import { CookieModule } from '../../core';
+import { 
+  CookieModule,
+  SharedService
+} from '../../core';
 
 import { OnboardingService } from './onboarding.service';
 import { OnboardingHintComponent } from './onboarding-hint.component';
@@ -32,6 +35,7 @@ import { OnboardingTourComponent } from './onboarding-tour.component';
   ],
   providers: [
     OnboardingService,
+    SharedService,
     ShepherdService
   ],
 })

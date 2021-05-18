@@ -741,6 +741,7 @@ export class MapComponent
         data: { party: data.datum.source.name }
       }
       this.partyMenuTrigger.openMenu();
+      this.shared.logEvent('map_party_menu_open');
 
     } else if (data.datum instanceof MapDatumVoter) {
 
@@ -749,6 +750,7 @@ export class MapComponent
         y: `${data.y}px`,
       }
       this.voterMenuTrigger.openMenu();
+      this.shared.logEvent('map_voter_menu_open');
 
     } else {
 

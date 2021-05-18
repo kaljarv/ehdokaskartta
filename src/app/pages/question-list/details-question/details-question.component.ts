@@ -157,7 +157,7 @@ export class DetailsQuestionComponent
 
     this._initDistributionChart();
 
-    this.shared.logEvent('questions_show', {id: this.question.id, text: this.question.text});
+    this.shared.logEvent('questions_show', {id: this.question.id});
   }
 
   ngAfterViewInit(): void {
@@ -245,13 +245,13 @@ export class DetailsQuestionComponent
 
   set voterAnswer(value: string | number[]) {
     this.matcher.setVoterAnswer(this.question, Array.isArray(value) ? value : Number(value));
-    this.shared.logEvent('questions_answer', {id: this.question.id, text: this.question.text});
+    this.shared.logEvent('questions_answer', {id: this.question.id});
     setTimeout(() => this.dismiss(), CLOSE_DELAY);
   }
 
   public deleteVoterAnswer(): void {
     this.matcher.deleteVoterAnswer(this.question.id);
-    this.shared.logEvent('questions_delete_answer', {id: this.question.id, text: this.question.text});
+    this.shared.logEvent('questions_delete_answer', {id: this.question.id});
     setTimeout(() => this.dismiss(), CLOSE_DELAY);
   }
 
@@ -275,6 +275,7 @@ export class DetailsQuestionComponent
    */
   public toggleDistributionChart(event?: Event): void {
     this.shared.hideDistribution = !this.shared.hideDistribution;
+    this.shared.logEvent(this.shared.hideDistribution ? 'questions_hide_distribution' : 'questions_show_distribution');
     if (event != null)
       event.preventDefault();
   }

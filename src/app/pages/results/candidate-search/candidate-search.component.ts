@@ -90,6 +90,7 @@ export class CandidateSearchComponent
       id: candidate.id,
       maximise: ['list', 'browse-list'].includes(this.shared.currentPage)
     });
+    this.shared.logEvent('search_show_candidate');
     this.dismiss();
   }
 

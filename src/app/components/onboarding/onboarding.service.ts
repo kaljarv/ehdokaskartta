@@ -1,8 +1,14 @@
 import { Injectable } from '@angular/core';
-import { NavigationStart, Router } from '@angular/router';
+import { 
+  NavigationStart, 
+  Router 
+} from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { ShepherdService } from 'angular-shepherd';
-import { CookieService } from '../../core';
+import { 
+  CookieService,
+  SharedService 
+} from '../../core';
 
 
 
@@ -72,7 +78,7 @@ export const ONBOARDING_BUTTONS = {
     classes: "onboardingButton onboardingButton-complete",
     secondary: true,
     text: "Sulje esittely",
-    action: function complete() { this.complete(); }
+    action: function cancel() { this.cancel(); }
   },
   okay: {
     classes: "onboardingButton onboardingButton-next",
@@ -106,7 +112,13 @@ export const DEFAULT_STEP_OPTIONS: PartialStepOptions = {
       { name: 'offset', options: { offset: [0, 20] } }
     ]
   },
-  scrollTo: true
+  scrollTo: true,
+  when: {
+    cancel: () => console.log('cancel', this),
+    complete: () => console.log('complete', this),
+    next: () => console.log('next', this),
+    back: () => console.log('back', this)
+  }
 }
 
 export const ONBOARDING_MODAL_OVERLAY_SELECTOR = ".shepherd-modal-overlay-container";
@@ -127,6 +139,7 @@ export class OnboardingService {
   constructor(
     private cookie: CookieService,
     private router: Router,
+    private shared: SharedService,
     private shepherd: ShepherdService,
   ) {
     // Close onboarding and clear cache whenever we change pages

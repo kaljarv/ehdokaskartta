@@ -251,6 +251,10 @@ export class ListComponent
 
 
   public toggleCandidate(candidate: Candidate, event?: Event): void {
+
+    if (this.shared.activeCandidateId !== candidate.id)
+      this.shared.logEvent('list_show_candidate');
+      
     this.shared.toggleCandidate.emit({
       id: candidate.id,
       maximise: true

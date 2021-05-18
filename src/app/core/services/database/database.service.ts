@@ -98,7 +98,6 @@ export class DatabaseService {
         let output = {};
         res.forEach(d => output[d.id] = d.data());
         // Return ie. resolve with the object
-        // console.log(path, output);
         resolve(output);
       });
     });
@@ -297,7 +296,6 @@ export class DatabaseService {
    */
   public logEvent(eventName: string, eventParams: any = {}): void {
     this.analytics.logEvent(eventName, eventParams);
-    // console.log(eventName, eventParams);
   }
 
 }

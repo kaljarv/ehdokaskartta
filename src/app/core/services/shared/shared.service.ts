@@ -173,7 +173,7 @@ export class SharedService {
     });
     this.activeCandidateChanged.subscribe( id => {
       if (id != null)
-        this.logEvent('candidate_show', {id});
+        this.logEvent('candidate_show');
     });
     this.showCandidateFilters.subscribe( () => {
       this.mapInteraction.emit();

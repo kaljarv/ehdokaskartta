@@ -378,23 +378,22 @@ export class MatcherService {
       if (!partiesPresent.has(id))
         delete this.parties[id];
 
-
-    // DEBUG / TEST / REMOVE
-    console.log("WARNING: Anonymizing candidates! REMEMBER to edit getCandidatePortraitUrl too!");
-    const femaleNames = ["Maria", "Helena", "Anneli", "Johanna", "Kaarina", "Marjatta", "Hannele", "Kristiina", "Emilia", "Liisa", "Elina", "Sofia", "Tuulikki", "Maarit", "Susanna", "Annikki", "Leena", "Katariina", "Anna", "Marja", "Sinikka", "Inkeri", "Riitta", "Aino", "Kyllikki", "Anne", "Tuula", "Päivi", "Orvokki", "Ritva", "Maija", "Tellervo", "Karoliina", "Pauliina", "Pirjo", "Minna", "Sari", "Irmeli", "Tiina", "Eeva", "Eveliina", "Laura", "Marika", "Tarja", "Elisabet"],
-          maleNames = ["Juhani", "Olavi", "Antero", "Tapani", "Johannes", "Tapio", "Mikael", "Kalevi", "Matti", "Pekka", "Petteri", "Ilmari", "Sakari", "Matias", "Antti", "Juha", "Kristian", "Heikki", "Timo", "Mikko", "Kari", "Markus", "Jari", "Jukka", "Aleksi", "Markku", "Kalervo", "Jaakko", "Oskari", "Petri", "Mika", "Henrik", "Lauri", "Veikko", "Hannu"],
-          surnames = ["Korhonen", "Virtanen", "Mäkinen", "Nieminen", "Mäkelä", "Hämäläinen", "Laine", "Heikkinen", "Koskinen", "Järvinen", "Lehtonen", "Lehtinen", "Saarinen", "Salminen", "Heinonen", "Niemi", "Heikkilä", "Kinnunen", "Salonen", "Turunen", "Salo", "Laitinen", "Tuominen", "Rantanen", "Karjalainen", "Jokinen", "Mattila", "Savolainen", "Lahtinen", "Ahonen", "Ojala", "Leppänen", "Kallio", "Hiltunen", "Väisänen", "Leinonen", "Miettinen", "Pitkänen", "Aaltonen", "Manninen", "Koivisto", "Hakala", "Anttila", "Laaksonen", "Hirvonen", "Räsänen", "Lehto", "Laakso", "Toivonen"];
-    let i = 0;
-    for (const id in this.candidates) {
-      const c = this.candidates[id];
-      const gender = c.getAnswer('Q63');
-      c.givenName = gender === 'Mies' ? maleNames[i % maleNames.length] : femaleNames[i % femaleNames.length];
-      c.surname = surnames[i % surnames.length];
-      i++;
-    }
-    // END: DEBUG / TEST / REMOVE
+    // DEBUG
+    // console.log("WARNING: Anonymizing candidates! REMEMBER to edit getCandidatePortraitUrl too!");
+    // const femaleNames = ["Maria", "Helena", "Anneli", "Johanna", "Kaarina", "Marjatta", "Hannele", "Kristiina", "Emilia", "Liisa", "Elina", "Sofia", "Tuulikki", "Maarit", "Susanna", "Annikki", "Leena", "Katariina", "Anna", "Marja", "Sinikka", "Inkeri", "Riitta", "Aino", "Kyllikki", "Anne", "Tuula", "Päivi", "Orvokki", "Ritva", "Maija", "Tellervo", "Karoliina", "Pauliina", "Pirjo", "Minna", "Sari", "Irmeli", "Tiina", "Eeva", "Eveliina", "Laura", "Marika", "Tarja", "Elisabet"],
+    //       maleNames = ["Juhani", "Olavi", "Antero", "Tapani", "Johannes", "Tapio", "Mikael", "Kalevi", "Matti", "Pekka", "Petteri", "Ilmari", "Sakari", "Matias", "Antti", "Juha", "Kristian", "Heikki", "Timo", "Mikko", "Kari", "Markus", "Jari", "Jukka", "Aleksi", "Markku", "Kalervo", "Jaakko", "Oskari", "Petri", "Mika", "Henrik", "Lauri", "Veikko", "Hannu"],
+    //       surnames = ["Korhonen", "Virtanen", "Mäkinen", "Nieminen", "Mäkelä", "Hämäläinen", "Laine", "Heikkinen", "Koskinen", "Järvinen", "Lehtonen", "Lehtinen", "Saarinen", "Salminen", "Heinonen", "Niemi", "Heikkilä", "Kinnunen", "Salonen", "Turunen", "Salo", "Laitinen", "Tuominen", "Rantanen", "Karjalainen", "Jokinen", "Mattila", "Savolainen", "Lahtinen", "Ahonen", "Ojala", "Leppänen", "Kallio", "Hiltunen", "Väisänen", "Leinonen", "Miettinen", "Pitkänen", "Aaltonen", "Manninen", "Koivisto", "Hakala", "Anttila", "Laaksonen", "Hirvonen", "Räsänen", "Lehto", "Laakso", "Toivonen"];
+    // let i = 0;
+    // for (const id in this.candidates) {
+    //   const c = this.candidates[id];
+    //   const gender = c.getAnswer('Q63');
+    //   c.givenName = gender === 'Mies' ? maleNames[i % maleNames.length] : femaleNames[i % femaleNames.length];
+    //   c.surname = surnames[i % surnames.length];
+    //   i++;
+    // }
+    // END: DEBUG
         
-    // DEBUG / TEST / REMOVE
+    // DEBUG
     // Multiply candidates to test performance
     // const qq = this.getAnswerableQuestions();
     // const perturbProb = 0.25; // 0.5;
@@ -451,7 +450,7 @@ export class MatcherService {
     // console.log("TEST: Added candidates for testing! Before culling, N = " + Object.keys(this.candidates).length);
     
     // console.log(this.candidates);
-    // END: DEBUG / TEST / REMOVE
+    // END: DEBUG
 
     // Cull candidates with too many missing values
     // and flag candidates with missing values above the threshold
@@ -749,7 +748,7 @@ export class MatcherService {
       this.favourites.push(id);
       this.dataStatus.favourites.next(DataStatus.Updated);
       this.saveFavouritesToCookie();
-      this.logEvent('favourites_add', {id});
+      this.logEvent('favourites_add');
     }
   }
 
@@ -758,7 +757,7 @@ export class MatcherService {
       this.favourites.splice(this.favourites.indexOf(id), 1);
       this.dataStatus.favourites.next(DataStatus.Updated);
       this.saveFavouritesToCookie();
-      this.logEvent('favourites_remove', {id});
+      this.logEvent('favourites_remove');
     }
   }
 
@@ -824,6 +823,7 @@ export class MatcherService {
     this._municipalityId = null;
     this.dataStatus.questions.next(DataStatus.NotReady);
     this.dataStatus.candidates.next(DataStatus.NotReady);
+    this.logEvent('unset_voter_answers');
   }
 
   /*

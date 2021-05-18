@@ -38,6 +38,7 @@ export class FeedbackFormComponent
     });
     if (this.shared.userEmail)
       this.email.setValue(this.shared.userEmail);
+    this.shared.logEvent('feedback_open');
   }
 
   ngOnDestroy(): void {
@@ -69,6 +70,8 @@ export class FeedbackFormComponent
                                             emailSubject: 'Palaute Ehdokaskartalta',
                                             emailBody: this.feedbackText.value })
     );
+
+    this.shared.logEvent('feedback_save');
   }
 
 }
