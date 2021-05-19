@@ -240,7 +240,9 @@ export class OnboardingService {
     const step = this.shepherd.tourObject.getCurrentStep();
     if (step)
       step.on('show', function cancel() { this.cancel() });
-    this.shepherd.complete();
+
+    if (this.shepherd.isActive)
+      this.shepherd.cancel();
   }
 
   public nextStep(): void {
@@ -290,8 +292,18 @@ export class OnboardingService {
   }
 
   public logEvent(eventName: string): void {
+    let currentStep, totalSteps;
+    const tour = this.shepherd.tourObject;
+    if (tour) {
+      currentStep = tour.steps.indexOf(this.getCurrentStep());
+      totalSteps = tour.steps.length;
+      if (eventName === 'onboarding_show')
+        currentStep++;
+    }
     this.shared.logEvent(eventName, {
       tourId: this._currentTourId,
+      currentStep, 
+      totalSteps
     })
   }
 }
