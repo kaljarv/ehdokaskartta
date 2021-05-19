@@ -24,7 +24,7 @@ import { OnboardingTourComponent } from '../../components';
 export class ConstituencyPickerComponent 
   implements AfterViewInit, OnInit, OnDestroy {
 
-  @ViewChild('voterMunicipality')
+  @ViewChild(OnboardingTourComponent)
   onboardingTour: OnboardingTourComponent;
   @ViewChild('voterMunicipalityInput') 
   voterMunicipalityInput: MatInput;
