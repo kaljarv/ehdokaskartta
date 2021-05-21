@@ -6,6 +6,9 @@ import {
 } from './question-numeric';
 
 export interface QuestionOptionsSingleNumber extends QuestionOptionsNumeric {
+  partyAverages?:  {
+    [partyId: string]: number
+  },
   values?: QuestionNumericValue[]
 }
 
@@ -15,6 +18,9 @@ export interface QuestionOptionsSingleNumber extends QuestionOptionsNumeric {
  */
 
 export abstract class QuestionSingleNumber extends QuestionNumeric {
+  public partyAverages:  {
+    [partyId: string]: number
+  };
   public voterAnswer: number;
   /*
    * These are initialized in the constructor
@@ -31,7 +37,6 @@ export abstract class QuestionSingleNumber extends QuestionNumeric {
   ) {
     super(options);
     // Set values and find min and max
-    this.values = values || defaultValues;
     const sorted = this.values.sort((a, b) => a.key - b.key);
     this.minAnswer = sorted[0].key;
     this.maxAnswer = sorted[sorted.length - 1].key;

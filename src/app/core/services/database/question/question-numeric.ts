@@ -24,6 +24,9 @@ export type QuestionNumericValue = {
 }
 
 export interface QuestionOptionsNumeric extends QuestionOptions {
+  partyAverages?: {
+    [partyId: string]: number | number[]
+  },
   values?: QuestionNumericValue[]
 }
 
@@ -56,6 +59,9 @@ export const QUESTION_NUMERIC_SOMEWHAT_DISAGREE_THRESHOLD = 0.3;
  */
 
 export abstract class QuestionNumeric extends Question {
+  public partyAverages:  {
+    [partyId: string]: number | number[]
+  };
   public voterAnswer: number | number[];
   /*
    * These should be initialized in the constructor
@@ -73,11 +79,12 @@ export abstract class QuestionNumeric extends Question {
   static readonly stronglyDisagree: AgreementType = AgreementType.StronglyDisagree;
 
   constructor(
-    {values, ...options}: QuestionOptionsNumeric,
+    {partyAverages, values, ...options}: QuestionOptionsNumeric,
     defaultValues: QuestionNumericValue[] = QUESTION_NUMERIC_DEFAULT_VALUES
   ) {
     super(options);
     this.values = values || defaultValues;
+    this.partyAverages = partyAverages ?? {};
   }
 
   get valueKeys(): number[] {

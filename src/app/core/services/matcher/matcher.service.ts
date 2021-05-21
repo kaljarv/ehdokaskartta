@@ -137,7 +137,7 @@ export class MatcherService {
     },
     age: {
       type: CandidateFilterNumberRange,
-      questionKey: 'Q59',
+      questionKey: 'age',
       opts: {
         title: 'Iän perusteella',
         unitName: 'vuotta',
@@ -148,7 +148,7 @@ export class MatcherService {
     },
     gender: {
       type: CandidateFilterSimple,
-      questionKey: 'Q63',
+      questionKey: 'gender',
       opts: {
         title: 'Sukupuolen perusteella',
         multipleValues: false,
@@ -162,9 +162,18 @@ export class MatcherService {
         multipleValues: false,
       }
     },
+    themes: {
+      type: CandidateFilterSimple,
+      questionKey: 'electionTheme',
+      opts: {
+        title: 'Asioiden perusteella, joita ehdokas aikoo puolustaa',
+        multipleValues: true,
+        multipleValueLogicOperator: CandidateFilterLogicOperator.Or,
+      }
+    },
     motherTongue: {
       type: CandidateFilterSimple,
-      questionKey: 'Q64',
+      questionKey: 'language',
       opts: {
         title: 'Äidinkielen perusteella',
         multipleValues: false,
@@ -172,7 +181,7 @@ export class MatcherService {
     },
     education: {
       type: CandidateFilterSimple,
-      questionKey: 'Q66',
+      questionKey: 'education',
       opts: {
         title: 'Koulutuksen perusteella',
         multipleValues: false,
@@ -180,7 +189,7 @@ export class MatcherService {
     },
     politicalExperience: {
       type: CandidateFilterSimple,
-      questionKey: 'Q68',
+      questionKey: 'politicalExperience',
       opts: {
         title: 'Poliittisen kokemuksen perusteella',
         multipleValues: true,
@@ -343,12 +352,12 @@ export class MatcherService {
         
     // Import questions data
     this.questions = await this.database.getQuestions(id);
-    for (const id in this.questions) {
+    for (const id in this.questions)
       this.questions[id].id = id;
-    }
 
     // Import correlation data
     this.correlationMatrix = await this.database.getCorrelationMatrix(id);
+
     // Clean up the matrix as it may contain questions that are not present in the questions list
     // (especially questions marked as dropped, which are excluded when getting questions)
     Object.keys(this.correlationMatrix).filter(q => !(q in this.questions)).forEach(q => {
@@ -516,7 +525,7 @@ export class MatcherService {
     if (cDiff !== 0)
       return cDiff;
     else
-      return a.id < b.id ? -1 : 1;
+      return a.order < b.order ? -1 : 1;
   }
 
   public getQuestion(id: string): Question {
@@ -535,10 +544,8 @@ export class MatcherService {
     return id in this.candidates ? this.candidates[id] : null;
   }
 
-  public getCandidatePortraitUrl(id: string): string {
-    // DEBUG / TEST / REMOVE
-    return this.candidates[id]?.getAnswer('Q63') === 'Mies' ?  'assets/images/debug-portrait-male.jpeg' : 'assets/images/debug-portrait.jpeg';
-    return `assets/images/candidate-portraits/${id}.jpg`;
+  public getCandidatePortraitUrl(candidate: Candidate): string {
+    return `assets/images/candidates/${candidate.image}`;
   }
 
   /*
@@ -1039,11 +1046,12 @@ export class MatcherService {
       if (filterType === CandidateFilterMultiQuestion)
         filter.setValueGetter(() => new Set(this.getVoterAnsweredQuestions()));
       else
-        for (const candidate of candidates)
-          filter.addValue(opts.question ? 
-                          candidate.getAnswer(opts.question) : 
-                          candidate[opts.property]);
-
+        for (const candidate of candidates) {
+          const value = opts.question ? 
+                        candidate.getAnswer(opts.question) : 
+                        candidate[opts.property];
+          filter.addValue(value);
+        }
       filter.rulesChanged.subscribe(f => this.applyFilter(f));
       this._filters[f] = filter;
 

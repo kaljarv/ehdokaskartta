@@ -28,7 +28,8 @@ export interface CandidateOptions {
   givenName: string;
   constituencyId: string;
   partyId: string;
-  selected: number;
+  selected?: number;
+  image?: string;
   basicQuestions: AnswerDict;
   detailsLoader: CandidateDetailsLoader;
   constituencyReference: ConstituencyDict;
@@ -52,6 +53,7 @@ export class Candidate implements GetAnswer {
   public constituencyId: string;
   public partyId: string;
   public selected: number;
+  public image: string;
   public basicQuestions: AnswerDict;
   public constituencyReference: ConstituencyDict;
   public partyReference: PartyDict;
@@ -99,16 +101,18 @@ export class Candidate implements GetAnswer {
   /*
    * Get answer to a question
    * If the questionId is not found in the basic questions, it will
-   * be looked for in the cached questions. And error will be thrown
+   * be looked for in the cached questions.
+   * And error won't be thrown
    * if the details aren't loaded in this case.
+   * TODO: Auto-load details when qid not in basic questions
    */
   public getAnswer(question: string | Question): any {
     let id: string = question instanceof Question ? question.id : question;
     if (id in this.basicQuestions)
       return this.basicQuestions[id];
-    if (this._cachedQuestions == null)
-      throw new Error("A Candidate's details must be loaded before accessing details questions.");
-    return this._cachedQuestions[id];
+    // if (this._cachedQuestions == null)
+    //   throw new Error(`A Candidate's details must be loaded before accessing details questions: ${id}.`);
+    return this._cachedQuestions?.[id];
   }
 
   /*

@@ -45,7 +45,7 @@
 
               <mat-checkbox *ngFor="let question of getSortedValues(filter); let j = index"
                             [formControlName]="j">
-                <div class="questionChip category-{{ question.categoryName | toClassName }}">
+                <div class="topicChip category-{{ question.categoryName | toClassName }}">
                   {{ question.topic }}
                 </div>
               </mat-checkbox>

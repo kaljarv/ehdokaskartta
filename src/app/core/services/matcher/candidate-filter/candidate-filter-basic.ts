@@ -3,18 +3,6 @@ import {
   CandidateFilterOptions
 } from './candidate-filter';
 
-import { 
-  Question
-} from '../../database';
-
-/*
- * Question is required for basic filters
- */
-export interface CandidateFilterOptionsBasic extends CandidateFilterOptions {
-  question: Question
-}
-
-
 /*
  * Basic string filter that implements require and exclude
  */
@@ -40,13 +28,12 @@ export class CandidateFilterBasic extends CandidateFilter {
   }
 
   public match(value: any): boolean {
-    if (this._rules.required.size && this._rules.excluded.size) {
+    if (this._rules.required.size && this._rules.excluded.size)
       return this.isRequired(value) && !this.isExcluded(value);
-    } else if (this._rules.required.size) {
+    else if (this._rules.required.size)
       return this.isRequired(value);
-    } else {
+    else
       return !this.isExcluded(value);
-    }
   }
 
   // New methods

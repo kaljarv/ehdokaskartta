@@ -26,6 +26,7 @@ import {
   QuestionLikert,
   QuestionLikertSeven,
   QuestionOpen,
+  QuestionOpenMultiple,
   QuestionPreferenceOrder,
   QuestionOptions,
   QuestionOptionsPreferenceOrder,
@@ -55,9 +56,9 @@ import {
   PartyOptions
 } from './party';
 
-export const ELECTION_ID = '2021-kuntavaalit-test'; // '2019-eduskuntavaalit';
+export const ELECTION_ID = '2021-kuntavaalit'; // '2019-eduskuntavaalit';
 
-export type QuestionType = 'Likert' | 'Likert7' | 'Open' | 'PreferenceOrder';
+export type QuestionType = 'Likert' | 'Likert7' | 'Open' | 'OpenMultiple' | 'PreferenceOrder';
 
 @Injectable({
   providedIn: 'root'
@@ -66,7 +67,8 @@ export class DatabaseService {
   private _cache: {
     categories?: CategoryDict
     constituencies?: ConstituencyDict,
-    parties?: PartyDict
+    parties?: PartyDict,
+    questions?: QuestionDict
   } = {};
 
   constructor(
@@ -160,10 +162,17 @@ export class DatabaseService {
 
   public async getParties(): Promise<PartyDict> {
 
+    // We need this for the parties constructor
+    if (this._cache.questions == null)
+      throw new Error('Load questions before parties!');
+
     // Data converter
     // AngularFire doesn't implement the withConverter method, so we'll have to
     // process the data ourselves.
-    const partyConverter = (data: PartyOptions): Party => new Party(data);
+    const partyConverter = (data: PartyOptions): Party => new Party({
+        questionReference: this._cache.questions,
+        ...data
+      });
 
     // Return Promise
     return new Promise<PartyDict>(async (resolve, reject) => {
@@ -201,6 +210,8 @@ export class DatabaseService {
           return new QuestionLikertSeven(opts as QuestionOptionsSingleNumber);
         case "Open":
           return new QuestionOpen(opts as QuestionOptions);
+        case "OpenMultiple":
+            return new QuestionOpenMultiple(opts as QuestionOptions);
         case "PreferenceOrder":
           return new QuestionPreferenceOrder(opts as QuestionOptionsPreferenceOrder);
         default:
@@ -214,6 +225,7 @@ export class DatabaseService {
       const dict: QuestionDict = {};
       for (const id in data)
         dict[id] = questionConverter(data[id]);
+      this._cache.questions = dict;
       resolve(dict);
     });
   }

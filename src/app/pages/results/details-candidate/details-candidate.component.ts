@@ -428,6 +428,12 @@ export class DetailsCandidateComponent
            process(this.getAnswer(questionOrId));
   }
 
+  public getOrMissingMultiple(questionOrId: Question | string, process: Function = (x) => x ): string[] {
+    return this.isMissing(questionOrId) ?
+           [MISSING_DATA_INFO] :
+           this.getAnswer(questionOrId).map(v => process(v));
+  }
+
   get missingDataInfo(): string {
     return MISSING_DATA_INFO;
   }
@@ -461,19 +467,28 @@ export class DetailsCandidateComponent
     return this.candidate.number;
   }
   get education(): string {
-    return this.getOrMissing("Q66");
+    return this.getOrMissing("education");
+  }
+  get motherTongue(): string {
+    return this.getOrMissing("language");
+  }
+  get zipCode(): string {
+    return this.getOrMissing("zipCode");
+  }
+  get occupation(): string {
+    return this.getOrMissing("occupation");
   }
   get politicalExperience(): string {
-    return this.getOrMissing("Q68");
+    return this.getOrMissingMultiple("politicalExperience").join(", ");
   }
   get constituency(): string {
     return this.matcher.getConstituencyNameById(this.candidate.constituencyId);
   }
   get age(): string {
-    return this.getOrMissing("Q59");
+    return this.getOrMissing("age");
   }
   get gender(): string {
-    let text = this.getOrMissing("Q63");
+    let text = this.getOrMissing("gender");
     if (typeof text === 'string' && text.indexOf(" ") === -1) {
       // Lowercase first unless it's a sentence, ie. En halua sanoa
       text = this.lcFirst.transform(text);
@@ -481,69 +496,81 @@ export class DetailsCandidateComponent
     return text;
   }
   get languages(): string {
-    return this.getOrMissing("Q67");
+    return this.getOrMissingMultiple("languageSkills").join(", ");
   }
   get fundingDescription(): SafeHtml {
-    if (this.isMissing("Q69")) {
+    if (this.isMissing("electionBudget")) {
       return this.sanitizer.bypassSecurityTrustHtml(MISSING_DATA_INFO_HTML);
     }
     let desc = "Käytän vaalein rahaa ";
-    desc += `<strong>${ this.candidate.getAnswer('Q69').replace("-", "—").replace(/\s*000\b/g, "\xa0000").replace(/\s*euroa/, "</strong>\xa0€") }`;
-    if (this.isMissing("Q70")) {
-      desc += ` <span class="${MISSING_DATA_INFO_CLASS}">Ei vastausta ulkopuolisen rahoituksen osuudesta.</span>`;
-    } else if (this.candidate.getAnswer('Q70') == "0%") {
-      desc += ", eikä ulkopuolista rahoitusta ei ole lainkaan."
-    } else {
-      desc += `. Tästä ulkopuolista rahoitusta on ${ this.candidate.getAnswer('Q70').replace("-", "—").replace(/\s*%/g, "\xa0%") }`;
-      if (this.isMissing("Q71") || this.candidate.getAnswer('Q71') == "Joku muu") {
-        desc += `. <span class="${MISSING_DATA_INFO_CLASS}">Ei vastausta ulkopuolisen rahoituksen lähteestä.</span>`;
-      } else {
-        desc += `, jonka tärkeimpänä lähteenä ${ this.candidate.getAnswer('Q71') == "Yksityiset lahjoitukset" ? "ovat" : "on" } ${ this.lcFirst.transform(this.candidate.getAnswer('Q71')) }.`;
-      }
-    }
+    desc += `<strong>${ this.candidate.getAnswer('electionBudget').replace("-", "—").replace(/\s*000\b/g, "\xa0000").replace(/\s*euroa/, "</strong>\xa0€") }`;
+    // if (this.isMissing("Q70")) {
+    //   desc += ` <span class="${MISSING_DATA_INFO_CLASS}">Ei vastausta ulkopuolisen rahoituksen osuudesta.</span>`;
+    // } else if (this.candidate.getAnswer('Q70') == "0%") {
+    //   desc += ", eikä ulkopuolista rahoitusta ei ole lainkaan."
+    // } else {
+    //   desc += `. Tästä ulkopuolista rahoitusta on ${ this.candidate.getAnswer('Q70').replace("-", "—").replace(/\s*%/g, "\xa0%") }`;
+    //   if (this.isMissing("Q71") || this.candidate.getAnswer('Q71') == "Joku muu") {
+    //     desc += `. <span class="${MISSING_DATA_INFO_CLASS}">Ei vastausta ulkopuolisen rahoituksen lähteestä.</span>`;
+    //   } else {
+    //     desc += `, jonka tärkeimpänä lähteenä ${ this.candidate.getAnswer('Q71') == "Yksityiset lahjoitukset" ? "ovat" : "on" } ${ this.lcFirst.transform(this.candidate.getAnswer('Q71')) }.`;
+    //   }
+    // }
     return this.sanitizer.bypassSecurityTrustHtml(desc);
   }
-  get politicalParagonAndReason(): SafeHtml {
-    if (this.isMissing("Q75")) {
-      return this.sanitizer.bypassSecurityTrustHtml(MISSING_DATA_INFO_HTML);
-    } else {
-      let text = `<span class="content-emphasis">${this.sentencify.transform(this.getAnswer("Q75"))}</span>`;
-      if (!this.isMissing("Q76")) {
-        text += ` <span [innerHtml]="politicalParagonReason">${this.getAnswer("Q76")}</span>`;
-      }
-      return this.sanitizer.bypassSecurityTrustHtml(text);
-    }
-  }
-  get politicalParagon(): string {
-    return this.getOrMissing("Q75");
-  }
-  get politicalParagonReason(): string {
-    return this.getOrMissing("Q76");
-  }
+  // get politicalParagonAndReason(): SafeHtml {
+  //   if (this.isMissing("Q75")) {
+  //     return this.sanitizer.bypassSecurityTrustHtml(MISSING_DATA_INFO_HTML);
+  //   } else {
+  //     let text = `<span class="content-emphasis">${this.sentencify.transform(this.getAnswer("Q75"))}</span>`;
+  //     if (!this.isMissing("Q76")) {
+  //       text += ` <span [innerHtml]="politicalParagonReason">${this.getAnswer("Q76")}</span>`;
+  //     }
+  //     return this.sanitizer.bypassSecurityTrustHtml(text);
+  //   }
+  // }
+  // get politicalParagon(): string {
+  //   return this.getOrMissing("Q75");
+  // }
+  // get politicalParagonReason(): string {
+  //   return this.getOrMissing("Q76");
+  // }
   get portraitUrl(): string {
-    return this.matcher.getCandidatePortraitUrl(this.candidate.id);
+    return this.matcher.getCandidatePortraitUrl(this.candidate);
   }
-  get whyMe(): string {
-    return this.getOrMissing("Q74");
-  }
+  // get whyMe(): string {
+  //   return this.getOrMissing("Q74");
+  // }
   get promises(): string[] {
     let list = [];
-    ['Q60', 'Q61', 'Q62'].forEach( (key) => {
+    ['electionPromise1', 'electionPromise2', 'electionPromise3'].forEach( (key) => {
       if (!this.isMissing(key)) {
         list.push(this.getAnswer(key));
       }
     });
     return list;
   }
-  get committees(): string[] {
-    let list = [];
-    ['Q72', 'Q73'].forEach( (key) => {
-      if (!this.isMissing(key)) {
-        list.push(this.getAnswer(key));
-      }
-    });
-    return list;
+  get themes(): string[] {
+    return this.getOrMissingMultiple("electionTheme");
   }
+  get hasSocialMedia(): boolean {
+    return !(!this.facebook && !this.instagram);
+  }
+  get facebook(): string {
+    return this.getAnswer("facebook");
+  }
+  get instagram(): string {
+    return this.getAnswer("facebook");
+  }
+  // get committees(): string[] {
+  //   let list = [];
+  //   ['Q72', 'Q73'].forEach( (key) => {
+  //     if (!this.isMissing(key)) {
+  //       list.push(this.getAnswer(key));
+  //     }
+  //   });
+  //   return list;
+  // }
 
   get isFavourite(): boolean {
     return this.matcher.getFavourites().includes(this.data.id);

@@ -354,10 +354,8 @@ export class MapComponent
 
     // Scale zoom extents and marker scale based on the sqrt of the 
     // number of candidates. The scaling factor runs from 0 to 1
-    // starting from 100 candidates and ending at 1000. In the 2017
-    // Finnish municipal elections, the largest number of candidates
-    // in a municipality was 1084.
-    let f = (Math.sqrt(this.candidates.length) - Math.sqrt(100)) / Math.sqrt(900);
+    // starting from 50 candidates and ending at 500.
+    let f = (Math.sqrt(this.candidates.length) - Math.sqrt(50)) / Math.sqrt(500);
         f = this.shared.clamp(f, 0, 1);
     // Nb. this runs from 0.4 to 0.8
     this.minimisedCandidateScale = 0.5 + (1 - f) * 0.5;

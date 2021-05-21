@@ -8,14 +8,16 @@ import {
   DEFAULT_CONSTITUENCY_ID,
 } from '../constituency';
 
-export const MISSING_VALS = [null, "-", "", "En halua kertoa"];
+export const MISSING_VALS = [null, [], "-", "", "En halua kertoa"];
 
 export type QuestionDict = { [id: string]: Question }
 
 export interface QuestionOptions {
   id: string;
-  text: string;
+  order?: number;
+  text?: string;
   topic?: string;
+  additionalInfo?: string;
   categoryId?: string;
   relatedId?: string;
   dropped?: boolean;
@@ -30,12 +32,14 @@ export interface QuestionOptions {
 
 export abstract class Question {
   public id: string;
-  public text: string;
-  public topic: string;
+  public order: number = Infinity;
+  public text?: string;
+  public topic?: string;
+  public additionalInfo?: string;
   public categoryId?: string;
   public relatedId?: string;
   public dropped?: boolean;
-  public constituencyId: string;
+  public constituencyId?: string;
   public categoryReference: CategoryDict;
   public constituencyReference: ConstituencyDict;
 

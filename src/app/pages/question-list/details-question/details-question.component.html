@@ -12,6 +12,25 @@
 
   <h2 id="questionDetails-title">{{ question.text }}</h2>
 
+   <!-- Additional info -->
+
+  <div *ngIf="question.additionalInfo"
+       (click)="toggleAdditionalInfo()"
+       class="additionalInfo">
+  
+    <div class="title">
+      <mat-icon>info</mat-icon>
+      Mistä on kyse?
+    </div>
+
+    <div class="content"
+         [@toggleExpand]="additionalInfoExpanded ? 'open' : 'closed'">
+      
+      {{ question.additionalInfo }}
+        
+    </div>
+  </div>
+
   <!-- Selector: Likert -->
 
   <div *ngIf="questionType == 'Likert' || questionType == 'Likert7'"

@@ -53,7 +53,8 @@ export abstract class CandidateFilter {
   public description: string;
   // Multiple values means a candidate may have multiple values for the datum filtered
   public multipleValues: boolean = false;
-  public multipleValueSeparator: string = ',';
+  // If this is defined added values are split
+  public multipleValueSeparator: string;
   public multipleValueLogicOperator: CandidateFilterLogicOperator = CandidateFilterLogicOperator.Or;
   public rulesChanged: EventEmitter<CandidateFilter> = new EventEmitter<CandidateFilter>();
   readonly isNumeric: boolean = true;
@@ -176,17 +177,22 @@ export abstract class CandidateFilter {
     }
   }
 
+  /*
+   * NB:
+   * Splitting with this.multipleValueSeparator, which is risky!
+   */
   public addValue(...values: any): void {
-    values.forEach(v => {
-      let vArr = [v];
-      if (this.multipleValues) {
-        vArr = v.split(this.multipleValueSeparator);
-      }
+    values.filter(v => v != null).forEach(v => {
+
+      // Multiple values might be stored as arrays, so we need to expand them
+      let vArr = this._splitMultiple(v);
+
       vArr.forEach(v2 => {
         const vP = this._process(v2);
         this._values.add(vP);
         this._onValueAdded(vP);
       });
+
     });
   }
   public deleteValue(...values: any): void {
@@ -211,18 +217,19 @@ export abstract class CandidateFilter {
   // This is called by apply and it calls match for all values if filter allows multiple values
   // or otherwise just calls match for the singleton
   public matchMultiple(unprocessedValue: any): boolean {
+
     if (this.multipleValues) {
 
-      const vArr = unprocessedValue.split(this.multipleValueSeparator);
+      const vArr = this._splitMultiple(unprocessedValue);
+
       // For Or any of the values must be true, otherwise return false
       // For And none of the values can be false, if so, return true
       for (let i = 0; i < vArr.length; i++) {
         let r = this.match(this._process(vArr[i]));
-        if (r && this.multipleValueLogicOperator === CandidateFilterLogicOperator.Or) {
+        if (r && this.multipleValueLogicOperator === CandidateFilterLogicOperator.Or)
           return true;
-        } else if (!r && this.multipleValueLogicOperator === CandidateFilterLogicOperator.And) {
+        else if (!r && this.multipleValueLogicOperator === CandidateFilterLogicOperator.And)
           return false;
-        }
       }
 
       switch (this.multipleValueLogicOperator) {
@@ -274,5 +281,13 @@ export abstract class CandidateFilter {
   }
   protected _changed(): void {
     if (!this._supressRulesChanged) this.rulesChanged.emit(this);
+  }
+
+  protected _splitMultiple(value: any): any[] {
+    if (Array.isArray(value))
+      return value;
+    if (this.multipleValues && this.multipleValueSeparator != null && typeof value === 'string')
+      return value.split(this.multipleValueSeparator);
+    return [value];
   }
 }

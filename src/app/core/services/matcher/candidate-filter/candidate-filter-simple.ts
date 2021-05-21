@@ -1,5 +1,6 @@
 import {
-  CandidateFilterOptions 
+  CandidateFilterOptions, 
+  MISSING_FILTER_VAL 
 } from './candidate-filter';
 import { 
   CandidateFilterBasic
@@ -31,7 +32,8 @@ export class CandidateFilterSimple extends CandidateFilterBasic {
   }
 
   public match(value: any): boolean {
-    return !this.isExcluded(value);
+    return !this.isExcluded(value) &&
+           !(value === MISSING_FILTER_VAL && !this.hasMissing);
   }
 
   // New methods
@@ -39,27 +41,14 @@ export class CandidateFilterSimple extends CandidateFilterBasic {
   public isRequired(value: any): boolean {
     return this.active && this._values.has(value) && !this._rules.excluded.has(value);
   }
-  public isExcluded(value: any): boolean {
-    return this._rules.excluded.has(value);
-  }
   public getRequired(): any[] {
     return Array.from(this._values).filter(v => !this._rules.excluded.has(v));
-  }
-  public getExcluded(): any[] {
-    return Array.from(this._rules.excluded);
   }
   public exclude(...values: any): void {
     values.forEach(v => this._rules.excluded.add(this._process(v)));
     this._changed();
   }
-  public dontExclude(...values: any): void {
-    values.forEach(v => this._rules.excluded.delete(this._process(v)));
-    this._changed();
-  }
-  public setExcluded(...values: any): void {
-    this._rules.excluded.clear();
-    this.exclude(...values);
-  }
+
   /*
    * NB. With this filter, require is not cumulative with consecutive calls.
    */ 

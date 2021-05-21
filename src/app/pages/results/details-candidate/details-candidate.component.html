@@ -139,6 +139,18 @@
         </div>
       </div>
       <div class="candidate-datum">
+        <label>Äidinkieli</label>
+        <div [class]="getContentClasses('motherTongue')">
+          {{ motherTongue | lcFirst }}
+        </div>
+      </div>
+      <div class="candidate-datum">
+        <label>Ammatti</label>
+        <div [class]="getContentClasses('occupation')">
+          {{ occupation | lcFirst }}
+        </div>
+      </div>
+      <div class="candidate-datum">
         <label>Poliittinen kokemus</label>
         <div [class]="getContentClasses('politicalExperience')">
           {{ politicalExperience | fixList }}
@@ -173,6 +185,22 @@
         <div class="{{ dataContentClass }} candidate-funding"
              [innerHtml]="fundingDescription"></div>
       </div>
+      <div *ngIf="hasSocialMedia"
+           class="candidate-datum candidate-datum-socialMedia">
+        <label>Sosiaalinen media</label>
+        <div [class]="getContentClasses('socialMedia')">
+          <a *ngIf="facebook"
+             [href]="facebook"
+             target="_blank">
+            Facebook
+          </a>
+          <a *ngIf="instagram"
+             [href]="instagram"
+             target="_blank">
+            Instagram
+          </a>
+        </div>
+      </div>
     </section>
   </mat-tab>
 
@@ -182,10 +210,23 @@
 
   <mat-tab label="Linjaukset">
     <section class="candidate-data candidate-data--secondary">
-      <div class="candidate-datum">
+      <!-- <div class="candidate-datum">
         <label>Miksi minut pitäisi valita eduskuntaan</label>
         <div [class]="getContentClasses('whyMe')">
           {{ whyMe }}
+        </div>
+      </div> -->
+      <div class="candidate-datum candidate-datum-themes">
+        <label>Aion puolustaa näitä asioita valtuutettuna</label>
+        <div *ngIf="themes.length > 0"
+            class="{{ dataContentClass }} ">
+          <ol>
+            <li *ngFor="let theme of themes">{{ theme }}</li>
+          </ol>
+        </div>
+        <div *ngIf="themes.length == 0"
+             class="{{ dataContentClass }} {{ missingDataInfoClass }}">
+          {{ missingDataInfo }}
         </div>
       </div>
       <div class="candidate-datum">
@@ -201,7 +242,7 @@
           {{ missingDataInfo }}
         </div>
       </div>
-      <div class="candidate-datum">
+      <!-- <div class="candidate-datum">
         <label>Valiokunnat, joissa haluaisin mieluiten vaikuttaa</label>
         <div *ngIf="committees.length > 0"
             class="{{ dataContentClass }}">
@@ -218,7 +259,7 @@
         <label>Poliittinen esikuva</label>
         <div [class]="dataContentClass"
              [innerHtml]="politicalParagonAndReason"></div>
-      </div>
+      </div> -->
     </section>
   </mat-tab>
 

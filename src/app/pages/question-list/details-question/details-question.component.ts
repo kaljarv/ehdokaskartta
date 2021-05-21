@@ -107,6 +107,7 @@ export class DetailsQuestionComponent
   @ViewChild(OnboardingTourComponent)
   onboardingTour: OnboardingTourComponent;
 
+  public additionalInfoExpanded: boolean = false;
   public candidates: {
     [value: number]: Candidate[]
   } = {};
@@ -271,12 +272,21 @@ export class DetailsQuestionComponent
   }
 
   /*
+   * Hide or show additional info
+   */
+  public toggleAdditionalInfo(event?: Event): void {
+    this.additionalInfoExpanded = !this.additionalInfoExpanded;
+    if (this.additionalInfoExpanded)
+      this.shared.logEvent('questions_show_additional_info');
+    event?.preventDefault();
+  }
+
+  /*
    * Hide or show distribution chart
    */
   public toggleDistributionChart(event?: Event): void {
     this.shared.hideDistribution = !this.shared.hideDistribution;
     this.shared.logEvent(this.shared.hideDistribution ? 'questions_hide_distribution' : 'questions_show_distribution');
-    if (event != null)
-      event.preventDefault();
+    event?.preventDefault();
   }
 }

@@ -58,7 +58,7 @@ export class FavouritesListComponent
   }
 
   public getPortraitUrl(candidate: Candidate): string {
-    return this.matcher.getCandidatePortraitUrl(candidate.id);
+    return this.matcher.getCandidatePortraitUrl(candidate);
   }
 
   public showCandidate(candidate: Candidate): void {

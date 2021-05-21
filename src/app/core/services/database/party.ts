@@ -5,7 +5,9 @@ import {
   GetAnswer
 } from './get-answer';
 import {
-   Question
+   Question,
+   QuestionDict,
+   QuestionNumeric
 } from './question';
 
 export const INDEPENDENT_PARTY_ID = '18';
@@ -17,17 +19,17 @@ export type PartyDict = {
 export interface PartyOptions {
   id: string;
   name: string;
-  averageAnswers?: AnswerDict;
+  questionReference: QuestionDict;
   abbreviation?: string;
 }
 
 export class Party implements GetAnswer {
 
-  public averageAnswers: AnswerDict = {};
   public id: string;
   public name: string;
   public projX: number;
   public projY: number;
+  public questionReference: QuestionDict;
 
   private _abbreviation: string;
 
@@ -47,9 +49,14 @@ export class Party implements GetAnswer {
    * Get the party's average answer to a question
    */
   public getAnswer(question: string | Question): any | undefined {
-    let id: string = question instanceof Question ? question.id : question;
-    if (id in this.averageAnswers)
-      return this.averageAnswers[id];
+    let qid: string = question instanceof Question ? question.id : question;
+
+    if (qid in this.questionReference 
+        && this.questionReference[qid] instanceof QuestionNumeric) {
+      const q = this.questionReference[qid] as QuestionNumeric;
+      return q.partyAverages[this.id] ?? undefined;
+    }
+    
     return undefined;
   }
 }
