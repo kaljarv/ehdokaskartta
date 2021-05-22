@@ -21,7 +21,6 @@ import { combineLatest,
 import { first } from 'rxjs/operators';
 
 import { LcFirstPipe,
-         SentencifyPipe,
          MatcherService, 
          Candidate, 
          Question,
@@ -148,7 +147,8 @@ export class DetailsCandidateComponent
   public opinions: { [key: string]: QuestionNumeric[] } = { // Will house question lists
     agreed: [],
     disagreed: [],
-    unanswered: []
+    unanswered: [],
+    all: []
   };
   public excerpts: { [key: string]: QuestionNumeric[] } = { // Sublists of opinions to show as excerpts
     agreed: [],
@@ -178,8 +178,7 @@ export class DetailsCandidateComponent
     private matcher: MatcherService,
     private shared: SharedService,
     private sanitizer:  DomSanitizer,
-    private lcFirst: LcFirstPipe,
-    private sentencify: SentencifyPipe,
+    private lcFirst: LcFirstPipe
   ) {
     this.shared.reportOverlayOpen({});
   }
@@ -190,6 +189,10 @@ export class DetailsCandidateComponent
 
   public get usePortrait(): boolean {
     return this.floatingCardRef.usePortrait;
+  }
+
+  public get voterDisabled(): boolean {
+    return this.shared.voterDisabled;
   }
 
   ngOnInit() {
@@ -264,10 +267,12 @@ export class DetailsCandidateComponent
   }
 
   private _initQuestions(): void {
+
+    this.opinions.all = this.matcher.getAnswerableQuestions(true);
     this.opinions.agreed = this.matcher.getAgreedQuestionsAsList(this.candidate, true);
     this.opinions.disagreed = this.matcher.getDisagreedQuestionsAsList(this.candidate, true);
     this.opinions.unanswered = this.matcher.getUnansweredQuestionsAsList(this.candidate);
-    
+
     // Setup excerpts
     for (const key in this.opinions) {
       if (this.opinions[key].length <= this.excerptMaxLength + 1) {
@@ -463,8 +468,11 @@ export class DetailsCandidateComponent
   get partyName(): string {
     return this.party.name;
   }
-  get number(): number {
+  get number(): number | string {
     return this.candidate.number;
+  }
+  get numberLong(): number | string {
+    return this.number === '?' ? this.missingDataInfo : this.number;
   }
   get education(): string {
     return this.getOrMissing("education");

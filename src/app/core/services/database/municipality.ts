@@ -8,6 +8,7 @@ export interface MunicipalityOptions {
   id: string,
   name: string,
   constituencyId?: string,
+  totalCandidates?: number
 }
 
 /*
@@ -19,6 +20,7 @@ export class Municipality
 
   readonly id: string;
   readonly name: string;
+  readonly totalCandidates: number;
 
   private _constituencyId: string;
 

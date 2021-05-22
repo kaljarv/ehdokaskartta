@@ -21,7 +21,7 @@ export class FeedbackFormComponent
   public feedbackText = new FormControl('');
   public email = new FormControl('');
 
-  private _subscriptions:  Subscription[];
+  private _subscriptions:  Subscription[] = [];
     
 
   constructor(
@@ -32,10 +32,10 @@ export class FeedbackFormComponent
   ) {}
 
   ngOnInit(): void {
-    this.dialogRef.beforeClosed().subscribe( result => {
+    this._subscriptions.push(this.dialogRef.beforeClosed().subscribe( result => {
       if (result)
         this.saveFeedback();
-    });
+    }));
     if (this.shared.userEmail)
       this.email.setValue(this.shared.userEmail);
     this.shared.logEvent('feedback_open');

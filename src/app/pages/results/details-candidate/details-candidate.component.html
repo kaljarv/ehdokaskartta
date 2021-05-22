@@ -61,19 +61,40 @@
 
     <ng-container *ngIf="!candidate.missing">
 
-      <ng-container *ngIf="opinions.disagreed.length > 0">
-        <div class="topicChipList topicChipList-disagreementSummary">
-          <div *ngFor="let question of opinions.disagreed"
-              (click)="maximiseAndGoToQuestion('answer-' + question.id)"
-              class="topicChip customChip category-{{ question.categoryName | toClassName }}">
-            {{ question.topic }}
+      <ng-container *ngIf="voterDisabled">
+
+        <div *ngIf="themes.length > 0; else noThemes1"
+             class="topicChipList topicChipList-themeSummary">
+          <div *ngFor="let theme of themes"
+                class="topicChip themeChip">
+            {{ theme }}
           </div>
         </div>
-        <label>Merkittävästi eri mieltä {{ opinions.disagreed.length }} kysymyksestä</label>
+        <ng-template #noThemes1>
+          <div class="secondary">Ei vastausta</div>
+        </ng-template>
+
+        <label>Aion puolustaa näitä asioita valtuutettuna</label>
+
       </ng-container>
 
-      <ng-container *ngIf="opinions.disagreed.length == 0">
-        <label>Ei kysymyksiä, joista olette merkittävästi eri mieltä</label>
+      <ng-container *ngIf="!voterDisabled">
+
+        <ng-container *ngIf="opinions.disagreed.length > 0">
+          <div class="topicChipList topicChipList-disagreementSummary">
+            <div *ngFor="let question of opinions.disagreed"
+                (click)="maximiseAndGoToQuestion('answer-' + question.id)"
+                class="topicChip customChip category-{{ question.categoryName | toClassName }}">
+              {{ question.topic }}
+            </div>
+          </div>
+          <label>Merkittävästi eri mieltä {{ opinions.disagreed.length }} kysymyksestä</label>
+        </ng-container>
+
+        <ng-container *ngIf="opinions.disagreed.length == 0">
+          <label>Ei kysymyksiä, joista olette merkittävästi eri mieltä</label>
+        </ng-container>
+
       </ng-container>
 
     </ng-container>
@@ -102,20 +123,41 @@
       <ng-container *ngIf="!candidate.missing && !usePortrait">
   
         <div class="candidate-datum">
-    
-          <ng-container *ngIf="opinions.disagreed.length > 0">
-            <label>Merkittävästi eri mieltä {{ opinions.disagreed.length }} kysymyksestä</label>
-            <div class="topicChipList topicChipList-disagreementSummary">
-              <div *ngFor="let question of opinions.disagreed"
-                  (click)="maximiseAndGoToQuestion('answer-' + question.id)"
-                  class="topicChip customChip category-{{ question.categoryName | toClassName }}">
-                {{ question.topic }}
+
+          <ng-container *ngIf="voterDisabled">
+
+            <label>Aion puolustaa näitä asioita valtuutettuna</label>
+
+            <div *ngIf="themes.length > 0; else noThemes2"
+                  class="topicChipList topicChipList-themeSummary">
+              <div *ngFor="let theme of themes"
+                    class="topicChip themeChip">
+                {{ theme }}
               </div>
             </div>
+            <ng-template #noThemes2>
+              <div class="secondary">Ei vastausta</div>
+            </ng-template>
+    
           </ng-container>
     
-          <ng-container *ngIf="opinions.disagreed.length == 0">
-            <label>Ei kysymyksiä, joista olette merkittävästi eri mieltä</label>
+          <ng-container *ngIf="!voterDisabled">
+    
+            <ng-container *ngIf="opinions.disagreed.length > 0">
+              <label>Merkittävästi eri mieltä {{ opinions.disagreed.length }} kysymyksestä</label>
+              <div class="topicChipList topicChipList-disagreementSummary">
+                <div *ngFor="let question of opinions.disagreed"
+                    (click)="maximiseAndGoToQuestion('answer-' + question.id)"
+                    class="topicChip customChip category-{{ question.categoryName | toClassName }}">
+                  {{ question.topic }}
+                </div>
+              </div>
+            </ng-container>
+      
+            <ng-container *ngIf="opinions.disagreed.length == 0">
+              <label>Ei kysymyksiä, joista olette merkittävästi eri mieltä</label>
+            </ng-container>
+
           </ng-container>
 
         </div>
@@ -170,8 +212,8 @@
       </div>
       <div class="candidate-datum">
         <label>Ehdokasnumero</label>
-        <div [class]="getContentClasses('number')">
-          {{ number }}
+        <div [class]="getContentClasses('numberLong')">
+          {{ numberLong }}
         </div>
       </div>
       <div class="candidate-datum">
@@ -219,10 +261,11 @@
       <div class="candidate-datum candidate-datum-themes">
         <label>Aion puolustaa näitä asioita valtuutettuna</label>
         <div *ngIf="themes.length > 0"
-            class="{{ dataContentClass }} ">
-          <ol>
-            <li *ngFor="let theme of themes">{{ theme }}</li>
-          </ol>
+             class="{{ dataContentClass }} candidate-datum-themes--list">
+          <div *ngFor="let theme of themes"
+               class="topicChip themeChip">
+            {{ theme }}
+          </div>
         </div>
         <div *ngIf="themes.length == 0"
              class="{{ dataContentClass }} {{ missingDataInfoClass }}">
@@ -272,34 +315,13 @@
 
       <div class="candidate-opinions-wrapper">
 
-        <!----------------------------------------------
-          DISAGREED
-        ------------------------------------------------>
+        <ng-container *ngIf="voterDisabled">
 
-        <app-custom-expander #expanderDisagreed
-                             (afterExpand)="logExpand('disagreed', $event)"
-                             class="candidate-opinions-disagreed">
-          <app-custom-expander-title>
-            <span>Merkittävästi eri mieltä kanssasi</span>
-          </app-custom-expander-title>
-          <app-custom-expander-subtitle>
-            <div class="topicChipList">
-              <div *ngFor="let question of excerpts.disagreed"
-                   (click)="expanderDisagreed.expandAndScrollTo('answer-' + question.id, $event)"
-                   class="topicChip customChip category-{{ question.categoryName | toClassName }}">
-                {{ question.topic }}
-              </div>
-              <span *ngIf="excerptMores.disagreed"
-                    class="candidate-opinions-moreTopics">
-                + {{ excerptMores.disagreed }} muuta
-              </span>
-              <span *ngIf="opinions.disagreed.length == 0"
-                    class="candidate-opinions-noTopics">
-                Ei kysymyksiä, joista olette merkittävästi eri mieltä
-              </span>
-            </div>
-          </app-custom-expander-subtitle>
-          <ng-container *ngFor="let question of opinions.disagreed; first as first">
+          <!----------------------------------------------
+            ALL QUESTIONS IF VOTER DISABLED
+          ------------------------------------------------>
+
+          <ng-container *ngFor="let question of opinions.all">
             <app-candidate-answer [attr.id]="'answer-' + question.id"
                                   [question]="question"
                                   [voterAnswer]="getVoterAnswer(question)"
@@ -308,78 +330,120 @@
                                   [partyName]="partyName"
                                   [partyAnswer]="getPartyAverage(question)"></app-candidate-answer>
           </ng-container>
-        </app-custom-expander>
 
-        <!----------------------------------------------
-          AGREED
-        ------------------------------------------------>
+        </ng-container>
 
-        <app-custom-expander #expanderAgreed
-                             (afterExpand)="logExpand('agreed', $event)"
-                             class="candidate-opinions-agreed">
-          <app-custom-expander-title>
-            <span>Samaa tai lähes samaa mieltä kanssasi</span>
-          </app-custom-expander-title>
-          <app-custom-expander-subtitle>
-            <div class="topicChipList">
-              <div *ngFor="let question of excerpts.agreed"
-                   (click)="expanderAgreed.expandAndScrollTo('answer-' + question.id, $event)"
-                   class="topicChip customChip category-{{ question.categoryName | toClassName }}">
-                {{ question.topic }}
+        <ng-container *ngIf="!voterDisabled">
+
+          <!----------------------------------------------
+            DISAGREED
+          ------------------------------------------------>
+
+          <app-custom-expander #expanderDisagreed
+                              (afterExpand)="logExpand('disagreed', $event)"
+                              class="candidate-opinions-disagreed">
+            <app-custom-expander-title>
+              <span>Merkittävästi eri mieltä kanssasi</span>
+            </app-custom-expander-title>
+            <app-custom-expander-subtitle>
+              <div class="topicChipList">
+                <div *ngFor="let question of excerpts.disagreed"
+                    (click)="expanderDisagreed.expandAndScrollTo('answer-' + question.id, $event)"
+                    class="topicChip customChip category-{{ question.categoryName | toClassName }}">
+                  {{ question.topic }}
+                </div>
+                <span *ngIf="excerptMores.disagreed"
+                      class="candidate-opinions-moreTopics">
+                  + {{ excerptMores.disagreed }} muuta
+                </span>
+                <span *ngIf="opinions.disagreed.length == 0"
+                      class="candidate-opinions-noTopics">
+                  Ei kysymyksiä, joista olette merkittävästi eri mieltä
+                </span>
               </div>
-              <span *ngIf="excerptMores.agreed"
+            </app-custom-expander-subtitle>
+            <ng-container *ngFor="let question of opinions.disagreed">
+              <app-candidate-answer [attr.id]="'answer-' + question.id"
+                                    [question]="question"
+                                    [voterAnswer]="getVoterAnswer(question)"
+                                    [candidateAnswer]="getNumericAnswer(question)"
+                                    [candidateAnswerOpen]="getRelated(question)"
+                                    [partyName]="partyName"
+                                    [partyAnswer]="getPartyAverage(question)"></app-candidate-answer>
+            </ng-container>
+          </app-custom-expander>
+
+          <!----------------------------------------------
+            AGREED
+          ------------------------------------------------>
+
+          <app-custom-expander #expanderAgreed
+                              (afterExpand)="logExpand('agreed', $event)"
+                              class="candidate-opinions-agreed">
+            <app-custom-expander-title>
+              <span>Samaa tai lähes samaa mieltä kanssasi</span>
+            </app-custom-expander-title>
+            <app-custom-expander-subtitle>
+              <div class="topicChipList">
+                <div *ngFor="let question of excerpts.agreed"
+                    (click)="expanderAgreed.expandAndScrollTo('answer-' + question.id, $event)"
+                    class="topicChip customChip category-{{ question.categoryName | toClassName }}">
+                  {{ question.topic }}
+                </div>
+                <span *ngIf="excerptMores.agreed"
+                      class="candidate-opinions-moreTopics">
+                  + {{ excerptMores.agreed }} muuta
+                </span>
+                <span *ngIf="opinions.agreed.length == 0"
+                      class="candidate-opinions-noTopics">
+                  Ei kysymyksiä, joista olette samaa tai lähes samaa mieltä
+                </span>
+              </div>
+            </app-custom-expander-subtitle>
+            <ng-container  *ngFor="let question of opinions.agreed">
+              <app-candidate-answer [attr.id]="'answer-' + question.id"
+                                    [question]="question"
+                                    [voterAnswer]="getVoterAnswer(question)"
+                                    [candidateAnswer]="getNumericAnswer(question)"
+                                    [candidateAnswerOpen]="getRelated(question)"
+                                    [partyName]="partyName"
+                                    [partyAnswer]="getPartyAverage(question)"></app-candidate-answer>
+            </ng-container>
+          </app-custom-expander>
+
+          <!----------------------------------------------
+            UNANSWERED
+          ------------------------------------------------>
+
+          <app-custom-expander #expanderUnanswered
+                              (afterExpand)="logExpand('unanswered', $event)"
+                              class="candidate-opinions-unanswered">
+            <app-custom-expander-title>
+              <span>Mielipiteet kysymyksiin, joihin et vielä ole vastannut</span>
+            </app-custom-expander-title>
+            <app-custom-expander-subtitle>
+              <span *ngIf="opinions.unanswered.length != 0"
                     class="candidate-opinions-moreTopics">
-                + {{ excerptMores.agreed }} muuta
+                {{ opinions.unanswered.length }} kysymystä
               </span>
-              <span *ngIf="opinions.agreed.length == 0"
+              <span *ngIf="opinions.unanswered.length == 0"
                     class="candidate-opinions-noTopics">
-                Ei kysymyksiä, joista olette samaa tai lähes samaa mieltä
+                Ei kysymyksiä, joihin et olisi vastannut
               </span>
-            </div>
-          </app-custom-expander-subtitle>
-          <ng-container  *ngFor="let question of opinions.agreed; first as first">
-            <app-candidate-answer [attr.id]="'answer-' + question.id"
-                                  [question]="question"
-                                  [voterAnswer]="getVoterAnswer(question)"
-                                  [candidateAnswer]="getNumericAnswer(question)"
-                                  [candidateAnswerOpen]="getRelated(question)"
-                                  [partyName]="partyName"
-                                  [partyAnswer]="getPartyAverage(question)"></app-candidate-answer>
-          </ng-container>
-        </app-custom-expander>
 
-        <!----------------------------------------------
-          UNANSWERED
-        ------------------------------------------------>
+            </app-custom-expander-subtitle>
+            <ng-container  *ngFor="let question of opinions.unanswered">
 
-        <app-custom-expander #expanderUnanswered
-                             (afterExpand)="logExpand('unanswered', $event)"
-                             class="candidate-opinions-unanswered">
-          <app-custom-expander-title>
-            <span>Mielipiteet kysymyksiin, joihin et vielä ole vastannut</span>
-          </app-custom-expander-title>
-          <app-custom-expander-subtitle>
-            <span *ngIf="opinions.unanswered.length != 0"
-                  class="candidate-opinions-moreTopics">
-              {{ opinions.unanswered.length }} kysymystä
-            </span>
-            <span *ngIf="opinions.unanswered.length == 0"
-                  class="candidate-opinions-noTopics">
-              Ei kysymyksiä, joihin et olisi vastannut
-            </span>
+              <app-candidate-answer [attr.id]="'answer-' + question.id"
+                                    [question]="question"
+                                    [candidateAnswer]="getNumericAnswer(question)"
+                                    [candidateAnswerOpen]="getRelated(question)"
+                                    [partyName]="partyName"
+                                    [partyAnswer]="getPartyAverage(question)"></app-candidate-answer>
+            </ng-container>
+          </app-custom-expander>
 
-          </app-custom-expander-subtitle>
-          <ng-container  *ngFor="let question of opinions.unanswered; first as first">
-
-            <app-candidate-answer [attr.id]="'answer-' + question.id"
-                                  [question]="question"
-                                  [candidateAnswer]="getNumericAnswer(question)"
-                                  [candidateAnswerOpen]="getRelated(question)"
-                                  [partyName]="partyName"
-                                  [partyAnswer]="getPartyAverage(question)"></app-candidate-answer>
-          </ng-container>
-        </app-custom-expander>
-
+        </ng-container>
 
       </div>
 

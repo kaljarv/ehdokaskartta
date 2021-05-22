@@ -59,6 +59,9 @@ export class ListComponent
   } = {};
   public cardWidth: string;
   public marginLeft: string;
+  public themes: {
+    [candidateId: string]: string[]
+  } = {};
   public voter: any; // We'll save the voter here
 
   private _doChanges: {
@@ -124,7 +127,13 @@ export class ListComponent
 
     // Initialisation chain
     this._subscriptions.push(this.matcher.progressChanged.subscribe(v => this._reportProgress(v)))
-    this._subscriptions.push(this.matcher.candidateDataReady.subscribe(() => this.initData()));
+    this._subscriptions.push(this.matcher.candidateDataReady.subscribe(() => {
+      // We might have no candidates if none have replied
+      if (!this.matcher.hasCandidates)
+        this.router.navigate([PATHS.constituencyPicker]);
+      else
+        this.initData();
+    }));
     this._subscriptions.push(this.matcher.constituencyCookieRead.subscribe(() => {
       // Make sure the constituency is defined, as if not, candidateDataReady will never fire
       if (this.matcher.constituencyId == null)
@@ -203,6 +212,10 @@ export class ListComponent
     return this.matcher.getCandidatePortraitUrl(candidate);
   }
 
+  public getThemes(candidate: Candidate): string[] {
+    return candidate.getAnswer('electionTheme') ?? [];
+  }
+
   public hideInfos(): void {
     this.shared.minimiseTopBar.emit();
   }
@@ -235,9 +248,12 @@ export class ListComponent
     for (let i of indices)
       this.candidates.push(result.candidates[i]);
 
-    // Prefetch disagreed questions for candidates
-    for (let c of this.candidates)
+    // Prefetch disagreed questions and themes for candidates
+    for (let c of this.candidates) {
       this.disagreed[c.id] = this.getDisagreedQuestions(c);
+      this.themes[c.id] = this.getThemes(c);
+    }
+      
 
     // Show list tools
     this.shared.showListTools = true;

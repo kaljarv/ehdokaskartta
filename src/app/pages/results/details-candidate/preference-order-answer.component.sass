@@ -5,10 +5,13 @@
 // NB. Match this with the dimensions in component.ts
 $avatarWidth: 26.2652px
 
-:host
+.answerColumns
   display: flex
   flex-flow: row nowrap
   justify-content: space-between
+
+.answerColumns-single
+  justify-content: space-around
 
 .answerColumn
   flex-basis: calc(50% - #{$margin-M} / 2)

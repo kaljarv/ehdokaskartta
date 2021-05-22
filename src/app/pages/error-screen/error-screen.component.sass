@@ -1,0 +1,23 @@
+@import 'variables.scss'
+  
+:host
+  background-color: $color-warnBg
+  display: flex
+  flex-flow: column nowrap
+  align-items: center
+  justify-content: center
+  position: absolute
+  top: 0
+  left: 0
+  right: 0
+  bottom: 0
+
+.content
+  max-width: $maxWidth-L
+  text-align: center
+
+  h2
+    mat-icon
+      color: $color-text
+      transform: scale(1.4)
+      transform-origin: center bottom

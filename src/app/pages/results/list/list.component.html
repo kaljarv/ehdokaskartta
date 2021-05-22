@@ -86,26 +86,46 @@
             </div>
         
             <ng-container *ngIf="!candidate.missing">
-        
-              <ng-container *ngIf="disagreed[candidate.id]?.length > 0">
-                
-                <div class="topicChipList">
-                  <div *ngFor="let question of disagreed[candidate.id]"
-                      class="topicChip customChip category-{{ question.categoryName | toClassName }}">
-                    {{ question.topic }}
+
+              <ng-container *ngIf="voterDisabled">
+
+                <div *ngIf="themes[candidate.id]?.length > 0; else noThemes"
+                      class="topicChipList">
+                  <div *ngFor="let theme of themes[candidate.id]"
+                        class="topicChip themeChip">
+                    {{ theme }}
                   </div>
                 </div>
-                <label>
-                  Merkittävästi eri mieltä {{ disagreed[candidate.id]?.length }} kysymyksestä
-                </label>
+                <ng-template #noThemes>
+                  <div class="noThemes">Ei vastausta</div>
+                </ng-template>
+                <label>Aion puolustaa näitä asioita valtuutettuna</label>
+        
+              </ng-container>
+        
+              <ng-container *ngIf="!voterDisabled">
+        
+                <ng-container *ngIf="disagreed[candidate.id]?.length > 0">
+                  
+                  <div class="topicChipList">
+                    <div *ngFor="let question of disagreed[candidate.id]"
+                        class="topicChip customChip category-{{ question.categoryName | toClassName }}">
+                      {{ question.topic }}
+                    </div>
+                  </div>
+                  <label>
+                    Merkittävästi eri mieltä {{ disagreed[candidate.id]?.length }} kysymyksestä
+                  </label>
+
+                </ng-container>
+
+                <div *ngIf="disagreed[candidate.id]?.length == 0">
+                  <label>
+                    Ei kysymyksiä, joista olette merkittävästi eri mieltä
+                  </label>
+                </div>
 
               </ng-container>
-
-              <div *ngIf="disagreed[candidate.id]?.length == 0">
-                <label>
-                  Ei kysymyksiä, joista olette merkittävästi eri mieltä
-                </label>
-              </div>
 
             </ng-container>
 

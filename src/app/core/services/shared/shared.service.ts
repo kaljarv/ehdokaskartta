@@ -54,7 +54,7 @@ export type ToggleSideNavOptions = {
 
 export type TopBarExpansionState = 'open' | 'closed' | 'destroyed';
 
-export type PageName = 'about'| 'browse' | 'browse-list' | 'constituencyPicker' | 
+export type PageName = 'about'| 'browse' | 'browse-list' | 'constituencyPicker' | 'error' |
                        'list' | 'map'  | 'questions' | 'titleScreen';
 
 
@@ -90,6 +90,7 @@ export const PATHS = {
   browse: 'browse',
   browseList: 'browse-list',
   constituencyPicker: 'constituency-picker',
+  error: 'error',
   list: 'list',
   map: 'map',
   questions: 'questions'
@@ -223,11 +224,13 @@ export class SharedService {
   }
 
   get enableMap(): boolean {
-    return this.matcher.hasEnoughAnswersForMapping;
+    return this.matcher.hasEnoughAnswersForMapping &&
+           this.matcher.hasCandidates;
   }
 
   get enableQuestions(): boolean {
-    return this.matcher.constituencyId != null;
+    return this.matcher.constituencyId != null &&
+           this.matcher.hasCandidates;
   }
 
   get resultViewType(): ResultViewType {

@@ -54,6 +54,8 @@ export interface MatcherConfig {
   maxMissingVals?: number;
   nonmissingCandidateMaxMissingVals?: number;
   minValsForMapping?: number;
+  minParticipationFraction?: number;
+  minParticipationNumber?: number;
   projectionMethod?: ProjectionMethod;
 }
 
@@ -77,6 +79,8 @@ export const DEFAULT_MATCHER_CONFIG: MatcherConfig = {
   maxMissingVals: 10,
   nonmissingCandidateMaxMissingVals: 9,
   minValsForMapping: 5,
+  minParticipationFraction: 0.3,
+  minParticipationNumber: 6,
   projectionMethod: 'RadarPCAFull'
 }
 
@@ -268,6 +272,14 @@ export class MatcherService {
     return Object.values(this.questions);
   }
 
+  get hasCandidates(): boolean {
+    if (!this.candidates)
+      return false;
+    for (const _ in this.candidates)
+      return true;
+    return false;
+  }
+
   get hasEnoughAnswersForMapping(): boolean {
     return this.countVoterAnswers() >= this.config.minValsForMapping;
   }
@@ -286,6 +298,29 @@ export class MatcherService {
 
   get constituencyId(): string {
     return this._constituencyId;
+  }
+
+  get totalParticipatingCandidates(): number | undefined {
+    if (this._constituencyId == null)
+      return undefined;
+    return Object.keys(this.candidates).length;
+  }
+
+  get totalCandidates(): number | undefined {
+    if (this._constituencyId == null)
+      return undefined;
+    return this.constituencies[this._constituencyId].totalCandidates;
+  }
+
+  get hasLowParticiation(): boolean | undefined {
+    const total = this.totalCandidates,
+          participating = this.totalParticipatingCandidates;
+    if (total == null || participating == null)
+      return undefined;
+    if (participating / total < this.config.minParticipationFraction ||
+        participating < this.config.minParticipationNumber)
+      return true;
+    return false;
   }
 
   get voterDisabled(): boolean {
@@ -375,7 +410,7 @@ export class MatcherService {
     // Import parties
     this.parties = await this.database.getParties();
 
-    // Import candidate data
+    // Import candidate data, NB. this might be empty
     this.candidates = await this.database.getCandidates(id);
 
     // Cull parties not present in this constituency from parties

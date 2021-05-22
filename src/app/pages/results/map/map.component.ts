@@ -105,6 +105,7 @@ export class MapComponent
   public colors: ColorDict = {}; // We fetch colors for parties from the stylesheets and store it here
   public candidates = new Array<Candidate>();
   public ensureVisibleEmitter: EventEmitter<MapEnsureVisibleOptions>;
+  public initialZoom = 0.8;
   public parties = new Array<Party>();
   // We might change this based on the voter position
   public mapCentre = {x: 0.5, y: 0.5};
@@ -219,7 +220,13 @@ export class MapComponent
     // Initialisation chain
     this._subscriptions.push(this.matcher.progressChanged.subscribe(v => this._reportProgress(v)))
     this._subscriptions.push(this.matcher.mappingDataReady.subscribe(() => this.initMap()));
-    this._subscriptions.push(this.matcher.candidateDataReady.subscribe(() => this.initData()));
+    this._subscriptions.push(this.matcher.candidateDataReady.subscribe(() => {
+      // We might have no candidates if none have replied
+      if (!this.matcher.hasCandidates)
+        this.router.navigate([PATHS.constituencyPicker]);
+      else
+        this.initData();
+    }));
     this._subscriptions.push(this.matcher.constituencyCookieRead.subscribe(() => {
       // Make sure the constituency is defined, as if not, candidateDataReady will never fire
       if (this.matcher.constituencyId == null)
@@ -358,9 +365,10 @@ export class MapComponent
     let f = (Math.sqrt(this.candidates.length) - Math.sqrt(50)) / Math.sqrt(500);
         f = this.shared.clamp(f, 0, 1);
     // Nb. this runs from 0.4 to 0.8
-    this.minimisedCandidateScale = 0.5 + (1 - f) * 0.5;
-    this.zoomExtents = [1, 12 + (f * 3)**2];
-    this.showLabelFactor = 8 / this.minimisedCandidateScale;
+    this.minimisedCandidateScale = 0.3 + (1 - f) * 0.7;
+    this.initialZoom = 0.8;
+    this.zoomExtents = [0.8, 12 + (f * 3)**2];
+    this.showLabelFactor = 6 / this.minimisedCandidateScale;
     // console.log("Dynamic scale", f, this.showLabelFactor, this.minimisedCandidateScale, this.zoomExtents);
 
     // Set this to true to allow rescaleMap to continue
@@ -789,7 +797,7 @@ export class MapComponent
     this.zoomEmitter.emit({
       x: this.voterDisabled ? 0.5 : this.voter.projX,
       y: this.voterDisabled ? 0.5 : this.voter.projY,
-      toScale: 1.
+      toScale: this.initialZoom
     });
   }
 

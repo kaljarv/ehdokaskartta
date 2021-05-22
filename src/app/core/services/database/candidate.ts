@@ -47,7 +47,6 @@ export type CandidateDict = {
 export class Candidate implements GetAnswer {
 
   public id: string;
-  public number: number;
   public surname: string;
   public givenName: string;
   public constituencyId: string;
@@ -69,6 +68,7 @@ export class Candidate implements GetAnswer {
   public y: number;
 
   private _cachedQuestions: AnswerDict;
+  private _number: number;
 
   constructor(options: CandidateOptions) {
     for (const o in options) this[o] = options[o];
@@ -86,6 +86,15 @@ export class Candidate implements GetAnswer {
 
   public get constituencyName(): string {
     return this.constituency?.name;
+  }
+
+  public get number(): number | string {
+    return this._number ?? '?';
+  }
+
+  public set number(value: number | string) {
+    if (value != null && typeof value === 'number')
+      this._number = value;
   }
 
   public get party(): Party {

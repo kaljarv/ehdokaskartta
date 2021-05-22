@@ -193,6 +193,11 @@ export class MapCanvasComponent
   @Input() disabledMarkerColor: string = "rgb(128,128,128)";
 
   /*
+   * Initial zoom level
+   */
+   @Input() initialZoom: number = 1.0;
+
+  /*
    * The map centre in the projection space, i.e. canvas dimensions
    * divided by coordinate scale
    */
@@ -718,6 +723,11 @@ export class MapCanvasComponent
 
     this._zoomElement.call(this._zoomFunction)
       .on("dblclick.zoom", dblClickZoom);
+
+    if (this.initialZoom != 1) {
+      this._calcCoordinateFactors();
+      this._zoomTo(this.mapCentre.x, this.mapCentre.y, this.initialZoom, true);
+    }
   }
 
   /*
@@ -890,7 +900,8 @@ export class MapCanvasComponent
    */
   private _updateMinimisedCandidateScale(m: MapDatum, idRoot: string): void {
 
-    if (this._coordinateFactors.minimisedMarkerScale !== 1 && m instanceof MapDatumCandidate) {
+    // Removed: this._coordinateFactors.minimisedMarkerScale !== 1 && 
+    if (m instanceof MapDatumCandidate) {
       m.marker.options.minimisedHeadScale = this._coordinateFactors.minimisedMarkerScale;
       m.marker.options.disabledHeadScale = this._disabledCandidateHeadScalingFactor * m.marker.options.minimisedHeadScale;
     }
@@ -1459,7 +1470,7 @@ export class MapCanvasComponent
    * The x and y coordinates are the desired centre coordinates 
    * as projected fractions
    */
-  private _zoomTo(x: number, y: number, toScale?: number): void {
+  private _zoomTo(x: number, y: number, toScale?: number, noTransition?: boolean): void {
 
     if (!this._zoomElement)
       return;
@@ -1472,9 +1483,12 @@ export class MapCanvasComponent
     const tX = (x * f.projectionScale + f.offset.x) * toScale - this.width / 2,
           tY = (y * f.projectionScale + f.offset.y) * toScale - this.height / 2;
 
-    this._zoomElement
-      .transition()
-      .duration(this.zoomDuration)
-      .call(this._zoomFunction.transform, this.d3.getTransform(toScale, -tX, -tY));
+    let call = this._zoomElement;
+
+    if (!noTransition)
+      call = call.transition()
+                 .duration(this.zoomDuration);
+
+    call.call(this._zoomFunction.transform, this.d3.getTransform(toScale, -tX, -tY));
   }
 }

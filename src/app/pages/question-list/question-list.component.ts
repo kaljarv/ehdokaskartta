@@ -106,7 +106,33 @@ export class QuestionListComponent
     return this.matcher.config.minValsForMapping;
   }
 
+  get participatingCandidates(): number {
+    return this.matcher.totalParticipatingCandidates ?? 0;
+  }
+
+  get participationPercentage(): number {
+    if (this.totalCandidates === 0)
+      return 0;
+    return Math.round(this.participatingCandidates / this.totalCandidates * 100);
+  }
+
+  get showParticipationWarning(): boolean {
+    return this.matcher.hasLowParticiation;
+  }
+
+  get totalCandidates(): number {
+    return this.matcher.totalCandidates ?? 0;
+  }
+
   ngOnInit() {
+    this._subscriptions.push(this.matcher.candidateDataReady.subscribe(() => {
+      // We might have no candidates if none have replied
+      if (!this.matcher.hasCandidates)
+        this.router.navigate([PATHS.error], {state: {
+          icon: 'sentiment_very_dissatisfied',
+          title: `Valitettavasti yksikään kunnan ${this.matcher.municipality} ehdokkaista ei ole vastannut Ehdokaskartan kysymyksiin`
+        }});
+    }));
     // questionData includes voter answers
     this._subscriptions.push(this.matcher.questionDataUpdated.subscribe(() =>  this._updateData()));
     this._subscriptions.push(this.matcher.questionDataReady.subscribe(() => this._fetchQuestions()));

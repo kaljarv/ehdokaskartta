@@ -205,7 +205,7 @@ export class DetailsQuestionComponent
     // TODO: Enable on window resize
     if (window.innerWidth / factor < 15) {
       this.candidateSizingClass = 'candidateSize-small';
-    } else if (window.innerWidth / factor > 75) {
+    } else if (window.innerWidth / factor > 30) {
       this.candidateSizingClass = 'candidateSize-large';
     }
     

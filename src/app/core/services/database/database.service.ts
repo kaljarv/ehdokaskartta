@@ -80,6 +80,10 @@ export class DatabaseService {
     return this.firestore.collection('data').doc(ELECTION_ID);
   }
 
+  private _isEmpty(datum: any): boolean {
+    return datum.EMPTY;
+  }
+
   /*
    * Get a data collection as an object once, ie. not as an Observable,
    * Firestore.collection() returns an Observable and we are not interested in changes,
@@ -253,7 +257,8 @@ export class DatabaseService {
       const data = await this.getCollectionOnce(`candidates/${constituencyId}/candidates`);
       const dict: CandidateDict = {};
       for (const id in data)
-        dict[id] = candidateConverter(data[id], id);
+        if (!this._isEmpty(data[id]))
+          dict[id] = candidateConverter(data[id], id);
       resolve(dict);
     });
   }
