@@ -40,7 +40,7 @@ If you are interested in contributing to the project, feel free to contact the a
 
 ## Technical specifics
 
-The app uses Google’s [Angular (9) library](https://angular.io/) and [Material Design components](https://material.angular.io/). The data in this implementation is hosted on Firebase but should be easy to alter by editing the DatabaseService.
+The app uses Google’s [Angular (10) library](https://angular.io/) and [Material Design components](https://material.angular.io/). The data in this implementation is hosted on Firebase but should be easy to alter by editing the DatabaseService.
 
 This is the author’s first take on Angular (and on a web app for that matter). Thus, the code is unfortunately unclean, inelegant and improperly documented. For the second part of the project, the current repository's role is mainly to serve as a user experience test bed. The codebase proper is probably best started from a clean slate.
 
