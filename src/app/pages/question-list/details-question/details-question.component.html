@@ -70,7 +70,6 @@
            class="preferenceOrder--list">
         <div *ngFor="let option of preferenceOrder"
              cdkDrag
-             cdkDragBoundary=".preferenceOrder--list"
              class="preferenceOrder--option" >
           <div *cdkDragPlaceholder
                class="preferenceOrder--placeholder"></div>
@@ -162,7 +161,7 @@
                        advanceOnSelector=".question"
                        title="Missä järjestyksessä vaihtoehtojen pitäisi olla?">
     <p>
-      Järjestä vaihtoehdot haluaamasi järjestykseen vetämällä niitä sormalla tai hiirellä. Paina lopuksi Tallenna-nappia.
+      Järjestä vaihtoehdot haluaamasi järjestykseen vetämällä niitä sormella tai hiirellä. Paina lopuksi Tallenna-nappia.
     </p>
     <app-onboarding-hint>
       Vaihtoehdot ovat alustavasti satunnaisessa järjestyksessä.
