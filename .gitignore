@@ -52,4 +52,4 @@ firebase.environment.ts
 /.firebase
 
 # Candidate portraits
-/src/assets/images/candidates
+/src/assets/images/candidates/*
