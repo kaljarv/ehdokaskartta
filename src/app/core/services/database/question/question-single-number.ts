@@ -35,7 +35,7 @@ export abstract class QuestionSingleNumber extends QuestionNumeric {
     {values, ...options}: QuestionOptionsSingleNumber,
     defaultValues: QuestionNumericValue[] = QUESTION_NUMERIC_DEFAULT_VALUES
   ) {
-    super(options);
+    super(options, defaultValues);
     // Set values and find min and max
     const sorted = this.values.sort((a, b) => a.key - b.key);
     this.minAnswer = sorted[0].key;
