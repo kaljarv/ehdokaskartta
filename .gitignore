@@ -50,3 +50,6 @@ Thumbs.db
 firebase.environment.ts
 .firebaserc
 /.firebase
+
+# Candidate portraits
+/src/assets/images/candidates
