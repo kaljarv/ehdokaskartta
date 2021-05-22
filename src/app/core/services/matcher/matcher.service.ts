@@ -972,8 +972,8 @@ export class MatcherService {
       case 'RadarPCAFull':
         this._projector = new RadarProjector({
           angularMethod: 'PCA',
-          centreOn: this.radarCentre
-          // minimumDistance: 0.1,
+          centreOn: this.radarCentre,
+          minimumDistance: 0.1,
           // minimumAngle: -0.25 * Math.PI,
           // maximumAngle:  1.25 * Math.PI
         });

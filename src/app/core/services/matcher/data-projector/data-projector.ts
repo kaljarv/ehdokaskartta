@@ -97,7 +97,7 @@ export abstract class DataProjector {
   /*
    * Calculate the scaling parameters and save them so we can use them later
    */
-  private _calcScalingParams(solution: ProjectedMapping, voter: Coordinates = undefined): void {
+  protected _calcScalingParams(solution: ProjectedMapping, voter: Coordinates = undefined): void {
 
     // Shorthand
     const params = this._scalingParams;
@@ -142,7 +142,7 @@ export abstract class DataProjector {
    * Perform solution scaling
    */
   public scaleSolution(solution: ProjectedMapping): ProjectedMapping {
-    
+
     // Scaled solution
     const scaled: ProjectedMapping = [];
 

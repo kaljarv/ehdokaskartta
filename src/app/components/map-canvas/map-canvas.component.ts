@@ -1340,11 +1340,11 @@ export class MapCanvasComponent
       // The zoom level at the threshold
       let zoomLevel = this._calcZoomScaleForMinimisedCandidateScale(this.zoomOnClickThreshold);
 
-      // If this is computable, don't do anything
+      // If this is not computable, don't do anything
       if (zoomLevel) {
         // However, if we are zooming, we want there to be at least a 0.5 factor change
         zoomLevel = Math.max(zoomLevel, this._coordinateFactors.zoomScale + 0.5);
-        this._zoomTo(coords.x, coords.y, zoomLevel);
+        this._zoomTo(this._absToProj(coords.x, 'x'), this._absToProj(coords.y, 'y'), zoomLevel);
       }
     }
 

@@ -365,7 +365,7 @@ export class MapComponent
     let f = (Math.sqrt(this.candidates.length) - Math.sqrt(50)) / Math.sqrt(500);
         f = this.shared.clamp(f, 0, 1);
     // Nb. this runs from 0.4 to 0.8
-    this.minimisedCandidateScale = 0.3 + (1 - f) * 0.7;
+    this.minimisedCandidateScale = 0.5 + (1 - f) * 0.5;
     this.initialZoom = 0.8;
     this.zoomExtents = [0.8, 12 + (f * 3)**2];
     this.showLabelFactor = 6 / this.minimisedCandidateScale;

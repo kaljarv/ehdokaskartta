@@ -61,11 +61,11 @@ export class RadarProjector extends DataProjector {
       if (this.angularMethod === 'precalculated' && options.angularValues)
         this.setAngularValues(options.angularValues);
     }
-    this.minimumDistance = options?.minimumDistance || 0;
-    this.minimumAngle = options?.minimumAngle || 0;
-    this.maximumAngle = options?.maximumAngle || Math.PI;
+    this.minimumDistance = options?.minimumDistance ?? 0;
+    this.minimumAngle = options?.minimumAngle ?? 0;
+    this.maximumAngle = options?.maximumAngle ?? Math.PI;
     // Set the scaling centre to the middle of the bottom edge
-    this._scalingParams.centreOn = options?.centreOn || [0.5, 1.0];
+    this._scalingParams.centreOn = options?.centreOn ?? [0.5, 1.0];
   }
 
   /*
@@ -112,13 +112,13 @@ export class RadarProjector extends DataProjector {
   /*
    * Calculate the coordinates (before scaling) for the given non-normalized
    * angular value and distance.
-   * The width of the radar projection is 2 * (1 + this.minimumDistance) * max distance.
+   * The width of the radar projection is 2 * max distance.
    * The vertical coordinate of the voter is 0.
    */
   protected _calcCoordinates(distanceValue: number, angularValue: number): Coordinates {
     const angle = this.minimumAngle + this._normalizeAngle(angularValue) * (this.maximumAngle - this.minimumAngle);
-    const dist = distanceValue + this.minimumDistance * this._distanceBounds.max;
-    const xCentre = (1 + this.minimumDistance) * this._distanceBounds.max;
+    const dist = (1 - this.minimumDistance) * distanceValue + this.minimumDistance * this._distanceBounds.max;
+    const xCentre = this._distanceBounds.max;
     let x = dist * Math.cos(angle) + xCentre,
         y = dist * Math.sin(angle) * -1;
     return [x, y];
@@ -192,6 +192,23 @@ export class RadarProjector extends DataProjector {
         max = values[j];
     }
     return [min, max];
+  }
+
+  /*
+   * We need to override this
+   */
+  protected _calcScalingParams(solution: ProjectedMapping, voter: Coordinates = undefined): void {
+
+    // Shorthand
+    const params = this._scalingParams,
+          max = this._distanceBounds.max;
+
+    // We can set these directly based on this._distanceBounds.max
+    params.bounds = [[0, -max], [2 * max, 0]];
+    params.max = 2 * max;
+    params.scale = 1 / params.max;
+    // We need to add a pseudo voter in any case
+    params.voter = [max, 0];
   }
 
 }
