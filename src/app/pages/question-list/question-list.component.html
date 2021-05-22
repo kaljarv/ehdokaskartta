@@ -1,15 +1,17 @@
 
-<div *ngIf="!showParticipationWarning"
-     class="participationInfo">
-  <mat-icon>info_outline</mat-icon>
-  {{ participatingCandidates }} <span class="secondary">({{ participationPercentage }} %)</span> kunnan {{ totalCandidates }} ehdokkaasta on vastannut kysymyksiin. 
-</div>
+<ng-container *ngIf="questionsInitialized">
+  <div *ngIf="!showParticipationWarning"
+      class="participationInfo">
+    <mat-icon>info_outline</mat-icon>
+    {{ participatingCandidates }} <span class="secondary">({{ participationPercentage }} %)</span> kunnan {{ totalCandidates }} ehdokkaasta on vastannut kysymyksiin. 
+  </div>
 
-<div *ngIf="showParticipationWarning"
-     class="participationInfo participationInfo-warning">
-  <mat-icon>warning</mat-icon>
-  Vain {{ participatingCandidates }} ({{ participationPercentage }} %) kunnan {{ totalCandidates }} ehdokkaasta on vastannut kysymyksiin. 
-</div>
+  <div *ngIf="showParticipationWarning"
+      class="participationInfo participationInfo-warning">
+    <mat-icon>warning</mat-icon>
+    Vain {{ participatingCandidates }} ({{ participationPercentage }} %) kunnan {{ totalCandidates }} ehdokkaasta on vastannut kysymyksiin. 
+  </div>
+</ng-container>
 
 <div id="questionList"
      class="questionListContainer">

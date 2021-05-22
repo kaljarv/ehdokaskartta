@@ -77,6 +77,7 @@ export class QuestionListComponent
   public informationValueOrder: {id: string, value: number }[];
   public paths = PATHS;
   public questions: QuestionNumeric[] = [];
+  public questionsInitialized: boolean = false;
 
   // These will be cancelled onDestroy
   private _subscriptions: Subscription[] = [];
@@ -198,6 +199,7 @@ export class QuestionListComponent
   private _fetchQuestions(): void {
     this._updateInformationValues();
     this.questions = this.matcher.getAnswerableQuestions(true);
+    this.questionsInitialized = true;
     this.shared.loadingState.next({ type: 'loaded' });
   }
 
