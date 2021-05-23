@@ -4,8 +4,9 @@ import {
   Type 
 } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { MatcherService } from '../matcher';
+import { CookieService } from '../cookie';
 import { DatabaseService } from '../database';
+import { MatcherService } from '../matcher';
 import { MapEnsureVisibleOptions } from '../../../components';
 import { DetailsCandidateOptions } from '../../../pages';
 
@@ -96,11 +97,17 @@ export const PATHS = {
   questions: 'questions'
 }
 
+export const SURVEY_COOKIE_NAME = 'Survey';
+export const SURVEY_MIN_CANDIDATES_VIEWED: number = 6;
+export const SURVEY_MIN_USE_TIME_MS: number = 5 * 60 * 1000;
+export const SURVEY_URL: string = 'https://forms.gle/ozt212az3nAB2pYVA';
+
 
 
 @Injectable()
 export class SharedService {
 
+  public candidatesShownCount: number = 0;
   public hideDistribution: boolean = false;
   public hideTopBar: boolean = false;
   public lastOpenCandidateDetailsTab: number = 0; // For details-candidate tabs
@@ -110,6 +117,8 @@ export class SharedService {
   public showListTools: boolean = false;
   public showFeedbackButton: boolean = false;
   public showAllParties: boolean = false; // This will be set by MapComponent based on a subscription to toggleAllParties
+  public surveyAnswered: boolean = false;
+  public surveyShown: boolean = false;
   public topBarOffset = {
     withExpansion: { top: 0, left: 0 },
     withoutExpansion: { top: 0, left: 0}
@@ -117,6 +126,7 @@ export class SharedService {
   public userEmail: string = '';
 
   readonly loadingState = new BehaviorSubject<LoadingState>(DEFAULT_LOADING_STATE);
+  readonly startTime: number = performance.now();
   readonly topBarDataChanged = new EventEmitter<{
     currentPage: PageName,
     subtitle: string | Type<any>
@@ -138,6 +148,7 @@ export class SharedService {
   readonly locateSelf = new EventEmitter<void>();
   readonly ensureVisibleOnMap = new EventEmitter<MapEnsureVisibleOptions>();
   readonly openFeedback = new EventEmitter<void>();
+  readonly openSurvey = new EventEmitter<void>();
   readonly minimiseTopBar = new EventEmitter<void>();
   readonly topBarExpansionChanged = new EventEmitter<TopBarExpansionState>();
   readonly showMapTooltips = new EventEmitter<void>();
@@ -159,6 +170,7 @@ export class SharedService {
   private _subtitle: string | Type<any> = '';
 
   constructor(
+    private cookie: CookieService,
     private database: DatabaseService,
     private matcher: MatcherService
   ) {
@@ -195,6 +207,11 @@ export class SharedService {
     this.toggleSideNav.subscribe( () => {
       this.logEvent('side_nav_toggle');
     });
+    this.openSurvey.subscribe( () => {
+      this.surveyShown = true;
+    });
+
+    this._checkSurveyCookie();
   }
 
   /*
@@ -211,8 +228,12 @@ export class SharedService {
   set activeCandidateId(id: string | null) {
     const changed = this._activeCandidateId !== id;
     this._activeCandidateId = id;
-    if (changed)
+    if (changed) {
       this.activeCandidateChanged.emit(id);
+      if (id != null)
+        this.candidatesShownCount++;
+    }
+      
   }
 
   get currentPage(): PageName {
@@ -244,6 +265,12 @@ export class SharedService {
       default:
         return null;
     }
+  }
+
+  get shouldOpenSurvey(): boolean {
+    return !this.surveyShown && !this.surveyAnswered &&
+           this.candidatesShownCount >= SURVEY_MIN_CANDIDATES_VIEWED &&
+           performance.now() - this.startTime >= SURVEY_MIN_USE_TIME_MS;
   }
 
   /*
@@ -318,6 +345,16 @@ export class SharedService {
       currentPage: this.currentPage, 
       subtitle: this.subtitle
     })
+  }
+
+  private _checkSurveyCookie(): void {
+    if (this.cookie.read(SURVEY_COOKIE_NAME))
+      this.surveyAnswered = true;
+  }
+  
+  public saveSurveyAnswered(): void {
+    this.surveyAnswered = true;
+    this.cookie.write(SURVEY_COOKIE_NAME, 'answered');
   }
 
 }

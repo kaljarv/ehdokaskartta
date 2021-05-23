@@ -42,6 +42,7 @@ import { FeedbackFormComponent,
          FloatingCardRef,
          FloatingCardOptions,
          OnboardingService,
+         SurveyDialogComponent,
          TopBarComponent } from './components';
 
 export const HIDE_TOOLTIPS_DELAY = ANIMATION_DURATION_MS;
@@ -214,6 +215,9 @@ export class AppComponent
     this.shared.openFeedback.subscribe( () => 
       this.openDialog(FeedbackFormComponent, {})
     );
+    this.shared.openSurvey.subscribe( () => 
+      this.openDialog(SurveyDialogComponent, {})
+    );
     this.shared.enableForward.subscribe( options => {
       this.forwardOptions = {...options};
       if (options.showProgress)
@@ -352,11 +356,31 @@ export class AppComponent
     }
 
     this._floatingCardRef = this.fcService.create({type, data, options});
+
+    // Try to show survey on close
+    if (type === DetailsCandidateComponent)
+      this.checkOpenSurvey();
+  }
+
+  /*
+   * Open survey if enough time has passed and enough candidates have been
+   * viewed, and no candidate is currently open.
+   */
+  public checkOpenSurvey(): void {
+    if (this.shared.shouldOpenSurvey)
+      this._floatingCardRef.dismissed.subscribe(() => 
+        setTimeout(() => {
+          if (this.shared.activeCandidateId == null)
+            this.shared.openSurvey.emit();
+        }, 500)
+      );
   }
 
   public clearDetailsCard(): void {
+
     if (this._floatingCardRef)
       this._floatingCardRef.close();
+
     this._floatingCardRef = null;
   }
 

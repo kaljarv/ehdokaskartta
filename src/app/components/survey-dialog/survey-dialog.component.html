@@ -1,0 +1,19 @@
+<h2 mat-dialog-title>
+  Haluaisitko osallistua Ehdokaskartan käyttötutkimukseen?
+</h2>
+<mat-dialog-content>
+  <p>
+    Kyselyyn vastaaminen vie vain muutaman minuutin, ja vastaamalla autat avoimen lähdekoodin vaalikoneiden kehittämisessä. Kiitokset etukäteen vastauksistasi!
+  </p>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button 
+          mat-dialog-close>
+    Ei kiitos
+  </button>
+  <button mat-flat-button
+          color="primary"
+          [mat-dialog-close]="true">
+    Kyllä
+  </button>
+</mat-dialog-actions>

@@ -179,7 +179,7 @@ export class MapComponent
       currentPage: this.voterDisabled ? 'browse' : 'map',
       subtitle: (this.voterDisabled ?
                   "Ehdokkaat on sijoiteltu kartalle heidän mielipiteidensä perusteella." :
-                  "Ehdokkaat on sijoiteltu kartalle sen perusteella, mitä he ovat vastanneet valitsemiisi kysymyksiin, ja kartan keskeltä löydät itsesi."
+                  "Ehdokkaat on sijoiteltu kartalle sen perusteella, mitä he ovat vastanneet kysymyksiin, ja kartan keskeltä löydät itsesi."
                 ) + " Voit lähentää tai loitontaa karttaa, rajata ehdokkaita vaikkapa iän perusteella tai näyttää puolueet kartalla.",
       onboarding: {restart: () => this.onboardingTour?.restart()},
       // NB. We'll only show these when we've initialised

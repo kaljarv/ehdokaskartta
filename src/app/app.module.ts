@@ -19,7 +19,7 @@ import {
   DatabaseModule,
   D3Service,
   MatcherModule,
-  SharedService,
+  SharedModule,
   MATCHER_CONFIG,
   PATHS
 } from './core';
@@ -44,6 +44,7 @@ import {
   FloatingCardModule,
   OnboardingModule,
   ProgressSpinnerModule,
+  SurveyDialogModule,
   TopBarModule 
 } from './components'
 
@@ -106,6 +107,7 @@ const paths = [
     FeedbackFormModule,
     FloatingCardModule,
     OnboardingModule,
+    SurveyDialogModule,
     TopBarModule,
     AboutScreenModule,
     ConstituencyPickerModule,
@@ -114,6 +116,7 @@ const paths = [
     MapModule,
     MatcherModule,
     ProgressSpinnerModule,
+    SharedModule,
     QuestionListModule,
     TitleScreenModule
   ],
@@ -124,7 +127,6 @@ const paths = [
     AppComponent 
   ],
   providers: [
-    SharedService,
     D3Service,
     {
       provide: MATCHER_CONFIG,
