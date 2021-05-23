@@ -2,6 +2,11 @@
   Anna palautetta
 </h2>
 <mat-dialog-content>
+  <p>
+    Kirjoita palautteesi alle tai
+    <a (click)="openSurvey()"
+       class="surveyLink">osallistu käyttötutkimukseen</a>.
+  </p>
   <mat-form-field class="feedbackTextarea"
                   appearance="fill">
     <mat-label>
@@ -34,7 +39,8 @@
           mat-dialog-close>
     Peruuta
   </button>
-  <button mat-button 
+  <button mat-flat-button 
+          color="primary"
           [mat-dialog-close]="true">
     Lähetä palaute
   </button>

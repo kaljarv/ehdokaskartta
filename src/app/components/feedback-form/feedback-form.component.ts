@@ -1,13 +1,20 @@
-import { Component, 
-         OnDestroy,
-         OnInit } from '@angular/core';
+import { 
+  Component, 
+  OnDestroy,
+  OnInit 
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
-import { MatcherService,
-         SharedService } from '../../core';
-import { DatabaseService,
-         FeedbackItem } from '../../core/services/database';
+import { 
+  MatcherService,
+  SharedService,
+  SURVEY_URL 
+} from '../../core';
+import { 
+  DatabaseService,
+  FeedbackItem 
+} from '../../core/services/database';
 
 
 @Component({
@@ -72,6 +79,14 @@ export class FeedbackFormComponent
     );
 
     this.shared.logEvent('feedback_save');
+  }
+
+  openSurvey(event?: Event): void {
+    window.open(SURVEY_URL, '_blank');
+    this.shared.logEvent('survey_url_open');
+    this.shared.saveSurveyAnswered();
+    event?.stopPropagation();
+    this.dialogRef.close();
   }
 
 }
