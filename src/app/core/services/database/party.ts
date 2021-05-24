@@ -10,7 +10,7 @@ import {
    QuestionNumeric
 } from './question';
 
-export const INDEPENDENT_PARTY_ID = '18';
+export const INDEPENDENT_PARTY_ID = '19';
 
 export type PartyDict = { 
   [partyId: string]: Party 
