@@ -84,6 +84,8 @@ export const DEFAULT_APP_STATE_OPTIONS_PAGE: AppStateOptionsPage = {
   showFeedbackButton: true
 }
 
+export const INDEPENDENT_PARTY_ID: string = '19';
+
 export const LANDSCAPE_BREAKPOINT_PX: number = 900;
 
 export const PATHS = {
