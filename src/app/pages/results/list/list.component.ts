@@ -11,6 +11,7 @@ import {
   ActivatedRoute,
   Router
 } from '@angular/router';
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { 
   combineLatest,
   Subscription 
@@ -35,6 +36,11 @@ import {
 const CARD_MIN_MARGIN: string = '1rem';
 const CARD_MAX_WIDTH: string = '40rem';
 
+type ListPlaceholder = {
+  isPlaceholder: true,
+  isFilterWarning?: boolean
+}
+
 /*
 * <app-map>
 */
@@ -51,6 +57,8 @@ export class ListComponent
 
   @ViewChild(OnboardingTourComponent)
   onboardingTour: OnboardingTourComponent;
+  @ViewChild(CdkVirtualScrollViewport)
+  virtualList: CdkVirtualScrollViewport;
 
   public activeCandidateId: string;
   public candidates = new Array<Candidate>();
@@ -103,8 +111,8 @@ export class ListComponent
     this._reportProgress();
   }
 
-  get partyFiltersActive(): boolean {
-    return this.matcher.hasPartyFilter;
+  get hasActiveFilters(): boolean {
+    return this.matcher.hasActiveFilters;
   }
 
   /*
@@ -114,9 +122,12 @@ export class ListComponent
    * setting the top margin for the first item causes glitches
    * with scrolling
    */
-  get visibleCandidates(): Candidate[] {
-    return [null].concat(this.candidates);
-    // return [null].concat(this.candidates.filter(c => !c.filteredOut));
+  get visibleCandidates(): Array<Candidate | ListPlaceholder> {
+    // return [null].concat(this.candidates);
+    const firstItems: Array<Candidate | ListPlaceholder> = [{isPlaceholder: true}];
+    if (this.hasActiveFilters)
+      firstItems.push({isPlaceholder: true, isFilterWarning: true});
+    return firstItems.concat(this.candidates.filter(c => !c.filteredOut));
   }
 
   get voterDisabled(): boolean {
@@ -155,6 +166,11 @@ export class ListComponent
     // Move list if we are using landscape mode and viewing a candidate
     this._subscriptions.push(this.shared.activeCandidateChanged.subscribe(() => 
       this._doChanges.activeCandidateId = this.shared.activeCandidateId
+    ));
+
+    // Scroll to top when filters are changed
+    this._subscriptions.push(this.matcher.filterDataUpdated.subscribe(() => 
+      setTimeout(() => this.scrollToTop(), 225)
     ));
 
     // Dynamic changes to margins cause bugs with scrolling
@@ -263,6 +279,15 @@ export class ListComponent
 
   public isFavourite(candidate: Candidate): boolean {
     return this.matcher.getFavourites().includes(candidate.id);
+  }
+
+  public openFilters(event?: Event): void {
+    this.shared.showCandidateFilters.emit();
+    event?.stopPropagation();
+  }
+
+  public scrollToTop(): void {
+    this.virtualList?.scrollToIndex(0, 'smooth');
   }
 
 

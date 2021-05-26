@@ -20,6 +20,7 @@ header
   margin: $margin-S 0
 
 .candidateEmpty,
+.filterWarning,
 .candidate
   display: flex
   flex-flow: column nowrap
@@ -31,6 +32,25 @@ header
   padding: $margin-M
   transition: margin $transition-M, background-color $transition-S, opacity $transition-M
   transition-delay: 0ms, 0ms, $transitionDelay
+
+.filterWarning
+  background-color: $color-secondaryBg
+  text-align: center
+  justify-content: center
+  align-items: center
+  font-weight: 500
+  position: relative
+
+  button
+    border: $border-M
+    border-radius: $borderRadius-M
+    cursor: pointer
+    padding: $margin-S $margin-M
+    z-index: $zIndex-5
+    margin-top: $margin-S
+
+    &:hover
+      background-color: $color-selectedBg
 
 .candidate
   @include mat-elevation(1)

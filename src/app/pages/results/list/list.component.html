@@ -4,13 +4,24 @@
 
     <ng-container *cdkVirtualFor="let candidate of visibleCandidates; let index = index">
 
-      <!-- We test for candidate, as we are prepending the list with an empty item 
-           to add a top offset -->
-
-      <div *ngIf="!candidate"
+      <!-- We might have up to two placeholder divs up front -->
+      
+      <div *ngIf="candidate.isPlaceholder && !candidate.isFilterWarning"
            class="candidateEmpty"></div>
 
-      <div *ngIf="candidate"
+      <div *ngIf="candidate.isPlaceholder && candidate.isFilterWarning"
+           class="filterWarning"
+           [style.maxWidth]="cardWidth"
+           [style.marginLeft]="marginLeft">
+        <mat-icon>filter_list</mat-icon>
+        Listalta on suodatettu joitakin ehdokkaita.
+        <button type="button"
+                (click)="openFilters($event)">Avaa suodatinvalikko</button>
+      </div>
+
+      <!-- Candidate -->
+
+      <div *ngIf="!candidate.isPlaceholder"
            (click)="toggleCandidate(candidate, $event)"
            class="candidate"
            [class.active]="candidate.id == activeCandidateId"
