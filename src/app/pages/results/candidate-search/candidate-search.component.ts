@@ -114,15 +114,18 @@ export class CandidateSearchComponent
     if (value instanceof Candidate)
       return [value];
 
-    const name = value.toLocaleLowerCase('fi-FI');
+    const names = value.toLocaleLowerCase('fi-FI').split(/\s+/);
     const number = parseInt(value);
 
     return this.candidates.filter(c => {
       if (!isNaN(number))
         return c.number === number;
       else
-        return c.surname.toLocaleLowerCase('fi-FI').indexOf(name) === 0 || 
-               c.givenName.toLocaleLowerCase('fi-FI').indexOf(name) === 0;
+        for (const name of names)
+          if (c.surname.toLocaleLowerCase('fi-FI').indexOf(name) === 0 || 
+              c.givenName.toLocaleLowerCase('fi-FI').indexOf(name) === 0)
+            return true;
+      return false;
     });
   }
   
