@@ -18,14 +18,14 @@ export interface QuestionOptionsPreferenceOrder extends QuestionOptionsNumeric {
 
 export class QuestionPreferenceOrder extends QuestionNumeric {
 
-  /*
-   * Overrides
-   */
-  public voterAnswer: number[];
-
   readonly maxAnswer: never;
   readonly minAnswer: never;
   readonly neutralAnswer = [];
+
+  /*
+   * Overrides
+   */
+  protected _voterAnswer: number[];
 
   constructor(options: QuestionOptionsPreferenceOrder) {
     super(options);
@@ -36,6 +36,22 @@ export class QuestionPreferenceOrder extends QuestionNumeric {
   /*
    * Overrides
    */
+
+  /*
+   * We need to make a copy of the value to skirt possible reference issues
+   */
+  get voterAnswer(): number[] {
+    return this._voterAnswer ? [...this._voterAnswer] : undefined;
+  }
+
+  /*
+   * We need to make a copy of the value to skirt possible reference issues
+   */
+  set voterAnswer(value: number[]) {
+    if (value)
+      this._voterAnswer = [...value];
+  }
+
   public isMissing(value: number[]): boolean {
     return value == null || value.length === 0;
   }
@@ -52,7 +68,7 @@ export class QuestionPreferenceOrder extends QuestionNumeric {
    * Note that biasedTowardsMax has no effect on this
    */
   public invertAnswer(value: number[], biasedTowardsMax: boolean = true): number[] {
-    return value.reverse();
+    return [...value].reverse();
   }
 
   public getInvertedVoterAnswer(biasedTowardsMax?: boolean): number[] {

@@ -203,7 +203,7 @@ export class DetailsQuestionComponent
     // Set a special candidateSize class for extreme cases
     const factor = window.innerWidth / (candidates.length * this.question.values.length / 5);
     // TODO: Enable on window resize
-    console.log(factor);
+    // console.log(factor);
     if (factor < 0.5) {
       this.candidateSizingClass = 'candidateSize-xSmall';
     } else if (factor < 1.5) {

@@ -21,11 +21,6 @@ export const QUESTION_LIKERT_DEFAULT_VALUES: QuestionNumericValue[] = [
 
 export class QuestionLikert extends QuestionSingleNumber {
 
-  /*
-   * Overrides
-   */
-  public voterAnswer: number;
-
   constructor(
     options: QuestionOptionsSingleNumber,
     defaultValues: QuestionNumericValue[] = QUESTION_LIKERT_DEFAULT_VALUES

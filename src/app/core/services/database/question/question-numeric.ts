@@ -62,7 +62,6 @@ export abstract class QuestionNumeric extends Question {
   public partyAverages:  {
     [partyId: string]: number | number[]
   };
-  public voterAnswer: number | number[];
   /*
    * These should be initialized in the constructor
    */
@@ -78,6 +77,8 @@ export abstract class QuestionNumeric extends Question {
   static readonly opinionUnknown: AgreementType   = AgreementType.OpinionUnknown;
   static readonly stronglyDisagree: AgreementType = AgreementType.StronglyDisagree;
 
+  protected _voterAnswer: number | number[];
+
   constructor(
     {partyAverages, values, ...options}: QuestionOptionsNumeric,
     defaultValues: QuestionNumericValue[] = QUESTION_NUMERIC_DEFAULT_VALUES
@@ -89,6 +90,14 @@ export abstract class QuestionNumeric extends Question {
 
   get valueKeys(): number[] {
     return this.values.map(v => v.key);
+  }
+
+  get voterAnswer(): number | number[] {
+    return this._voterAnswer;
+  }
+
+  set voterAnswer(value: number | number[]) {
+    throw new Error("Not implemented!");
   }
 
   /*

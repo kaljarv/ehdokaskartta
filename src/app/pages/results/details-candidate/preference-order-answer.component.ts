@@ -7,6 +7,8 @@ import {
 
 import {
   AgreementType,
+  MatcherService,
+  QuestionNumeric,
   QuestionNumericValue,
   QuestionPreferenceOrder
 } from '../../../core';
@@ -46,7 +48,9 @@ export class PreferenceOrderAnswerComponent
   public candidatePreferences: PreferenceValue[];
   public voterPreferences: PreferenceValue[];
 
-  constructor() {}
+  constructor(
+    private matcher: MatcherService,
+  ) {}
 
   ngOnInit() {
     // Populate voter and candidate preferences adding orderIndeces

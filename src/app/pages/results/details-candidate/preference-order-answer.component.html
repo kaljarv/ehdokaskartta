@@ -9,9 +9,9 @@
         class="preferenceOrder--option preferenceOrder--option-{{ option.orderIndex }}" >
       {{ option.name }}
       <svg *ngIf="option.orderIndex == 0"
-          [attr.width]="svgWidth"
-          [attr.height]="avatarHeight"
-          class="avatar avatar-voter">
+           [attr.width]="svgWidth"
+           [attr.height]="avatarHeight"
+           class="avatar avatar-voter">
         <svg:g attr.transform="translate(0, {{ voterYOffset }})">
           <svg:circle cx="13.13" 
                       cy="6.08"
@@ -34,9 +34,9 @@
         class="preferenceOrder--option preferenceOrder--option-{{ option.orderIndex }}" >
       {{ option.name }}
         <svg *ngIf="option.orderIndex == 0"
-            [attr.width]="svgWidth"
-            [attr.height]="avatarHeight"
-            class="avatar avatar-candidate">
+             [attr.width]="svgWidth"
+             [attr.height]="avatarHeight"
+             class="avatar avatar-candidate">
         <svg:circle cx="13.13" 
                     cy="14.64"
                     r="6"

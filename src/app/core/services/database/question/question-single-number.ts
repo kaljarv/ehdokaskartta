@@ -21,7 +21,6 @@ export abstract class QuestionSingleNumber extends QuestionNumeric {
   public partyAverages:  {
     [partyId: string]: number
   };
-  public voterAnswer: number;
   /*
    * These are initialized in the constructor
    */
@@ -30,6 +29,11 @@ export abstract class QuestionSingleNumber extends QuestionNumeric {
   readonly minAnswer: number;
   readonly neutralAnswer: number;
   readonly answerRange: number;
+
+  /*
+   * Overrides
+   */
+  protected _voterAnswer: number;
 
   constructor(
     {values, ...options}: QuestionOptionsSingleNumber,
@@ -44,6 +48,20 @@ export abstract class QuestionSingleNumber extends QuestionNumeric {
     this.answerRange = this.maxAnswer - this.minAnswer;
   }
 
+
+  /*
+   * Overrides
+   */
+  get voterAnswer(): number {
+    return this._voterAnswer;
+  }
+
+  /*
+   * We need to make a copy of the value to skirt possible reference issues
+   */
+  set voterAnswer(value: number) {
+    this._voterAnswer = value;
+  }
 
   /*
    * These are mainly used for storing values in cookies

@@ -606,13 +606,18 @@ export class MatcherService {
       return null;
   }
   
-  public setVoterAnswer(question: Question, value: number | number[]): void {
-    if (question instanceof QuestionNumeric) {
-      question.voterAnswer = value;
+  public setVoterAnswer(question: Question, value: number | number[], dontWriteCookie: boolean = false): void {
+
+    if (!(question instanceof QuestionNumeric))
+      throw new Error(`Question not a subclass of QuestionNumeric: ${question.id}!`);
+
+    question.voterAnswer = value;
+
+    if (!dontWriteCookie)
       this.cookie.write(question.id, question.convertAnswerToString());
-      // Emit event
-      this.dataStatus.questions.next(DataStatus.Updated);
-    }
+
+    // Emit event
+    this.dataStatus.questions.next(DataStatus.Updated);
   }
 
   public deleteVoterAnswer(id: string): void {
@@ -846,7 +851,7 @@ export class MatcherService {
       const answer = this.cookie.read(q.id);
       if (answer != null)
         // Use Numbers as cookie values are stored as text
-        this.setVoterAnswer(q, q.parseAnswerFromString(answer));
+        this.setVoterAnswer(q, q.parseAnswerFromString(answer), true);
     }
   }
 
