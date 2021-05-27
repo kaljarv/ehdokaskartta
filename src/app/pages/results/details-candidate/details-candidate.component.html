@@ -231,16 +231,31 @@
            class="candidate-datum candidate-datum-socialMedia">
         <label>Sosiaalinen media</label>
         <div [class]="getContentClasses('socialMedia')">
-          <a *ngIf="facebook"
-             [href]="facebook"
-             target="_blank">
-            Facebook
-          </a>
-          <a *ngIf="instagram"
-             [href]="instagram"
-             target="_blank">
-            Instagram
-          </a>
+
+          <ng-container *ngIf="facebook && isLink(facebook)">
+            <a [href]="facebook"
+               target="_blank">
+              Facebook
+            </a>
+          </ng-container>
+          <ng-container *ngIf="facebook && !isLink(facebook)">
+            Facebook: {{ facebook }}
+          </ng-container>
+
+          <ng-container *ngIf="facebook && instagram">
+            •
+          </ng-container>
+
+          <ng-container *ngIf="instagram && isLink(instagram)">
+            <a [href]="instagram"
+               target="_blank">
+              Instagram
+            </a>
+          </ng-container>
+          <ng-container *ngIf="instagram && !isLink(instagram)">
+            Instagram: {{ instagram }}
+          </ng-container>
+
         </div>
       </div>
     </section>

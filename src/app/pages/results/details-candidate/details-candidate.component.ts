@@ -568,7 +568,10 @@ export class DetailsCandidateComponent
     return this.getAnswer("facebook");
   }
   get instagram(): string {
-    return this.getAnswer("facebook");
+    return this.getAnswer("instagram");
+  }
+  public isLink(text: string): boolean {
+    return text.match(/^https?\:/) != null;
   }
   // get committees(): string[] {
   //   let list = [];
