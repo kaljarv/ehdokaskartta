@@ -68,12 +68,12 @@
       <div cdkDropList 
            (cdkDropListDropped)="drop($event)"
            class="preferenceOrder--list">
-        <div *ngFor="let option of preferenceOrder"
+        <div *ngFor="let option of preferenceOrder; index as i"
              cdkDrag
              class="preferenceOrder--option" >
           <div *cdkDragPlaceholder
                class="preferenceOrder--placeholder"></div>
-          {{ option.name }}
+            {{ i + 1 }} — {{ option.name }}
         </div>
       </div>
 
