@@ -19,13 +19,18 @@
     <mat-chip *ngFor="let question of questions"
               (click)="showQuestion(question)"
               class="category-{{ question.categoryName | toClassName }}"
-              [class.answered]="question.voterAnswer">
+              [class.answered]="question.voterAnswer || question.skippedByVoter">
       {{ question.topic }}
       <mat-icon *ngIf="isRecommended(question)"
                 matTooltip="Suositeltu seuraava kysymys"
                 matTooltipPosition="above"
                 class="recommendationIcon"
                 @buttonAppear>star</mat-icon>
+      <mat-icon *ngIf="question.skippedByVoter"
+                matTooltip="Olet ohittanut tämän kysymyksen, mutta voit vastata siihen klikkaamalla"
+                matTooltipPosition="above"
+                class="skippedIcon"
+                @buttonAppear>redo</mat-icon>
     </mat-chip>
   </mat-chip-list>
 </div>

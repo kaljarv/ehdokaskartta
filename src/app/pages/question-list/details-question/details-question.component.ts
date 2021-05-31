@@ -214,15 +214,21 @@ export class DetailsQuestionComponent
     
   }
 
-  dismiss(event: MouseEvent = null) {
+  dismiss(event?: Event) {
     this.onboardingTour?.complete();
     this.bottomSheetRef.dismiss();
     if (event != null)
       event.stopPropagation();
   }
 
-  openLink(event: MouseEvent): void {
+  openLink(event?: Event): void {
     this.dismiss(event);
+  }
+
+  skip(event?: Event): void {
+    this.matcher.setSkippedByVoter(this.question, true);
+    this.shared.logEvent('questions_skip', {id: this.question.id});
+    setTimeout(() => this.dismiss(event), CLOSE_DELAY);
   }
 
   get questionType(): QuestionType {

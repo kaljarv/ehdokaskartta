@@ -48,6 +48,13 @@
       </ng-container>
     </div>
 
+    <button *ngIf="!showDeleteButton"
+            (click)="skip()"
+            mat-button
+            class="skip">
+      <mat-icon>redo</mat-icon> Ohita tämä kysymys
+    </button>
+
     <button *ngIf="showDeleteButton"
             (click)="deleteVoterAnswer()"
             mat-button
@@ -78,6 +85,7 @@
       </div>
 
       <div class="actions">
+
         <button mat-button
                 type="button"
                 (click)="dismiss()">Peruuta</button>
@@ -85,6 +93,12 @@
                 color="primary"
                 type="button"
                 (click)="savePreferenceOrder()">Tallenna</button>
+        <button *ngIf="!showDeleteButton"
+                (click)="skip()"
+                mat-button
+                class="skip">
+          <mat-icon>redo</mat-icon> Ohita tämä kysymys
+        </button>
         <button *ngIf="showDeleteButton"
                 (click)="deleteVoterAnswer()"
                 mat-button

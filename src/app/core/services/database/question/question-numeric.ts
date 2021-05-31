@@ -62,6 +62,7 @@ export abstract class QuestionNumeric extends Question {
   public partyAverages:  {
     [partyId: string]: number | number[]
   };
+  public skippedByVoter: boolean;
   /*
    * These should be initialized in the constructor
    */
@@ -122,6 +123,7 @@ export abstract class QuestionNumeric extends Question {
    */
   public unsetVoterAnswer(): void {
     this.voterAnswer = undefined;
+    this.skippedByVoter = undefined;
   }
 
   /*

@@ -620,6 +620,21 @@ export class MatcherService {
     this.dataStatus.questions.next(DataStatus.Updated);
   }
 
+  /*
+   * TODO: Enable saving this in the cookie
+   *       => Convert skippedByVoter to a special voterAnswer value
+   */
+  public setSkippedByVoter(question: Question, skipped: boolean = true): void {
+
+    if (!(question instanceof QuestionNumeric))
+      throw new Error(`Question not a subclass of QuestionNumeric: ${question.id}!`);
+
+    question.skippedByVoter = skipped;
+
+    // Emit event
+    this.dataStatus.questions.next(DataStatus.Updated);
+  }
+
   public deleteVoterAnswer(id: string): void {
     const question = this.questions[id];
     if (question && question instanceof QuestionNumeric) {
@@ -634,12 +649,16 @@ export class MatcherService {
     return this.getVoterAnsweredQuestions().length;
   }
 
-  public getVoterAnsweredQuestions(): QuestionNumeric[] {
-    return Object.values(this.questions).filter(q => q instanceof QuestionNumeric && q.voterAnswer != null) as QuestionNumeric[];
+  public getVoterAnsweredQuestions(includeSkipped: boolean = false): QuestionNumeric[] {
+    return Object.values(this.questions)
+      .filter(q => 
+        q instanceof QuestionNumeric &&
+        (q.voterAnswer != null || (includeSkipped && q.skippedByVoter))
+      ) as QuestionNumeric[];
   }
 
-  public getVoterAnsweredQuestionIds(): string[] {
-    return this.getVoterAnsweredQuestions().map(q => q.id);
+  public getVoterAnsweredQuestionIds(includeSkipped?: boolean): string[] {
+    return this.getVoterAnsweredQuestions(includeSkipped).map(q => q.id);
   }
 
   public getVoterAnswers(): {[questionId: string]: number} {
@@ -728,7 +747,7 @@ export class MatcherService {
    */
   public getInformationValueOrder(): {id: string, value: number }[] {
     let   qOrder: {id: string, value: number }[] = [];
-    const answered = this.getVoterAnsweredQuestionIds();
+    const answered = this.getVoterAnsweredQuestionIds(true);
     Object.keys(this.correlationMatrix)
       .filter(id => !answered.includes(id)) // Skip answered
       .map(id => {
