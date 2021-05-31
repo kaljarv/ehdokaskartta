@@ -62,7 +62,6 @@ export abstract class QuestionNumeric extends Question {
   public partyAverages:  {
     [partyId: string]: number | number[]
   };
-  public skippedByVoter: boolean;
   /*
    * These should be initialized in the constructor
    */
@@ -78,6 +77,7 @@ export abstract class QuestionNumeric extends Question {
   static readonly opinionUnknown: AgreementType   = AgreementType.OpinionUnknown;
   static readonly stronglyDisagree: AgreementType = AgreementType.StronglyDisagree;
 
+  protected _skippedByVoter: boolean;
   protected _voterAnswer: number | number[];
 
   constructor(
@@ -89,6 +89,16 @@ export abstract class QuestionNumeric extends Question {
     this.partyAverages = partyAverages ?? {};
   }
 
+  get skippedByVoter(): boolean {
+    return this._skippedByVoter;
+  }
+
+  set skippedByVoter(value: boolean) {
+    if (value)
+      this._voterAnswer = undefined;
+    this._skippedByVoter = value;
+  }
+
   get valueKeys(): number[] {
     return this.values.map(v => v.key);
   }
@@ -98,7 +108,9 @@ export abstract class QuestionNumeric extends Question {
   }
 
   set voterAnswer(value: number | number[]) {
-    throw new Error("Not implemented!");
+    this.skippedByVoter = false;
+    if (value != null)
+      this._voterAnswer = value;
   }
 
   /*

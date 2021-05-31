@@ -56,11 +56,10 @@ export abstract class QuestionSingleNumber extends QuestionNumeric {
     return this._voterAnswer;
   }
 
-  /*
-   * We need to make a copy of the value to skirt possible reference issues
-   */
   set voterAnswer(value: number) {
-    this._voterAnswer = value;
+    this.skippedByVoter = false;
+    if (value != null)
+      this._voterAnswer = value;
   }
 
   /*

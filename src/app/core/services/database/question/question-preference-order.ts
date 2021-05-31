@@ -48,7 +48,8 @@ export class QuestionPreferenceOrder extends QuestionNumeric {
    * We need to make a copy of the value to skirt possible reference issues
    */
   set voterAnswer(value: number[]) {
-    if (value)
+    this.skippedByVoter = false;
+    if (value != null)
       this._voterAnswer = [...value];
   }
 
