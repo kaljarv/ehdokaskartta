@@ -58,8 +58,7 @@ export abstract class QuestionSingleNumber extends QuestionNumeric {
 
   set voterAnswer(value: number) {
     this.skippedByVoter = false;
-    if (value != null)
-      this._voterAnswer = value;
+    this._voterAnswer = value;
   }
 
   /*

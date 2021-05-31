@@ -51,6 +51,8 @@ export class QuestionPreferenceOrder extends QuestionNumeric {
     this.skippedByVoter = false;
     if (value != null)
       this._voterAnswer = [...value];
+    else
+      this._voterAnswer = undefined;
   }
 
   public isMissing(value: number[]): boolean {

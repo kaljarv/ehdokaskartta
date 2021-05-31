@@ -109,8 +109,7 @@ export abstract class QuestionNumeric extends Question {
 
   set voterAnswer(value: number | number[]) {
     this.skippedByVoter = false;
-    if (value != null)
-      this._voterAnswer = value;
+    this._voterAnswer = value;
   }
 
   /*
