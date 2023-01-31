@@ -1,5 +1,7 @@
 # Candidate Map – Towards an Open-Source Platform for Voting Advice Applications
 
+> **Update Jan 2023**: We've started a proper project for the development of an open-source voting advice application platform with gracious funding from Sitra – the Finnish innovation fund. To stay tuned, please visit openvaa.org or follow [@openvaa](https://twitter.com/OpenVaa) on Twitter. The project is, furthermore, accompanied by a research arm conducted by the University of Helsinki and funded, in turn, by the Kone Foundation.
+
 Ehdokaskartta (or Candidate Map) is a prototype Voting Advice Application (VAA) that helps voters find a suitable electoral candidate. It uses open data from Election Compass (‘Vaalikone’) by Yle, the Finnish public broadcasting company, but offers a markedly different user experience. It is built in a modular way that allows for testing of different features and using alternative data sources.
 
 Its ultimate aim is, however, to provide an impetus for testing new ideas in the design of VAAs and—most importantly—open-source development of a plurality of VAAs.
