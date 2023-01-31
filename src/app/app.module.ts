@@ -102,7 +102,7 @@ const paths = [
     MatSidenavModule,
     MatSnackBarModule,
     MatTooltipModule,
-    RouterModule.forRoot(paths, { relativeLinkResolution: 'legacy' }),
+    RouterModule.forRoot(paths),
     DatabaseModule, 
     FeedbackFormModule,
     FloatingCardModule,
