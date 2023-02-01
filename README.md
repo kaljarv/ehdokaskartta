@@ -53,7 +53,7 @@ This is the author’s first take on Angular (and on a web app for that matter).
 
 first `firebase use --add` then
 
-`ng build --prod; firebase deploy -m "deploy: firebase" --only hosting`
+`ng build -c production; firebase deploy -m "deploy: firebase" --only hosting`
 
 ## Author
 
