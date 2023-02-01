@@ -47,6 +47,14 @@ The app uses Google’s [Angular (10) library](https://angular.io/) and [Materia
 This is the author’s first take on Angular (and on a web app for that matter). Thus, the code is unfortunately unclean, inelegant and improperly documented. For the second part of the project, the current repository's role is mainly to serve as a user experience test bed. The codebase proper is probably best started from a clean slate.
 
 
+## Deploying
+
+`ng deploy` or
+
+first `firebase use --add` then
+
+`ng build --prod; firebase deploy -m "deploy: firebase" --only hosting`
+
 ## Author
 
 Ehdokaskartta is designed and implemented by [Kalle Järvenpää](http://kaljarv.com/) or @kaljarv on [Instagram](https://www.instagram.com/kaljarv/) and [Twitter](https://twitter.com/kaljarv). He is a multidisciplinary designer with a background in graphic design, whose current focus is shared between product, interaction and computational design.
