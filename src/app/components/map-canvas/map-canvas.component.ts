@@ -467,9 +467,17 @@ export class MapCanvasComponent
   private _initCanvas(): void {
     this._pixelRatio = window.devicePixelRatio;
     this._canvas = this.canvasRef.nativeElement;
-    this._context = this._canvas.getContext("2d");
+    this._context = this._canvas.getContext("2d", {
+        alpha: true,
+        desynchronized: false,
+        willReadFrequently: true
+    }) as CanvasRenderingContext2D;
     this._hitCanvas = document.createElement("canvas");
-    this._hitContext = this._hitCanvas.getContext("2d");
+    this._hitContext = this._hitCanvas.getContext("2d", {
+        alpha: false,
+        desynchronized: false,
+        willReadFrequently: true
+    }) as CanvasRenderingContext2D;
     this._bgColor = window.getComputedStyle(this._canvas)?.getPropertyValue("background-color") ?? this._bgColor;
     this._setupZoomability();
     this._canvasInitialized = true;
