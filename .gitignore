@@ -51,6 +51,7 @@ Thumbs.db
 firebase.environment.ts
 .firebaserc
 /.firebase
+firebase-debug.log
 
 # Candidate portraits
 src/assets/images/candidates/*
