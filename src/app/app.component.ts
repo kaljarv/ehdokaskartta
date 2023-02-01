@@ -250,7 +250,7 @@ export class AppComponent
       // We can't have this visible at the same time
       this.clearDetailsCard();
 
-      if (options?.onComplete)
+      if (options && options.onComplete)
         promise.then(() => options.onComplete());
 
     });
