@@ -29,6 +29,7 @@ export class Party implements GetAnswer {
   public name: string;
   public projX: number;
   public projY: number;
+  public score: number;
   public questionReference: QuestionDict;
 
   private _abbreviation: string;

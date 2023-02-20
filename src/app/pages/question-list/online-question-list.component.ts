@@ -1,19 +1,18 @@
 import { AfterViewInit,
-         EventEmitter, 
+         ElementRef,
          Component, 
          OnDestroy,
          OnInit,
-         ViewChild,
+         QueryList,
+         ViewChildren,
          ViewEncapsulation } from '@angular/core';
 import { trigger,
          style,
          animate,
          transition } from '@angular/animations';
-import { Router } from '@angular/router';
-import { combineLatest,
-         Subscription } from 'rxjs';
-import { filter,
-         first } from 'rxjs/operators';
+import { ActivatedRoute,
+         Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 import { MatcherService,
          QuestionNumeric,
@@ -24,17 +23,18 @@ import { MatcherService,
 // import { OnboardingTourComponent } from '../../components';
 
 import { QuestionListTopBarContentComponent } from './question-list-top-bar-content.component';
+import { OnlineQuestionComponent } from './online-question';
 
 // Delays for the star to appear and disappear, needed because of delay in closing the question bottom sheet
 const ANIMATION_ENTER_DELAY = '1000ms';
 const ANIMATION_EXIT_DELAY = '900ms';
 
 @Component({
-  selector: 'app-question-list',
-  templateUrl: './question-list.component.html',
-  styleUrls: ['./question-list.component.sass'],
+  selector: 'app-online-question-list',
+  templateUrl: './online-question-list.component.html',
+  styleUrls: ['./online-question-list.component.sass'],
   // We need to control .mat-chip-list-wrapper
-  encapsulation: ViewEncapsulation.None,
+  // encapsulation: ViewEncapsulation.None,
   animations: [
     trigger('buttonAppear', [
       transition(':enter', [
@@ -66,15 +66,12 @@ const ANIMATION_EXIT_DELAY = '900ms';
     "(click)": "hideInfos()"
   },
 })
-export class QuestionListComponent
+export class OnlineQuestionListComponent
   implements AfterViewInit, OnDestroy, OnInit {
 
-  // @ViewChild('defaultTour')
-  // onboardingTour: OnboardingTourComponent;
-  // @ViewChild('enoughAnswersTour')
-  // onboardingTourEnoughAnswers: OnboardingTourComponent;
-  
-  // public informationValueOrder: {id: string, value: number }[];
+  @ViewChildren(OnlineQuestionComponent)
+  questionComponents: QueryList<OnlineQuestionComponent>;
+
   public paths = PATHS;
   public questions: QuestionNumeric[] = [];
   public questionsInitialized: boolean = false;
@@ -84,12 +81,14 @@ export class QuestionListComponent
   // Track first interaction
   private _userHasClicked: boolean = false;
   // Fire on afterViewInit
-  private _viewInitialized = new EventEmitter<boolean>();
+  // private _viewInitialized = new EventEmitter<boolean>();
 
   constructor(
+    private container: ElementRef<HTMLElement>,
     private matcher: MatcherService,
+    private route: ActivatedRoute,
     private router: Router,
-    private shared: SharedService
+    private shared: SharedService,
   ) { 
 
     this.shared.reportPageOpen({
@@ -104,9 +103,9 @@ export class QuestionListComponent
   }
 
   // TODO CLEANUP
-  get minAnswersForMapping(): number {
-    return this.matcher.config.minValsForMapping;
-  }
+  // get minAnswersForMapping(): number {
+  //   return this.matcher.config.minValsForMapping;
+  // }
 
   // get participatingCandidates(): number {
   //   return this.matcher.totalParticipatingCandidates ?? 0;
@@ -132,17 +131,18 @@ export class QuestionListComponent
       if (!this.matcher.hasCandidates)
         this.router.navigate([PATHS.error], {state: {
           icon: 'sentiment_very_dissatisfied',
-          title: `Valitettavasti yksikään kunnan ${this.matcher.municipality} ehdokkaista ei ole vastannut Ehdokaskartan kysymyksiin`
+          title: `Valitettavasti yksikään vaalipiirin ${this.matcher.constituency} ehdokkaista ei ole vastannut   Kielivaalikoneen kysymyksiin`
         }});
     }));
     // questionData includes voter answers
-    this._subscriptions.push(this.matcher.questionDataUpdated.subscribe(() =>  this._updateData()));
+    // this._subscriptions.push(this.matcher.questionDataUpdated.subscribe(() =>  this._updateData()));
     this._subscriptions.push(this.matcher.questionDataReady.subscribe(() => this._fetchQuestions()));
     this._subscriptions.push(this.matcher.constituencyCookieRead.subscribe(() => {
       // Make sure the constituency is defined, as if not, questionDataReady will never fire
       if (this.matcher.constituencyId == null)
         this.router.navigate([PATHS.constituencyPicker]);
     }));
+    this._subscriptions.push(this.route.fragment.subscribe(() => this._scrollToCurrentQuestion()));
     // Show onboarding only after data is loaded and the view is initialized
     // First() will unsubscribe itself
     // combineLatest([this.shared.loadingState, this._viewInitialized]).pipe(
@@ -155,10 +155,11 @@ export class QuestionListComponent
   }
 
   ngAfterViewInit() {
-    // Need to check it here as the subscriptions won't catch reading data from cookie, which happens at matcher service initialization
-    this._checkEnableForward();
-    // See subs above
-    this._viewInitialized.emit(true);
+    this._scrollToCurrentQuestion();
+  //   // Need to check it here as the subscriptions won't catch reading data from cookie, which happens at matcher service initialization
+  //   this._checkEnableForward();
+  //   // See subs above
+  //   // this._viewInitialized.emit(true);
   }
 
   ngOnDestroy() {
@@ -169,7 +170,7 @@ export class QuestionListComponent
     // this.onboardingTour = null;
     // this.onboardingTourEnoughAnswers = null;
     this.questions = null;
-    this._viewInitialized = null;
+    // this._viewInitialized = null;
   }
 
   /*
@@ -183,10 +184,51 @@ export class QuestionListComponent
     }
   }
 
-  public showQuestion(question: QuestionNumeric): void {
-    // this._closeOnboarding();
-    this.shared.showQuestion.emit(question.id);
-    this.hideInfos();
+  // public showQuestion(question: QuestionNumeric): void {
+  //   // this._closeOnboarding();
+  //   this.shared.showQuestion.emit(question.id);
+  //   this.hideInfos();
+  // }
+
+  public goToNextQuestion(currentQuestion: QuestionNumeric): void {
+    let found = false;
+    for (const q of this.questionComponents) {
+      if (found) {
+        this.router.navigate([], {fragment: q.question.id});
+        found = false;
+        break;
+      }
+      if (q.question === currentQuestion) found = true;
+    }
+    // This was the last question
+    if (found)
+      this.goToResults();
+  }
+
+  public goToResults(): void {
+    this.shared.navigateForward.emit({path: [PATHS.list]})
+  }
+
+  private _scrollToCurrentQuestion(): void {
+    const id = this.route.snapshot.fragment;
+    if (id != null && id != '')
+      this._scrollIntoView(id);
+  }
+
+  private _scrollIntoView(id: string): void {
+    // Get scroll container
+    const containerEl = this.container?.nativeElement.parentElement;
+    if (!containerEl) return;
+    // Get element to scroll to
+    const element = containerEl.querySelector(`#${id}`) as HTMLElement;
+    if (!element) return;
+    // We'll change scroll-behavior to smooth, so we'll need to save the old one
+    const oldBehavior = containerEl.style.scrollBehavior;
+    containerEl.style.scrollBehavior = 'smooth';
+    // Scroll
+    containerEl.scrollTop = element.offsetTop;
+    // Revert scroll-behavior
+    containerEl.style.scrollBehavior = oldBehavior;
   }
 
   /*
@@ -202,12 +244,13 @@ export class QuestionListComponent
     this.questions = this.matcher.getAnswerableQuestions(true);
     this.questionsInitialized = true;
     this.shared.loadingState.next({ type: 'loaded' });
+    this._scrollToCurrentQuestion();
   }
 
-  private _updateData(): void {
-    // this._updateInformationValues();
-    this._checkEnableForward();
-  }
+  // private _updateData(): void {
+  //   // this._updateInformationValues();
+  //   this._checkEnableForward();
+  // }
 
   // private _updateInformationValues(): void {
   //   this.informationValueOrder = this.matcher.getInformationValueOrder();
@@ -215,24 +258,24 @@ export class QuestionListComponent
   // }
 
   // TODO CLEANUP
-  private _checkEnableForward(): void {
-    if (this.matcher.hasEnoughAnswersForMapping) {
+  // private _checkEnableForward(): void {
+  //   if (this.matcher.hasEnoughAnswersForMapping) {
 
-      // Show the secong onboarding tour
-      // We add a bit of a delay for the bar to apper
-      // if (!this.onboardingTour?.getCurrentStep())
-      //   setTimeout(() => this.onboardingTourEnoughAnswers?.start(), ANIMATION_DURATION_MS * 2);
+  //     // Show the secong onboarding tour
+  //     // We add a bit of a delay for the bar to apper
+  //     // if (!this.onboardingTour?.getCurrentStep())
+  //     //   setTimeout(() => this.onboardingTourEnoughAnswers?.start(), ANIMATION_DURATION_MS * 2);
 
-      this.shared.enableForward.emit({
-        path: [PATHS.list],
-        title: 'Näytä tulokset',
-        progressTitle: 'Tuloskartan tarkkuus',
-        showProgress: true,
-      });
-    } else {
-      this.shared.disableForward.emit();
-    }
-  }
+  //     this.shared.enableForward.emit({
+  //       path: [PATHS.list],
+  //       title: 'Näytä tulokset',
+  //       progressTitle: 'Tuloskartan tarkkuus',
+  //       showProgress: true,
+  //     });
+  //   } else {
+  //     this.shared.disableForward.emit();
+  //   }
+  // }
 
   // private _closeOnboarding(): void {
   //   this.onboardingTour?.complete();

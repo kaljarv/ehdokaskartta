@@ -9,11 +9,13 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { CorePipesModule } from '../../core';
-import { OnboardingModule } from '../../components';
+// import { OnboardingModule } from '../../components';
 
-import { QuestionListComponent } from './question-list.component';
+import { OnlineQuestionListComponent } from './online-question-list.component';
+// import { QuestionListComponent } from './question-list.component';
 import { QuestionListTopBarContentComponent } from './question-list-top-bar-content.component';
-import { DetailsQuestionModule } from './details-question';
+// import { DetailsQuestionModule } from './details-question';
+import { OnlineQuestionModule } from './online-question';
 
 @NgModule({
   imports: [
@@ -25,15 +27,18 @@ import { DetailsQuestionModule } from './details-question';
     MatRippleModule,
     MatTooltipModule,
     CorePipesModule,
-    DetailsQuestionModule,
-    OnboardingModule
+    // DetailsQuestionModule,
+    OnlineQuestionModule,
+    // OnboardingModule
   ],
   exports: [
-    QuestionListComponent,
+    OnlineQuestionListComponent,
+    // QuestionListComponent,
     QuestionListTopBarContentComponent,
   ],
   declarations: [
-    QuestionListComponent,
+    OnlineQuestionListComponent,
+    // QuestionListComponent,
     QuestionListTopBarContentComponent,
   ],
 })

@@ -9,48 +9,20 @@
       </button>
     </div>
     <div class="title">
-      <li (click)="followLink('constituencyPicker', $event)"
-          [class.current]="currentPage == 'constituencyPicker'">
-        <div class="marker">1</div>
-        <span>Kotikuntasi</span>
-      </li>
-      <li (click)="followLink('questions', $event)"
-          [class.current]="currentPage == 'questions'"
-          [class.disabled]="!enableQuestions">
-        <div class="marker">
-          <ng-container *ngIf="enableQuestions">2</ng-container>
-          <mat-icon *ngIf="!enableQuestions">block</mat-icon>
-        </div>
-        <span>Kysymykset</span>
-      </li>
-      <li (click)="followLink('map', $event)"
-          [class.current]="currentPage == 'map'"
-          [class.disabled]="!enableMap">
-        <div class="marker">
-          <ng-container *ngIf="enableMap">3</ng-container>
-          <mat-icon *ngIf="!enableMap">block</mat-icon>
-        </div>
-          <span>Tulokset</span>
-          <!--
-            * Allow access to browse
-            * Rembember to change enableMap above to enableQuestions
-            <span *ngIf="enableMap && currentPage != 'browse'"
-                  @labelAppear>Tulokset</span>
-            <span *ngIf="!enableMap || currentPage == 'browse'"
-                  @labelAppear>Selaa ehdokkaita</span> 
-          -->
-      </li>
+      <span *ngIf="currentPage == 'constituencyPicker'">Kotikuntasi</span>
+      <span *ngIf="currentPage == 'questions'">Kysymykset</span>
+      <span *ngIf="currentPage == 'list'">Tulokset</span>
     </div>
-    <div class="expandIcon">
+    <!-- <div class="expandIcon">
       <mat-icon *ngIf="this.hasContent"
                 [@toggleRotate]="expanded ? 'rotated' : 'normal'"
                 (click)="toggle()"
                 class="expandIcon">expand_more</mat-icon>
       <mat-icon *ngIf="!this.hasContent"
                 class="expandIcon disabled">expand_more</mat-icon>
-    </div>
+    </div> -->
   </header>
-  <section [@toggleExpand]="expanded ? 'open' : 'closed'"
+  <!-- <section [@toggleExpand]="expanded ? 'open' : 'closed'"
            (@toggleExpand.done)="emitExpansionChange()"
            (click)="toggle()"
            class="content">
@@ -58,7 +30,7 @@
       {{ content }}
     </ng-template>
     <ng-template #contentTemplate>
-      <!-- We insert here either a component or the template above -->
+      We insert here either a component or the template above
     </ng-template>
-  </section>
+  </section> -->
 </mat-card>

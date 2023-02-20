@@ -1,0 +1,34 @@
+
+<!-- <ng-container *ngIf="questionsInitialized">
+  <div *ngIf="!showParticipationWarning"
+      class="participationInfo">
+    <mat-icon>info_outline</mat-icon>
+    {{ participatingCandidates }} <span class="secondary">({{ participationPercentage }} %)</span> kunnan {{ totalCandidates }} ehdokkaasta on vastannut kysymyksiin. 
+  </div>
+
+  <div *ngIf="showParticipationWarning"
+      class="participationInfo participationInfo-warning">
+    <mat-icon>warning</mat-icon>
+    Vain {{ participatingCandidates }} ({{ participationPercentage }} %) kunnan {{ totalCandidates }} ehdokkaasta on vastannut kysymyksiin. 
+  </div>
+</ng-container> -->
+
+<app-online-question *ngFor="let question of questions; let i = index"
+                      [question]="question"
+                      [number]="i + 1"
+                      [totalNumber]="questions.length"
+                      (onSkip)="goToNextQuestion(question)"
+                      [id]="question.id"></app-online-question>
+
+<section id="goToResults">
+  <!-- <h2 class="intro">
+    Hienoa! Voit nyt siirtyä tuloksiin.
+  </h2> -->
+  <button id="resultsButton"
+          mat-raised-button 
+          color="primary" 
+          (click)="goToResults()">
+      Siirry tuloksiin
+    <mat-icon>navigate_next</mat-icon>
+  </button>
+</section>

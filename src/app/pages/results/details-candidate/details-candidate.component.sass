@@ -2,7 +2,9 @@
 
 
 :host
-  display: block
+  display: flex
+  flex-flow: column nowrap
+  height: 100vh
   max-width: $maxWidth-L
 
 // Grab bar
@@ -71,13 +73,17 @@ header
     h2
       margin-bottom: $margin-S
 
-    .candidate-number
-      font-size: $fontIncrement-M
+    .number
+      &::before
+        content: " • "
+        color: $color-secondary
+
+    .score
+      font-size: $fontSize-XL
       font-weight: bold
-      padding: 0.5rem
-      border-radius: 2rem
-      min-width: 3rem
-      text-align: center
+
+      @media (max-width: $breakpoint-XS)
+        font-size: $fontSize-L
     
     .candidate-favourite
       margin-top: $margin-XS
@@ -143,21 +149,35 @@ header
   min-height: 1.5rem
   padding: calc(0.2rem + 1px) 0
 
+.candidate-content
+  flex-grow: 1
+  overflow-y: auto
+
 .candidate-data
   padding-bottom: $margin-XL
   padding-top: $margin-M
 
+.candidate-data--primary
+  columns: 3
+
+  @media (max-width: $breakpoint-M)
+    columns: 2
+
+  .missingWarning
+    column-span: all
+
 .candidate-portrait
-  height: 12rem
-  width: 12rem
+  height: 8rem
+  width: 8rem
   max-height: 25vw
   max-width: 25vw
   object-fit: cover
   border-radius: 50%
-  float: right
-  margin: 0 $margin-S $margin-L $margin-L
+  // float: right
+  // margin: 0 $margin-S $margin-L $margin-L
 
 .candidate-datum
+  break-inside: avoid
   margin-bottom: $margin-S * 1.2
 
 .candidate-datum-socialMedia

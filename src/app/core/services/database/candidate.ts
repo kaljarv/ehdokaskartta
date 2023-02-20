@@ -64,6 +64,7 @@ export class Candidate implements GetAnswer {
    */
   public projX: number;
   public projY: number;
+  public score: number;
   public x: number;
   public y: number;
 

@@ -1,43 +1,56 @@
-<cdk-virtual-scroll-viewport [itemSize]="165 + 16"
-                             minBufferPx="1200" 
-                             maxBufferPx="1800">
+<cdk-virtual-scroll-viewport [itemSize]="itemHeight + itemMargin"
+                            minBufferPx="1200" 
+                            maxBufferPx="1800">
 
     <ng-container *cdkVirtualFor="let candidate of visibleCandidates; let index = index">
 
       <!-- We might have up to two placeholder divs up front -->
       
-      <div *ngIf="candidate.isPlaceholder && !candidate.isFilterWarning"
-           class="candidateEmpty"></div>
+      <ng-container *ngIf="candidate.placeholderType">
 
-      <div *ngIf="candidate.isPlaceholder && candidate.isFilterWarning"
-           class="filterWarning"
-           [style.maxWidth]="cardWidth"
-           [style.marginLeft]="marginLeft">
-        <mat-icon>filter_list</mat-icon>
-        Listalta on suodatettu joitakin ehdokkaita.
-        <button type="button"
-                (click)="openFilters($event)">Avaa suodatinvalikko</button>
-      </div>
+        <div *ngIf="candidate.placeholderType == 'empty'"
+            class="candidateEmpty"></div>
+
+        <div *ngIf="candidate.placeholderType == 'warning'"
+            class="filterWarning"
+            [style.maxWidth]="cardWidth"
+            [style.marginLeft]="marginLeft">
+          <mat-icon>filter_list</mat-icon>
+          Listalta on suodatettu joitakin ehdokkaita.
+          <button type="button"
+                  (click)="openFilters($event)">Avaa suodatinvalikko</button>
+        </div>
+
+        <div *ngIf="candidate.placeholderType == 'intro'"
+            class="introMessage"
+            [style.maxWidth]="cardWidth"
+            [style.marginLeft]="marginLeft">
+          Tässä ovat vaalipiirisi ehdokkaat, jotka ovat vastanneet Kielivaalikoneen kysymyksiin.
+          Voit halutessasi suodattaa ehdokkaita.
+          <button type="button"
+                  (click)="openFilters($event)">Avaa suodatinvalikko</button>
+        </div>
+
+      </ng-container>
 
       <!-- Candidate -->
 
-      <div *ngIf="!candidate.isPlaceholder"
-           (click)="toggleCandidate(candidate, $event)"
-           class="candidate"
-           [class.active]="candidate.id == activeCandidateId"
-           [class.filteredOut]="candidate.filteredOut"
-           [style.maxWidth]="cardWidth"
-           [style.marginLeft]="marginLeft">
+      <div *ngIf="!candidate.placeholderType"
+          (click)="toggleCandidate(candidate, $event)"
+          class="candidate"
+          [class.active]="candidate.id == activeCandidateId"
+          [class.filteredOut]="candidate.filteredOut"
+          [style.maxWidth]="cardWidth"
+          [style.marginLeft]="marginLeft">
 
         <div class="topRow">
 
           <!-- Top left column -->
 
           <img *ngIf="!candidate.filteredOut"
-               [src]="getPortraitUrl(candidate)"
-               appFallbackImage
-               class="portrait leftColumn">
-
+              class="portrait leftColumn"
+              [src]="getPortraitUrl(candidate)"
+              appFallbackImage />
 
           <!-- Top centre column -->
 
@@ -45,9 +58,17 @@
 
             <h2 class="name">{{ candidate.givenName }} {{ candidate.surname }}</h2>
 
-            <div class="party">
-              <mat-icon class="party-{{ candidate.partyName | toClassName }}">flag</mat-icon>
-              {{ candidate.partyName }}
+            <div class="numberAndParty">
+
+              <span class="party">
+                <mat-icon class="party-{{ candidate.partyName | toClassName }}">flag</mat-icon>
+                {{ candidate.partyName }}
+              </span>
+
+              <span class="number">
+                {{ candidate.number }}
+              </span>
+
             </div>
 
           </div>
@@ -55,8 +76,9 @@
           <!-- Top right column -->
 
           <div class="rightColumn">
-            <div class="number party-{{ candidate.partyName | toClassName }}">
-              {{ candidate.number }}
+            <div *ngIf="!voterDisabled"
+                class="score">
+              {{ candidate.score | percent }}
             </div>
             <mat-icon *ngIf="isFavourite(candidate) == false"
                       (click)="setFavourite(candidate, true, $event)"
@@ -98,7 +120,7 @@
         
             <ng-container *ngIf="!candidate.missing">
 
-              <ng-container *ngIf="voterDisabled">
+              <!-- <ng-container *ngIf="voterDisabled">
 
                 <div *ngIf="themes[candidate.id]?.length > 0; else noThemes"
                       class="topicChipList">
@@ -112,7 +134,7 @@
                 </ng-template>
                 <label>Aion puolustaa näitä asioita valtuutettuna</label>
         
-              </ng-container>
+              </ng-container> -->
         
               <ng-container *ngIf="!voterDisabled">
         
@@ -150,10 +172,9 @@
 
 </cdk-virtual-scroll-viewport>
 
-
 <!-- Onboarding -->
 
-<app-onboarding-tour tourId="ListIntro1"
+<!-- <app-onboarding-tour tourId="ListIntro1"
                      [modal]="true">
 
   <app-onboarding-step attachTo="#topTools"
@@ -170,4 +191,4 @@
     </app-onboarding-hint>
   </app-onboarding-step>
 
-</app-onboarding-tour>
+</app-onboarding-tour> -->

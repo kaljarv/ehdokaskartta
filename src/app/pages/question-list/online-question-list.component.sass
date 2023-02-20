@@ -1,0 +1,59 @@
+@import 'variables.scss'
+
+:host
+  scroll-behavior: smooth
+
+.participationInfo
+  text-align: center
+
+  mat-icon
+    vertical-align: -0.4rem
+
+.participationInfo-warning
+  font-weight: bold
+  color: $color-warn
+
+.questionListContainer
+  display: block
+  margin-bottom: 6 * $margin-M // To make way for the next button div
+
+  .mat-chip-list-wrapper
+    display: flex
+    align-items: center
+    justify-content: center
+    padding: $margin-M
+
+  mat-chip
+    background-color: $color-secondaryBg
+    cursor: pointer
+
+.recommendationIcon,
+.skippedIcon
+  position: absolute
+  top: -11px
+  right: -9px
+  color: $color-primary
+
+.skippedIcon
+  color: $color-text
+
+#goToResults
+  background: $color-secondaryBg
+  position: relative
+  display: flex
+  flex-direction: column
+  flex-wrap: nowrap
+  justify-content: center
+  align-items: center
+  margin: 0 auto
+  min-width: min(#{$maxWidth-L}, 90vw)
+  height: 50vh
+  padding: $margin-M
+
+#resultsButton
+  font-size: $fontSize-L
+  padding: $margin-S $margin-L
+
+h2
+  margin: $margin-M 0 $margin-M 0
+  text-align: center

@@ -63,7 +63,8 @@ export class FavouritesListComponent
 
   public showCandidate(candidate: Candidate): void {
     this.shared.showCandidate.emit({
-      id: candidate.id
+      id: candidate.id,
+      maximise: true
     });
     this.shared.logEvent('favourites_show_candidate');
     this.dismiss();

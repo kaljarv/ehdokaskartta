@@ -1,0 +1,222 @@
+@import 'variables.scss'
+
+
+:host
+  position: relative
+  display: flex
+  flex-direction: column
+  flex-wrap: nowrap
+  justify-content: center
+  align-items: center
+  margin: 0 auto
+  min-width: min(#{$maxWidth-L}, 90vw)
+  height: 100vh
+  padding: $margin-M
+
+app-details-question-global-styles
+  display: none
+
+@mixin restrictedWidth
+  width: $maxWidth-S
+  max-width: 100%
+
+#closeIcon
+  position: absolute
+  right: $margin-S
+  top: $margin-S
+  cursor: pointer
+
+.topicChip
+  margin: $margin-S 0 0 0
+
+.number
+  color: $color-secondary
+  font-size: $fontSize-S
+
+h2
+  margin: $margin-M 0 $margin-M 0
+  text-align: center
+
+label
+  @include allCaps
+  display: block
+  text-align: center
+  font-size: $fontSize-XS
+  line-height: $lineHeight-S
+  margin-top: $margin-S
+
+.question
+  display: flex
+  flex-direction: column
+  flex-wrap: nowrap
+  align-items: center
+  justify-content: center
+  max-width: $maxWidth-M
+
+.additionalInfo
+  overflow: hidden
+  text-align: center
+  cursor: pointer
+  margin-bottom: $margin-M
+
+  .title
+    color: $color-secondary
+    font-weight: bold
+
+    mat-icon
+      vertical-align: -0.4rem
+
+  .content
+    margin-top: $margin-S
+
+
+.answerSelector
+  @include restrictedWidth
+
+.likert
+  text-align: center
+
+.labels
+  display: flex
+  flex-flow: row nowrap
+  align-items: flex-start
+  justify-content: space-between
+
+  label
+    flex-basis: 0
+    flex-grow: 1
+    hyphens: manual
+
+    &:first-child
+      text-align: left
+
+    &:last-child
+      text-align: right
+
+.likert-group
+  background-color: $color-secondaryBg
+  border-radius: 2rem
+  display: flex
+  flex-flow: row nowrap
+  align-items: flex-end
+  justify-content: space-around
+  margin: $margin-XS 0
+
+  mat-radio-button
+    flex-basis: 0
+    flex-direction: column
+    justify-items: center
+
+.delete,
+.skip
+  font-size: $fontSize-S
+  margin-top: $margin-S
+
+  // mat-icon
+
+// Preference order
+
+.preferenceOrder
+  label
+    margin-bottom: $margin-M
+
+.preferenceOrder--list
+  display: flex
+  flex-flow: column nowrap
+  align-items: center
+  
+.preferenceOrder--option,
+.preferenceOrder--placeholder
+  cursor: pointer
+  display: flex
+  flex-flow: column nowrap
+  justify-content: center
+  text-align: center
+  background: $color-secondaryBg
+  border-radius: 1.5rem
+  font-size: $fontSize-M
+  font-weight: 500
+  margin-bottom: $margin-S
+  min-height: 2.5rem
+  min-width: 20rem
+  padding: $margin-XS $margin-M
+
+.preferenceOrder--placeholder
+  background-color: $color-secondaryBg
+  border: dotted 2px $color-secondary
+  transition: transform $transition-M
+
+.cdk-drag-preview
+  box-sizing: border-box
+  box-shadow: $boxShadow-M
+
+.cdk-drag-animating
+  transition: transform $transition-M
+
+.actions
+  margin-top: $margin-M
+  text-align: center
+
+.distribution
+  @include restrictedWidth
+
+  label
+    color: $color-secondary
+    cursor: pointer
+
+    mat-icon
+      font-size: $fontSize-M !important
+      width: $fontSize-M !important
+      height: $fontSize-M !important
+      vertical-align: bottom
+
+  label.expanded
+    color: inherit
+
+
+.columns
+  overflow: hidden
+  border-bottom: $border-M
+  margin-bottom: $margin-XS
+  padding-bottom: $margin-XS
+  padding-top: $margin-S
+  display: flex
+  flex-flow: row nowrap
+  justify-content: space-around
+  align-items: flex-end
+
+.column
+  display: flex
+  flex-flow: row wrap-reverse
+  align-items: flex-end
+  justify-content: center
+
+.columns-5
+  .column
+    width: 15%
+    max-width: 5rem
+
+.columns-7
+  .column
+    width: 11%
+    max-width: 3.8rem
+
+.candidateSize-xSmall
+  font-size: 8px
+  line-height: 3.5px
+  letter-spacing: -0.35px
+
+.candidateSize-small
+  font-size: 13px
+  line-height: 4.8px
+  letter-spacing: -0.5px
+
+.candidateSize-medium
+  font-size: 18px
+  line-height: 6px
+  letter-spacing: 0px
+
+.candidateSize-large
+  font-size: 22px
+  line-height: 8px
+  letter-spacing: 0px

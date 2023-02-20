@@ -24,6 +24,7 @@ import { SharedService,
          ForwardOptions,
          LoadingState,
          MatcherService,
+         PageName,
          ResultViewType,
          ToggleSideNavOptions,
          ADMIN_EMAIL,
@@ -32,17 +33,17 @@ import { SharedService,
          LANDSCAPE_BREAKPOINT_PX,
          PATHS } from './core';
 
-import { DetailsQuestionComponent } from './pages/question-list';
+// import { DetailsQuestionComponent } from './pages/question-list';
 import { CandidateSearchComponent,
          DetailsCandidateComponent,
          FilterCandidatesComponent,
          FavouritesListComponent } from './pages/results';
-import { FeedbackFormComponent, 
+import { //FeedbackFormComponent, 
          FloatingCardService,
          FloatingCardRef,
          FloatingCardOptions,
-         OnboardingService,
-         SurveyDialogComponent,
+         //OnboardingService,
+         //SurveyDialogComponent,
          TopBarComponent } from './components';
 
 export const HIDE_TOOLTIPS_DELAY = ANIMATION_DURATION_MS;
@@ -179,7 +180,7 @@ export class AppComponent
     private dialog: MatDialog, 
     private fcService: FloatingCardService,
     private matcher: MatcherService,
-    private onboarding: OnboardingService,
+    // private onboarding: OnboardingService,
     private router: Router,
     private shared: SharedService,
     private snackBar: MatSnackBar
@@ -188,9 +189,9 @@ export class AppComponent
     this.shared.loadingState.subscribe( state => {
       this._doChanges.loadingState = state;
     });
-    this.shared.showQuestion.subscribe( id => 
-      this.openBottomSheet(DetailsQuestionComponent, {id: id})
-    );
+    // this.shared.showQuestion.subscribe( id => 
+    //   this.openBottomSheet(DetailsQuestionComponent, {id: id})
+    // );
     this.shared.showCandidate.subscribe( data => 
       this.createDetailsCard(DetailsCandidateComponent, data)
     );
@@ -212,12 +213,12 @@ export class AppComponent
     this.shared.showFavourites.subscribe( () => 
       this.openBottomSheet(FavouritesListComponent, {})
     );
-    this.shared.openFeedback.subscribe( () => 
-      this.openDialog(FeedbackFormComponent, {})
-    );
-    this.shared.openSurvey.subscribe( () => 
-      this.openDialog(SurveyDialogComponent, {})
-    );
+    // this.shared.openFeedback.subscribe( () => 
+    //   this.openDialog(FeedbackFormComponent, {})
+    // );
+    // this.shared.openSurvey.subscribe( () => 
+    //   this.openDialog(SurveyDialogComponent, {})
+    // );
     this.shared.enableForward.subscribe( options => {
       this.forwardOptions = {...options};
       if (options.showProgress)
@@ -257,21 +258,21 @@ export class AppComponent
     this.shared.topBarExpansionChanged.subscribe( () => 
       this.updateContentTopMargin()
     );
-    this.shared.showMapTooltips.subscribe( () =>
-      this.showHideMapTooltips(true)
-    );
-    this.shared.hideMapTooltips.subscribe( () =>
-      this.showHideMapTooltips(false)
-    );
+    // this.shared.showMapTooltips.subscribe( () =>
+    //   this.showHideMapTooltips(true)
+    // );
+    // this.shared.hideMapTooltips.subscribe( () =>
+    //   this.showHideMapTooltips(false)
+    // );
     this.shared.showSnackBar.subscribe( options => 
       this.showSnackBar(options)
     );
     this.router.events.pipe(
       filter(evt => evt instanceof NavigationStart)
       ).subscribe(() => this._resetState());
-    this.shared.restartOnboarding.subscribe( () =>
-      this.onboarding.restartOnboarding()
-    );
+    // this.shared.restartOnboarding.subscribe( () =>
+    //   this.onboarding.restartOnboarding()
+    // );
   }
 
   /*
@@ -293,7 +294,7 @@ export class AppComponent
   // or shared.reportOverlayOpen(), which handle resetting shared state
   private _resetState(): void {
     this.sideNav.close();
-    this.showHideMapTooltips(false);
+    // this.showHideMapTooltips(false);
     this.clearForward();
     this.clearBottomSheet();
     this.clearDetailsCard();
@@ -358,23 +359,23 @@ export class AppComponent
     this._floatingCardRef = this.fcService.create({type, data, options});
 
     // Try to show survey on close
-    if (type === DetailsCandidateComponent)
-      this.checkOpenSurvey();
+    // if (type === DetailsCandidateComponent)
+    //   this.checkOpenSurvey();
   }
 
   /*
    * Open survey if enough time has passed and enough candidates have been
    * viewed, and no candidate is currently open.
    */
-  public checkOpenSurvey(): void {
-    if (this.shared.shouldOpenSurvey)
-      this._floatingCardRef.dismissed.subscribe(() => 
-        setTimeout(() => {
-          if (this.shared.activeCandidateId == null)
-            this.shared.openSurvey.emit();
-        }, 500)
-      );
-  }
+//   public checkOpenSurvey(): void {
+//     if (this.shared.shouldOpenSurvey)
+//       this._floatingCardRef.dismissed.subscribe(() => 
+//         setTimeout(() => {
+//           if (this.shared.activeCandidateId == null)
+//             this.shared.openSurvey.emit();
+//         }, 500)
+//       );
+//   }
 
   public clearDetailsCard(): void {
 
@@ -430,36 +431,36 @@ export class AppComponent
     this.shared.showFavourites.emit();
   }
   
-  public toggleResultView(viewType: ResultViewType): void {
-    const path = viewType === 'list' ?
-                 (this.shared.currentPage === 'browse' ? 'browse-list' : 'list') :
-                 (this.shared.currentPage === 'browse-list' ? 'browse' : 'map');
-    this.followLink(path);
-  }
+//   public toggleResultView(viewType: ResultViewType): void {
+//     const path = viewType === 'list' ?
+//                  (this.shared.currentPage === 'browse' ? 'browse-list' : 'list') :
+//                  (this.shared.currentPage === 'browse-list' ? 'browse' : 'map');
+//     this.followLink(path);
+//   }
 
-  public toggleShowAllParties(): void {
-    this.shared.toggleAllParties.emit();
-  }
+//   public toggleShowAllParties(): void {
+//     this.shared.toggleAllParties.emit();
+//   }
 
-  public locateSelf(): void {
-    this.shared.locateSelf.emit();
-  }
+//   public locateSelf(): void {
+//     this.shared.locateSelf.emit();
+//   }
 
-  public openFeedback(): void {
-    this.shared.openFeedback.emit();
-  }
+//   public openFeedback(): void {
+//     this.shared.openFeedback.emit();
+//   }
 
-  public showHideMapTooltips(show: boolean = true): void {
-    [
-      this.filterButtonTooltip,
-      this.partyButtonTooltip,
-      this.favouritesButtonTooltip,
-      this.locateButtonTooltip,
-    ].forEach( t => {
-      if (t != null)
-        show ? t.show() : t.hide(HIDE_TOOLTIPS_DELAY);
-    });
-  }
+//   public showHideMapTooltips(show: boolean = true): void {
+//     [
+//       this.filterButtonTooltip,
+//       this.partyButtonTooltip,
+//       this.favouritesButtonTooltip,
+//       this.locateButtonTooltip,
+//     ].forEach( t => {
+//       if (t != null)
+//         show ? t.show() : t.hide(HIDE_TOOLTIPS_DELAY);
+//     });
+//   }
 
   /*
    * Open snack bar with a possible email link or custom action
@@ -508,13 +509,13 @@ export class AppComponent
 
   }
 
-  public restartOnboarding(): void {
-    this.shared.toggleSideNav.emit({
-      action: 'close',
-      onComplete: () => this.shared.onboarding.restart()
-    });
-    this.shared.logEvent('onboarding_restart');
-  }
+//   public restartOnboarding(): void {
+//     this.shared.toggleSideNav.emit({
+//       action: 'close',
+//       onComplete: () => this.shared.onboarding.restart()
+//     });
+//     this.shared.logEvent('onboarding_restart');
+//   }
 
   public updateContentTopMargin(): void {
     this.contentTopMargin = `${this.shared.topBarOffset.withExpansion.top}px`;
@@ -528,21 +529,21 @@ export class AppComponent
     return this.shared.hideTopBar;
   }
 
-  get onboardingAvailable(): boolean {
-    return this.shared.onboarding != null;
-  }
+//   get onboardingAvailable(): boolean {
+//     return this.shared.onboarding != null;
+//   }
 
-  get showMapTools(): boolean {
-    return this.shared.showMapTools;
-  }
+//   get showMapTools(): boolean {
+//     return this.shared.showMapTools;
+//   }
 
   get showListTools(): boolean {
     return this.shared.showListTools;
   }
 
-  get showFeedbackButton(): boolean {
-    return this.shared.showFeedbackButton;
-  }
+//   get showFeedbackButton(): boolean {
+//     return this.shared.showFeedbackButton;
+//   }
 
   get loadingState(): BehaviorSubject<LoadingState> {
     return this.shared.loadingState;
@@ -558,6 +559,10 @@ export class AppComponent
 
   get hasActiveFilters(): boolean {
     return this.matcher.hasActiveFilters;
+  }
+
+  get currentPage(): PageName {
+    return this.shared.currentPage;
   }
 
   get enableQuestions(): boolean {

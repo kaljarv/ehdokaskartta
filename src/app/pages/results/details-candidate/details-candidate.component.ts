@@ -222,8 +222,8 @@ export class DetailsCandidateComponent
   }
 
   ngAfterViewChecked() {
-    if (this.detailsLoaded)
-      this._updateBodyHeight();
+    // if (this.detailsLoaded)
+    //   this._updateBodyHeight();
   }
 
   ngOnDestroy() {
@@ -252,18 +252,18 @@ export class DetailsCandidateComponent
     const fc = this.floatingCardRef;
     const offset = fc.getBoundingClientRect();
 
-    this.shared.ensureVisibleOnMap.emit({
-      x: this.candidate.projX,
-      y: this.candidate.projY,
-      margin: 40,
-      occluded: {
-        // This is the top bar height with margins
-        top: fc.options.landscapeMarginTop,
-        left: fc.usePortrait ? 0 : offset.width + fc.options.landscapeMarginLeft,
-        bottom: fc.usePortrait ? fc.peekHeight : 0,
-        right: 0
-      }
-    });
+    // this.shared.ensureVisibleOnMap.emit({
+    //   x: this.candidate.projX,
+    //   y: this.candidate.projY,
+    //   margin: 40,
+    //   occluded: {
+    //     // This is the top bar height with margins
+    //     top: fc.options.landscapeMarginTop,
+    //     left: fc.usePortrait ? 0 : offset.width + fc.options.landscapeMarginLeft,
+    //     bottom: fc.usePortrait ? fc.peekHeight : 0,
+    //     right: 0
+    //   }
+    // });
   }
 
   private _initQuestions(): void {
@@ -545,6 +545,9 @@ export class DetailsCandidateComponent
   // }
   get portraitUrl(): string {
     return this.matcher.getCandidatePortraitUrl(this.candidate);
+  }
+  get electionPromise(): string {
+    return this.getAnswer("electionPromise");
   }
   // get whyMe(): string {
   //   return this.getOrMissing("Q74");

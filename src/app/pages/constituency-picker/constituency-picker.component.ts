@@ -14,7 +14,7 @@ import { SharedService,
          PATHS, 
          ForwardOptions,
          MatcherService } from '../../core';
-import { OnboardingTourComponent } from '../../components';
+// import { OnboardingTourComponent } from '../../components';
 
 @Component({
   selector: 'app-constituency-picker',
@@ -24,8 +24,8 @@ import { OnboardingTourComponent } from '../../components';
 export class ConstituencyPickerComponent 
   implements AfterViewInit, OnInit, OnDestroy {
 
-  @ViewChild(OnboardingTourComponent)
-  onboardingTour: OnboardingTourComponent;
+  // @ViewChild(OnboardingTourComponent)
+  // onboardingTour: OnboardingTourComponent;
   @ViewChild('voterMunicipalityInput') 
   voterMunicipalityInput: MatInput;
 
@@ -48,7 +48,7 @@ export class ConstituencyPickerComponent
     this.shared.reportPageOpen({
       currentPage: 'constituencyPicker',
       subtitle: null, // ConstituencyPickerTopBarContentComponent
-      onboarding: {restart: () => this.onboardingTour?.restart()},
+      // onboarding: {restart: () => this.onboardingTour?.restart()},
     });
 
     this._forwardOptions = {
@@ -64,8 +64,11 @@ export class ConstituencyPickerComponent
 
   ngAfterViewInit() {
     // Onboarding
-    this.onboardingTour?.start();
+    // this.onboardingTour?.start();
     setTimeout(() => this.voterMunicipalityInput.focus(), 25);
+    console.log(this.municipalities);
+    console.log(this.useMunicipalityAsConstituency);
+    console.log(this.matcher.getConstituencyNameByMunicipalityId('005'));
   }
 
   ngOnDestroy() {
@@ -73,7 +76,7 @@ export class ConstituencyPickerComponent
     this._subscriptions.forEach(s => s.unsubscribe());
     this._subscriptions = null;
 
-    this.onboardingTour = null;
+    // this.onboardingTour = null;
     this.municipalities = null;
     this.municipalityForm = null;
     this.filteredMunicipalities = null;

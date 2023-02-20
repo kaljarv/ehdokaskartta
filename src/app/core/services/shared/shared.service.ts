@@ -7,7 +7,7 @@ import { BehaviorSubject } from 'rxjs';
 import { CookieService } from '../cookie';
 import { DatabaseService } from '../database';
 import { MatcherService } from '../matcher';
-import { MapEnsureVisibleOptions } from '../../../components';
+// import { MapEnsureVisibleOptions } from '../../../components';
 import { DetailsCandidateOptions } from '../../../pages';
 
 
@@ -21,11 +21,11 @@ export interface AppStateOptionsOverlay {
 export interface AppStateOptionsPage extends AppStateOptionsOverlay {
   currentPage: PageName;
   subtitle?: string | Type<any>;
-  onboarding?: Onboarding;
+//   onboarding?: Onboarding;
   hideTopBar?: boolean;
   showListTools?: boolean;
-  showMapTools?: boolean;
-  showFeedbackButton?: boolean;
+//   showMapTools?: boolean;
+//   showFeedbackButton?: boolean;
 }
 
 export interface ForwardOptions {
@@ -37,16 +37,18 @@ export interface ForwardOptions {
 }
 
 export type LoadingState = {
-  type: 'loading' | 'loaded' | 'default',
+  type: 'loading' | 'loaded' | 'default',
   message?: string,
   value?: number
 }
 
-export type Onboarding = {
-  restart?: () => void
-} | null;
+// TODO CLEANUP
+// export type Onboarding = {
+//   restart?: () => void
+// } | null;
 
-export type ResultViewType = 'map' | 'list' | null;
+// TODO CLEANUP
+export type ResultViewType = 'map' | 'list' | null;
 
 export type ToggleSideNavOptions = {
   action: 'open' | 'close' | 'toggle',
@@ -55,10 +57,8 @@ export type ToggleSideNavOptions = {
 
 export type TopBarExpansionState = 'open' | 'closed' | 'destroyed';
 
-export type PageName = 'about'| 'browse' | 'browse-list' | 'constituencyPicker' | 'error' |
-                       'list' | 'map'  | 'questions' | 'titleScreen';
-
-
+export type PageName = 'about'| 'browse-list' | 'constituencyPicker' | 'error' | 'list' | 'questions' | 'titleScreen';
+                       // | 'browse' | 'map';
 
 export const ADMIN_EMAIL = 'info@kaljarv.com';
 
@@ -80,10 +80,11 @@ export const DEFAULT_APP_STATE_OPTIONS_PAGE: AppStateOptionsPage = {
   subtitle: null,
   hideTopBar: false,
   showListTools: false,
-  showMapTools: false,
-  showFeedbackButton: true
+//   showMapTools: false,
+//   showFeedbackButton: true
 }
 
+// TODO DATA
 export const INDEPENDENT_PARTY_ID: string = '19';
 
 export const LANDSCAPE_BREAKPOINT_PX: number = 900;
@@ -95,7 +96,7 @@ export const PATHS = {
   constituencyPicker: 'constituency-picker',
   error: 'error',
   list: 'list',
-  map: 'map',
+//   map: 'map',
   questions: 'questions'
 }
 
@@ -110,14 +111,14 @@ export const SURVEY_URL: string = 'https://forms.gle/ozt212az3nAB2pYVA';
 export class SharedService {
 
   public candidatesShownCount: number = 0;
-  public hideDistribution: boolean = false;
+//   public hideDistribution: boolean = false;
   public hideTopBar: boolean = false;
   public lastOpenCandidateDetailsTab: number = 0; // For details-candidate tabs
   public lastOpenCandidateFilter: number = null; // For filter-candidates expansion panels
-  public onboarding: Onboarding;
-  public showMapTools: boolean = false;
+//   public onboarding: Onboarding;
+//   public showMapTools: boolean = false;
   public showListTools: boolean = false;
-  public showFeedbackButton: boolean = false;
+//   public showFeedbackButton: boolean = false;
   public showAllParties: boolean = false; // This will be set by MapComponent based on a subscription to toggleAllParties
   public surveyAnswered: boolean = false;
   public surveyShown: boolean = false;
@@ -141,20 +142,20 @@ export class SharedService {
   readonly showCandidateFilters = new EventEmitter<void>();
   readonly showCandidateSearch = new EventEmitter<void>();
   readonly showFavourites = new EventEmitter<void>();
-  readonly toggleAllParties = new EventEmitter<string>();
+//   readonly toggleAllParties = new EventEmitter<string>();
   readonly enableForward = new EventEmitter<ForwardOptions>(true);
   readonly disableForward = new EventEmitter<void>();
   readonly forwardProgress = new EventEmitter<number>();
   readonly navigateForward = new EventEmitter<ForwardOptions>();
   readonly toggleSideNav = new EventEmitter<ToggleSideNavOptions | void>();
-  readonly locateSelf = new EventEmitter<void>();
-  readonly ensureVisibleOnMap = new EventEmitter<MapEnsureVisibleOptions>();
-  readonly openFeedback = new EventEmitter<void>();
+//   readonly locateSelf = new EventEmitter<void>();
+//   readonly ensureVisibleOnMap = new EventEmitter<MapEnsureVisibleOptions>();
+//   readonly openFeedback = new EventEmitter<void>();
   readonly openSurvey = new EventEmitter<void>();
   readonly minimiseTopBar = new EventEmitter<void>();
   readonly topBarExpansionChanged = new EventEmitter<TopBarExpansionState>();
-  readonly showMapTooltips = new EventEmitter<void>();
-  readonly hideMapTooltips = new EventEmitter<void>();
+//   readonly showMapTooltips = new EventEmitter<void>();
+//   readonly hideMapTooltips = new EventEmitter<void>();
   readonly showSnackBar = new EventEmitter<{
     message: string, 
     emailTitle?: string, 
@@ -165,7 +166,7 @@ export class SharedService {
   }>();
   // A catch-all for all map interactions
   readonly mapInteraction = new EventEmitter<void>();
-  readonly restartOnboarding = new EventEmitter<void>();
+//   readonly restartOnboarding = new EventEmitter<void>();
 
   private _activeCandidateId: string = null;
   private _currentPage: PageName;
@@ -198,22 +199,22 @@ export class SharedService {
       this.mapInteraction.emit();
       this.logEvent('favourites_show');
     });
-    this.toggleAllParties.subscribe( () => {
-      this.mapInteraction.emit();
-      this.logEvent('parties_show');
-    });
-    this.locateSelf.subscribe( () => {
-      this.mapInteraction.emit();
-      this.logEvent('locate_self');
-    });
+    // this.toggleAllParties.subscribe( () => {
+    //   this.mapInteraction.emit();
+    //   this.logEvent('parties_show');
+    // });
+    // this.locateSelf.subscribe( () => {
+    //   this.mapInteraction.emit();
+    //   this.logEvent('locate_self');
+    // });
     this.toggleSideNav.subscribe( () => {
       this.logEvent('side_nav_toggle');
     });
-    this.openSurvey.subscribe( () => {
-      this.surveyShown = true;
-    });
+    // this.openSurvey.subscribe( () => {
+    //   this.surveyShown = true;
+    // });
 
-    this._checkSurveyCookie();
+    // this._checkSurveyCookie();
   }
 
   /*
@@ -258,9 +259,9 @@ export class SharedService {
 
   get resultViewType(): ResultViewType {
     switch (this.currentPage) {
-      case 'map':
-      case 'browse':
-        return 'map';
+    //   case 'map':
+    //   case 'browse':
+    //     return 'map';
       case 'list':
       case 'browse-list':
         return 'list';
@@ -269,11 +270,11 @@ export class SharedService {
     }
   }
 
-  get shouldOpenSurvey(): boolean {
-    return !this.surveyShown && !this.surveyAnswered &&
-           this.candidatesShownCount >= SURVEY_MIN_CANDIDATES_VIEWED &&
-           performance.now() - this.startTime >= SURVEY_MIN_USE_TIME_MS;
-  }
+  // get shouldOpenSurvey(): boolean {
+  //   return !this.surveyShown && !this.surveyAnswered &&
+  //          this.candidatesShownCount >= SURVEY_MIN_CANDIDATES_VIEWED &&
+  //          performance.now() - this.startTime >= SURVEY_MIN_USE_TIME_MS;
+  // }
 
   /*
    * Return a dump of the shared state for feedback
@@ -285,10 +286,10 @@ export class SharedService {
       lastOpenCandidateDetailsTab: this.lastOpenCandidateDetailsTab,
       lastOpenCandidateFilter: this.lastOpenCandidateFilter,
       activeCandidateId: this.activeCandidateId,
-      showMapTools: this.showMapTools,
-      showFeedbackButton: this.showFeedbackButton,
+    //   showMapTools: this.showMapTools,
+    //   showFeedbackButton: this.showFeedbackButton,
       showAllParties: this.showAllParties,
-      // userEmail: this.userEmail,
+      userEmail: this.userEmail,
     }
   }
 

@@ -9,14 +9,14 @@
 
 <div class="answerBlock">
 
-  <app-likert-answer *ngIf="questionType == 'Likert' || questionType == 'Likert7'"
+  <app-likert-answer *ngIf="questionType == 'Likert' || questionType == 'Likert7'"
                      [question]="question"
                      [candidateAnswer]="candidateAnswer"
                      [candidateTitle]="candidateTitle"
                      [partyName]="partyName"
-                     [partyAnswer]="partyAnswer"
                      [partyTitle]="partyTitle"
                      [voterAnswer]="voterAnswer"></app-likert-answer>
+                <!-- [partyAnswer]="partyAnswer" -->
 
   <app-preference-order-answer *ngIf="questionType == 'PreferenceOrder'"
                                [question]="question"

@@ -10,8 +10,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { CorePipesModule } from '../../../core';
 // import { OnboardingModule } from '../../../components';
 
-import { DetailsQuestionComponent,
-         DetailsQuestionGlobalStylesComponent } from './details-question.component';
+import { OnlineQuestionComponent,
+         OnlineQuestionGlobalStylesComponent } from './online-question.component';
 
 @NgModule({
   imports: [
@@ -26,11 +26,11 @@ import { DetailsQuestionComponent,
     // OnboardingModule
   ],
   exports: [
-    DetailsQuestionComponent,
+    OnlineQuestionComponent,
   ],
   declarations: [
-    DetailsQuestionComponent,
-    DetailsQuestionGlobalStylesComponent,
+    OnlineQuestionComponent,
+    OnlineQuestionGlobalStylesComponent,
   ],
 })
-export class DetailsQuestionModule {}
+export class OnlineQuestionModule {}

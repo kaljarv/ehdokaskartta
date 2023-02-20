@@ -2,12 +2,10 @@ import {
   AfterViewInit,
   Component, 
   EventEmitter,
-  Inject,
+  Input,
   OnDestroy,
   OnInit,
-  ViewChild,
-  QueryList,
-  ElementRef,
+  Output,
   ViewEncapsulation
 } from '@angular/core';
 import { 
@@ -21,12 +19,6 @@ import {
   MatBottomSheetRef, 
   MAT_BOTTOM_SHEET_DATA 
 } from '@angular/material/bottom-sheet';
-// import {
-//   CdkDragDrop,
-//   moveItemInArray
-// } from '@angular/cdk/drag-drop';
-// import { combineLatest } from 'rxjs';
-// import { first } from 'rxjs/operators';
 
 import { 
   ANIMATION_TIMING,
@@ -51,20 +43,20 @@ export const CLOSE_DELAY: number = 2 * ANIMATION_DURATION_MS;
  * A utility class to publish styles to the global ns
  */
 @Component({
-  selector: 'app-details-question-global-styles',
+  selector: 'app-online-question-global-styles',
   template: '',
-  styleUrls: ['./details-question.global.sass'],
+  styleUrls: ['./online-question.global.sass'],
   encapsulation: ViewEncapsulation.None,
 })
-export class DetailsQuestionGlobalStylesComponent {
+export class OnlineQuestionGlobalStylesComponent {
   constructor() {}
 }
 
 
 @Component({
-  selector: 'app-details-question',
-  templateUrl: './details-question.component.html',
-  styleUrls: ['./details-question.component.sass'],
+  selector: 'app-online-question',
+  templateUrl: './online-question.component.html',
+  styleUrls: ['./online-question.component.sass'],
   animations: [
     trigger('toggleExpand', [
       state('open', 
@@ -100,12 +92,13 @@ export class DetailsQuestionGlobalStylesComponent {
     ]),
   ]
 })
-export class DetailsQuestionComponent 
+export class OnlineQuestionComponent 
   implements AfterViewInit, OnDestroy, OnInit {
 
-  // @ViewChild('columns') columns: QueryList<ElementRef>;
-  // @ViewChild(OnboardingTourComponent)
-  // onboardingTour: OnboardingTourComponent;
+  @Input()  number: number;
+  @Input()  totalNumber: number;
+  @Input()  question: QuestionNumeric;
+  @Output() onSkip = new EventEmitter<QuestionNumeric>();
 
   public additionalInfoExpanded: boolean = false;
   public candidates: {
@@ -114,27 +107,15 @@ export class DetailsQuestionComponent
   public candidateSizingClass: string = 'candidateSize-medium';
   // For preference order data
   public preferenceOrder: QuestionNumericValue[];
-  public question: QuestionNumeric;
   public showDeleteButton: boolean;
 
   // Fire on afterViewInit
   private _viewInitialized = new EventEmitter<boolean>();
 
   constructor(
-    private bottomSheetRef: MatBottomSheetRef,
-    @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     private matcher: MatcherService,
     private shared: SharedService,
   ) {
-
-    this.shared.reportOverlayOpen({});
-    // Get question object
-    this.question = this.matcher.questions[data.id] as QuestionNumeric;
-
-    // Init pref order
-    // if (this.questionType === 'PreferenceOrder')
-    //   this._initPreferenceOrder();
-      
     // Enable delete button if there's an answer
     // NB. We don't want to bind it dynamically, as then the button would be shown prematurely
     this.showDeleteButton = this.voterAnswer != null;
@@ -145,7 +126,6 @@ export class DetailsQuestionComponent
   // }
 
   ngOnInit(): void {
-
     // Onboarding
     // Show only after the bottom sheet is fully open and the view is initialized
     // First() will unsubscribe itself
@@ -176,47 +156,10 @@ export class DetailsQuestionComponent
     // this.preferenceOrder = null;
     this.question = null;
     this._viewInitialized = null;
-    this.bottomSheetRef = null;
-    this.data = null;
   }
 
-  /*
-   * Make specific initialisations for preference order questions
-   */
-  // private _initPreferenceOrder(): void {
-  //   const q = this.question as QuestionPreferenceOrder;
-  //   this.preferenceOrder = q.getVoterAnswerValues() || q.getShuffledValues();
-  // }
-
-  // private _initDistributionChart(): void {
-
-  //   // Get Candidates for the distribution chart, group by party
-  //   const candidates = this.matcher.getCandidatesAsList().sort(
-  //     (a: Candidate, b: Candidate) => a.partyName.localeCompare(b.partyName)
-  //   );
-
-  //   // Sort Candidates per answer
-  //   this.question.valueKeys.forEach(v => 
-  //     this.candidates[v] = candidates.filter(c => Number(c.getAnswer(this.question)) == v)
-  //   );
-
-  //   // Set a special candidateSize class for extreme cases
-  //   const factor = window.innerWidth / (candidates.length * this.question.values.length / 5);
-  //   // TODO: Enable on window resize
-  //   // console.log(factor);
-  //   if (factor < 0.5) {
-  //     this.candidateSizingClass = 'candidateSize-xSmall';
-  //   } else if (factor < 1.5) {
-  //     this.candidateSizingClass = 'candidateSize-small';
-  //   } else if (factor > 4.5) {
-  //     this.candidateSizingClass = 'candidateSize-large';
-  //   }
-    
-  // }
-
   dismiss(event?: Event) {
-    // this.onboardingTour?.complete();
-    this.bottomSheetRef.dismiss();
+    this.onSkip.emit(this.question);
     if (event != null)
       event.stopPropagation();
   }
@@ -246,7 +189,7 @@ export class DetailsQuestionComponent
   }
 
   get voterAnswer(): string | number[] {
-    let a = this.question.voterAnswer;
+    let a = this.question?.voterAnswer;
     // We have to convert the answer to string for ngModel to work
     return a ? 
            (Array.isArray(a) ? a : a.toString()) : 

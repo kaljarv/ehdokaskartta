@@ -31,6 +31,55 @@ app-top-bar
   right: 0
   z-index: $zIndex-7
 
+#topBar
+  top: 0
+  left: 0
+  right: 0
+  z-index: $zIndex-7
+  background-color: $color-primary
+  color: $color-nega
+  padding: 0
+  @include mat-elevation-transition
+  @include mat-elevation(3)
+  border-radius: inherit
+  padding: $margin-S
+  position: fixed
+  min-height: 1.5rem
+  display: flex
+  flex-direction: row
+  flex-wrap: nowrap
+  align-items: center
+
+  mat-icon
+    cursor: pointer
+
+  mat-icon.disabled
+    cursor: default
+    color: $color-negaSecondary
+
+#topBar-menuButton
+  flex-grow: 0
+  flex-basis: 2rem
+
+.expandIcon
+  flex-grow: 0
+  flex-basis: 2rem
+
+.title
+  flex-grow: 1
+  padding: 0 $margin-M
+  display: flex
+  align-content: center
+  flex-wrap: nowrap
+  flex-direction: row
+  justify-content: space-between
+  align-items: center
+  font-size: $fontSize-M
+  text-align: center
+  transition: font-size $transition-M
+  white-space: nowrap
+  overflow: hidden
+
 #topTools
   margin: 0 $margin-M $margin-M $margin-M
   position: fixed
@@ -74,8 +123,8 @@ app-top-bar
     transform: scaleX(-1)
 
 
-#filterButton
-  float: right
+// #filterButton
+//   float: right
   
 // This could well be made its own component...
 #nextButtonBar

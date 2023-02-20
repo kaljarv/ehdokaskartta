@@ -5,10 +5,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
-import { CorePipesModule } from '../../../core';
-import { OnboardingModule } from '../../../components';
+import { CoreDirectivesModule,
+         CorePipesModule } from '../../../core';
+// import { OnboardingModule } from '../../../components';
 
 import { DetailsCandidateModule } from '../details-candidate';
 import { FavouritesListModule } from '../favourites-list';
@@ -22,11 +24,13 @@ import { ListComponent } from './list.component';
     CommonModule,
     BrowserModule,
     BrowserAnimationsModule,
+    MatButtonModule,
     MatIconModule,
     RouterModule,
     ScrollingModule,
+    CoreDirectivesModule,
     CorePipesModule,
-    OnboardingModule,
+    // OnboardingModule,
     DetailsCandidateModule,
     FavouritesListModule,
     FilterCandidatesModule,

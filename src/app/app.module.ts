@@ -17,7 +17,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { AppComponent } from './app.component';
 import { 
   DatabaseModule,
-  D3Service,
+  // D3Service,
   MatcherModule,
   SharedModule,
   MATCHER_CONFIG,
@@ -28,23 +28,23 @@ import {
   ConstituencyPickerModule,
   ErrorScreenComponent,
   ErrorScreenModule,
-  QuestionListComponent,
+  OnlineQuestionListComponent,
   QuestionListModule,
   ListComponent,
   ListModule,
-  MapComponent,
-  MapModule, 
+  // MapComponent,
+  // MapModule, 
   AboutScreenComponent,
   AboutScreenModule,
   TitleScreenComponent,
   TitleScreenModule 
 } from './pages';
 import { 
-  FeedbackFormModule,
+  // FeedbackFormModule,
   FloatingCardModule,
-  OnboardingModule,
+  // OnboardingModule,
   ProgressSpinnerModule,
-  SurveyDialogModule,
+  // SurveyDialogModule,
   TopBarModule 
 } from './components'
 
@@ -57,6 +57,9 @@ import { registerLocaleData } from '@angular/common';
 import localeFi from '@angular/common/locales/fi';
 import localeFiExtra from '@angular/common/locales/extra/fi';
 registerLocaleData(localeFi, 'fi-FI', localeFiExtra);
+import localeSe from '@angular/common/locales/se';
+import localeSeExtra from '@angular/common/locales/extra/se';
+registerLocaleData(localeSe, 'se-SE', localeSeExtra);
 
 
 const paths = [
@@ -69,7 +72,7 @@ const paths = [
   { path: PATHS.error, 
     component: ErrorScreenComponent },
   { path: PATHS.questions, 
-    component: QuestionListComponent },
+    component: OnlineQuestionListComponent },
   { path: PATHS.list,
     component: ListComponent },
   { path: PATHS.browseList,
@@ -77,13 +80,13 @@ const paths = [
     data: {
       voterDisabled: true
     }},
-  { path: PATHS.map,
-    component: MapComponent },
-  { path: PATHS.browse,
-    component: MapComponent,
-    data: {
-      voterDisabled: true
-    }},
+//   { path: PATHS.map,
+//     component: MapComponent },
+//   { path: PATHS.browse,
+//     component: MapComponent,
+//     data: {
+//       voterDisabled: true
+//     }},
   { path: '**', 
     component: TitleScreenComponent },
 ];
@@ -102,18 +105,21 @@ const paths = [
     MatSidenavModule,
     MatSnackBarModule,
     MatTooltipModule,
-    RouterModule.forRoot(paths, { relativeLinkResolution: 'legacy' }),
+    RouterModule.forRoot(paths, {
+      anchorScrolling: 'enabled',
+      relativeLinkResolution: 'legacy'
+    }),
     DatabaseModule, 
-    FeedbackFormModule,
+    // FeedbackFormModule,
     FloatingCardModule,
-    OnboardingModule,
-    SurveyDialogModule,
+    // OnboardingModule,
+    // SurveyDialogModule,
     TopBarModule,
     AboutScreenModule,
     ConstituencyPickerModule,
     ErrorScreenModule,
     ListModule,
-    MapModule,
+    // MapModule,
     MatcherModule,
     ProgressSpinnerModule,
     SharedModule,
@@ -127,11 +133,11 @@ const paths = [
     AppComponent 
   ],
   providers: [
-    D3Service,
+    // D3Service,
     {
       provide: MATCHER_CONFIG,
       useValue: {
-        useMunicipalityAsConstituency: true
+        useMunicipalityAsConstituency: false
       }
     }
   ]

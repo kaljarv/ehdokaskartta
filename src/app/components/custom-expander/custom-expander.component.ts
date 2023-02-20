@@ -169,8 +169,9 @@ export class CustomExpanderComponent
 
         }
 
-        // Fire event
-        this.afterExpand.emit(this._scrollToId);
+        // Fire event (check for existence, bc it might be destroyed)
+        if (this.afterExpand)
+          this.afterExpand.emit(this._scrollToId);
 
         // Reset this
         this._scrollToId = null;
@@ -178,9 +179,13 @@ export class CustomExpanderComponent
       }, this.scrollDelay);
 
     } else if (event.toState == 'open') {
-      this.afterExpand.emit(null);
+      // Fire event (check for existence, bc it might be destroyed)
+      if (this.afterExpand)
+        this.afterExpand.emit(null);
     } else {
-      this.afterCollapse.emit();
+      // Fire event (check for existence, bc it might be destroyed)
+      if (this.afterCollapse)
+        this.afterCollapse.emit();
     }
   }
 

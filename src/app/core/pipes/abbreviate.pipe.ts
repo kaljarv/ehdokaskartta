@@ -2,6 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 export const DEFAULT_ABBREVIATION_LENGTH: number = 3;
 export const ABBREVIATION_MIN_LENGTH: number = 5;
+// TODO DATA
 export const ABBREVIATIONS: {[termInLowercase: string]: string} = {
   "eläinoikeuspuolue": "EOP",
   "feministinen puolue": "FP",

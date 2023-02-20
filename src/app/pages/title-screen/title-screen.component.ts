@@ -11,12 +11,12 @@ import {
   Subscription 
 } from 'rxjs';
 
-import { 
-  AnimationItem 
-} from 'lottie-web';
-import { 
-  AnimationOptions 
-} from 'ngx-lottie';
+// import { 
+//   AnimationItem 
+// } from 'lottie-web';
+// import { 
+//   AnimationOptions 
+// } from 'ngx-lottie';
 
 import { 
   MatcherService,
@@ -25,9 +25,9 @@ import {
 } from '../../core';
 
 // The delay in ms after animation has loaded to start playing it
-export const ANIMATION_DELAY: number = 250;
-export const ANIMATION_LOOP_START_FRAME: number = 160;
-export const ANIMATION_PATH: string = 'assets/animations/map-vignette-radar.json';
+// export const ANIMATION_DELAY: number = 250;
+// export const ANIMATION_LOOP_START_FRAME: number = 160;
+// export const ANIMATION_PATH: string = 'assets/animations/map-vignette-radar.json';
 
 @Component({
   selector: 'app-title-screen',
@@ -41,13 +41,13 @@ export class TitleScreenComponent
   implements OnInit, OnDestroy {
   
   public aboutPath: string = PATHS.about;
-  public animationOptions: AnimationOptions = {
-    path: ANIMATION_PATH ,
-    autoplay: false,
-    loop: true,
-  };
+//   public animationOptions: AnimationOptions = {
+//     path: ANIMATION_PATH ,
+//     autoplay: false,
+//     loop: true,
+//   };
 
-  private _animationItem: AnimationItem;
+//   private _animationItem: AnimationItem;
   private _subscriptions: Subscription[] = [];
 
   constructor(
@@ -59,8 +59,8 @@ export class TitleScreenComponent
     this.shared.reportPageOpen({
       currentPage: 'titleScreen',
       hideTopBar: true,
-      showMapTools: false,
-      showFeedbackButton: false
+      // showMapTools: false,
+      // showFeedbackButton: false
     });
   }
 
@@ -80,25 +80,24 @@ export class TitleScreenComponent
     // Cancel subscriptions
     this._subscriptions.forEach(s => s.unsubscribe());
     this._subscriptions = null;
-
-    this._animationItem = null;
+    // this._animationItem = null;
   }
 
-  animationCreated(animationItem: AnimationItem): void {
-    this._animationItem = animationItem;
-  }
+//   animationCreated(animationItem: AnimationItem): void {
+//     this._animationItem = animationItem;
+//   }
 
-  animationDomLoaded(): void {
-    setTimeout(() => this.ngZone.runOutsideAngular(() =>
-      this._animationItem.play()
-    ), ANIMATION_DELAY);
-  }
+//   animationDomLoaded(): void {
+//     setTimeout(() => this.ngZone.runOutsideAngular(() =>
+//       this._animationItem.play()
+//     ), ANIMATION_DELAY);
+//   }
 
-  animationLoopCompleted(): void {
-    this.ngZone.runOutsideAngular(() =>
-      this._animationItem.goToAndPlay(ANIMATION_LOOP_START_FRAME, true)
-    );
-  }
+//   animationLoopCompleted(): void {
+//     this.ngZone.runOutsideAngular(() =>
+//       this._animationItem.goToAndPlay(ANIMATION_LOOP_START_FRAME, true)
+//     );
+//   }
 
   public showCookieSnackbar(): void {
     if (this.matcher.constituencyId != null) {

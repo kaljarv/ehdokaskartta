@@ -1,5 +1,5 @@
 
-<ng-container *ngIf="questionsInitialized">
+<!-- <ng-container *ngIf="questionsInitialized">
   <div *ngIf="!showParticipationWarning"
       class="participationInfo">
     <mat-icon>info_outline</mat-icon>
@@ -11,7 +11,7 @@
     <mat-icon>warning</mat-icon>
     Vain {{ participatingCandidates }} ({{ participationPercentage }} %) kunnan {{ totalCandidates }} ehdokkaasta on vastannut kysymyksiin. 
   </div>
-</ng-container>
+</ng-container> -->
 
 <div id="questionList"
      class="questionListContainer">
@@ -19,13 +19,13 @@
     <mat-chip *ngFor="let question of questions"
               (click)="showQuestion(question)"
               class="category-{{ question.categoryName | toClassName }}"
-              [class.answered]="question.voterAnswer || question.skippedByVoter">
+              [class.answered]="question.voterAnswer || question.skippedByVoter">
       {{ question.topic }}
-      <mat-icon *ngIf="isRecommended(question)"
+      <!-- <mat-icon *ngIf="isRecommended(question)"
                 matTooltip="Suositeltu seuraava kysymys"
                 matTooltipPosition="above"
                 class="recommendationIcon"
-                @buttonAppear>star</mat-icon>
+                @buttonAppear>star</mat-icon> -->
       <mat-icon *ngIf="question.skippedByVoter"
                 matTooltip="Olet ohittanut tämän kysymyksen, mutta voit vastata siihen klikkaamalla"
                 matTooltipPosition="above"
@@ -35,7 +35,7 @@
   </mat-chip-list>
 </div>
 
-<app-onboarding-tour #defaultTour
+<!-- <app-onboarding-tour #defaultTour
                      tourId="QuestionList"
                      [modal]="true"
                      [subTourIds]="['DetailsQuestionLikert', 'DetailsQuestionPreferenceOrder']">
@@ -65,4 +65,4 @@
       Voit palata kysymyksiin myös tuloksia katsottuasi klikkaamalla yläpalkin kohtaa Kysymykset.
     </app-onboarding-hint>
   </app-onboarding-step>
-</app-onboarding-tour>
+</app-onboarding-tour> -->

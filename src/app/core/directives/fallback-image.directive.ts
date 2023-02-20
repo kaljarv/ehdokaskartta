@@ -15,7 +15,7 @@ export class FallbackImageDirective {
 
   @Input() appFallbackImage: string;
 
-  constructor(private elementRef: ElementRef) { }
+  constructor(private elementRef: ElementRef) {}
 
   @HostListener('error')
   loadFallbackOnError() {

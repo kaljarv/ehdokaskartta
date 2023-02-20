@@ -10,7 +10,7 @@ import {
   MatcherService,
   QuestionNumeric,
   QuestionNumericValue,
-  QuestionPreferenceOrder
+  QuestionPreferenceOrder,
 } from '../../../core';
 
 import {

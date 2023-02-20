@@ -6,7 +6,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
-import { OnboardingModule } from '../../components';
+// import { OnboardingModule } from '../../components';
 
 import { ConstituencyPickerComponent } from './constituency-picker.component';
 import { ConstituencyPickerTopBarContentComponent } from './constituency-picker-top-bar-content.component';
@@ -19,7 +19,7 @@ import { ConstituencyPickerTopBarContentComponent } from './constituency-picker-
     MatAutocompleteModule,
     MatFormFieldModule,
     MatInputModule,
-    OnboardingModule
+    // OnboardingModule
   ],
   exports: [
     ConstituencyPickerComponent,

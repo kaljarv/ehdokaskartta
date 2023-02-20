@@ -257,10 +257,10 @@ export class TopBarComponent
         if (this.enableQuestions)
           this.router.navigate([PATHS.questions]);
         break;
-      case 'map':
+      case 'list':
         // NB. We enable results even if no questions are answered
         if (this.enableQuestions)
-          this.router.navigate([PATHS.map]);
+          this.router.navigate([PATHS.list]);
         break;
     }
     if (event)

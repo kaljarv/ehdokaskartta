@@ -1,5 +1,7 @@
 import { 
-  Injectable
+  Inject,
+  Injectable,
+  LOCALE_ID
 } from '@angular/core';
 import { 
   take 
@@ -56,9 +58,12 @@ import {
   PartyOptions
 } from './party';
 
-export const ELECTION_ID = '2021-kuntavaalit'; // '2019-eduskuntavaalit';
+export const ELECTION_ID = '2023-eduskuntavaalit'; // '2021-kuntavaalit'; // '2019-eduskuntavaalit';
+export const BASE_LOCALE = 'fi';
+export const ALLOWED_LOCALES = ['fi', 'se'];
+export const I18N_SUFFIX_RE = /_i18n_se$/;
 
-export type QuestionType = 'Likert' | 'Likert7' | 'Open' | 'OpenMultiple' | 'PreferenceOrder';
+export type QuestionType = 'Likert' | 'Likert7' | 'Open' | 'OpenMultiple' | 'PreferenceOrder';
 
 @Injectable({
   providedIn: 'root'
@@ -70,11 +75,17 @@ export class DatabaseService {
     parties?: PartyDict,
     questions?: QuestionDict
   } = {};
+  public targetLocale: string;
 
   constructor(
     private firestore: AngularFirestore,
     private analytics: AngularFireAnalytics,
-  ) {}
+    @Inject(LOCALE_ID) private locale: string,
+  ) {
+    if (ALLOWED_LOCALES.includes(locale))
+        this.targetLocale = locale;
+    else throw new Error(`Locale ${locale} is not supported`);
+  }
 
   get dataRoot(): any {
     return this.firestore.collection('data').doc(ELECTION_ID);
@@ -82,6 +93,22 @@ export class DatabaseService {
 
   private _isEmpty(datum: any): boolean {
     return datum.EMPTY;
+  }
+
+  public convertI18n(data: object): object {
+    for (const key in data) {
+      const value = data[key];
+      const keyBase = key.replace(I18N_SUFFIX_RE, "");
+      // Handle recursive objects
+      if (typeof(value) === 'object') 
+        this.convertI18n(value);
+      if (key !== keyBase) {
+        if (this.targetLocale !== BASE_LOCALE)
+          data[keyBase] = value;
+        delete data[key];
+      }
+    }
+    return data;
   }
 
   /*
@@ -102,7 +129,7 @@ export class DatabaseService {
           reject(`Couldn't retrieve collection '${path}' (where ${where ? where.join(' ') : '<none>'}) from database!`);
         // Map output to an object (possibly converting ids to numbers)
         let output = {};
-        res.forEach(d => output[d.id] = d.data());
+        res.forEach(d => output[d.id] = this.convertI18n(d.data()));
         // Return ie. resolve with the object
         resolve(output);
       });
@@ -121,7 +148,7 @@ export class DatabaseService {
         // We expect a result
         if (!res.exists)
           reject(`Couldn't retrieve document '${collection}/${document}' from database!`);
-        resolve(res.data());
+        resolve(this.convertI18n(res.data()));
       });
     });
   }

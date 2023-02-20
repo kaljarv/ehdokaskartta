@@ -1,14 +1,17 @@
-<app-details-question-global-styles></app-details-question-global-styles>
+<app-online-question-global-styles></app-online-question-global-styles>
 
-<mat-icon (click)="dismiss($event)"
-          id="closeIcon">close</mat-icon>
+<!-- <mat-icon (click)="dismiss($event)"
+          id="closeIcon">close</mat-icon> -->
 
-<div *ngIf="question.topic"
+<!-- <div *ngIf="question.topic"
     class="topicChip category-{{ question.categoryName | toClassName }}">
   {{ question.topic }}
-</div>
+</div> -->
 
 <div class="question">
+
+  <div *ngIf="number != null"
+       class="number">{{ number }}<span *ngIf="totalNumber != null" class="totalNumber">/{{ totalNumber }}</span></div>
 
   <h2 id="questionDetails-title">{{ question.text }}</h2>
 

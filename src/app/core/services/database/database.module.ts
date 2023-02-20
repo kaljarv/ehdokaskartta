@@ -15,7 +15,7 @@ import { DatabaseService } from './database.service';
 @NgModule({
   imports: [
     CommonModule,
-    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAnalyticsModule,
     AngularFirestoreModule,
   ],

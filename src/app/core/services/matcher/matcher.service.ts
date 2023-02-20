@@ -27,11 +27,11 @@ import {
   Coordinates, 
   DataProjector, 
   ManhattanProjector, 
-  PcaProjector, 
+  // PcaProjector, 
   ProjectedMapping, 
   ProjectorDatum, 
-  RadarProjector, 
-  TsneProjector 
+  // RadarProjector, 
+  // TsneProjector 
 } from './data-projector/';
 // import { TsneProjector } from './data-projector/';
 import { 
@@ -62,7 +62,8 @@ export interface MatcherConfig {
 /*
  * See also the const below
  */
-export type ProjectionMethod = 'PCA' | 'RadarPCA' | 'RadarPCAFull' | 'TSNE' | 'Manhattan';
+export type ProjectionMethod = 'Manhattan';
+// export type ProjectionMethod = 'PCA' | 'RadarPCA' | 'RadarPCAFull' | 'TSNE' | 'Manhattan';
 
 export interface QuestionAverageDict {
   [questionId: string]: {
@@ -78,10 +79,10 @@ export const DEFAULT_MATCHER_CONFIG: MatcherConfig = {
   useMunicipalityAsConstituency: false,
   maxMissingVals: 10,
   nonmissingCandidateMaxMissingVals: 9,
-  minValsForMapping: 5,
+  minValsForMapping: 0,
   minParticipationFraction: 0.3,
   minParticipationNumber: 6,
-  projectionMethod: 'RadarPCAFull'
+  projectionMethod: 'Manhattan',
 }
 
 export const MATCHER_CONFIG = new InjectionToken<MatcherConfig>('MATCHER_CONFIG');
@@ -93,10 +94,10 @@ export const MATCHER_CONFIG = new InjectionToken<MatcherConfig>('MATCHER_CONFIG'
 export const PROJECTION_METHOD_PROPERTIES: {
   [key: string]: {useAll: boolean}
 } = {
-  PCA: {useAll: false},
-  RadarPCA: {useAll: false},
-  RadarPCAFull: {useAll: true},
-  TSNE: {useAll: false},
+  // PCA: {useAll: false},
+  // RadarPCA: {useAll: false},
+  // RadarPCAFull: {useAll: true},
+  // TSNE: {useAll: false},
   Manhattan: {useAll: false}
 }
 
@@ -124,6 +125,7 @@ export class MatcherService {
   public municipalities: MunicipalityDict = {};
   public constituencies: ConstituencyDict = {};
   public favourites: string[] = new Array<string>();
+  // TODO DATA
   public filterOpts: {
     [name: string]: { 
       type: any, 
@@ -213,7 +215,7 @@ export class MatcherService {
   };
   // Shorthands for the dataStatuses
   public constituencyDataReady =   this.dataStatus.constituencies.pipe(filter(     t => t !== DataStatus.NotReady ));
-  public questionDataReady =       this.dataStatus.questions.pipe(filter(          t => t !== DataStatus.NotReady ));
+  public questionDataReady =       this.dataStatus.questions.pipe(filter(          t => t === DataStatus.Ready ));
   public questionDataUpdated =     this.dataStatus.questions.pipe(filter(          t => t === DataStatus.Updated ));
   public candidateDataReady =      this.dataStatus.candidates.pipe(filter(         t => t !== DataStatus.NotReady ));
   public favouritesDataUpdated =   this.dataStatus.favourites.pipe(filter(         t => t !== DataStatus.NotReady ));
@@ -324,7 +326,7 @@ export class MatcherService {
   }
 
   get voterDisabled(): boolean {
-    return this._voterDisabled;
+    return this._voterDisabled || this.countVoterAnswers() === 0;
   }
 
   set voterDisabled(value: boolean) {
@@ -522,19 +524,6 @@ export class MatcherService {
     this.dataStatus.candidates.next(DataStatus.Ready);
   }
 
-  // REM
-  // For convenience
-  // // NB. We need a different heuristic for checking Likert values
-  // public isMissing(value: any, likert: boolean = false): boolean {
-  //   return (likert ? Likert : MissingValue).isMissing(value);
-  // }
-
-  // // We already filter these when fetching from Firebase
-  // public isRelevantQuestion(q: Question): boolean {
-  //   return !q.dropped;
-  //          && (!q.constituencyId || q.constituencyId === this.constituencyId);
-  // }
-
   public getQuestionsByIds(ids: string[]): QuestionDict {
     if (! this.questions) {
       throw Error("Constituency must be defined before getting Questions");
@@ -606,7 +595,7 @@ export class MatcherService {
       return null;
   }
   
-  public setVoterAnswer(question: Question, value: number | number[], dontWriteCookie: boolean = false): void {
+  public setVoterAnswer(question: Question, value: number | number[], dontWriteCookie = false, emitUpdate = true): void {
 
     if (!(question instanceof QuestionNumeric))
       throw new Error(`Question not a subclass of QuestionNumeric: ${question.id}!`);
@@ -617,7 +606,8 @@ export class MatcherService {
       this.cookie.write(question.id, question.convertAnswerToString());
 
     // Emit event
-    this.dataStatus.questions.next(DataStatus.Updated);
+    if (emitUpdate)
+      this.dataStatus.questions.next(DataStatus.Updated);
   }
 
   /*
@@ -629,10 +619,14 @@ export class MatcherService {
     if (!(question instanceof QuestionNumeric))
       throw new Error(`Question not a subclass of QuestionNumeric: ${question.id}!`);
 
-    question.skippedByVoter = skipped;
-
-    // Emit event
-    this.dataStatus.questions.next(DataStatus.Updated);
+    // Treat this as deletion
+    if (skipped) {
+      this.deleteVoterAnswer(question.id);
+    } else {
+      question.skippedByVoter = undefined;
+      // Emit event
+      this.dataStatus.questions.next(DataStatus.Updated);
+    }
   }
 
   public deleteVoterAnswer(id: string): void {
@@ -692,74 +686,74 @@ export class MatcherService {
    * correlation downwards. We can supply the answered questions as list so as to avoid making
    * consecutive calls to the getter.
    */
-  public getResidualEntropy(questionId: string, answeredQuestions: string[]): number {
+  // public getResidualEntropy(questionId: string, answeredQuestions: string[]): number {
 
-    // Completely correlated questions are not in the correlationMatrix, so we return 0 for them
-    if (!(questionId in this.correlationMatrix))
-      return 0;
+  //   // Completely correlated questions are not in the correlationMatrix, so we return 0 for them
+  //   if (!(questionId in this.correlationMatrix))
+  //     return 0;
 
-    const answered: string[] = answeredQuestions || this.getVoterAnsweredQuestionIds();
-    let residue: number = 1;
-    const correlations: number[] = answeredQuestions.filter(q => q in this.correlationMatrix).map(q => this.correlationMatrix[q][questionId]).sort().reverse();
-    correlations.forEach(c => residue = residue * (1 - Math.abs(c) * residue));
-    return residue;
-  }
+  //   const answered: string[] = answeredQuestions || this.getVoterAnsweredQuestionIds();
+  //   let residue: number = 1;
+  //   const correlations: number[] = answeredQuestions.filter(q => q in this.correlationMatrix).map(q => this.correlationMatrix[q][questionId]).sort().reverse();
+  //   correlations.forEach(c => residue = residue * (1 - Math.abs(c) * residue));
+  //   return residue;
+  // }
 
   /*
    * Calculate the effective total information [0-1] gained for getting an answer given question (row)
    */
-  public getInformationValue(questionId: string): number {
+  // public getInformationValue(questionId: string): number {
 
-    // Completely correlated questions are not in the correlationMatrix, so we return 0 for them
-    if (!(questionId in this.correlationMatrix))
-      return 0;
+  //   // Completely correlated questions are not in the correlationMatrix, so we return 0 for them
+  //   if (!(questionId in this.correlationMatrix))
+  //     return 0;
 
-    const answered: string[] = this.getVoterAnsweredQuestionIds();
-    let value: number = 0;
-    for (const q in this.correlationMatrix[questionId]) {
-      // To calculate the value, we get the difference between the current residual entropy and what it would
-      // be if we had an answer for questionId, thus the concat
-      let diff: number = this.getResidualEntropy(q, answered) - this.getResidualEntropy(q, answered.concat([questionId]));
-      if (diff > 0) {
-        value += diff;
-      }
-    }
-    return value / Object.keys(this.correlationMatrix).length;
-  }
+  //   const answered: string[] = this.getVoterAnsweredQuestionIds();
+  //   let value: number = 0;
+  //   for (const q in this.correlationMatrix[questionId]) {
+  //     // To calculate the value, we get the difference between the current residual entropy and what it would
+  //     // be if we had an answer for questionId, thus the concat
+  //     let diff: number = this.getResidualEntropy(q, answered) - this.getResidualEntropy(q, answered.concat([questionId]));
+  //     if (diff > 0) {
+  //       value += diff;
+  //     }
+  //   }
+  //   return value / Object.keys(this.correlationMatrix).length;
+  // }
 
   /*
    * Calculate total accumulated information [0...1]
    * Ie. sum of residual entropy / total entropy = length of (not totally correlated) questions
    */
-  public getTotalInformation(): number {
-    let total: number = 0;
-    // Get this, so we can supply it later
-    const answered = this.getVoterAnsweredQuestionIds();
-    Object.keys(this.correlationMatrix).forEach(q => 
-      total += 1 - this.getResidualEntropy(q, answered)
-    );
-    return total / Object.keys(this.correlationMatrix).length;
-  }
+  // public getTotalInformation(): number {
+  //   let total: number = 0;
+  //   // Get this, so we can supply it later
+  //   const answered = this.getVoterAnsweredQuestionIds();
+  //   Object.keys(this.correlationMatrix).forEach(q => 
+  //     total += 1 - this.getResidualEntropy(q, answered)
+  //   );
+  //   return total / Object.keys(this.correlationMatrix).length;
+  // }
 
   /*
    * Get an ordered list of questions based on information value
    * If all questions are answered, returns an empty list
    */
-  public getInformationValueOrder(): {id: string, value: number }[] {
-    let   qOrder: {id: string, value: number }[] = [];
-    const answered = this.getVoterAnsweredQuestionIds(true);
-    Object.keys(this.correlationMatrix)
-      .filter(id => !answered.includes(id)) // Skip answered
-      .map(id => {
-        qOrder.push({
-          id: id,
-          value: this.getInformationValue(id)
-        });
-      });
-    // Sort by value desc.
-    qOrder.sort((a, b) => a.value - b.value).reverse();
-    return qOrder;
-  }
+  // public getInformationValueOrder(): {id: string, value: number }[] {
+  //   let   qOrder: {id: string, value: number }[] = [];
+  //   const answered = this.getVoterAnsweredQuestionIds(true);
+  //   Object.keys(this.correlationMatrix)
+  //     .filter(id => !answered.includes(id)) // Skip answered
+  //     .map(id => {
+  //       qOrder.push({
+  //         id: id,
+  //         value: this.getInformationValue(id)
+  //       });
+  //     });
+  //   // Sort by value desc.
+  //   qOrder.sort((a, b) => a.value - b.value).reverse();
+  //   return qOrder;
+  // }
 
   // Shorthands for getQuestionIdsByAgreement() returning Question lists 
   // The Questions are sorted by disagreement if the match is approximate
@@ -866,12 +860,18 @@ export class MatcherService {
   }
 
   public readAnswersFromCookie(): void {
+    // We track this to only emit the update once
+    let emitUpdate = false;
     for (const q of this.getAnswerableQuestions()) {
       const answer = this.cookie.read(q.id);
-      if (answer != null)
+      if (answer != null) {
         // Use Numbers as cookie values are stored as text
-        this.setVoterAnswer(q, q.parseAnswerFromString(answer), true);
+        this.setVoterAnswer(q, q.parseAnswerFromString(answer), true, false);
+        emitUpdate = true;
+      }
     }
+    if (emitUpdate)
+      this.dataStatus.questions.next(DataStatus.Updated);
   }
 
   public unsetVoterAnswers(): void {
@@ -989,22 +989,22 @@ export class MatcherService {
       case 'Manhattan':
         this._projector = new ManhattanProjector();
         break;
-      case 'PCA':
-        this._projector = new PcaProjector();
-        break;
-      case 'RadarPCA':
-      case 'RadarPCAFull':
-        this._projector = new RadarProjector({
-          angularMethod: 'PCA',
-          centreOn: this.radarCentre,
-          minimumDistance: 0.1,
-          // minimumAngle: -0.25 * Math.PI,
-          // maximumAngle:  1.25 * Math.PI
-        });
-        break;
-      case 'TSNE':
-        this._projector = new TsneProjector();
-        break;
+      // case 'PCA':
+      //   this._projector = new PcaProjector();
+      //   break;
+      // case 'RadarPCA':
+      // case 'RadarPCAFull':
+      //   this._projector = new RadarProjector({
+      //     angularMethod: 'PCA',
+      //     centreOn: this.radarCentre,
+      //     minimumDistance: 0.1,
+      //     // minimumAngle: -0.25 * Math.PI,
+      //     // maximumAngle:  1.25 * Math.PI
+      //   });
+      //   break;
+      // case 'TSNE':
+      //   this._projector = new TsneProjector();
+      //   break;
       default:
         throw new Error(`Unsupported projection method '${method}'!`);
     }
@@ -1015,7 +1015,11 @@ export class MatcherService {
       // NB. with PCA the progress emitter is not used
       this._projector.project(data, voter, (progress) => {
         this.progressChanged.emit(progress);
-      }).then((coordinates) => {
+      }, false).then((coordinates) => {
+        // FIX: Normalize the Manhattan distances
+        // Note that we're still leaving them as lower is better
+        for (const c of coordinates)
+          c[0] /= questions.length;
         if (!useMethodAndDontApply) {
           this.setCandidateCoordinates(candidates, coordinates);
           this.placeParties();
@@ -1028,6 +1032,8 @@ export class MatcherService {
 
   public setCandidateCoordinates(candidates: Candidate[], coordinates: ProjectedMapping): void {
     for (let i = 0; i < candidates.length; i++) {
+      // Coordinates are normalised distances, so we need to invert them
+      candidates[i].score = 1 - coordinates[i][0];
       candidates[i].projX = coordinates[i][0];
       candidates[i].projY = coordinates[i][1];
     }
@@ -1046,6 +1052,8 @@ export class MatcherService {
         const party = this.parties[p];
         const data = this.getMappingData(party, questions);
         const coords = this._projector.predict(data);
+        // Coordinates are normalised distances, so we need to invert them
+        party.score = 1 - coords[0];
         party.projX = coords[0];
         party.projY = coords[1];
       }

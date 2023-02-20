@@ -4,34 +4,30 @@
         (click)="toggle()"
         [class.maximised]="isMaximised">
 
-  <div *ngIf="!isMaximised"
-       @fadeIn
-       class="grabBar"><!-- Bar 'icon' indicating dragging --></div>
-
   <div class="header-upperPart">
     <div *ngIf="isMaximised"
          @appearHorisontally
          class="header-tools">
       <mat-icon class="candidate-expand">expand_less</mat-icon>
     </div>
-    <div *ngIf="!isMaximised"
-         @portraitAppear
-         class="header-portrait">
-      <img [src]="portraitUrl"
-           appFallbackImage />
-    </div>
     <div class="header-titles">
       <h2>
         {{ givenName }} {{ surname }}
       </h2>
-      <div class="party">
-        <mat-icon class="party-{{ partyName | toClassName }}">flag</mat-icon>
-        {{ partyName }}
+      <div class="numberAndParty">
+        <span class="party">
+          <mat-icon class="party-{{ partyName | toClassName }}">flag</mat-icon>
+          {{ partyName }}
+        </span>
+        <span class="number">
+          {{ candidate.number }}
+        </span>
       </div>
     </div>
     <div class="header-tools">
-      <div class="candidate-number party-{{ partyName | toClassName }}">
-        {{ number }}
+      <div *ngIf="!voterDisabled"
+            class="score">
+        {{ candidate.score | percent }}
       </div>
       <mat-icon *ngIf="isFavourite == false"
                 (click)="setFavourite(true, $event)"
@@ -45,97 +41,36 @@
                 class="candidate-favourite candidate-favourite--isFavourite">star</mat-icon>
     </div>
   </div>
-
-  <div *ngIf="!isMaximised"
-       @appearVertically
-       class="header-lowerPart">
-
-    <ng-container *ngIf="candidate.missing">
-
-      <label>
-        <mat-icon>warning</mat-icon>
-        Tämä ehdokas ei ole vastannut Ehdokaskartan kysymyksiin
-      </label>
-
-    </ng-container>
-
-    <ng-container *ngIf="!candidate.missing">
-
-      <ng-container *ngIf="voterDisabled">
-
-        <div *ngIf="themes.length > 0; else noThemes1"
-             class="topicChipList topicChipList-themeSummary">
-          <div *ngFor="let theme of themes"
-                class="topicChip themeChip">
-            {{ theme }}
-          </div>
-        </div>
-        <ng-template #noThemes1>
-          <div class="secondary">Ei vastausta</div>
-        </ng-template>
-
-        <label>Aion puolustaa näitä asioita valtuutettuna</label>
-
-      </ng-container>
-
-      <ng-container *ngIf="!voterDisabled">
-
-        <ng-container *ngIf="opinions.disagreed.length > 0">
-          <div class="topicChipList topicChipList-disagreementSummary">
-            <div *ngFor="let question of opinions.disagreed"
-                (click)="maximiseAndGoToQuestion('answer-' + question.id)"
-                class="topicChip customChip category-{{ question.categoryName | toClassName }}">
-              {{ question.topic }}
-            </div>
-          </div>
-          <label>Merkittävästi eri mieltä {{ opinions.disagreed.length }} kysymyksestä</label>
-        </ng-container>
-
-        <ng-container *ngIf="opinions.disagreed.length == 0">
-          <label>Ei kysymyksiä, joista olette merkittävästi eri mieltä</label>
-        </ng-container>
-
-      </ng-container>
-
-    </ng-container>
-
-  </div>
 </header>
 
-<mat-tab-group *ngIf="detailsLoaded"
-               [(selectedIndex)]="lastOpenTab"
-               [disablePagination]="true"
-               #tabGroup>
-
+<section *ngIf="detailsLoaded"
+         class="candidate-content">
+  
   <!----------------------------------------------
       BASIC INFORMATION
   ------------------------------------------------>
 
-  <mat-tab label="Perustiedot">
     <section class="candidate-data candidate-data--primary">
 
       <div *ngIf="candidate.missing"
            class="candidate-datum missingWarning {{ dataContentClass }}">
         <mat-icon>warning</mat-icon> 
-        Ehdokas ei ole vastannut Ehdokaskartan kysymyksiin
+        Ehdokas ei ole vastannut Kielivaalikoneen kysymyksiin
       </div>
 
-      <ng-container *ngIf="!candidate.missing && !usePortrait">
+      <!-- <ng-container *ngIf="!candidate.missing && !usePortrait">
   
         <div class="candidate-datum">
 
           <ng-container *ngIf="voterDisabled">
 
-            <label>Aion puolustaa näitä asioita valtuutettuna</label>
+            <label>Vaalilupaukseni kansalliskieliin liittyen</label>
 
-            <div *ngIf="themes.length > 0; else noThemes2"
-                  class="topicChipList topicChipList-themeSummary">
-              <div *ngFor="let theme of themes"
-                    class="topicChip themeChip">
-                {{ theme }}
-              </div>
+            <div *ngIf="electionPromise; else noPromise"
+                  class="electionPromise">
+              {{ electionPromise }}
             </div>
-            <ng-template #noThemes2>
+            <ng-template #noPromise>
               <div class="secondary">Ei vastausta</div>
             </ng-template>
     
@@ -162,11 +97,7 @@
 
         </div>
 
-      </ng-container>
-
-      <img class="candidate-portrait" 
-           [src]="portraitUrl"
-           appFallbackImage />
+      </ng-container> -->
 
       <div class="candidate-datum">
         <label>Ikä</label>
@@ -193,24 +124,6 @@
         </div>
       </div>
       <div class="candidate-datum">
-        <label>Poliittinen kokemus</label>
-        <div [class]="getContentClasses('politicalExperience')">
-          {{ politicalExperience | fixList }}
-        </div>
-      </div>
-      <div class="candidate-datum">
-        <label>Koulutus</label>
-        <div [class]="getContentClasses('education')">
-          {{ education | fixList }}
-        </div>
-      </div>
-      <div class="candidate-datum">
-        <label>Kielitaito</label>
-        <div [class]="getContentClasses('languages')">
-          {{ languages | fixList:'ja' }}
-        </div>
-      </div>
-      <div class="candidate-datum">
         <label>Ehdokasnumero</label>
         <div [class]="getContentClasses('numberLong')">
           {{ numberLong }}
@@ -221,11 +134,6 @@
         <div [class]="getContentClasses('constituency')">
           {{ constituency }}
         </div>
-      </div>
-      <div class="candidate-datum">
-        <label>Vaalirahoitus</label>
-        <div class="{{ dataContentClass }} candidate-funding"
-             [innerHtml]="fundingDescription"></div>
       </div>
       <div *ngIf="hasSocialMedia"
            class="candidate-datum candidate-datum-socialMedia">
@@ -258,74 +166,15 @@
 
         </div>
       </div>
+      <img class="candidate-portrait" 
+           [src]="portraitUrl"
+           appFallbackImage />
     </section>
-  </mat-tab>
-
-  <!----------------------------------------------
-    ADDITIONAL INFORMATION
-  ------------------------------------------------>
-
-  <mat-tab label="Linjaukset">
-    <section class="candidate-data candidate-data--secondary">
-      <!-- <div class="candidate-datum">
-        <label>Miksi minut pitäisi valita eduskuntaan</label>
-        <div [class]="getContentClasses('whyMe')">
-          {{ whyMe }}
-        </div>
-      </div> -->
-      <div class="candidate-datum candidate-datum-themes">
-        <label>Aion puolustaa näitä asioita valtuutettuna</label>
-        <div *ngIf="themes.length > 0"
-             class="{{ dataContentClass }} candidate-datum-themes--list">
-          <div *ngFor="let theme of themes"
-               class="topicChip themeChip">
-            {{ theme }}
-          </div>
-        </div>
-        <div *ngIf="themes.length == 0"
-             class="{{ dataContentClass }} {{ missingDataInfoClass }}">
-          {{ missingDataInfo }}
-        </div>
-      </div>
-      <div class="candidate-datum">
-        <label>Vaalilupaukset</label>
-        <div *ngIf="promises.length > 0"
-            class="{{ dataContentClass }}">
-          <ol>
-            <li *ngFor="let promise of promises">{{ promise }}</li>
-          </ol>
-        </div>
-        <div *ngIf="promises.length == 0"
-             class="{{ dataContentClass }} {{ missingDataInfoClass }}">
-          {{ missingDataInfo }}
-        </div>
-      </div>
-      <!-- <div class="candidate-datum">
-        <label>Valiokunnat, joissa haluaisin mieluiten vaikuttaa</label>
-        <div *ngIf="committees.length > 0"
-            class="{{ dataContentClass }}">
-          <ol>
-            <li *ngFor="let committee of committees">{{ committee | ucFirst }}</li>
-          </ol>
-        </div>
-        <div *ngIf="committees.length == 0"
-             class="{{ dataContentClass }} {{ missingDataInfoClass }}">
-          {{ missingDataInfo }}
-        </div>
-      </div>
-      <div class="candidate-datum">
-        <label>Poliittinen esikuva</label>
-        <div [class]="dataContentClass"
-             [innerHtml]="politicalParagonAndReason"></div>
-      </div> -->
-    </section>
-  </mat-tab>
 
   <!----------------------------------------------
     OPINIONS
   ------------------------------------------------>
 
-  <mat-tab label="Mielipiteet">
     <section class="candidate-data candidate-data--opinions">
 
       <div class="candidate-opinions-wrapper">
@@ -355,7 +204,6 @@
           ------------------------------------------------>
 
           <app-custom-expander #expanderDisagreed
-                              (afterExpand)="logExpand('disagreed', $event)"
                               class="candidate-opinions-disagreed">
             <app-custom-expander-title>
               <span>Merkittävästi eri mieltä kanssasi</span>
@@ -393,7 +241,6 @@
           ------------------------------------------------>
 
           <app-custom-expander #expanderAgreed
-                              (afterExpand)="logExpand('agreed', $event)"
                               class="candidate-opinions-agreed">
             <app-custom-expander-title>
               <span>Samaa tai lähes samaa mieltä kanssasi</span>
@@ -431,7 +278,6 @@
           ------------------------------------------------>
 
           <app-custom-expander #expanderUnanswered
-                              (afterExpand)="logExpand('unanswered', $event)"
                               class="candidate-opinions-unanswered">
             <app-custom-expander-title>
               <span>Mielipiteet kysymyksiin, joihin et vielä ole vastannut</span>
@@ -464,5 +310,5 @@
 
     </section>
 
-  </mat-tab>
-</mat-tab-group>
+</section>
+

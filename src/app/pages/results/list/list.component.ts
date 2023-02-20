@@ -28,17 +28,19 @@ import {
   SharedService,
   PATHS
 } from '../../../core';
-import { 
-  MapEnsureVisibleOptions,
-  OnboardingTourComponent
+import {
+  FLOATING_CARD_MAX_WIDTH_LANDSCAPE
 } from '../../../components';
+// import { 
+//   MapEnsureVisibleOptions,
+//   OnboardingTourComponent
+// } from '../../../components';
 
 const CARD_MIN_MARGIN: string = '1rem';
 const CARD_MAX_WIDTH: string = '40rem';
 
 type ListPlaceholder = {
-  isPlaceholder: true,
-  isFilterWarning?: boolean
+  placeholderType: 'empty' | 'warning' | 'intro';
 }
 
 /*
@@ -55,17 +57,21 @@ type ListPlaceholder = {
 export class ListComponent 
   implements AfterViewInit, DoCheck, OnInit, OnDestroy {
 
-  @ViewChild(OnboardingTourComponent)
-  onboardingTour: OnboardingTourComponent;
+  // @ViewChild(OnboardingTourComponent)
+  // onboardingTour: OnboardingTourComponent;
   @ViewChild(CdkVirtualScrollViewport)
   virtualList: CdkVirtualScrollViewport;
 
   public activeCandidateId: string;
   public candidates = new Array<Candidate>();
+  // For this and other below, Map would be nicer
   public disagreed: {
     [candidateId: string]: Question[]
   } = {};
   public cardWidth: string;
+  public listOnRight: boolean = false;
+  public itemHeight = "140px"; // This must match $itemHeight in the sass file
+  public itemMargin = "16px";  // This must match $itemMargin in the sass file
   public marginLeft: string;
   public themes: {
     [candidateId: string]: string[]
@@ -96,11 +102,11 @@ export class ListComponent
 
     this.shared.reportPageOpen({
       currentPage: this.voterDisabled ? 'browse-list' : 'list',
-      subtitle: (this.voterDisabled ?
-                  "Ehdokkaat on järjestetty sen mukaan, miten lähellä heidän mielipiteensä ovat vaalipiirin kaikkien ehdokkaiden keskiarvoa." :
-                  "Ehdokkaat on järjestetty sen mukaan, miten lähellä heidän mielipiteensä ovat sinun mielipiteitäsi."
-                ),
-      onboarding: {restart: () => this.onboardingTour?.restart()},
+      // subtitle: (this.voterDisabled ?
+      //             "Ehdokkaat on järjestetty sen mukaan, miten lähellä heidän mielipiteensä ovat vaalipiirin kaikkien ehdokkaiden keskiarvoa." :
+      //             "Ehdokkaat on järjestetty sen mukaan, miten lähellä heidän mielipiteensä ovat sinun mielipiteitäsi."
+      //           ),
+      // onboarding: {restart: () => this.onboardingTour?.restart()},
       loadingState: {
         type: 'loading',
         message: 'Ladataan tuloksia…',
@@ -124,9 +130,11 @@ export class ListComponent
    */
   get visibleCandidates(): Array<Candidate | ListPlaceholder> {
     // return [null].concat(this.candidates);
-    const firstItems: Array<Candidate | ListPlaceholder> = [{isPlaceholder: true}];
+    const firstItems: Array<Candidate | ListPlaceholder> = [{placeholderType: 'empty'}];
     if (this.hasActiveFilters)
-      firstItems.push({isPlaceholder: true, isFilterWarning: true});
+      firstItems.push({placeholderType: 'warning'});
+    else
+      firstItems.push({placeholderType: 'intro'});
     return firstItems.concat(this.candidates.filter(c => !c.filteredOut));
   }
 
@@ -135,7 +143,7 @@ export class ListComponent
   }
 
   ngOnInit() {
-
+    this.listOnRight = false;
     // Initialisation chain
     this._subscriptions.push(this.matcher.progressChanged.subscribe(v => this._reportProgress(v)))
     this._subscriptions.push(this.matcher.candidateDataReady.subscribe(() => {
@@ -154,14 +162,14 @@ export class ListComponent
     // Onboarding
     // Show only after data is loaded and the view is initialized
     // First() will unsubscribe itself
-    combineLatest([this.shared.loadingState, this._viewInitialized]).pipe(
-      filter(([ls, _]) => ls.type === 'loaded'),
-      first()
-    ).subscribe(() => {
-      if (this.onboardingTour && !this.onboardingTour.active)
-        // We need a timeout to make sure the topTools div is rendered
-        setTimeout(() => this.onboardingTour.start(), 225);
-    });
+    // combineLatest([this.shared.loadingState, this._viewInitialized]).pipe(
+    //   filter(([ls, _]) => ls.type === 'loaded'),
+    //   first()
+    // ).subscribe(() => {
+    //   if (this.onboardingTour && !this.onboardingTour.active)
+    //     // We need a timeout to make sure the topTools div is rendered
+    //     setTimeout(() => this.onboardingTour.start(), 225);
+    // });
 
     // Move list if we are using landscape mode and viewing a candidate
     this._subscriptions.push(this.shared.activeCandidateChanged.subscribe(() => 
@@ -181,9 +189,9 @@ export class ListComponent
     // ));
 
     // Move list if we are using landscape mode and viewing a candidate
-    this._subscriptions.push(this.shared.ensureVisibleOnMap.subscribe(options => 
-      this._updateMarginLeft(options)
-    ));
+    // this._subscriptions.push(this.shared.ensureVisibleOnMap.subscribe(options => 
+    //   this._updateMarginLeft(options)
+    // ));
 
     // Set initial values
     this._updateMarginLeft();
@@ -197,6 +205,8 @@ export class ListComponent
     if ('activeCandidateId' in this._doChanges) {
       this.activeCandidateId = this._doChanges.activeCandidateId;
       delete this._doChanges.activeCandidateId;
+      this.listOnRight = true;
+      this._updateMarginLeft();
     }
   }
 
@@ -244,9 +254,18 @@ export class ListComponent
       return;
     }
 
+    // We need to do this again, bc the voter's answers are not loaded when
+    // the constructor is called if the page is reloaded
+    this.shared.reportPageOpen({
+      currentPage: this.voterDisabled ? 'browse-list' : 'list',
+    });
+
     // When initMapping is called with a method, the projection is not applied to
     // the results as we don't want to override the calculated results for the map
-    this.matcher.initMapping('Manhattan').then(result => this.initList(result));
+    // FIX: We do override the projections by not specifyin 'Manhattan' as an arg
+    // to initMapping
+    // this.matcher.initMapping('Manhattan').then(result => this.initList(result));
+    this.matcher.initMapping().then(result => this.initList(result));
   }
 
   public initList(result: {candidates: Candidate[], coordinates: ProjectedMapping}): void {
@@ -255,21 +274,20 @@ export class ListComponent
     this.candidates = new Array<Candidate>();
 
     // Sort indices by the first coordinate
+    // And prefetch disagreed questions and themes for candidates
+    // FIX: We could just order these by candidate.score
     const indices = [];
-    for (let i = 0; i < result.candidates.length; i++)
+    for (let i = 0; i < result.candidates.length; i++) {
       indices.push(i);
+      const c = result.candidates[i];
+      this.disagreed[c.id] = this.getDisagreedQuestions(c);
+      this.themes[c.id] = this.getThemes(c);
+    }
     indices.sort((a, b) => result.coordinates[a][0] - result.coordinates[b][0]);
 
     // Add candidates in the sorted order
     for (let i of indices)
       this.candidates.push(result.candidates[i]);
-
-    // Prefetch disagreed questions and themes for candidates
-    for (let c of this.candidates) {
-      this.disagreed[c.id] = this.getDisagreedQuestions(c);
-      this.themes[c.id] = this.getThemes(c);
-    }
-      
 
     // Show list tools
     this.shared.showListTools = true;
@@ -290,6 +308,9 @@ export class ListComponent
     this.virtualList?.scrollToIndex(0, 'smooth');
   }
 
+  public openCandidateFilters(): void {
+    this.shared.showCandidateFilters.emit();
+  }
 
   public toggleCandidate(candidate: Candidate, event?: Event): void {
 
@@ -318,7 +339,7 @@ export class ListComponent
   }
 
   private _reportProgress(value: number = null, complete = false) {
-    if (complete || value >= 100)
+    if (complete || value >= 100)
       this.shared.loadingState.next({type: 'loaded'});
     else
       this.shared.loadingState.next({
@@ -328,7 +349,8 @@ export class ListComponent
       })
   }
 
-  private _updateMarginLeft(options?: MapEnsureVisibleOptions): void {
+  // private _updateMarginLeft(options?: MapEnsureVisibleOptions): void {
+  private _updateMarginLeft(options?: any): void {
 
     // Set initial values
     if (!options) {
@@ -338,7 +360,7 @@ export class ListComponent
       } else {
         this.cardWidth = `min(${CARD_MAX_WIDTH}, calc(100vw - 2 * ${CARD_MIN_MARGIN}))`;
         // `calc(100vw - 2 * ${CARD_MIN_MARGIN} - ${FLOATING_CARD_MAX_WIDTH_LANDSCAPE})`;
-        this.marginLeft = `calc((100vw - ${this.cardWidth}) / 2)`;
+        this.marginLeft = this.listOnRight ? `calc(${FLOATING_CARD_MAX_WIDTH_LANDSCAPE} + ${CARD_MIN_MARGIN})` : `calc((100vw - ${this.cardWidth}) / 2)`;
       }
       return;
     }

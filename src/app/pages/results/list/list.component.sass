@@ -1,8 +1,8 @@
 @import 'variables.scss'
 
-@import 'variables.scss'
-
-$transitionDelay: 500ms
+$transitionDelay: 1000ms
+$itemHeight: 140px // This must match the component's itemHeight property
+$itemMargin: 16px  // This must match the component's itemMargin property
 
 :host
   display: block
@@ -19,21 +19,35 @@ cdk-virtual-scroll-viewport
 header
   margin: $margin-S 0
 
+// #filterButton
+//   background-color: $color-nega
+//   color: $color-primary
+//   margin-bottom: $margin-S + $margin-XS
+//   margin-left: $margin-S + $margin-XS
+//   transition: background-color $transition-M, color $transition-M
+
+// #filterButton.active
+//   background-color: $color-primary
+//   color: $color-nega
+
 .candidateEmpty,
 .filterWarning,
+.introMessage,
 .candidate
   display: flex
   flex-flow: column nowrap
+  overflow: hidden
   text-overflow: ellipsis
-  min-height: 165px
-  max-height: 165px
-  margin-bottom: $margin-M
+  min-height: $itemHeight
+  max-height: $itemHeight
+  margin-bottom: $itemMargin
   border-radius: $borderRadius-M
   padding: $margin-M
   transition: margin $transition-M, background-color $transition-S, opacity $transition-M
-  transition-delay: 0ms, 0ms, $transitionDelay
+  transition-delay: $transitionDelay, 0ms, $transitionDelay
 
-.filterWarning
+.filterWarning,
+.introMessage
   background-color: $color-secondaryBg
   text-align: center
   justify-content: center
@@ -106,15 +120,26 @@ h2
   align-items: center
 
 .number
-  font-size: $fontIncrement-M
+  // font-size: $fontIncrement-M
+  // font-weight: bold
+  // padding: 0.25rem
+  // border-radius: 2rem
+  // min-width: 3rem
+  // text-align: center
+  // border: $border-M
+  // padding-left: $margin-S
+  &::before
+    content: " • "
+    color: $color-secondary
+  // @media (max-width: $breakpoint-XS)
+  //   font-size: $fontIncrement-S
+
+.score
+  font-size: $fontSize-XL
   font-weight: bold
-  padding: 0.5rem
-  border-radius: 2rem
-  min-width: 3rem
-  text-align: center
 
   @media (max-width: $breakpoint-XS)
-    font-size: $fontIncrement-S
+    font-size: $fontSize-L
 
 .candidate-favourite
   margin-top: $margin-XS
