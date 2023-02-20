@@ -8,7 +8,7 @@ $titleHeight: 55vh
   width: 100%
   min-height: 100vh
   background-color: $color-brandedBg
-  color: $color-nega
+  color: $color-primary
   text-align: center
   flex-flow: column nowrap
   justify-content: space-between
@@ -31,42 +31,50 @@ $titleHeight: 55vh
     margin-top: 10vh
     // To offset the badge
     // padding-left: $fontSize-XS * 3
-    text-shadow: -2px -2px 0 $color-primary, 2px -2px 0 $color-primary, -2px  2px 0 $color-primary, 2px 2px 0 $color-primary
+    // text-shadow: -2px -2px 0 $color-primary, 2px -2px 0 $color-primary, -2px  2px 0 $color-primary, 2px 2px 0 $color-primary
     
-    .badgeAnchor
-      position: relative
+    // .badgeAnchor
+    //   position: relative
 
-    .betaBadge
-      @include allCaps
-      background-color: $color-nega
-      border-radius: $fontSize-XS
-      border: 2px solid $color-primary
-      color: $color-primary
-      font-size: $fontSize-XS
-      font-weight: bold
-      padding: $margin-XS $margin-S
-      position: absolute
-      text-shadow: none
-      top: 0px
-      right: 0px
-      transform: scale(0.8) translate(80%, -25%)
+    // .betaBadge
+    //   @include allCaps
+    //   background-color: $color-nega
+    //   border-radius: $fontSize-XS
+    //   border: 2px solid $color-primary
+    //   color: $color-primary
+    //   font-size: $fontSize-XS
+    //   font-weight: bold
+    //   padding: $margin-XS $margin-S
+    //   position: absolute
+    //   text-shadow: none
+    //   top: 0px
+    //   right: 0px
+    //   transform: scale(0.8) translate(80%, -25%)
 
-    .subtitle
-      @include allCaps
-      font-size: $fontSize-L
+    // .subtitle
+    //   @include allCaps
+    //   font-size: $fontSize-L
 
   #vignette
-    position: absolute
-    --width: max(100vw, 90rem)
-    width: var(--width)
-    top: calc(#{$titleHeight} - var(--width) * 7/14)
-    left: calc((100vw - var(--width)) / 2)
+    max-width: min(100%, #{$maxWidth-S})
+    max-height: 35vh
+    // position: absolute
+    // --width: max(100vw, 90rem)
+    // width: var(--width)
+    // top: calc(#{$titleHeight} - var(--width) * 7/14)
+    // left: calc((100vw - var(--width)) / 2)
 
 .clickableArea
   cursor: pointer
 
 .description
   flex: 1 1 auto
+
+  @media (min-width: $breakpoint-M)
+    column-count: 2
+
+  > div
+    margin-bottom: $margin-L
 
   .info
     font-size: $fontSize-S
@@ -91,19 +99,17 @@ $titleHeight: 55vh
     z-index: $zIndex-6
 
   #nextButton
-    border-color: $color-nega
-    color: $color-nega
-    font-size: $fontSize-XL
+    font-size: $fontSize-L
+    text-transform: uppercase
     margin-bottom: $margin-M
-    transition: background-color $transition-S
     position: relative
     z-index: $zIndex-6
 
-    &:hover
-      background-color: $color-negaSelectedBg
+  //   &:hover
+  //     background-color: $color-negaSelectedBg
 
-.clickableArea:hover + * #nextButton
-  background-color: $color-negaSelectedBg
+// .clickableArea:hover + * #nextButton
+//   background-color: $color-negaSelectedBg
 
 .logos
   // position: absolute
@@ -117,15 +123,16 @@ $titleHeight: 55vh
   flex-flow: row nowrap
   justify-content: center
   align-items: center
+  margin-top: $margin-L
 
   > *
     margin: 0 0.75rem
 
-  #logos-yle
+  #logos-skf
     height: 0.9 * 2.5rem
 
-  #logos-aalto
-    height: 0.9 * 1.5rem
+  #logos-skr
+    height: 0.9 * 4.5rem
 
   #logos-kaljarv
     height: 0.9 * 1.25rem

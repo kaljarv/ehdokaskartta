@@ -111,6 +111,7 @@
         </button>
       </div>
       <div class="title">
+        <!-- <span *ngIf="currentPage == 'titleScreen'">Kielivaalikone</span> -->
         <span *ngIf="currentPage == 'constituencyPicker'">Kotikuntasi</span>
         <span *ngIf="currentPage == 'questions'">Kysymykset</span>
         <span *ngIf="currentPage == 'browse-list'">Ehdokkaat</span>
@@ -124,6 +125,10 @@
         <mat-icon *ngIf="!this.hasContent"
                   class="expandIcon disabled">expand_more</mat-icon>
       </div> -->
+      <img *ngIf="currentPage == 'titleScreen'"
+           id="topBar-logo"
+           src="assets/images/oma-kieli-logo-nega.png" 
+           alt="Oma Kieli ry:n logo" />
       <div *ngIf="showListTools"
             id="topBar-tools">
         <button id="filterButton"

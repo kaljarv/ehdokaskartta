@@ -58,7 +58,7 @@ export class TitleScreenComponent
   ) {
     this.shared.reportPageOpen({
       currentPage: 'titleScreen',
-      hideTopBar: true,
+      // hideTopBar: true,
       // showMapTools: false,
       // showFeedbackButton: false
     });
@@ -116,6 +116,10 @@ export class TitleScreenComponent
 
   public goForward(): void {
     this.router.navigate([PATHS.constituencyPicker]);
+  }
+
+  public switchLanguage(): void {
+    throw new Error("Method not implemented.");
   }
 
   // public onBackgroundClick(event: MouseEvent): void {

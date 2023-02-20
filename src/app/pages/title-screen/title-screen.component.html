@@ -1,75 +1,74 @@
-<button id="menuButton"
+<!-- <button id="menuButton"
         mat-icon-button 
         aria-label="Avaa valikko"
         (click)="toggleSideNav($event)">
   <mat-icon>menu</mat-icon>
-</button>
+</button> -->
 
 <section class="title clickableArea"
          (click)="goForward()">
 
-    <div id="vignette">
-      <!-- <ng-lottie [options]="animationOptions" 
-                (animationCreated)="animationCreated($event)"
-                (domLoaded)="animationDomLoaded()"
-                (loopComplete)="animationLoopCompleted()"></ng-lottie> -->
-      <img src="assets/images/map-vignette.svg" />
-    </div>
-
     <h1>
-      <span class="badgeAnchor">
-        Ehdokas&shy;kartta
-        <span class="betaBadge">Beta</span>
-      </span>
-      <div class="subtitle">Kuntavaalit 13.6.2021</div>
+      Kielivaalikone 2023 Språkvalkompass
     </h1>
+
+    <img id="vignette"
+         src="assets/images/vignette.png"
+         alt="Kuvituskuva" />
 
 </section>
 
 <section class="description">
 
-  <button id="nextButton"
-          color="white"
-          mat-stroked-button
-          (click)="goForward()">
-    Aloita
-    <mat-icon>navigate_next</mat-icon>
-  </button>
+  <div class="description-primaryLanguage">
 
-  <p class="info">
-    Ehdokaskartta on kokeellinen, avoimeen lähdekoodiin perustuva <a href="https://vaalit.fi/kuntavaalit" target="_blank">kuntavaalien</a> 2021 vaalikone, joka käyttää Ylen vaalikoneen tietoja. Sen keskeisenä tarkoituksena on kerätä käyttäjien kokemuksia, joten kaikenlainen palaute on tervetullutta.<br>
-    <a mat-button
-       [routerLink]="aboutPath"
-       class="readMore">
-      Lue lisää Ehdokaskartasta
-    </a>
-  </p>
+    <p>
+      Onko sinulle tärkeää, että kansalliskielet suomi ja ruotsi säilyvät yhteisinä, täysimittaisina kielinämme Suomessa? <a href="https://omakieli.fi/" target="_blank">Oma kieli ry:n</a> toteuttamassa Kielivaalikoneessa pääset puntaroimaan omia ja eduskuntavaaliehdokkaiden kielipoliittisia näkemyksiä. Vastaa kysymyksiin ja löydä kansalliskielimyönteinen ehdokas!
+    </p>
+
+    <button id="nextButton"
+            color="primary"
+            mat-flat-button
+            (click)="goForward()">
+      Aloita
+      <mat-icon>navigate_next</mat-icon>
+    </button>
+
+  </div>
+
+  <div class="description-secondaryLanguage">
+
+    <p>
+      XXX På svenska Onko sinulle tärkeää, että kansalliskielet suomi ja ruotsi säilyvät yhteisinä, täysimittaisina kielinämme Suomessa? <a href="https://omakieli.fi/" target="_blank">Oma kieli ry:n</a> toteuttamassa Kielivaalikoneessa pääset puntaroimaan omia ja eduskuntavaaliehdokkaiden kielipoliittisia näkemyksiä. Vastaa kysymyksiin ja löydä kansalliskielimyönteinen ehdokas!
+    </p>
+
+    <button id="nextButton"
+            color="primary"
+            mat-flat-button
+            (click)="switchLanguage()">
+      Börja
+      <mat-icon>navigate_next</mat-icon>
+    </button>
+
+  </div>
 
 </section>
 
 <section class="logos">
-  <!-- <a mat-button
-     href="https://yle.fi/"
-     (click)="$event.stopPropagation()"
-     title="Yle"
-     target="_blank">
-    <img id="logos-yle"
-         src="assets/images/yle-logo-white.svg" /> 
-  </a> -->
   <a mat-button
-     href="https://www.aalto.fi/fi"
+     href="https://www.skr.fi"
      (click)="$event.stopPropagation()"
-     title="Aalto-yliopisto"
+     title="Suomen Kulttuurirahasto"
      target="_blank">
-    <img id="logos-aalto"
-        src="assets/images/aalto-logo-white.svg" />
+    <img id="logos-skr"
+        src="assets/images/logo-skr.svg" />
   </a>
-  <a mat-button
+  <!-- <a mat-button
      href="http://kaljarv.com/"
      (click)="$event.stopPropagation()"
      title="Kalle Järvenpää Design"
      target="_blank">
     <img id="logos-kaljarv"
         src="assets/images/kaljarv-logo-white.svg" />
-  </a>
+  </a> -->
 </section>

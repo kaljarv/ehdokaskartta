@@ -6,7 +6,7 @@
 // https://material.angular.io/guide/typography
 // Usage: @include mat-typography-level-to-styles($app-typography, title)
 $app-typography: mat-typography-config(
-  $font-family: "'DM Sans', sans-serif",
+  $font-family: "Poppins, sans-serif",
   $headline: mat-typography-level(2rem, 1.2, 700)
 );
 
@@ -113,7 +113,7 @@ $color-secondary:   mat-color($secondary);
 $color-secondaryBg: mat-color($secondary, 50); // color.mix(white, $color-secondary, 80%)
 $color-background:  map-get($background, background);
 $color-selectedBg:  mat-color($secondary, 100);
-$color-brandedBg:   #a8c4e0;
+$color-brandedBg:   #98c9e5;
 
 $alpha-overlay: 0.8;
 
@@ -122,7 +122,7 @@ $fontSize-S:   mat-font-size($app-typography, caption);
 $fontSize-M:   mat-font-size($app-typography, body-1);
 $fontSize-L:   mat-font-size($app-typography, subheading-2);
 $fontSize-XL:  mat-font-size($app-typography, title);
-$fontSize-XXL: 2.5rem; // mat-font-size($app-typography, headline);
+$fontSize-XXL: 2rem; // mat-font-size($app-typography, headline);
 
 $fontSize-iconL: 32px;
 

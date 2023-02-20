@@ -66,9 +66,6 @@ export class ConstituencyPickerComponent
     // Onboarding
     // this.onboardingTour?.start();
     setTimeout(() => this.voterMunicipalityInput.focus(), 25);
-    console.log(this.municipalities);
-    console.log(this.useMunicipalityAsConstituency);
-    console.log(this.matcher.getConstituencyNameByMunicipalityId('005'));
   }
 
   ngOnDestroy() {

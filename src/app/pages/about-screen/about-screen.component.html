@@ -16,209 +16,21 @@
 <section class="content">
 
   <h1>
-    Tietoa Ehdokaskartasta
+    Tietoa Kielivaalikoneesta
   </h1>
 
-  <div class="githubLink">
-    <a href="https://github.com/kaljarv/ehdokaskartta" 
-       target="_blank"
-       mat-button>
-      Lähdekoodi Githubissa
-      <img src="/assets/images/github-mark.png" 
-           alt="Github logo"
-           title="Ehdokaskartta Githubissa" />
-    </a>
-  </div>
-  
   <p class="ingress">
-    Ehdokaskartta on kokeellinen, avoimeen lähdekoodiin perustuva vaalikone, joka käyttää Ylen kuntavaalien 2021 Vaalikoneen tietoja. Sen keskeisenä tarkoituksena on kerätä käyttäjien kokemuksia. Ehdokaskartan on suunnittellut ja toteuttanut <a href="http://kaljarv.com/" target="_blank">Kalle Järvenpää</a>.
+    Onko sinulle tärkeää, että kansalliskielet suomi ja ruotsi säilyvät yhteisinä, täysimittaisina kielinämme Suomessa? <a href="https://omakieli.fi/" target="_blank">Oma kieli ry:n</a> toteuttamassa Kielivaalikoneessa pääset puntaroimaan omia ja eduskuntavaaliehdokkaiden kielipoliittisia näkemyksiä. Vastaa kysymyksiin ja löydä kansalliskielimyönteinen ehdokas!
   </p>
 
-  <h2>OpenVAA</h2>
+  <h2>Tietosuoja</h2>
 
   <p>
-    <strong>Päivitys 31.1.2023:</strong> Vuoden 2023 alusta olemme aloittaneet Sitran ystävällisesti rahoittaman hankkeen avoimen lähdekoodin vaalikonealustan rakentamiseksi. Lue lisää osoitteesta <a href="https://openvaa.org/">OpenVAA.org</a>.
+    Kielivaalikone käyttää vain teknisiä evästeitä, jotka parantavat palvelun toimivuutta eikä niiden tietoja tallenneta palvelimelle. Evästeiden avulla voit esimerkiksi jatkaa vaalikoneen käyttöä myöhemmin, jos joudut keskeyttämään sen.
   </p>
-
-  <h2>Avoimen lähdekoodin vaalikone</h2>
 
   <p>
-    Ehdokaskartan tarkoituksena on osoittaa toiminnallisen prototyypin kautta, että vaalikoneen toteuttaminen avoimen lähdekoodin avulla on mahdollista ja että vaalikoneiden suunnittelussa esille nousevia kysymyksiä voidaan ratkaista myös totutusta poikkeavilla tavoilla.
-  </p>
-  <p>
-    Ehdokaskartan ensijulkaisun kuntavaaleissa 2021 jälkeen tarkoituksena on käynnistää laaja-alaisempi projekti avoimen lähdekoodin, kansainvälisesti käyttökelpoisen vaalikonealustan toteuttamiseksi. Vaalikoneiden merkitys on jatkuvassa kasvussa siten, että Suomen eduskuntavaaleissa vaalikoneita käyttäneiden äänestäjien osuus on kasvanut 8 prosentista vuonna 2003, 35:een vuoden 2019 vaaleissa (<a href="http://urn.fi/URN:ISBN:978-952-359-026-7" target="_blank">Borg ja Koljonen 2020: Käyttöliittymä vaaleihin</a>, s. 48).
-  </p>
-  <p>
-    Tätä taustaa vasten on vähintäänkin yllättävää, että esimerkiksi eduskuntavaaleissa 2019 median julkaisemista 15:stä vaalikoneesta 12 oli kahden yksityisyrityksen toteuttamia (ss. 63–64, <em>ibid.</em>). Erityisesti Suomen kaltaisella hajanaisella poliittisella kentällä voi vaalikoneita verrata merkitykseltään ehdokkaiden etsimisessä Internetin hakukoneisiin. Jos niille hyväksytään näin keskeinen asema demokraattisessa prosessissa, tuntuu itsestään selvältä, että niiden toteuttamisen pitäisi tapahtua kansalaisyhteiskunnan toimesta ja avoimen lähdekoodin kautta.
-  </p>
-  <p>
-    Mikäli olet kiinnostunut osallistumaan hankkeeseen tai muuten kiinnostunut aiheesta, kaikki <a href="mailto:{{ adminEmail }}">yhteydenotot</a> ovat tervetulleita.
-  </p>
-
-  <h2>Kokeelliset ratkaisut</h2>
-
-  <p>
-    Ehdokaskartalla on erityisesti keskitetty erityisesti seuraavien suunnittelukysymysten kokeellisiin ratkaisuihin. Näistä voi perustellusti olla useampaa mieltä, ja sovelluksen keskeinen tarkoitus onkin kerätä käyttäjien kokemuksia. Voitaneen myös olettaa, että demokratian kentällä on tarvetta keskenään erilaisille vaalikoneille, jotka palvelevat käyttäjien erilaisia tarkoitusperiä, poliittisen taustatiedon määrää ja niin edelleen. Tämä prototyyppi tarjoaa konkreettisen tavan kokeilla tutkia tätä suunnitteluavaruutta todellista dataa käyttäen.
-  </p>
-
-  <mat-accordion multi>
-
-    <mat-expansion-panel>
-
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          Ehdokkaiden järjestäminen
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-
-      <p>
-        Ehdokkaiden järjestäminen heidän sopivuutensa mukaan on yksi vaalikoneiden keskeisiä ongelmia. Koneiden esittämä poliittinen kenttä on hyvin moniulotteinen ja tyyppillisesti perustuu 20–30 monivalintakysymykseen. Ehdokkaat järjestetään useimmiten heidän mielipiteidensä prosentuaalisen vastaavuuden eli niin sanotun Manhattan-etäisyyden mukaan. Vaikka tällainen järjestys on helppo ymmärtää, typistää se monimutkaiset erot yhteen tai oikeastaan puoleen ulottuvuuteen, minkä lisäksi se saattaa tuottaa harhaanjohtavan tarkkuuden tunteen prosenttiarvot esittämällä.
-      </p>
-      <p>
-        Ehdokaskartalla ehdokkaat on sen sijaan järjestetty <strong>kaksiulotteiselle kentälle</strong>. Tämä ei sinänsä ole uusi ratkaisu vaan on käytössä esimerkiksi <a href="https://www.kieskompas.nl/en/" target="_blank">Kieskompass-</a> ja <a href="https://votecompass.com/" target="_blank">Vote Compass</a> -järjestelmiin perustuvissa vaalikoneissa. Ehdokaskartassa erityistä on kuitenkin se, että kaksiulotteinen sijoittelu voidaan tehdä, vaikka äänestäjä ei olisi vastannut kaikkiin kysymyksiin, ja että perinteinen prosentuaalinen vastaavuusmitta on yhdistetty poliittisen kentän eroavaisuuksista laskettuun jakolinjaan.
-      </p>
-      <figure>
-        <img src="assets/videos/onboarding-map-dimensions.gif">
-      </figure>
-      <p>
-        <span class="circledGlyph">1</span> <strong>>Manhattan-etäisyys.</strong> Ehdokkaat ovat sitä lähempänä äänestäjää (tai vaalipiirin ehdokkaiden mielipiteiden keskiarvoa selattaessa ehdokkaita ilman kysymyksiin vastaamista), mitä paremmin heidän mielipiteensä vastaavat häneen vastauksiaan.
-      </p>
-      <p>
-        <span class="circledGlyph">2</span> <strong>PCA:n ensimmäinen ulottuvuus.</strong> Se, missä suunnassa ehdokkaat ovat perustuu vaalipiirin ehdokkaiden mielipideavaruuden PCA:n eli <a href="https://fi.wikipedia.org/wiki/P%C3%A4%C3%A4komponenttianalyysi" target="_blank">pääkomponenttianalyysin</a> ensimmäiseen ulottuvuuteen. PCA on yksinkertainen, deterministinen matemaattinen menetelmä, jonka tavoitteena on löytää moniulotteisesta datasta yksi tai useampi komponentti, joiden avulla sen keskeisimmät piirteet voidaan esittää ilman, että merkittävää informaatiota menee hukkaan.
-      </p>
-      <p>
-        <strong>Vaihtoehtona PCA:lle</strong> voitaisiin käyttää muita dimensionaliteetin vähentämismenetelmiä. PCA on valittu ennen kaikkea teknisistä syistä (aiemmassa prototyypin versiossa sen sijasta käytettiin itse asiassa t-SNE-menetelmää). Varteenotettava vaihtoehto voisi olla myös <a href="https://www.zora.uzh.ch/id/eprint/122864/" target="_blank">Jonathan Wheatleyn 2015 esittämään metodi</a>.
-      </p>
-      
-    </mat-expansion-panel>
-
-    <mat-expansion-panel>
-
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          Äänestäjän vastausten syöttäminen
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-
-      <p>
-        Vaalikoneiden käyttö edellyttää yleensä, että äänestäjä vastaa 20–30 monivalintakysymykseen ennen tulosten näyttämistä. Kysymyksiä voi yleensä ohittaa yksitellen, mutta lähtökohtaisesti prosessi edellyttää kaikkien kysymysten läpikäymistä annetussa järjestyksessä. Tämä on ongelmallista useammastakin syystä: Ensinnäkin prosessi on työläs ja pitkäkestoinen semminkin, kun mielipiteen muodostaminen haastaviin poliittisiin kysymyksiin ei aina välttämättä ole helppoa. Toisekseen kysymysten järjestys on tyypillisesti annettu, jolloin alkupään kysymykset saavat suuremman painoarvon. Kolmanneksi tätä prosessia ei hevin voi luonnehtia äänestäjäkeskeiseksi, vaan se muistuttaa enemmänkin työhaastattelua (ks. myös <a href="https://www.researchgate.net/publication/261673875_What's_the_Point_of_Voting_Advice_Applications_Competing_Perspectives_on_Democracy_and_Citizenship" target="_blank">Thomas Fossen ja Joel Anderson, 2014</a>).
-      </p>
-      <p>
-        Ehdokaskartalla äänestäjälle tarjotaan kaikki kysymykset listana, jolta hän <strong>voi valita ne kysymykset</strong>, joihin haluaa vastata. Tuloksien esittämiseen riittää yksikin vastaus, jos tämä on äänestäjän ainoa kriteeri, minkä lisäksi poliittista kenttää voi tarkastella vastaamatta yhteenkään kysymykseen.
-      </p>
-      <p>
-        Kysymyksiin vastattaessa näytetään myös arvio tulosten tarkkuudesta, joka pohjautuu kysymysten keskinäiseen korrelaatioon. Saman korrelaatiomatriisin pohjalta Ehdokaskartta myös <strong>suosittelee äänestäjälle seuraavaa kysymystä</strong> sen mukaan, että se korreloi vahvimmin mielipideavaruuden yhä kartoittamatta olevan osan kanssa.
-      </p>
-      <p>
-        Käytetty metodi on hyvin naiivi eikä kestäne syvempää tilastollista tarkastelua. Se pohjautuu vastausten <strong>polykoriseen korrelaatiomatriisiin</strong>. Sitä mukaa, kun käyttäjä vastaa kysymyksiin, arvioidaan jäljelle jäävien kysymysten tuottama informaatioarvo sen perusteella, kuinka paljon kukin niistä korreloi yhä vastaamattomien kysymysten kanssa painottaen korrelaatiot kysymysten jäljellä olevalla epävarmuudella. Esimerkiksi jos käyttäjä on jo vastannut yhteen ympäristöaiheiseen kysymykseen, ei kentän yleisen jakauman kannalta ole kovin hyödyllistä vastata muihin ympäristökysymyksiin, sillä ne korreloivat vahvasti keskenään. Sen sijaan on parempi vastata sellaiseen kysymykseen, joka korreloi vähän ympäristön mutta mahdollisimman paljon muiden kysymysten kanssa.
-      </p>
-      <p>
-        Kolmas erityispiirre kysymyksiin vastaamisessa on, että äänestäjälle esitetään <strong>vastausta valittaessa vaalipiirin ehdokkaiden mielipidejakauma</strong>. Tämän voi ajatella osaltaan rohkaisevan äänestäjää harkitsemaan kantaansa sen sijaan, että vaalikone vain selvittää äänestäjän annettuina pidetyt mielipiteet (vrt. jälleen <a href="https://www.researchgate.net/publication/261673875_What's_the_Point_of_Voting_Advice_Applications_Competing_Perspectives_on_Democracy_and_Citizenship" target="_blank">Thomas Fossenin ja Joel Andersonin (2014)</a> deliberatiiviseen demokraattisen prosessin käsitykseen).
-      </p>
-      
-    </mat-expansion-panel>
-
-    <mat-expansion-panel>
-
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          Ehdokkaiden suodattaminen
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-
-      <p>
-        Ylen Vaalikoneeseen kerätään ehdokkaiden mielipiteiden lisäksi paljon taustatietoa ehdokkaista, esimerkiksi heidän iästään, koulutuksestaan ja poliittisesta kokemuksestaan. Näitä ominaisuuksia ei kuitenkaan voi – osittain perustellusti – käyttää helposti tulosten rajaamiseen, vaikka niitä pääsee tarkastelemaan ehdokastiedoissa.
-      </p>
-      <p>
-        Ehdokaskartalla tuloksia voi mielipidekysymyksiin vastaamisen jälkeen <strong>rajata näiden taustatietojen, puolueen tai tiettyjen mielipidekysymysten perusteella</strong>. Tämä työkalu voi tuottaa myös mielenkiintoista havaintoja kenttää kokonaisuutena tarkasteltaessa.
-      </p>
-      
-    </mat-expansion-panel>
-
-    <mat-expansion-panel>
-
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          Puolueiden esittäminen
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-
-      <p>
-        Suomessa käytössä olevan suhteellisen vaalitavan kannalta on kyseenalaista, että vaalikoneet ovat vahvasti ehdokaslähtöisiä, vaikka ääni menee kuitenkin efektiivisesti puolueelle. Ylen Vaalikoneessa puolueiden kantoja (pääteltynä niiden ehdokkaiden keskiarvoista) on tuotu varovaisesti esiin esittämällä kunkin ehdokkaan kohdalla, minkä puolueiden kantojen keskiarvoja hänen mielipiteensä ovat lähimpänä.
-      </p>
-      <p>
-        Ehdokaskartalla puolueet esiintyvät sekä tuloskartalla että yksittäisten mielipiteiden kohdalla. <strong>Kartalla puolueen ehdokkaiden keskipiste</strong> näytetään aina ehdokasta tarkastaltaessa, jotta äänestäjä voi nähdä, miten ehdokas sijoittuu suhteessa edustamaansa puolueeseen. Kartalla voi halutessaan nähdä myös kaikkien puolueiden sijainnit.
-      </p>
-      <p>
-        Ehdokkaan vastauksia tarkasteltaessa näytetään <strong>puolueen ehdokkaiden vastausten keskiarvo</strong>, jotta äänestäjä voi välttyä siltä ikävältä tilanteelta, että antaa äänensä ehdokkaan mielipiteen perusteella mutta efektiivisesti äänestäkin tästä vahvasti poikkeavaa puolueen kantaa.
-      </p>
-      <p>
-        <strong>Puoluekantojen päätteleminen ehdokkaiden keskiarvojen perusteella on kyseenalaista</strong>, eikä näin saatu tulos välttämättä edusta puoluiden todellisia linjauksia. Ehdokaskartan rajauksena on kuitenkin, että se käyttää ainoastaan Ylen Vaalikoneen tietoja, joihin puolueohjelmat eivät sisälly. Puolueiden kantojen kerääminen ei ole täysin mutkaton prosessi, mutta esimerkiksi Kieskompass- ja Vote Compass -järjestelmissä tätä varten on kehitetty luotettavalta vaikuttavat menetelmät (ks. <a href="https://voxpoplabs.com/votecompass/methodology.pdf" target="_blank">Vote Compass methodology</a>).
-      </p>
-      <p>
-        Ehdokaskartan lähestymistapa on näistä ominaisuuksista huolimatta yhä vahvasti ehdokaslähtöinen. Äänestysjärjestelmän todellista luonnetta ajatellen olisi perusteltua <strong>kokeilla myös puoluelähtöistä menetelmää</strong>. Tätä varten tarvittaisiin kuitenkin tiedot puolueiden todellisista linjauksista.
-      </p>
-      
-    </mat-expansion-panel>
-
-    <mat-expansion-panel>
-
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          Mobiililähtöisyys
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-
-      <p>
-        Ehdokaskartta on suunniteltu ja toteutettu <strong>ensisijaisesti mobiilikäyttöön</strong>. Se myös tallentaa käyttäjän selaimen cookieihin sovelluksen tilan, jotta äänestäjä voi jatkaa keskeytynyttä käyttöä saumattomasti.
-      </p>
-      <p>
-        Sovellus on toteutettu Googlen alustariippumattoman <a href="https://angular.io/" target="_blank">Angular-kirjaston</a> avulla ja sen ulkoasu perustuu pitkälti responsiivisiin <a href="https://material.angular.io/" target="_blank">Material Design</a> -komponentteihin. Tulosnäkymässä on otettu mallia <strong>karttasovellusten konventioista</strong>.
-      </p>
-      
-    </mat-expansion-panel>
-
-    <mat-expansion-panel>
-
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          Poliittisen kentän tutkiminen
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-
-      <p>
-        Vaalikoneiden julkilausuttu tavoite on auttaa äänestäjiä löytämään itselleen sopivin ehdokas. Tätä tavoitetta tukevat melko eksaktit tulosnäkymät, joissa ehdokkaat tai puoleet on järjestetty yksiselitteiseen parhausjärjestykseen. Ei kuitenkaan ole itsestään selvää, että tämä on vaalikoneiden käyttäjien ensisijainen tavoite.
-      </p>
-      <p>
-        Tampereen yliopiston Vaalikoneet 2020:n hankkeen teettämän tutkimuksen (<a href="http://urn.fi/URN:ISBN:978-952-359-026-7" target="_blank">Borg ja Koljonen 2020: Käyttöliittymä vaaleihin</a>, s. 167) mukaan vuoden 2018 presidentinvaaleissa <strong>kaksi kolmesta vaalikoneiden käyttäjästä käytti niitä muuhun tarkoitukseen kuin sopivimman ehdokkaan löytämiseen</strong>. (Presidentinvaalien kenttä on toki huomattavasti eduskuntavaaleja yksinkertaisempi, ja oletettavasti moni oli jo valinnut ehdokkaansa ennen käyttöä, mutta tulos kertonee silti vaalikoneiden käyttötarkoitusten monipuolisuudesta.)
-      </p>
-      <p>
-        Ehdokaskartan kahteen ulottuvuuteen levittäytyvä ja tarkoituksellisesti hieman epätarkka tulosnäkymä puolestaan <strong>hivuttaa painopistettä tietyn ehdokkaan suosittelusta koko poliittisen kentän tutkimisen suuntaan</strong>. Tätä käyttötarkoitusta tukevat myös suodatintoiminnot, joista enemmän ylempänä.
-      </p>
-      
-    </mat-expansion-panel>
-    
-  </mat-accordion>
-
-  <h2>Toteutus</h2>
-
-   <p>
-    Ehdokaskartan lähdekoodi löytyy <a href="https://github.com/kaljarv/ehdokaskartta" target="_blank">Githubista</a>. Koodi on valitettavasti sekavaa, epäeleganttia, optimoimatonta ja huonosti dokumentoitua. Hankkeen seuraavan vaiheen toteutus lienee parasta aloittaa puhtaalta pöydältä, mutta nykytoteutus mahdollistaa käyttäjäkokemuksen tutkimisen.
-  </p>
-  <p>
-    Ehdokaskartan on suunnittellut ja toteuttanut 
-    <a href="http://kaljarv.com/" target="_blank">Kalle Järvenpää</a>.
-    Se on aloitettu kurssityönä Aalto-yliopiston visuaalisen viestinnän muotoilun maisteriohjelmassa professori
-    Rupesh Vyasin ohjaamana. Kunnallisvaalien version toteutusta on ystävällisesti tuettu Aalto-yliopiston Digi Platform -rahastosta.
-  </p>
-  <p>
-    Sovelluksen käyttämät tiedot ovat Ylen kuntavaalien 2021 Vaalikoneesta, mutta sovellus on itsenäisesti
-    toteutettu, eikä Yleisradio ole osallisena sen tuotantoon taikka vastuussa sen sisällöstä tai toiminnasta.
-  </p>
-  <p>
-    Sovellus on toteutettu Googlen <a href="https://angular.io/" target="_blank">Angular-kirjaston</a> 
-    avulla ja sen ulkoasu perustuu pitkälti <a href="https://material.angular.io/" target="_blank">Material 
-    Design</a> -komponentteihin. Taustatietokantana käytetään niin ikään Googlen Firebasea.
+    Tallennamme vastauksiin liittyvää tilastotietoa anonyymisti. Sitä ei voida yhdistää tiettyyn käyttäjään, sillä tietojen mukana ei tallenneta mitään tunnistetietoja, kuten IP-osoitetta tai edes ajankohtaa.
   </p>
 
   <button id="nextButton"
@@ -229,28 +41,4 @@
     <mat-icon>navigate_next</mat-icon>
   </button>
 
-</section>
-
-<section class="logos">
-  <!-- <a mat-button
-     href="https://yle.fi/"
-     title="Yle"
-     target="_blank">
-    <img id="logos-yle"
-         src="assets/images/yle-logo-black.svg" />
-  </a> -->
-  <a mat-button
-     href="https://www.aalto.fi/fi"
-     title="Aalto-yliopisto"
-     target="_blank">
-    <img id="logos-aalto"
-        src="assets/images/aalto-logo-black.svg" />
-  </a>
-  <a mat-button
-     href="http://kaljarv.com/"
-     title="Kalle Järvenpää Design"
-     target="_blank">
-    <img id="logos-kaljarv"
-        src="assets/images/kaljarv-logo-black.svg" />
-  </a>
 </section>
