@@ -13,37 +13,37 @@ $app-typography: mat-typography-config(
 // Custom palettes and theme
 // See http://mcg.mbitson.com/
 
-// Base colour: #0e03b7
+// Base colour: #24568a (orig. #0e03b7)
 $app-primary: mat-palette((
-  50: #e2e1f6,
-  100: #b7b3e9,
-  200: #8781db,
-  300: #564fcd,
-  400: #3229c2,
-  500: #0e03b7,
-  600: #0c03b0,
-  700: #0a02a7,
-  800: #08029f,
-  900: #040190,
-  A100: #bcbcff,
-  A200: #8989ff,
-  A400: #5656ff,
-  A700: #3c3cff,
+  50 : #e5ebf1,
+  100 : #bdccdc,
+  200 : #92abc5,
+  300 : #6689ad,
+  400 : #456f9c,
+  500 : #24568a,
+  600 : #204f82,
+  700 : #1b4577,
+  800 : #163c6d,
+  900 : #0d2b5a,
+  A100 : #90b6ff,
+  A200 : #5d95ff,
+  A400 : #2a74ff,
+  A700 : #1063ff,
   contrast: (
-    50: #000000,
-    100: #000000,
-    200: #000000,
-    300: #ffffff,
-    400: #ffffff,
-    500: #ffffff,
-    600: #ffffff,
-    700: #ffffff,
-    800: #ffffff,
-    900: #ffffff,
-    A100: #000000,
-    A200: #000000,
-    A400: #ffffff,
-    A700: #ffffff,
+      50 : #000000,
+      100 : #000000,
+      200 : #000000,
+      300 : #000000,
+      400 : #ffffff,
+      500 : #ffffff,
+      600 : #ffffff,
+      700 : #ffffff,
+      800 : #ffffff,
+      900 : #ffffff,
+      A100 : #000000,
+      A200 : #000000,
+      A400 : #ffffff,
+      A700 : #ffffff,
   )
 ));
 
@@ -113,6 +113,7 @@ $color-secondary:   mat-color($secondary);
 $color-secondaryBg: mat-color($secondary, 50); // color.mix(white, $color-secondary, 80%)
 $color-background:  map-get($background, background);
 $color-selectedBg:  mat-color($secondary, 100);
+$color-brandedBg:   #a8c4e0;
 
 $alpha-overlay: 0.8;
 

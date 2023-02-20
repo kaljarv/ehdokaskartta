@@ -39,6 +39,7 @@ export const ABBREVIATIONS: {[termInLowercase: string]: string} = {
 export class AbbreviatePipe implements PipeTransform {
 
   transform(value: string): string {
+    if (value == null) return '';
     // If a predefined abbreviation exists, use that
     if (value.toLocaleLowerCase('fi-FI') in ABBREVIATIONS) {
       return ABBREVIATIONS[value.toLocaleLowerCase('fi-FI')];

@@ -137,7 +137,9 @@ const paths = [
     {
       provide: MATCHER_CONFIG,
       useValue: {
-        useMunicipalityAsConstituency: false
+        useCorrelationMatrices: false,
+        useMunicipalityAsConstituency: false,
+        useQuestionCategories: false,
       }
     }
   ]

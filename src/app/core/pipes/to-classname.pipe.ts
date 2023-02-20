@@ -23,6 +23,7 @@ export const LOCALE = "fi-FI";
 export class ToClassNamePipe implements PipeTransform {
 
   transform(value: string): string {
+    if (value == null) return '';
     let parts = value.split(NAME_SPLIT_RE);
     for (let i = 0; i < parts.length; i++) {
       parts[i] = parts[i].toLocaleLowerCase(LOCALE);

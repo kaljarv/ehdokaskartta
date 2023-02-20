@@ -12,6 +12,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class InitialsPipe implements PipeTransform {
 
   transform(value: string): string {
+    if (value == null) return '';
     // Can't use lookbehing for the first parenthesized group as it's not widely supported
     return value.replace(/(^| |\-)([^\s\-])[^\s\-]+/ig, "$1$2.");
   }

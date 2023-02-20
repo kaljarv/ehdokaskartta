@@ -17,7 +17,7 @@
       <div class="numberAndParty">
         <span class="party">
           <mat-icon class="party-{{ partyName | toClassName }}">flag</mat-icon>
-          {{ partyName }}
+          {{ partyAbbreviation }}
         </span>
         <span class="number">
           {{ candidate.number }}
@@ -100,15 +100,14 @@
       </ng-container> -->
 
       <div class="candidate-datum">
-        <label>Ikä</label>
-        <div [class]="getContentClasses('age')">
-          {{ age }}
-        </div>
-      </div>
-      <div class="candidate-datum">
-        <label>Sukupuoli</label>
-        <div [class]="getContentClasses('gender')">
-          {{ gender }}
+        <label>Ikä ja sukupuoli</label>
+        <div>
+          <span [class]="getContentClasses('age')">
+            {{ age }}
+          </span> • 
+          <span [class]="getContentClasses('gender')">
+            {{ gender }}
+          </span>
         </div>
       </div>
       <div class="candidate-datum">
@@ -118,15 +117,33 @@
         </div>
       </div>
       <div class="candidate-datum">
-        <label>Ammatti</label>
+        <label>Kielitaito</label>
+        <div [class]="getContentClasses('languageSkills')">
+          {{ languageSkills | lcFirst }}
+        </div>
+      </div>
+      <div class="candidate-datum">
+        <label>Ammatti tai arvo</label>
         <div [class]="getContentClasses('occupation')">
           {{ occupation | lcFirst }}
         </div>
       </div>
       <div class="candidate-datum">
+        <label>Koulutus</label>
+        <div [class]="getContentClasses('education')">
+          {{ education | lcFirst }}
+        </div>
+      </div>
+      <div class="candidate-datum">
+        <label>Puolue</label>
+        <div [class]="getContentClasses('party')">
+          {{ party.name }}
+        </div>
+      </div>
+      <div class="candidate-datum">
         <label>Ehdokasnumero</label>
-        <div [class]="getContentClasses('numberLong')">
-          {{ numberLong }}
+        <div [class]="getContentClasses('number')">
+          {{ number }}
         </div>
       </div>
       <div class="candidate-datum">
@@ -135,10 +152,20 @@
           {{ constituency }}
         </div>
       </div>
-      <div *ngIf="hasSocialMedia"
+      <div *ngIf="hasUrls"
            class="candidate-datum candidate-datum-socialMedia">
-        <label>Sosiaalinen media</label>
-        <div [class]="getContentClasses('socialMedia')">
+        <label>Muualla verkossa</label>
+        <div [class]="getContentClasses('hasUrls')">
+
+          <ng-container *ngIf="campaignUrl && isLink(campaignUrl)">
+            <a [href]="campaignUrl"
+               target="_blank">
+              Kampanjasivusto
+            </a>
+          </ng-container>
+          <ng-container *ngIf="campaignUrl && !isLink(campaignUrl)">
+            Kampanjasivusto: {{ campaignUrl }}
+          </ng-container>
 
           <ng-container *ngIf="facebook && isLink(facebook)">
             <a [href]="facebook"
@@ -147,11 +174,7 @@
             </a>
           </ng-container>
           <ng-container *ngIf="facebook && !isLink(facebook)">
-            Facebook: {{ facebook }}
-          </ng-container>
-
-          <ng-container *ngIf="facebook && instagram">
-            •
+            FB: {{ facebook }}
           </ng-container>
 
           <ng-container *ngIf="instagram && isLink(instagram)">
@@ -161,7 +184,27 @@
             </a>
           </ng-container>
           <ng-container *ngIf="instagram && !isLink(instagram)">
-            Instagram: {{ instagram }}
+            IG: {{ instagram }}
+          </ng-container>
+
+          <ng-container *ngIf="twitter && isLink(twitter)">
+            <a [href]="twitter"
+               target="_blank">
+              Twitter
+            </a>
+          </ng-container>
+          <ng-container *ngIf="twitter && !isLink(twitter)">
+            TW: {{ twitter }}
+          </ng-container>
+
+          <ng-container *ngIf="otherSocialMedia && isLink(otherSocialMedia)">
+            <a [href]="otherSocialMedia"
+               target="_blank">
+              {{ otherSocialMedia }}
+            </a>
+          </ng-container>
+          <ng-container *ngIf="otherSocialMedia && !isLink(otherSocialMedia)">
+            {{ otherSocialMedia }}
           </ng-container>
 
         </div>
@@ -169,6 +212,19 @@
       <img class="candidate-portrait" 
            [src]="portraitUrl"
            appFallbackImage />
+    </section>
+
+  <!----------------------------------------------
+    CAMPAIGN PROMISE
+  ------------------------------------------------>
+
+    <section class="candidate-data candidate-data--promise">
+      <div class="candidate-datum">
+        <label>Vaalilupaus kansalliskieliin liittyen</label>
+        <div [class]="getContentClasses('electionPromise')">
+          {{ electionPromise }}
+        </div>
+      </div>
     </section>
 
   <!----------------------------------------------

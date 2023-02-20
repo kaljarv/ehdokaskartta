@@ -8,6 +8,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class FixSpacesPipe implements PipeTransform {
   transform(value: any): string {
+    if (value == null) return '';
     return (typeof value === 'string' ? value : value.toString())
               .replace(/\s+/g, " ") // Multiple spaces to one
               .replace(/ ?([,\.\;\:\!\?]) ?/g, "$1 ") // Punctuation ' . ' => '. '

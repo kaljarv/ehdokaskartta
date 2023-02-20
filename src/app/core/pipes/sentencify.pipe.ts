@@ -15,6 +15,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class SentencifyPipe implements PipeTransform {
   transform(value: string, punctuation: string = "."): string {
+    if (value == null) return '';
     let first, rest;
     [ first, ...rest ] = value;
     return [ first.toLocaleUpperCase('fi-FI'), ...rest, punctuation ].join('')

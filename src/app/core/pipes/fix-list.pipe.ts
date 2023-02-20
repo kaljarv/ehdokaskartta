@@ -15,6 +15,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class FixListPipe implements PipeTransform {
   transform(value: any, andWord?: string): string {
+    if (value == null) return '';
     if (andWord == null) {
       andWord = ',';
     } else {

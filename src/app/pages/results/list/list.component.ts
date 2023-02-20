@@ -40,7 +40,7 @@ const CARD_MIN_MARGIN: string = '1rem';
 const CARD_MAX_WIDTH: string = '40rem';
 
 type ListPlaceholder = {
-  placeholderType: 'empty' | 'warning' | 'intro';
+  placeholderType: 'empty' | 'filterWarning' | 'noResults' | 'noCandidates' | 'intro';
 }
 
 /*
@@ -130,12 +130,21 @@ export class ListComponent
    */
   get visibleCandidates(): Array<Candidate | ListPlaceholder> {
     // return [null].concat(this.candidates);
-    const firstItems: Array<Candidate | ListPlaceholder> = [{placeholderType: 'empty'}];
-    if (this.hasActiveFilters)
-      firstItems.push({placeholderType: 'warning'});
-    else
-      firstItems.push({placeholderType: 'intro'});
-    return firstItems.concat(this.candidates.filter(c => !c.filteredOut));
+
+    const items: Array<Candidate | ListPlaceholder> = this.candidates.filter(c => !c.filteredOut);
+    if (this.hasActiveFilters) {
+      if (items.length === 0)
+        items.unshift({placeholderType: 'noResults'});
+      else
+        items.unshift({placeholderType: 'filterWarning'});
+    } else {
+      if (items.length === 0)
+        items.unshift({placeholderType: 'noCandidates'});
+      else
+        items.unshift({placeholderType: 'intro'});
+    }
+    items.unshift({placeholderType: 'empty'});
+    return items;
   }
 
   get voterDisabled(): boolean {
@@ -336,6 +345,10 @@ export class ListComponent
       this.matcher.removeFavourite(candidate.id);
     // Disable floating card maximation
     event?.stopPropagation();
+  }
+
+  public returnHome(): void {
+    this.router.navigate(['']);
   }
 
   private _reportProgress(value: number = null, complete = false) {

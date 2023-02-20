@@ -94,8 +94,8 @@ export class Candidate implements GetAnswer {
   }
 
   public set number(value: number | string) {
-    if (value != null && typeof value === 'number')
-      this._number = value;
+    if (value != null && value != '')
+      this._number = typeof value === 'number' ? value : parseInt(value);
   }
 
   public get party(): Party {
@@ -106,6 +106,10 @@ export class Candidate implements GetAnswer {
 
   public get partyName(): string {
     return this.party?.name;
+  }
+
+  public get partyAbbreviation(): string {
+    return this.party?.abbreviation;
   }
 
   /*

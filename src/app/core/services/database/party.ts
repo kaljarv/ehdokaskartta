@@ -39,7 +39,7 @@ export class Party implements GetAnswer {
   }
 
   get abbreviation(): string {
-    return this._abbreviation || this.name;
+    return this._abbreviation || this.name;
   }
 
   set abbreviation(value: string) {
@@ -49,7 +49,7 @@ export class Party implements GetAnswer {
   /*
    * Get the party's average answer to a question
    */
-  public getAnswer(question: string | Question): any | undefined {
+  public getAnswer(question: string | Question): any | undefined {
     let qid: string = question instanceof Question ? question.id : question;
 
     if (qid in this.questionReference 

@@ -84,10 +84,6 @@ export class LikertAnswerComponent
     this.svgContainer = null;
   }
 
-  get svgHeight(): number {
-    return ANSWER_AVATAR_DIMENSIONS.midlineOffset + this.backgroundHeight / 2;
-  }
-
   // Invert voter answer for missing candidate answer or center if there's no value from the voter either
   get missingAnswer(): number {
     return this.voterAnswer != null ? 
@@ -115,14 +111,25 @@ export class LikertAnswerComponent
     return this.uniqueId + '-persons';
   }
 
+  get maxElementHeight(): number {
+    const element = this.partyAnswer != null ? 'party' : 
+                    this.candidateAnswer != null ? 'candidate' :
+                    'voter';
+    return ANSWER_AVATAR_DIMENSIONS[element].height;
+  }
+
   // Return the total y offset for an element of the given height
   public calcYOffset(elementHeight: number ): number {
-    return ANSWER_AVATAR_DIMENSIONS.party.height - elementHeight;
+    return this.maxElementHeight - elementHeight;
   }
 
   // Y coordinate of the midline of the answer dots
   get centerlineY(): number {
-    return ANSWER_AVATAR_DIMENSIONS.midlineOffset;
+    return ANSWER_AVATAR_DIMENSIONS.midlineOffset - ANSWER_AVATAR_DIMENSIONS.party.height + this.maxElementHeight;
+  }
+
+  get svgHeight(): number {
+    return this.centerlineY + this.backgroundHeight / 2;
   }
 
   // Get x fraction [0..1] based on value key and with even spacing

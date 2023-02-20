@@ -74,7 +74,9 @@ export class DatabaseService {
     constituencies?: ConstituencyDict,
     parties?: PartyDict,
     questions?: QuestionDict
-  } = {};
+  } = {
+    categories: {}
+  };
   public targetLocale: string;
 
   constructor(
@@ -221,8 +223,8 @@ export class DatabaseService {
     // questions not related to any specific constituency.
 
     // We need these for the questions constructor
-    if (this._cache.categories == null || this._cache.constituencies == null)
-      throw new Error('Load cateories and constituencies before questions!');
+    if (this._cache.constituencies == null)
+      throw new Error('Load categories and constituencies before questions!');
 
     // Data converter
     // AngularFire doesn't implement the withConverter method, so we'll have to

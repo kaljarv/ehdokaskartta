@@ -468,6 +468,9 @@ export class DetailsCandidateComponent
   get partyName(): string {
     return this.party.name;
   }
+  get partyAbbreviation(): string {
+    return this.party.abbreviation;
+  }
   get number(): number | string {
     return this.candidate.number;
   }
@@ -479,6 +482,9 @@ export class DetailsCandidateComponent
   }
   get motherTongue(): string {
     return this.getOrMissing("language");
+  }
+  get languageSkills(): string {
+    return this.getOrMissing("languageSkills");
   }
   get zipCode(): string {
     return this.getOrMissing("zipCode");
@@ -564,8 +570,9 @@ export class DetailsCandidateComponent
   get themes(): string[] {
     return this.getOrMissingMultiple("electionTheme");
   }
-  get hasSocialMedia(): boolean {
-    return !(!this.facebook && !this.instagram);
+  get hasUrls(): boolean {
+    return this.facebook != null || this.instagram != null || this.twitter != null || 
+           this.otherSocialMedia != null || this.campaignUrl != null;
   }
   get facebook(): string {
     return this.getAnswer("facebook");
@@ -573,8 +580,17 @@ export class DetailsCandidateComponent
   get instagram(): string {
     return this.getAnswer("instagram");
   }
+  get twitter(): string {
+    return this.getAnswer("twitter");
+  }
+  get otherSocialMedia(): string {
+    return this.getAnswer("otherSocialMedia");
+  }
+  get campaignUrl(): string {
+    return this.getAnswer("url");
+  }
   public isLink(text: string): boolean {
-    return text.match(/^https?\:/) != null;
+    return text.match(/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/) != null;
   }
   // get committees(): string[] {
   //   let list = [];

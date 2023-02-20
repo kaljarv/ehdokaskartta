@@ -50,6 +50,8 @@ export enum DataStatus {
 }
 
 export interface MatcherConfig {
+  useCorrelationMatrices?: boolean;
+  useQuestionCategories?: boolean;
   useMunicipalityAsConstituency?: boolean;
   maxMissingVals?: number;
   nonmissingCandidateMaxMissingVals?: number;
@@ -76,6 +78,8 @@ export const COOKIE_MUNICIPALITY = "Municipality";
 export const COOKIE_FAVOURITES = "Favourites";
 
 export const DEFAULT_MATCHER_CONFIG: MatcherConfig = {
+  useCorrelationMatrices: true,
+  useQuestionCategories: true,
   useMunicipalityAsConstituency: false,
   maxMissingVals: 10,
   nonmissingCandidateMaxMissingVals: 9,
@@ -163,20 +167,20 @@ export class MatcherService {
     party: {
       type: CandidateFilterSimple,
       opts: {
-        property: 'partyName',
+        property: 'partyAbbreviation', // 'partyName',
         title: 'Puolueen perusteella',
         multipleValues: false,
       }
     },
-    themes: {
-      type: CandidateFilterSimple,
-      questionKey: 'electionTheme',
-      opts: {
-        title: 'Asioiden perusteella, joita ehdokas aikoo puolustaa',
-        multipleValues: true,
-        multipleValueLogicOperator: CandidateFilterLogicOperator.Or,
-      }
-    },
+    // themes: {
+    //   type: CandidateFilterSimple,
+    //   questionKey: 'electionTheme',
+    //   opts: {
+    //     title: 'Asioiden perusteella, joita ehdokas aikoo puolustaa',
+    //     multipleValues: true,
+    //     multipleValueLogicOperator: CandidateFilterLogicOperator.Or,
+    //   }
+    // },
     motherTongue: {
       type: CandidateFilterSimple,
       questionKey: 'language',
@@ -185,23 +189,23 @@ export class MatcherService {
         multipleValues: false,
       }
     },
-    education: {
-      type: CandidateFilterSimple,
-      questionKey: 'education',
-      opts: {
-        title: 'Koulutuksen perusteella',
-        multipleValues: false,
-      }
-    },
-    politicalExperience: {
-      type: CandidateFilterSimple,
-      questionKey: 'politicalExperience',
-      opts: {
-        title: 'Poliittisen kokemuksen perusteella',
-        multipleValues: true,
-        multipleValueLogicOperator: CandidateFilterLogicOperator.Or,
-      }
-    },
+    // education: {
+    //   type: CandidateFilterSimple,
+    //   questionKey: 'education',
+    //   opts: {
+    //     title: 'Koulutuksen perusteella',
+    //     multipleValues: false,
+    //   }
+    // },
+    // politicalExperience: {
+    //   type: CandidateFilterSimple,
+    //   questionKey: 'politicalExperience',
+    //   opts: {
+    //     title: 'Poliittisen kokemuksen perusteella',
+    //     multipleValues: true,
+    //     multipleValueLogicOperator: CandidateFilterLogicOperator.Or,
+    //   }
+    // },
   };
   
   public dataStatus = {
@@ -385,7 +389,8 @@ export class MatcherService {
 
     // This could be done earlier, but for consistency let's do it only now,
     // as in theory the categories might be dependent on the constituency
-    this.categories = await this.database.getCategories();
+    if (this.config.useQuestionCategories)
+      this.categories = await this.database.getCategories();
         
     // Import questions data
     this.questions = await this.database.getQuestions(id);
@@ -393,18 +398,20 @@ export class MatcherService {
       this.questions[id].id = id;
 
     // Import correlation data
-    this.correlationMatrix = await this.database.getCorrelationMatrix(id);
+    if (this.config.useCorrelationMatrices) {
+      this.correlationMatrix = await this.database.getCorrelationMatrix(id);
 
-    // Clean up the matrix as it may contain questions that are not present in the questions list
-    // (especially questions marked as dropped, which are excluded when getting questions)
-    Object.keys(this.correlationMatrix).filter(q => !(q in this.questions)).forEach(q => {
-      // Delete the question row
-      delete this.correlationMatrix[q];
-      // Delete the question column on each row
-      for (const r in this.correlationMatrix) {
-        delete this.correlationMatrix[r][q];
-      }
-    });
+      // Clean up the matrix as it may contain questions that are not present in the questions list
+      // (especially questions marked as dropped, which are excluded when getting questions)
+      Object.keys(this.correlationMatrix).filter(q => !(q in this.questions)).forEach(q => {
+        // Delete the question row
+        delete this.correlationMatrix[q];
+        // Delete the question column on each row
+        for (const r in this.correlationMatrix) {
+          delete this.correlationMatrix[r][q];
+        }
+      });
+    }
 
     // Read voter answers stored in the cookie
     this.readAnswersFromCookie();
@@ -545,7 +552,7 @@ export class MatcherService {
   }
 
   public compareQuestions(a: Question, b: Question): number {
-    let cDiff = a.category.order - b.category.order;
+    let cDiff = this.config.useQuestionCategories ? a.category.order - b.category.order : 0;
     if (cDiff !== 0)
       return cDiff;
     else

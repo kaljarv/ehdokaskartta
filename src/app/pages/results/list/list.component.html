@@ -11,7 +11,17 @@
         <div *ngIf="candidate.placeholderType == 'empty'"
             class="candidateEmpty"></div>
 
-        <div *ngIf="candidate.placeholderType == 'warning'"
+        <div *ngIf="candidate.placeholderType == 'intro'"
+            class="introMessage"
+            [style.maxWidth]="cardWidth"
+            [style.marginLeft]="marginLeft">
+          Tässä ovat vaalipiirisi ehdokkaat, jotka ovat vastanneet Kielivaalikoneen kysymyksiin.
+          Voit halutessasi suodattaa ehdokkaita.
+          <button type="button"
+                  (click)="openFilters($event)">Avaa suodatinvalikko</button>
+        </div>
+
+        <div *ngIf="candidate.placeholderType == 'filterWarning'"
             class="filterWarning"
             [style.maxWidth]="cardWidth"
             [style.marginLeft]="marginLeft">
@@ -21,14 +31,24 @@
                   (click)="openFilters($event)">Avaa suodatinvalikko</button>
         </div>
 
-        <div *ngIf="candidate.placeholderType == 'intro'"
-            class="introMessage"
+        <div *ngIf="candidate.placeholderType == 'noResults'"
+            class="filterWarning"
             [style.maxWidth]="cardWidth"
             [style.marginLeft]="marginLeft">
-          Tässä ovat vaalipiirisi ehdokkaat, jotka ovat vastanneet Kielivaalikoneen kysymyksiin.
-          Voit halutessasi suodattaa ehdokkaita.
+          <mat-icon>filter_list</mat-icon>
+          Suodattamisen jälkeen jäljelle ei jäänyt yhtään ehdokasta.
           <button type="button"
                   (click)="openFilters($event)">Avaa suodatinvalikko</button>
+        </div>
+
+        <div *ngIf="candidate.placeholderType == 'noCandidates'"
+            class="filterWarning"
+            [style.maxWidth]="cardWidth"
+            [style.marginLeft]="marginLeft">
+          <mat-icon>filter_list</mat-icon>
+          Yksikään vaalipiirin ehdokkaista ei ole vastannut Kielivaalikoneen kysymyksiin.
+          <button type="button"
+                  (click)="returnHome()">Palaa alkuun</button>
         </div>
 
       </ng-container>
@@ -62,7 +82,7 @@
 
               <span class="party">
                 <mat-icon class="party-{{ candidate.partyName | toClassName }}">flag</mat-icon>
-                {{ candidate.partyName }}
+                {{ candidate.partyAbbreviation }}
               </span>
 
               <span class="number">

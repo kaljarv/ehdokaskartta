@@ -46,6 +46,10 @@ header
   transition: margin $transition-M, background-color $transition-S, opacity $transition-M
   transition-delay: $transitionDelay, 0ms, $transitionDelay
 
+.candidateEmpty
+  min-height: 4rem
+  max-height: 4rem
+
 .filterWarning,
 .introMessage
   background-color: $color-secondaryBg
@@ -65,6 +69,9 @@ header
 
     &:hover
       background-color: $color-selectedBg
+
+.filterWarning
+  background-color: $color-warnBg
 
 .candidate
   @include mat-elevation(1)
