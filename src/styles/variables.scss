@@ -110,7 +110,7 @@ $color-accentBg:    mat-color($accent, 100); // color.mix(white, $color-accent, 
 $color-warn:        mat-color($warn);
 $color-warnBg:      mat-color($warn, 100); // color.mix(white, $color-warn, 80%)
 $color-secondary:   mat-color($secondary);
-$color-secondaryBg: mat-color($secondary, 50); // color.mix(white, $color-secondary, 80%)
+$color-secondaryBg: #98c9e5; // mat-color($secondary, 50); // color.mix(white, $color-secondary, 80%)
 $color-background:  map-get($background, background);
 $color-selectedBg:  mat-color($secondary, 100);
 $color-brandedBg:   #98c9e5;
