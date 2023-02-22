@@ -48,7 +48,7 @@ $app-primary: mat-palette((
 ));
 
 
-$accent:    mat-palette($mat-orange, A200, A100, A400);
+$accent:    mat-palette($mat-purple, A200, A100, A400); // $mat-orange
 $warn:      mat-palette($mat-red, A200);
 
 // Base colour grey
@@ -109,11 +109,11 @@ $color-accent:      mat-color($accent);
 $color-accentBg:    mat-color($accent, 100); // color.mix(white, $color-accent, 80%)
 $color-warn:        mat-color($warn);
 $color-warnBg:      mat-color($warn, 100); // color.mix(white, $color-warn, 80%)
+$color-brandedBg:   #98c9e5;
 $color-secondary:   mat-color($secondary);
-$color-secondaryBg: #98c9e5; // mat-color($secondary, 50); // color.mix(white, $color-secondary, 80%)
+$color-secondaryBg: color.mix($color-brandedBg, white, 75%); // mat-color($secondary, 50); // color.mix(white, $color-secondary, 80%)
 $color-background:  map-get($background, background);
 $color-selectedBg:  mat-color($secondary, 100);
-$color-brandedBg:   #98c9e5;
 
 $alpha-overlay: 0.8;
 

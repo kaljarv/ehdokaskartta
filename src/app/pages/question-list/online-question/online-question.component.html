@@ -42,7 +42,8 @@
     <mat-radio-group [(ngModel)]="voterAnswer"
                      class="likert-group">
       <mat-radio-button *ngFor="let value of question.values"
-                        [value]="value.key.toString()"></mat-radio-button>
+                        [value]="value.key.toString()"
+                        (click)="radioClicked()"></mat-radio-button>
     </mat-radio-group>
 
     <div class="labels">

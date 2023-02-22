@@ -117,23 +117,17 @@
         </div>
       </div>
       <div class="candidate-datum">
-        <label>Kielitaito</label>
-        <div [class]="getContentClasses('languageSkills')">
-          {{ languageSkills | lcFirst }}
-        </div>
-      </div>
-      <div class="candidate-datum">
-        <label>Ammatti tai arvo</label>
+        <label>Arvo, ammatti tai toimi</label>
         <div [class]="getContentClasses('occupation')">
           {{ occupation | lcFirst }}
         </div>
       </div>
       <div class="candidate-datum">
-        <label>Koulutus</label>
-        <div [class]="getContentClasses('education')">
-          {{ education | lcFirst }}
+        <label>Kotikunta</label>
+        <div [class]="getContentClasses('municipality')">
+          {{ municipality | lcFirst }}
         </div>
-      </div>
+      </div>      
       <div class="candidate-datum">
         <label>Puolue</label>
         <div [class]="getContentClasses('party')">

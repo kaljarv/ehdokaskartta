@@ -360,4 +360,8 @@ export class SharedService {
     this.cookie.write(SURVEY_COOKIE_NAME, 'answered');
   }
 
+  public getUnderMaintenance(): Promise<boolean> {
+    return this.database.getUnderMaintenance();
+  }
+
 }

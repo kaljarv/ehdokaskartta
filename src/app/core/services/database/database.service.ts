@@ -141,12 +141,13 @@ export class DatabaseService {
   /*
    * Get a data document as an object once, ie. not as an Observable,
    */
-  public async getDocumentOnce(collection: string, document: string): Promise<any> {
+  public async getDocumentOnce(collection: string = null, document: string = null): Promise<any> {
     // Wrap in a Promise
     return new Promise((resolve, reject) => {
       // Get a snapshot with take(1)
       // Enforce toString to ward off errors
-      this.dataRoot.collection(collection.toString()).doc(document.toString()).get().pipe(take(1)).subscribe((res: DocumentSnapshot<DocumentData>) => {
+      const doc = collection == null ? this.dataRoot : this.dataRoot.collection(collection.toString()).doc(document.toString());
+      doc.get().pipe(take(1)).subscribe((res: DocumentSnapshot<DocumentData>) => {
         // We expect a result
         if (!res.exists)
           reject(`Couldn't retrieve document '${collection}/${document}' from database!`);
@@ -298,6 +299,13 @@ export class DatabaseService {
 
   public async getCorrelationMatrix(constituencyId: string): Promise<any> {
     return this.getDocumentOnce('pcm-matrices', constituencyId);
+  }
+
+  public async getUnderMaintenance(): Promise<boolean> {
+    return new Promise<boolean>(async (resolve, reject) => {
+      const data = await this.getDocumentOnce();
+      resolve(data.underMaintenance === true);
+    });
   }
 
   /*

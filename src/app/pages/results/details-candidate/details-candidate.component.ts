@@ -492,6 +492,9 @@ export class DetailsCandidateComponent
   get occupation(): string {
     return this.getOrMissing("occupation");
   }
+  get municipality(): string {
+    return this.getOrMissing("municipality");
+  }
   get politicalExperience(): string {
     return this.getOrMissingMultiple("politicalExperience").join(", ");
   }

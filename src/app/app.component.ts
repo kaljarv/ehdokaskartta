@@ -167,6 +167,7 @@ export class AppComponent
   public loadingMessage: string = 'Ladataan…';
   public loadingMode: string = 'indeterminate';
   public loadingValue: number;
+  public underMaintenance = false;
 
   private _floatingCardRef: FloatingCardRef;
   private _dialogRef: MatDialogRef<any>;
@@ -300,6 +301,7 @@ export class AppComponent
     this.clearDetailsCard();
     this.clearDialog();
     this.scrollToTop();
+    this.shared.getUnderMaintenance().then(value => this.underMaintenance = value);
   }
 
   public scrollToTop(): void {

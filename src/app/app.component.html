@@ -2,7 +2,7 @@
 
   <mat-sidenav #sideNav
                mode="push">
-    <mat-nav-list>
+    <mat-nav-list *ngIf="!underMaintenance">
         <a mat-list-item 
            (click)="followLink('/')">
           <!-- <mat-icon matListIcon>home</mat-icon> -->
@@ -100,150 +100,162 @@
 
   <mat-sidenav-content [style.paddingTop]="contentTopMargin">
 
-    <header *ngIf="!hideTopBar"
-            id="topBar"
-            #topBar>
-      <div id="topBar-menuButton">
-        <button mat-icon-button 
-                aria-label="Avaa valikko"
-                (click)="toggleSideNav()">
-          <mat-icon>menu</mat-icon>
+    <ng-container *ngIf="!underMaintenance">
+
+      <header *ngIf="!hideTopBar"
+              id="topBar"
+              #topBar>
+        <div id="topBar-menuButton">
+          <button mat-icon-button 
+                  aria-label="Avaa valikko"
+                  (click)="toggleSideNav()">
+            <mat-icon>menu</mat-icon>
+          </button>
+        </div>
+        <div class="title">
+          <!-- <span *ngIf="currentPage == 'titleScreen'">Kielivaalikone</span> -->
+          <span *ngIf="currentPage == 'constituencyPicker'">Kotikuntasi</span>
+          <span *ngIf="currentPage == 'questions'">Kysymykset</span>
+          <span *ngIf="currentPage == 'browse-list'">Ehdokkaat</span>
+          <span *ngIf="currentPage == 'list'">Tulokset</span>
+        </div>
+        <!-- <div class="expandIcon">
+          <mat-icon *ngIf="this.hasContent"
+                    [@toggleRotate]="expanded ? 'rotated' : 'normal'"
+                    (click)="toggle()"
+                    class="expandIcon">expand_more</mat-icon>
+          <mat-icon *ngIf="!this.hasContent"
+                    class="expandIcon disabled">expand_more</mat-icon>
+        </div> -->
+        <img *ngIf="currentPage == 'titleScreen'"
+            id="topBar-logo"
+            src="assets/images/oma-kieli-logo-nega.png" 
+            alt="Oma Kieli ry:n logo" />
+        <div *ngIf="showListTools"
+              id="topBar-tools">
+          <button id="filterButton"
+                  mat-icon-button 
+                  (click)="openCandidateFilters()"
+                  #filterButtonTooltip="matTooltip"
+                  matTooltip="Suodata ehdokkaita"
+                  aria-label="Suodata ehdokkaita"
+                  matTooltipClass="tools-tooltip"
+                  matTooltipPosition="below"
+                  [class.active]="hasActiveFilters">
+            <mat-icon>filter_list</mat-icon>
+          </button>
+          <button id="searchButton"
+                  mat-icon-button 
+                  (click)="openCandidateSearch()"
+                  #filterButtonTooltip="matTooltip"
+                  matTooltip="Hae ehdokasta nimellä tai numerolla"
+                  aria-label="Hae ehdokasta nimellä tai numerolla"
+                  matTooltipClass="tools-tooltip"
+                  matTooltipPosition="below">
+            <mat-icon>person_search</mat-icon>
+          </button>
+          <button id="favouritesButton"
+                  mat-icon-button 
+                  (click)="openFavourites()"
+                  #favouritesButtonTooltip="matTooltip"
+                  matTooltip="Avaa muistilista"
+                  aria-label="Avaa muistilista"
+                  matTooltipClass="tools-tooltip"
+                  matTooltipPosition="below">
+            <mat-icon style="margin-top: -2px;">
+              <ng-container *ngIf="hasFavourites">
+                star
+              </ng-container>
+              <ng-container *ngIf="!hasFavourites">
+                star_border
+              </ng-container>
+          </mat-icon>
+          </button>
+        </div>
+      </header>
+
+      <!-- ================================================================= 
+          PAGE CONTENT
+          ================================================================= -->
+
+      <!-- Spinner shown when loading -->
+
+      <app-progress-spinner *ngIf="isLoading"
+                            @fadeInOut
+                            [title]="loadingMessage"
+                            [mode]="loadingMode"
+                            [value]="loadingValue"></app-progress-spinner>
+
+      <router-outlet></router-outlet>
+
+
+      <!-- <div *ngIf="showMapTools || showListTools || showFeedbackButton"
+          [@bottomToolsShift]="bottomToolsShiftTrigger"
+          id="bottomTools">
+        <button *ngIf="showFeedbackButton"
+                id="feedbackButton"
+                mat-mini-fab 
+                (click)="openFeedback()"
+                #locateButtonTooltip="matTooltip"
+                matTooltip="Anna palautetta"
+                matTooltipClass="tools-tooltip"
+                matTooltipPosition="left"
+                @buttonAppear>
+          <mat-icon>feedback</mat-icon>
         </button>
-      </div>
-      <div class="title">
-        <!-- <span *ngIf="currentPage == 'titleScreen'">Kielivaalikone</span> -->
-        <span *ngIf="currentPage == 'constituencyPicker'">Kotikuntasi</span>
-        <span *ngIf="currentPage == 'questions'">Kysymykset</span>
-        <span *ngIf="currentPage == 'browse-list'">Ehdokkaat</span>
-        <span *ngIf="currentPage == 'list'">Tulokset</span>
-      </div>
-      <!-- <div class="expandIcon">
-        <mat-icon *ngIf="this.hasContent"
-                  [@toggleRotate]="expanded ? 'rotated' : 'normal'"
-                  (click)="toggle()"
-                  class="expandIcon">expand_more</mat-icon>
-        <mat-icon *ngIf="!this.hasContent"
-                  class="expandIcon disabled">expand_more</mat-icon>
+        <button *ngIf="showMapTools"
+                id="locateButton"
+                mat-mini-fab 
+                (click)="locateSelf()"
+                #locateButtonTooltip="matTooltip"
+                matTooltip="Palaa omaan sijaintiisi"
+                matTooltipClass="tools-tooltip"
+                matTooltipPosition="left"
+                @buttonAppear>
+          <mat-icon>near_me</mat-icon>
+        </button>
       </div> -->
-      <img *ngIf="currentPage == 'titleScreen'"
-           id="topBar-logo"
-           src="assets/images/oma-kieli-logo-nega.png" 
-           alt="Oma Kieli ry:n logo" />
-      <div *ngIf="showListTools"
-            id="topBar-tools">
-        <button id="filterButton"
-                mat-icon-button 
-                (click)="openCandidateFilters()"
-                #filterButtonTooltip="matTooltip"
-                matTooltip="Suodata ehdokkaita"
-                aria-label="Suodata ehdokkaita"
-                matTooltipClass="tools-tooltip"
-                matTooltipPosition="below"
-                [class.active]="hasActiveFilters">
-          <mat-icon>filter_list</mat-icon>
+
+      <div *ngIf="showNextButtonBar"
+          #nextButtonBar
+          id="nextButtonBar"
+          @appearFromBottom>
+        <div class="spacer">
+          <!-- Needed for flex -->
+        </div>
+        <button id="nextButton"
+                mat-raised-button 
+                color="primary" 
+                (click)="goForward()">
+          {{ nextButtonText }}
+          <mat-icon>navigate_next</mat-icon>
         </button>
-        <button id="searchButton"
-                mat-icon-button 
-                (click)="openCandidateSearch()"
-                #filterButtonTooltip="matTooltip"
-                matTooltip="Hae ehdokasta nimellä tai numerolla"
-                aria-label="Hae ehdokasta nimellä tai numerolla"
-                matTooltipClass="tools-tooltip"
-                matTooltipPosition="below">
-          <mat-icon>person_search</mat-icon>
-        </button>
-        <button id="favouritesButton"
-                mat-icon-button 
-                (click)="openFavourites()"
-                #favouritesButtonTooltip="matTooltip"
-                matTooltip="Avaa muistilista"
-                aria-label="Avaa muistilista"
-                matTooltipClass="tools-tooltip"
-                matTooltipPosition="below">
-          <mat-icon style="margin-top: -2px;">
-            <ng-container *ngIf="hasFavourites">
-              star
-            </ng-container>
-            <ng-container *ngIf="!hasFavourites">
-              star_border
-            </ng-container>
-        </mat-icon>
-        </button>
+        <!-- Optional progress indicator 
+            We include this element anyway for flex -->
+        <div class="nextProgress">
+          <ng-container *ngIf="showNextProgress">
+            <span class="nextProgressInfo">
+              {{ nextProgressText }}
+            </span>
+            <mat-progress-spinner color="primary"
+                                  mode="determinate"
+                                  diameter="30"
+                                  strokeWidth="4"
+                                  [value]="nextProgressValue">
+            </mat-progress-spinner>
+          </ng-container>
+        </div>
       </div>
-    </header>
 
-    <!-- ================================================================= 
-         PAGE CONTENT
-         ================================================================= -->
+    </ng-container>
+    <section *ngIf="underMaintenance"
+             class="underMaintenance">
 
-    <!-- Spinner shown when loading -->
+      <h1>Kielivaalikone on hetkellisesti pois käytöstä huollon vuoksi</h1>
 
-    <app-progress-spinner *ngIf="isLoading"
-                          @fadeInOut
-                          [title]="loadingMessage"
-                          [mode]="loadingMode"
-                          [value]="loadingValue"></app-progress-spinner>
+      <p>Pahoittelemme vaivaa! Korjaamme ongelmaa parasta aikaa ja pyydämme palaamaan Kielivaalikoneeseen myöhemmin.</p>
 
-    <router-outlet></router-outlet>
-
-
-    <!-- <div *ngIf="showMapTools || showListTools || showFeedbackButton"
-         [@bottomToolsShift]="bottomToolsShiftTrigger"
-         id="bottomTools">
-      <button *ngIf="showFeedbackButton"
-              id="feedbackButton"
-              mat-mini-fab 
-              (click)="openFeedback()"
-              #locateButtonTooltip="matTooltip"
-              matTooltip="Anna palautetta"
-              matTooltipClass="tools-tooltip"
-              matTooltipPosition="left"
-              @buttonAppear>
-        <mat-icon>feedback</mat-icon>
-      </button>
-      <button *ngIf="showMapTools"
-              id="locateButton"
-              mat-mini-fab 
-              (click)="locateSelf()"
-              #locateButtonTooltip="matTooltip"
-              matTooltip="Palaa omaan sijaintiisi"
-              matTooltipClass="tools-tooltip"
-              matTooltipPosition="left"
-              @buttonAppear>
-        <mat-icon>near_me</mat-icon>
-      </button>
-    </div> -->
-
-    <div *ngIf="showNextButtonBar"
-         #nextButtonBar
-         id="nextButtonBar"
-         @appearFromBottom>
-      <div class="spacer">
-        <!-- Needed for flex -->
-      </div>
-      <button id="nextButton"
-              mat-raised-button 
-              color="primary" 
-              (click)="goForward()">
-        {{ nextButtonText }}
-        <mat-icon>navigate_next</mat-icon>
-      </button>
-      <!-- Optional progress indicator 
-           We include this element anyway for flex -->
-      <div class="nextProgress">
-        <ng-container *ngIf="showNextProgress">
-          <span class="nextProgressInfo">
-            {{ nextProgressText }}
-          </span>
-          <mat-progress-spinner color="primary"
-                                mode="determinate"
-                                diameter="30"
-                                strokeWidth="4"
-                                [value]="nextProgressValue">
-          </mat-progress-spinner>
-        </ng-container>
-      </div>
-    </div>
+    </section>
 
   </mat-sidenav-content>
 

@@ -181,14 +181,14 @@ export class MatcherService {
     //     multipleValueLogicOperator: CandidateFilterLogicOperator.Or,
     //   }
     // },
-    motherTongue: {
-      type: CandidateFilterSimple,
-      questionKey: 'language',
-      opts: {
-        title: 'Äidinkielen perusteella',
-        multipleValues: false,
-      }
-    },
+    // motherTongue: {
+    //   type: CandidateFilterSimple,
+    //   questionKey: 'language',
+    //   opts: {
+    //     title: 'Äidinkielen perusteella',
+    //     multipleValues: false,
+    //   }
+    // },
     // education: {
     //   type: CandidateFilterSimple,
     //   questionKey: 'education',

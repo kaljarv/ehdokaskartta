@@ -168,6 +168,10 @@ export class OnlineQuestionComponent
     this.dismiss(event);
   }
 
+  radioClicked(event?: Event): void {
+    setTimeout(() => this.dismiss(), CLOSE_DELAY);
+  }
+
   skip(event?: Event): void {
     this.matcher.setSkippedByVoter(this.question, true);
     this.shared.logEvent('questions_skip', {id: this.question.id});
@@ -199,7 +203,7 @@ export class OnlineQuestionComponent
   set voterAnswer(value: string | number[]) {
     this.matcher.setVoterAnswer(this.question, Array.isArray(value) ? value : Number(value));
     this.shared.logEvent('questions_answer', {id: this.question.id});
-    setTimeout(() => this.dismiss(), CLOSE_DELAY);
+    // setTimeout(() => this.dismiss(), CLOSE_DELAY);
   }
 
   public deleteVoterAnswer(): void {
