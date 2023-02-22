@@ -5,7 +5,7 @@ import {
 } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { CookieService } from '../cookie';
-import { DatabaseService } from '../database';
+import { DatabaseService, QuestionNumeric } from '../database';
 import { MatcherService } from '../matcher';
 // import { MapEnsureVisibleOptions } from '../../../components';
 import { DetailsCandidateOptions } from '../../../pages';

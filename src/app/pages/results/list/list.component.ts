@@ -269,6 +269,10 @@ export class ListComponent
       currentPage: this.voterDisabled ? 'browse-list' : 'list',
     });
 
+    // Save session data unless we're browsing
+    if (!this.voterDisabled)
+      this.matcher.saveSessionStatistics();
+
     // When initMapping is called with a method, the projection is not applied to
     // the results as we don't want to override the calculated results for the map
     // FIX: We do override the projections by not specifyin 'Manhattan' as an arg

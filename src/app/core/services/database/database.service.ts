@@ -329,6 +329,22 @@ export class DatabaseService {
   }
 
   /*
+   * Save user session statistics
+   */
+  public saveSessionStatistics(doc: any, onSuccess?: (docRef) => void, onError?: (error) => void ): void {
+    const collection = this.firestore.collection('statistics').doc(ELECTION_ID).collection('sessions');
+    collection.add(this._sanitize(doc))
+    .then( docRef => {
+      if (onSuccess) 
+        onSuccess(docRef);
+    })
+    .catch( error => {
+      if (onError) 
+        onError(error);
+    });
+  }
+
+  /*
    * Clean up data for firestore, converting undefineds to nulls
    */
   private _sanitize(doc: any): any {

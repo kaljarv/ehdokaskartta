@@ -76,6 +76,7 @@ export interface QuestionAverageDict {
 
 export const COOKIE_MUNICIPALITY = "Municipality";
 export const COOKIE_FAVOURITES = "Favourites";
+export const COOKIE_STATISTICS_SAVED = "StatisticsSaved";
 
 export const DEFAULT_MATCHER_CONFIG: MatcherConfig = {
   useCorrelationMatrices: true,
@@ -207,7 +208,7 @@ export class MatcherService {
     //   }
     // },
   };
-  
+  public statisticsSaved: boolean = false;
   public dataStatus = {
     constituencies:     new BehaviorSubject<DataStatus>(DataStatus.NotReady),
     questions:          new BehaviorSubject<DataStatus>(DataStatus.NotReady),
@@ -269,6 +270,8 @@ export class MatcherService {
       this.dataStatus.favourites.next(DataStatus.Ready);
       this.initFilters();
     });
+
+    this.setSessionStatisticsSavedFromCookie();
 
     // Set municipality if it was saved in the cookie
     await this.setMunicipalityFromCookie();
@@ -866,6 +869,21 @@ export class MatcherService {
     this.dataStatus.constituencyCookie.next(DataStatus.Ready);
   }
 
+  public setSessionStatisticsSavedFromCookie() {
+    const saved = this.cookie.read(COOKIE_STATISTICS_SAVED);
+    if (saved != null && saved == '1')
+      this.statisticsSaved = true;
+  }
+
+  public saveSessionStatisticsSavedToCookie(value: boolean) {
+    if (value)
+      this.cookie.write(COOKIE_STATISTICS_SAVED, '1');
+    else
+      this.cookie.delete(COOKIE_STATISTICS_SAVED);
+  }
+
+
+
   public readAnswersFromCookie(): void {
     // We track this to only emit the update once
     let emitUpdate = false;
@@ -1209,6 +1227,17 @@ export class MatcherService {
     this.database.logEvent(eventName, {
       currentPage: '_matcher',
       ...eventParams
+    });
+  }
+
+  public saveSessionStatistics(): void {
+    if (this.statisticsSaved) return;
+    const stats = {
+      answers: this.getAnswerableQuestions(true).map(q => q.voterAnswer)
+    };
+    this.database.saveSessionStatistics(stats, () => {
+      this.statisticsSaved = true;
+      this.saveSessionStatisticsSavedToCookie(true);
     });
   }
 
