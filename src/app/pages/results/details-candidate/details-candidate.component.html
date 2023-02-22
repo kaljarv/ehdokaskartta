@@ -31,11 +31,15 @@
       </div>
       <mat-icon *ngIf="isFavourite == false"
                 (click)="setFavourite(true, $event)"
+                i18n-title
+                i18n-aria-label
                 title="Lisää muistilistalle"
                 aria-label="Lisää muistilistalle -ikoni"
                 class="candidate-favourite candidate-favourite--isNotFavourite">star_border</mat-icon>
       <mat-icon *ngIf="isFavourite == true"
                 (click)="setFavourite(false, $event)"
+                i18n-title
+                i18n-aria-label
                 title="Poista muistilistalta"
                 aria-label="Poista muistilistalta -ikoni"
                 class="candidate-favourite candidate-favourite--isFavourite">star</mat-icon>
@@ -55,7 +59,7 @@
       <div *ngIf="candidate.missing"
            class="candidate-datum missingWarning {{ dataContentClass }}">
         <mat-icon>warning</mat-icon> 
-        Ehdokas ei ole vastannut Kielivaalikoneen kysymyksiin
+        <ng-container i18n>Ehdokas ei ole vastannut Kielivaalikoneen kysymyksiin</ng-container>
       </div>
 
       <!-- <ng-container *ngIf="!candidate.missing && !usePortrait">
@@ -100,7 +104,7 @@
       </ng-container> -->
 
       <div class="candidate-datum">
-        <label>Ikä ja sukupuoli</label>
+        <label i18n>Ikä ja sukupuoli</label>
         <div>
           <span [class]="getContentClasses('age')">
             {{ age }}
@@ -111,53 +115,54 @@
         </div>
       </div>
       <div class="candidate-datum">
-        <label>Äidinkieli</label>
+        <label i18n>Äidinkieli</label>
         <div [class]="getContentClasses('motherTongue')">
           {{ motherTongue | lcFirst }}
         </div>
       </div>
       <div class="candidate-datum">
-        <label>Arvo, ammatti tai toimi</label>
+        <label i18n>Arvo, ammatti tai toimi</label>
         <div [class]="getContentClasses('occupation')">
           {{ occupation | lcFirst }}
         </div>
       </div>
       <div class="candidate-datum">
-        <label>Kotikunta</label>
+        <label i18n>Kotikunta</label>
         <div [class]="getContentClasses('municipality')">
           {{ municipality | lcFirst }}
         </div>
       </div>      
       <div class="candidate-datum">
-        <label>Puolue</label>
+        <label i18n>Puolue</label>
         <div [class]="getContentClasses('party')">
           {{ party.name }}
         </div>
       </div>
       <div class="candidate-datum">
-        <label>Ehdokasnumero</label>
+        <label i18n>Ehdokasnumero</label>
         <div [class]="getContentClasses('number')">
           {{ number }}
         </div>
       </div>
       <div class="candidate-datum">
-        <label>Vaalipiiri</label>
+        <label i18n>Vaalipiiri</label>
         <div [class]="getContentClasses('constituency')">
           {{ constituency }}
         </div>
       </div>
       <div *ngIf="hasUrls"
            class="candidate-datum candidate-datum-socialMedia">
-        <label>Muualla verkossa</label>
+        <label i18n>Muualla verkossa</label>
         <div [class]="getContentClasses('hasUrls')">
 
           <ng-container *ngIf="campaignUrl && isLink(campaignUrl)">
             <a [href]="campaignUrl"
-               target="_blank">
+               target="_blank"
+               i18n>
               Kampanjasivusto
             </a>
           </ng-container>
-          <ng-container *ngIf="campaignUrl && !isLink(campaignUrl)">
+          <ng-container *ngIf="campaignUrl && !isLink(campaignUrl)" i18n>
             Kampanjasivusto: {{ campaignUrl }}
           </ng-container>
 
@@ -214,7 +219,7 @@
 
     <section class="candidate-data candidate-data--promise">
       <div class="candidate-datum">
-        <label>Vaalilupaus kansalliskieliin liittyen</label>
+        <label i18n>Vaalilupaus kansalliskieliin liittyen</label>
         <div [class]="getContentClasses('electionPromise')">
           {{ electionPromise }}
         </div>
@@ -256,7 +261,7 @@
           <app-custom-expander #expanderDisagreed
                               class="candidate-opinions-disagreed">
             <app-custom-expander-title>
-              <span>Merkittävästi eri mieltä kanssasi</span>
+              <span i18n>Merkittävästi eri mieltä kanssasi</span>
             </app-custom-expander-title>
             <app-custom-expander-subtitle>
               <div class="topicChipList">
@@ -267,10 +272,11 @@
                 </div>
                 <span *ngIf="excerptMores.disagreed"
                       class="candidate-opinions-moreTopics">
-                  + {{ excerptMores.disagreed }} muuta
+                  + {{ excerptMores.disagreed }} <ng-container i18n="toista|99 muuta kysymystä@@MUUTA">muuta</ng-container>
                 </span>
                 <span *ngIf="opinions.disagreed.length == 0"
-                      class="candidate-opinions-noTopics">
+                      class="candidate-opinions-noTopics" 
+                      i18n>
                   Ei kysymyksiä, joista olette merkittävästi eri mieltä
                 </span>
               </div>
@@ -293,7 +299,7 @@
           <app-custom-expander #expanderAgreed
                               class="candidate-opinions-agreed">
             <app-custom-expander-title>
-              <span>Samaa tai lähes samaa mieltä kanssasi</span>
+              <span i18n>Samaa tai lähes samaa mieltä kanssasi</span>
             </app-custom-expander-title>
             <app-custom-expander-subtitle>
               <div class="topicChipList">
@@ -304,10 +310,11 @@
                 </div>
                 <span *ngIf="excerptMores.agreed"
                       class="candidate-opinions-moreTopics">
-                  + {{ excerptMores.agreed }} muuta
+                  + {{ excerptMores.agreed }} <ng-container i18n="toista|99 muuta kysymystä@@MUUTA">muuta</ng-container>
                 </span>
                 <span *ngIf="opinions.agreed.length == 0"
-                      class="candidate-opinions-noTopics">
+                      class="candidate-opinions-noTopics"
+                      i18n>
                   Ei kysymyksiä, joista olette samaa tai lähes samaa mieltä
                 </span>
               </div>
@@ -330,15 +337,16 @@
           <app-custom-expander #expanderUnanswered
                               class="candidate-opinions-unanswered">
             <app-custom-expander-title>
-              <span>Mielipiteet kysymyksiin, joihin et vielä ole vastannut</span>
+              <span i18n>Mielipiteet kysymyksiin, joihin et vielä ole vastannut</span>
             </app-custom-expander-title>
             <app-custom-expander-subtitle>
               <span *ngIf="opinions.unanswered.length != 0"
                     class="candidate-opinions-moreTopics">
-                {{ opinions.unanswered.length }} kysymystä
+                {{ opinions.unanswered.length }} <ng-container i18n>kysymystä</ng-container>
               </span>
               <span *ngIf="opinions.unanswered.length == 0"
-                    class="candidate-opinions-noTopics">
+                    class="candidate-opinions-noTopics"
+                    i18n>
                 Ei kysymyksiä, joihin et olisi vastannut
               </span>
 

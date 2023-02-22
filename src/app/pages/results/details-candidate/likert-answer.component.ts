@@ -49,12 +49,12 @@ export class LikertAnswerComponent
   @Input() backgroundHeight: number = 24;
   @Input() question: QuestionLikert;
   // The label used next to the party flag
-  @Input() candidateTitle: string = "Ehdokas";
+  @Input() candidateTitle: string = $localize `Ehdokas`;
   @Input() candidateAnswer: number;
   @Input() voterAnswer: number;
   @Input() partyAnswer: number;
   @Input() partyName: string = '';
-  @Input() partyTitle: string = "Puolue";
+  @Input() partyTitle: string = $localize `Puolue`;
   @Input() showValueLabels: boolean = true;
   // We use this to reference the mask in the svg
   // Optimally this should be set by the user so as to be truly unique

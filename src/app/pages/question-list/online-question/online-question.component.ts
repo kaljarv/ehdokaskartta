@@ -213,7 +213,7 @@ export class OnlineQuestionComponent
   }
 
   get constituencyName(): string {
-    return this.matcher.constituency || 'Vaalipiiri';
+    return this.matcher.constituency || $localize `Vaalipiiri`;
   }
 
   /*

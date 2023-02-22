@@ -44,7 +44,7 @@ function atLeastOneChecked(fa: FormArray): {} | null {
     if (fa.value[i])
       return null;
   }
-  return { noneChecked: "Valitse ainakin yksi vaihtoehdoista." };
+  return { noneChecked: $localize `Valitse ainakin yksi vaihtoehdoista.` };
 }
 
 function atLeastOneUnchecked(fa: FormArray): {} | null {
@@ -54,7 +54,7 @@ function atLeastOneUnchecked(fa: FormArray): {} | null {
     if (!fa.value[i])
       return null;
   }
-  return { allChecked: "Jätä ainakin yksi vaihtoehdoista valitsematta." };
+  return { allChecked: $localize `Jätä ainakin yksi vaihtoehdoista valitsematta.` };
 }
 
 /*
@@ -342,7 +342,7 @@ export class FilterCandidatesComponent
 
     if ((sliderIndex == 0 && value == range[0]) ||
         (sliderIndex == 1 && value == range[1])) {
-      valueString += '<span class="candidate-filter-noFilter">(ei rajausta)</span>';
+      valueString += '<span class="candidate-filter-noFilter">' + $localize `(ei rajausta)` + '</span>';
     } else {
       valueString += `${value} ${filter.unitName}`;
     }

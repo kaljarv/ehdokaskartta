@@ -141,8 +141,8 @@ export class MatcherService {
     question: {
       type: CandidateFilterMultiQuestion,
       opts: {
-        title: 'Kynnyskysymyksen perusteella',
-        description: 'Näytä vain ehdokkaat, jotka ovat samaa tai lähes samaa mieltä kanssasi valituista kysymyksistä.',
+        title: $localize `Kynnyskysymyksen perusteella`,
+        description: $localize `Näytä vain ehdokkaat, jotka ovat samaa tai lähes samaa mieltä kanssasi valituista kysymyksistä.`,
         multipleValues: false,
       }
     },
@@ -150,8 +150,8 @@ export class MatcherService {
       type: CandidateFilterNumberRange,
       questionKey: 'age',
       opts: {
-        title: 'Iän perusteella',
-        unitName: 'vuotta',
+        title: $localize `Iän perusteella`,
+        unitName: $localize `vuotta`,
         // minDescription: 'Ikä vähintään', 
         // maxDescription: 'Ikä enintään', 
         multipleValues: false,
@@ -161,7 +161,7 @@ export class MatcherService {
       type: CandidateFilterSimple,
       questionKey: 'gender',
       opts: {
-        title: 'Sukupuolen perusteella',
+        title: $localize `Sukupuolen perusteella`,
         multipleValues: false,
       }
     },
@@ -169,7 +169,7 @@ export class MatcherService {
       type: CandidateFilterSimple,
       opts: {
         property: 'partyAbbreviation', // 'partyName',
-        title: 'Puolueen perusteella',
+        title: $localize `Puolueen perusteella`,
         multipleValues: false,
       }
     },

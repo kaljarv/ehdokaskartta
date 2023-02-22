@@ -8,12 +8,13 @@
 <section class="title clickableArea"
          (click)="goForward()">
 
-    <h1>
+    <h1 i18n>
       Kielivaalikone 2023 Språkvalkompass
     </h1>
 
     <img id="vignette"
          src="assets/images/vignette.png"
+         i18n-alt
          alt="Kuvituskuva" />
 
 </section>
@@ -22,7 +23,7 @@
 
   <div class="description-primaryLanguage">
 
-    <p>
+    <p i18n>
       Onko sinulle tärkeää, että kansalliskielet suomi ja ruotsi säilyvät yhteisinä, täysimittaisina kielinämme Suomessa? <a href="https://omakieli.fi/" target="_blank">Oma kieli ry:n</a> toteuttamassa Kielivaalikoneessa pääset puntaroimaan omia ja eduskuntavaaliehdokkaiden kielipoliittisia näkemyksiä. Vastaa kysymyksiin ja löydä kansalliskielimyönteinen ehdokas!
     </p>
 
@@ -30,7 +31,7 @@
             color="primary"
             mat-flat-button
             (click)="goForward()">
-      Aloita
+      <ng-container i18n>Aloita</ng-container>
       <mat-icon>navigate_next</mat-icon>
     </button>
 
@@ -38,7 +39,7 @@
 
   <div class="description-secondaryLanguage">
 
-    <p>
+    <p i18n="Intro toisella kielellä">
       XXX På svenska Onko sinulle tärkeää, että kansalliskielet suomi ja ruotsi säilyvät yhteisinä, täysimittaisina kielinämme Suomessa? <a href="https://omakieli.fi/" target="_blank">Oma kieli ry:n</a> toteuttamassa Kielivaalikoneessa pääset puntaroimaan omia ja eduskuntavaaliehdokkaiden kielipoliittisia näkemyksiä. Vastaa kysymyksiin ja löydä kansalliskielimyönteinen ehdokas!
     </p>
 
@@ -46,7 +47,7 @@
             color="primary"
             mat-flat-button
             (click)="switchLanguage()">
-      Börja
+      <ng-container i18n="Aloita-nappi toisella kielellä">Börja</ng-container>
       <mat-icon>navigate_next</mat-icon>
     </button>
 
@@ -55,11 +56,12 @@
 </section>
 
 <section class="logos">
-  <p>Kielivaalikonetta ovat tukeneet</p>
+  <p i18n>Kielivaalikonetta ovat tukeneet</p>
   <div>
     <a mat-button
       href="https://www.skr.fi"
       (click)="$event.stopPropagation()"
+      i18n-title
       title="Suomen Kulttuurirahasto"
       target="_blank">
       <img id="logos-skr"

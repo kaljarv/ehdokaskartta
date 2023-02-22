@@ -109,7 +109,7 @@ export class ListComponent
       // onboarding: {restart: () => this.onboardingTour?.restart()},
       loadingState: {
         type: 'loading',
-        message: 'Ladataan tuloksia…',
+        message: $localize `Ladataan tuloksia…`,
       }
     });
 
@@ -361,7 +361,7 @@ export class ListComponent
     else
       this.shared.loadingState.next({
         type: 'loading',
-        message: 'Ladataan tuloksia…',
+        message: $localize `Ladataan tuloksia…`,
         value
       })
   }

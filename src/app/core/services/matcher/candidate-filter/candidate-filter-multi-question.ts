@@ -11,7 +11,7 @@ import {
 } from './candidate-filter';
 
 // These are used as keys to the rules, they must match the agreement properties in the LikertUtility class
-export type AgreementTypeGetter = 'agree' | 'disagree' | 'mostlyAgree' | 'stronglyDisagree' | 'opinionUnknown';
+export type AgreementTypeGetter = 'agree' | 'disagree' | 'mostlyAgree' | 'stronglyDisagree' | 'opinionUnknown';
 
 /*
  * Question agreement filter

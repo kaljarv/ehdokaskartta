@@ -23,13 +23,13 @@ export class CandidateAnswerComponent
 
   @Input() question: QuestionNumeric ;
   // The label used next to the party flag
-  @Input() candidateTitle: string = "Ehdokas";
+  @Input() candidateTitle: string = $localize `Ehdokas`;
   @Input() candidateAnswer: number | number[] = null;
   @Input() candidateAnswerOpen: string = null;
   @Input() voterAnswer: number | number[] = null;
   @Input() partyAnswer: number | number[] = null;
   @Input() partyName: string = '';
-  @Input() partyTitle: string = "Puolue";
+  @Input() partyTitle: string = $localize `Puolue`;
   @Input() showMissingInfo: boolean = true;
 
   constructor() {

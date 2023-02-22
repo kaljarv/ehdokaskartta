@@ -102,8 +102,8 @@ export class TitleScreenComponent
   public showCookieSnackbar(): void {
     if (this.matcher.constituencyId != null) {
       this.shared.showSnackBar.emit({
-        message: "Käytetään aiemmin syöttämiäsi vastauksia pohjana.",
-        actionTitle: "Nollaa vastaukset",
+        message: $localize `Käytetään aiemmin syöttämiäsi vastauksia pohjana.`,
+        actionTitle: $localize `Nollaa vastaukset`,
         actionFunction: () => { this.matcher.unsetVoterAnswers() },
       });
     }

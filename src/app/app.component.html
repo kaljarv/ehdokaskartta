@@ -4,56 +4,59 @@
                mode="push">
     <mat-nav-list *ngIf="!underMaintenance">
         <a mat-list-item 
-           (click)="followLink('/')">
-          <!-- <mat-icon matListIcon>home</mat-icon> -->
+           (click)="followLink('/')"
+           i18n>
           Palaa alkuun
         </a>
 
         <a mat-list-item 
-           (click)="followLink('constituencyPicker')">
-          <!-- <mat-icon matListIcon>place</mat-icon> -->
+           (click)="followLink('constituencyPicker')"
+           i18n>
           Siirry vaalipiirin valintaan
         </a>
 
         <a *ngIf="enableQuestions"
            mat-list-item 
-           (click)="followLink('questions')">
-           <!-- <mat-icon matListIcon>help</mat-icon> -->
+           (click)="followLink('questions')"
+           i18n>
            Siirry kysymyksiin
         </a>
         <mat-list-item *ngIf="!enableQuestions"
                        class="disabled"
+                       i18n-matTooltip
                        matTooltip="Vaalipiiri täytyy valita ennen kysymyksiin vastaamista"
-                       matTooltipPosition="right">
-           <!-- <mat-icon matListIcon>help</mat-icon> -->
+                       matTooltipPosition="right"
+                       i18n>
            Siirry kysymyksiin
         </mat-list-item>
 
         <a *ngIf="enableMap"
            mat-list-item 
-           (click)="followLink('list')">
-          <!-- <mat-icon matListIcon>map</mat-icon> -->
+           (click)="followLink('list')"
+           i18n>
           Siirry tuloksiin
         </a>
         <mat-list-item *ngIf="!enableMap"
                        class="disabled"
+                       i18n-matTooltip
                        matTooltip="Kysymyksiin täytyy vastata ennen tulosten esittämistä"
-                       matTooltipPosition="right">
-          <!-- <mat-icon matListIcon>map</mat-icon> -->
+                       matTooltipPosition="right"
+                       i18n>
           Siirry tuloksiin
         </mat-list-item>
 
         <a *ngIf="enableQuestions"
            mat-list-item 
-           (click)="followLink('browseList')">
-          <!-- <mat-icon matListIcon>map</mat-icon> -->
+           (click)="followLink('browseList')"
+           i18n>
           Selaa ehdokkaita vastaamatta kysymyksiin
         </a>
         <mat-list-item *ngIf="!enableQuestions"
                        class="disabled"
+                       i18n-matTooltip
                        matTooltip="Vaalipiiri täytyy valita ennen ehdokkaiden selaamista"
-                       matTooltipPosition="right">
-          <!-- <mat-icon matListIcon>map</mat-icon> -->
+                       matTooltipPosition="right"
+                       i18n>
           Selaa ehdokkaita vastaamatta kysymyksiin
         </mat-list-item>
 
@@ -75,12 +78,12 @@
            mat-list-item 
            (click)="unsetVoterAnswers()">
            <mat-icon matListIcon>delete</mat-icon>
-           Nollaa tallennetut vastaukset
+           <ng-container i18n>Nollaa tallennetut vastaukset</ng-container>
         </a>
         <mat-list-item *ngIf="!(enableMap || enableQuestions)"
                        class="disabled">
            <mat-icon matListIcon>delete</mat-icon>
-           Nollaa tallennetut vastaukset
+           <ng-container i18n>Nollaa tallennetut vastaukset</ng-container>
         </mat-list-item>
 
         <!-- <a mat-list-item 
@@ -92,7 +95,7 @@
         <a mat-list-item 
            (click)="followLink('about')">
           <mat-icon matListIcon>info</mat-icon>
-          Tietoja palvelusta
+          <ng-container i18n>Tietoja palvelusta</ng-container>
         </a>
 
     </mat-nav-list>
@@ -114,10 +117,10 @@
         </div>
         <div class="title">
           <!-- <span *ngIf="currentPage == 'titleScreen'">Kielivaalikone</span> -->
-          <span *ngIf="currentPage == 'constituencyPicker'">Kotikuntasi</span>
-          <span *ngIf="currentPage == 'questions'">Kysymykset</span>
-          <span *ngIf="currentPage == 'browse-list'">Ehdokkaat</span>
-          <span *ngIf="currentPage == 'list'">Tulokset</span>
+          <span *ngIf="currentPage == 'constituencyPicker'" i18n>Kotikuntasi</span>
+          <span *ngIf="currentPage == 'questions'" i18n>Kysymykset</span>
+          <span *ngIf="currentPage == 'browse-list'" i18n>Ehdokkaat</span>
+          <span *ngIf="currentPage == 'list'" i18n>Tulokset</span>
         </div>
         <!-- <div class="expandIcon">
           <mat-icon *ngIf="this.hasContent"
@@ -129,7 +132,8 @@
         </div> -->
         <img *ngIf="currentPage == 'titleScreen'"
             id="topBar-logo"
-            src="assets/images/oma-kieli-logo-nega.png" 
+            src="assets/images/oma-kieli-logo-nega.png"
+            i18n-alt 
             alt="Oma Kieli ry:n logo" />
         <div *ngIf="showListTools"
               id="topBar-tools">
@@ -137,6 +141,8 @@
                   mat-icon-button 
                   (click)="openCandidateFilters()"
                   #filterButtonTooltip="matTooltip"
+                  i18n-matTooltip
+                  i18n-aria-label
                   matTooltip="Suodata ehdokkaita"
                   aria-label="Suodata ehdokkaita"
                   matTooltipClass="tools-tooltip"
@@ -148,6 +154,8 @@
                   mat-icon-button 
                   (click)="openCandidateSearch()"
                   #filterButtonTooltip="matTooltip"
+                  i18n-matTooltip
+                  i18n-aria-label
                   matTooltip="Hae ehdokasta nimellä tai numerolla"
                   aria-label="Hae ehdokasta nimellä tai numerolla"
                   matTooltipClass="tools-tooltip"
@@ -158,6 +166,8 @@
                   mat-icon-button 
                   (click)="openFavourites()"
                   #favouritesButtonTooltip="matTooltip"
+                  i18n-matTooltip
+                  i18n-aria-label
                   matTooltip="Avaa muistilista"
                   aria-label="Avaa muistilista"
                   matTooltipClass="tools-tooltip"
@@ -251,9 +261,9 @@
     <section *ngIf="underMaintenance"
              class="underMaintenance">
 
-      <h1>Kielivaalikone on hetkellisesti pois käytöstä huollon vuoksi</h1>
+      <h1 i18n>Kielivaalikone on hetkellisesti pois käytöstä huollon vuoksi</h1>
 
-      <p>Pahoittelemme vaivaa! Korjaamme ongelmaa parasta aikaa ja pyydämme palaamaan Kielivaalikoneeseen myöhemmin.</p>
+      <p i18n>Pahoittelemme vaivaa! Korjaamme ongelmaa parasta aikaa ja pyydämme palaamaan Kielivaalikoneeseen myöhemmin.</p>
 
     </section>
 

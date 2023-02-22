@@ -164,7 +164,7 @@ export class AppComponent
   public nextProgressValue: number = 0;
   public paths: { [name: string]: string } = PATHS;
   public isLoading: boolean;
-  public loadingMessage: string = 'Ladataan…';
+  public loadingMessage: string = $localize `Ladataan…`;
   public loadingMode: string = 'indeterminate';
   public loadingValue: number;
   public underMaintenance = false;
@@ -599,7 +599,7 @@ export class AppComponent
   }
 
   get nextButtonText(): string {
-    return this.forwardOptions.title ? this.forwardOptions.title : 'Seuraava';
+    return this.forwardOptions.title ? this.forwardOptions.title : $localize `Seuraava`;
   }
 
   get nextProgressText(): string {

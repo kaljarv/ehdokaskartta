@@ -3,7 +3,8 @@
       (ngSubmit)="goForward($event)">
   <mat-form-field>
     <input type="text" 
-           [placeholder]="constituencyName ? constituencyName : 'Valitse kotikuntasi'"
+           [placeholder]="placeholderText"
+           i18n-aria-label
            aria-label="Kotikuntasi"
            matInput 
            #voterMunicipalityInput="matInput"
@@ -19,7 +20,8 @@
   </mat-autocomplete>
 
   <div *ngIf="constituencyName"
-       id="submitInfo">
+       id="submitInfo"
+       i18n>
     Paina nappia ”{{ nextButtonText }}” edetäksesi.
   </div>
 </form>

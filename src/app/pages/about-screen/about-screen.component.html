@@ -1,12 +1,14 @@
 <section class="buttons">
   <button id="menuButton"
           mat-icon-button 
+          i18n-aria-label
           aria-label="Avaa valikko"
           (click)="toggleSideNav($event)">
     <mat-icon>menu</mat-icon>
   </button>
   <button id="closeButton"
           mat-icon-button 
+          i18n-aria-label
           aria-label="Palaa alkuun"
           (click)="goToStart()">
     <mat-icon>close</mat-icon>
@@ -15,21 +17,21 @@
 
 <section class="content">
 
-  <h1>
+  <h1 i18n>
     Tietoa Kielivaalikoneesta
   </h1>
 
-  <p class="ingress">
+  <p class="ingress" i18n>
     Onko sinulle tärkeää, että kansalliskielet suomi ja ruotsi säilyvät yhteisinä, täysimittaisina kielinämme Suomessa? <a href="https://omakieli.fi/" target="_blank">Oma kieli ry:n</a> toteuttamassa Kielivaalikoneessa pääset puntaroimaan omia ja eduskuntavaaliehdokkaiden kielipoliittisia näkemyksiä. Vastaa kysymyksiin ja löydä kansalliskielimyönteinen ehdokas!
   </p>
 
-  <h2>Tietosuoja</h2>
+  <h2 i18n>Tietosuoja</h2>
 
-  <p>
+  <p i18n>
     Kielivaalikone käyttää vain teknisiä evästeitä, jotka parantavat palvelun toimivuutta eikä niiden tietoja tallenneta palvelimelle. Evästeiden avulla voit esimerkiksi jatkaa vaalikoneen käyttöä myöhemmin, jos joudut keskeyttämään sen.
   </p>
 
-  <p>
+  <p i18n>
     Tallennamme vastauksiin liittyvää tilastotietoa anonyymisti. Sitä ei voida yhdistää tiettyyn käyttäjään, sillä tietojen mukana ei tallenneta mitään tunnistetietoja, kuten IP-osoitetta tai edes ajankohtaa.
   </p>
 
@@ -37,7 +39,7 @@
           color="primary"
           mat-stroked-button 
           (click)="goToStart()">
-    Palaa alkuun
+    <ng-container i18n>Palaa alkuun</ng-container>
     <mat-icon>navigate_next</mat-icon>
   </button>
 

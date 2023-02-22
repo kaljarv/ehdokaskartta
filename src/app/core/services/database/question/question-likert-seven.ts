@@ -9,13 +9,13 @@ import {
 } from './question-single-number';
 
 export const QUESTION_LIKERT_SEVEN_DEFAULT_VALUES: QuestionNumericValue[] = [
-  {key: 1, name: 'Täysin eri mieltä'},
+  {key: 1, name: $localize `Täysin eri mieltä`},
   {key: 2, name: ''},
   {key: 3, name: ''},
-  {key: 4, name: 'Neutraali'},
+  {key: 4, name: $localize `Neutraali`},
   {key: 5, name: ''},
   {key: 6, name: ''},
-  {key: 7, name: 'Täysin samaa mieltä'}
+  {key: 7, name: $localize `Täysin samaa mieltä`}
 ];
 
 export class QuestionLikertSeven extends QuestionLikert {

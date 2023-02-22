@@ -32,8 +32,8 @@ export class CandidateFilterNumberRange extends CandidateFilter {
     super(opts, values);
     // We have to define defaults here, because they would override options arguments 
     // if we defined them with the declarations above
-    if (this.minDescription == null) this.minDescription = 'Vähintään';
-    if (this.maxDescription == null) this.maxDescription = 'Korkeintaan';
+    if (this.minDescription == null) this.minDescription = $localize `Vähintään`;
+    if (this.maxDescription == null) this.maxDescription = $localize `Korkeintaan`;
   }
 
   public getValueRange(): [number, number] {

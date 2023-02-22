@@ -13,7 +13,7 @@ import {
 })
 export class ErrorScreenComponent {
 
-  public errorMessage: string = 'Sovelluksessa tapahtui virhe, pahoittelut!';
+  public errorMessage: string = $localize `Sovelluksessa tapahtui virhe, pahoittelut!`;
   public icon: string = 'warning';
   public paths = PATHS;
 

@@ -12,11 +12,11 @@ import {
  */
 
 export const QUESTION_LIKERT_DEFAULT_VALUES: QuestionNumericValue[] = [
-  {key: 1, name: 'Täysin eri mieltä'},
+  {key: 1, name: $localize `Täysin eri mieltä`},
   {key: 2, name: ''},
-  {key: 3, name: 'Neutraali'},
+  {key: 3, name: $localize `Neutraali`},
   {key: 4, name: ''},
-  {key: 5, name: 'Täysin samaa mieltä'}
+  {key: 5, name: $localize `Täysin samaa mieltä`}
 ];
 
 export class QuestionLikert extends QuestionSingleNumber {

@@ -1,13 +1,16 @@
 <div class="titles">
   <label *ngIf="voterAnswer != null && voterAnswer != candidateAnswer"
-         [style.left]="getX(voterAnswer, -10)">Sinä</label>
+         [style.left]="getX(voterAnswer, -10)" 
+         i18n>Sinä</label>
   <label *ngIf="candidateAnswer != null && voterAnswer != candidateAnswer"
          [style.left]="getX(candidateAnswer, -10)">{{ candidateTitle }}</label>
   <label *ngIf="candidateAnswer == null "
-         [style.left]="getX(missingAnswer, -10)">Ei vastausta</label>
+         [style.left]="getX(missingAnswer, -10)" 
+         i18n>Ei vastausta</label>
   <label *ngIf="voterAnswer != null && voterAnswer == candidateAnswer"
          class="coincident"
-         [style.left]="getX(voterAnswer, -10)">Sinä & ehdokas</label>
+         [style.left]="getX(voterAnswer, -10)"
+         i18n>Sinä & ehdokas</label>
 </div>
 
 <svg #svgContainer
@@ -56,6 +59,7 @@
       <!-- The transformation is moved to an inner g so that the mask stays in place -->
       <svg:g attr.transform="translate({{ getAbsX(partyAnswer) }})">
         <svg:g [attr.transform]="partyInnerAlignment"
+              i18n-matTooltip
               matTooltip="Kaikkien {{ partyName | genitive }} ehdokkaiden vastausten keskiarvo on {{ partyAnswer | number:'1.1-1':'fi-FI' }}"
               matTooltipClass="tooltip"
               matTooltipPosition="above">
@@ -79,6 +83,7 @@
              class="candidate"
              attr.transform="translate({{ getAbsX(candidateAnswer) }})">
         <svg:g [attr.transform]="candidateInnerAlignment"
+               i18n-matTooltip
                matTooltip="Ehdokkaan vastaus"
                matTooltipClass="tooltip"
                matTooltipPosition="above">
@@ -96,6 +101,7 @@
              class="missingCandidate"
              attr.transform="translate({{ getAbsX(missingAnswer) }})">
         <svg:g [attr.transform]="missingInnerAlignment"
+               i18n-matTooltip
                matTooltip="Ehdokas ei ole vastannut tähän kysymykseen"
                matTooltipClass="tooltip"
                matTooltipPosition="above">
@@ -113,6 +119,7 @@
             class="voter"
             attr.transform="translate({{ getAbsX(voterAnswer) }})">
         <svg:g [attr.transform]="voterInnerAlignment"
+              i18n-matTooltip
               matTooltip="Sinun vastauksesi"
               matTooltipClass="tooltip"
               matTooltipPosition="above">

@@ -34,7 +34,7 @@ export class ConstituencyPickerComponent
     voterMunicipality: new FormControl('')
   });
   public filteredMunicipalities: Observable<string[]>;
-  public nextButtonText: string = 'Siirry kysymyksiin';
+  public nextButtonText: string = $localize `Siirry kysymyksiin`;
 
   private _forwardOptions: ForwardOptions;
   // These will be cancelled onDestroy
@@ -165,5 +165,9 @@ export class ConstituencyPickerComponent
       return null;
       
     return this.matcher.getConstituencyNameByMunicipalityId(id);
+  }
+
+  public get placeholderText(): string {
+    return this.constituencyName ? this.constituencyName : $localize `Valitse kotikuntasi`;
   }
 }

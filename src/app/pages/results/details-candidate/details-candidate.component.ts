@@ -43,7 +43,7 @@ export interface DetailsCandidateOptions {
 
 export const DATA_CONTENT_CLASS = "content";
 export const MISSING_DATA_INFO_CLASS = "detailsCandidateMissingData";
-export const MISSING_DATA_INFO = "Ei vastausta";
+export const MISSING_DATA_INFO = $localize `Ei vastausta`;
 export const MISSING_DATA_INFO_HTML = `<span class="${MISSING_DATA_INFO_CLASS}">${MISSING_DATA_INFO}</span>`;
 
 const GOTO_QUESTION_DELAY = FLOATING_CARD_ANIMATION_DURATION_MS;
@@ -515,26 +515,26 @@ export class DetailsCandidateComponent
   get languages(): string {
     return this.getOrMissingMultiple("languageSkills").join(", ");
   }
-  get fundingDescription(): SafeHtml {
-    if (this.isMissing("electionBudget")) {
-      return this.sanitizer.bypassSecurityTrustHtml(MISSING_DATA_INFO_HTML);
-    }
-    let desc = "Käytän vaalein rahaa ";
-    desc += `<strong>${ this.candidate.getAnswer('electionBudget').replace("-", "—").replace(/\s*000\b/g, "\xa0000").replace(/\s*euroa/, "</strong>\xa0€") }`;
-    // if (this.isMissing("Q70")) {
-    //   desc += ` <span class="${MISSING_DATA_INFO_CLASS}">Ei vastausta ulkopuolisen rahoituksen osuudesta.</span>`;
-    // } else if (this.candidate.getAnswer('Q70') == "0%") {
-    //   desc += ", eikä ulkopuolista rahoitusta ei ole lainkaan."
-    // } else {
-    //   desc += `. Tästä ulkopuolista rahoitusta on ${ this.candidate.getAnswer('Q70').replace("-", "—").replace(/\s*%/g, "\xa0%") }`;
-    //   if (this.isMissing("Q71") || this.candidate.getAnswer('Q71') == "Joku muu") {
-    //     desc += `. <span class="${MISSING_DATA_INFO_CLASS}">Ei vastausta ulkopuolisen rahoituksen lähteestä.</span>`;
-    //   } else {
-    //     desc += `, jonka tärkeimpänä lähteenä ${ this.candidate.getAnswer('Q71') == "Yksityiset lahjoitukset" ? "ovat" : "on" } ${ this.lcFirst.transform(this.candidate.getAnswer('Q71')) }.`;
-    //   }
-    // }
-    return this.sanitizer.bypassSecurityTrustHtml(desc);
-  }
+  // get fundingDescription(): SafeHtml {
+  //   if (this.isMissing("electionBudget")) {
+  //     return this.sanitizer.bypassSecurityTrustHtml(MISSING_DATA_INFO_HTML);
+  //   }
+  //   let desc = "Käytän vaalein rahaa ";
+  //   desc += `<strong>${ this.candidate.getAnswer('electionBudget').replace("-", "—").replace(/\s*000\b/g, "\xa0000").replace(/\s*euroa/, "</strong>\xa0€") }`;
+  //   // if (this.isMissing("Q70")) {
+  //   //   desc += ` <span class="${MISSING_DATA_INFO_CLASS}">Ei vastausta ulkopuolisen rahoituksen osuudesta.</span>`;
+  //   // } else if (this.candidate.getAnswer('Q70') == "0%") {
+  //   //   desc += ", eikä ulkopuolista rahoitusta ei ole lainkaan."
+  //   // } else {
+  //   //   desc += `. Tästä ulkopuolista rahoitusta on ${ this.candidate.getAnswer('Q70').replace("-", "—").replace(/\s*%/g, "\xa0%") }`;
+  //   //   if (this.isMissing("Q71") || this.candidate.getAnswer('Q71') == "Joku muu") {
+  //   //     desc += `. <span class="${MISSING_DATA_INFO_CLASS}">Ei vastausta ulkopuolisen rahoituksen lähteestä.</span>`;
+  //   //   } else {
+  //   //     desc += `, jonka tärkeimpänä lähteenä ${ this.candidate.getAnswer('Q71') == "Yksityiset lahjoitukset" ? "ovat" : "on" } ${ this.lcFirst.transform(this.candidate.getAnswer('Q71')) }.`;
+  //   //   }
+  //   // }
+  //   return this.sanitizer.bypassSecurityTrustHtml(desc);
+  // }
   // get politicalParagonAndReason(): SafeHtml {
   //   if (this.isMissing("Q75")) {
   //     return this.sanitizer.bypassSecurityTrustHtml(MISSING_DATA_INFO_HTML);

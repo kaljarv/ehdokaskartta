@@ -1,5 +1,6 @@
 <header>
-  <h2><mat-icon>person_search</mat-icon> Hae ehdokasta</h2>
+  <h2><mat-icon>person_search</mat-icon> 
+  <ng-container i18n>Hae ehdokasta</ng-container></h2>
 </header>
 
 <form id="candidateSearch-form"
@@ -8,6 +9,8 @@
 
   <mat-form-field>
     <input type="text" 
+           i18n-placeholder
+           i18n-aria-label
            placeholder="Hae ehdokasta nimellä tai numerolla"
            aria-label="Hae ehdokasta nimellä tai numerolla"
            matInput 

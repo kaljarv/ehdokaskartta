@@ -23,7 +23,7 @@
   
     <div class="title">
       <mat-icon>info</mat-icon>
-      Mistä on kyse?
+      <ng-container i18n>Mistä on kyse?</ng-container>
     </div>
 
     <div class="content"
@@ -56,7 +56,7 @@
             (click)="skip()"
             mat-button
             class="skip">
-      <mat-icon>redo</mat-icon> Ohita tämä kysymys
+      <mat-icon>redo</mat-icon> <ng-container i18n>Ohita tämä kysymys</ng-container>
     </button>
 
     <button *ngIf="showDeleteButton"
@@ -64,7 +64,7 @@
             mat-button
             color="warn"
             class="delete">
-      <mat-icon>highlight_off</mat-icon> Poista vastauksesi tähän kysymykseen
+      <mat-icon>highlight_off</mat-icon> <ng-container i18n>Poista vastauksesi tähän kysymykseen</ng-container>
     </button>
 
   </div>
