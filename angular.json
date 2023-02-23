@@ -13,13 +13,19 @@
       "root": "",
       "sourceRoot": "src",
       "i18n": {
-        "sourceLocale": "fi"
+        "sourceLocale": "fi",
+        "locales": {
+          "se": {
+            "translation": "src/locale/messages.se.xlf"
+          }
+        }
       },
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "localize": true,
             "outputPath": "dist/candidate-map",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -68,6 +74,9 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "se": {
+              "localize": ["se"]
             }
           }
         },
@@ -79,6 +88,9 @@
           "configurations": {
             "production": {
               "browserTarget": "candidate-map:build:production"
+            },
+            "se": {
+              "browserTarget": "candidate-map:build:se"
             }
           }
         },

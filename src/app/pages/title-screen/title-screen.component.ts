@@ -3,6 +3,8 @@ import {
   NgZone,
   OnDestroy, 
   OnInit,
+  Inject,
+  LOCALE_ID
 } from '@angular/core';
 import { 
   Router 
@@ -55,7 +57,9 @@ export class TitleScreenComponent
     private ngZone: NgZone,
     private router: Router,
     private shared: SharedService,
+    @Inject(LOCALE_ID) private locale: string,
   ) {
+    console.log("Locale", locale);
     this.shared.reportPageOpen({
       currentPage: 'titleScreen',
       // hideTopBar: true,
