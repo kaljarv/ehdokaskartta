@@ -199,7 +199,7 @@
           <ng-container *ngIf="otherSocialMedia && isLink(otherSocialMedia)">
             <a [href]="otherSocialMedia"
                target="_blank">
-              {{ otherSocialMedia }}
+              {{ otherSocialMedia | tidyLink }}
             </a>
           </ng-container>
           <ng-container *ngIf="otherSocialMedia && !isLink(otherSocialMedia)">

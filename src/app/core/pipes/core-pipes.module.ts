@@ -10,6 +10,7 @@ import { LcFirstPipe } from './lc-first.pipe';
 import { SentencifyPipe } from './sentencify.pipe';
 import { ToClassNamePipe } from './to-classname.pipe';
 import { UcFirstPipe } from './uc-first.pipe';
+import { TidyLinkPipe } from './tidy-link.pipe';
 
 @NgModule({
   imports: [
@@ -25,6 +26,7 @@ import { UcFirstPipe } from './uc-first.pipe';
     SentencifyPipe,
     ToClassNamePipe,
     UcFirstPipe,
+    TidyLinkPipe,
   ],
   declarations: [
     AbbreviatePipe,
@@ -36,6 +38,7 @@ import { UcFirstPipe } from './uc-first.pipe';
     SentencifyPipe,
     ToClassNamePipe,
     UcFirstPipe,
+    TidyLinkPipe,
   ],
   providers: [
     AbbreviatePipe,
@@ -47,6 +50,7 @@ import { UcFirstPipe } from './uc-first.pipe';
     SentencifyPipe,
     ToClassNamePipe,
     UcFirstPipe,
+    TidyLinkPipe,
   ],
 })
 export class CorePipesModule {}
