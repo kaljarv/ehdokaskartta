@@ -20,9 +20,9 @@ A simplified versin of Candidate Map for use by Oma Kieli ry in the Finnish Parl
 
 ## Deploying
 
-`ng deploy` or
+Does not seem to work: `ng deploy`
 
-first `firebase use --add` then
+First `firebase use --add` then
 
 `ng build -c production; firebase deploy -m "deploy: firebase" --only hosting`
 

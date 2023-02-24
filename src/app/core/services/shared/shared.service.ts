@@ -1,7 +1,9 @@
 import { 
   Injectable, 
   EventEmitter,
-  Type 
+  Type,
+  Inject,
+  LOCALE_ID
 } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { CookieService } from '../cookie';
@@ -175,7 +177,8 @@ export class SharedService {
   constructor(
     private cookie: CookieService,
     private database: DatabaseService,
-    private matcher: MatcherService
+    private matcher: MatcherService,
+    @Inject(LOCALE_ID) private locale: string
   ) {
     // Set up mapInteraction
     this.showCandidate.subscribe( id => {
@@ -362,6 +365,11 @@ export class SharedService {
 
   public getUnderMaintenance(): Promise<boolean> {
     return this.database.getUnderMaintenance();
+  }
+
+  public switchLanguage(): void {
+    const url = window.location.origin + (this.locale === 'fi' ? '/se' : '/fi') + '/' + PATHS.constituencyPicker;
+    window.location.href = url;
   }
 
 }

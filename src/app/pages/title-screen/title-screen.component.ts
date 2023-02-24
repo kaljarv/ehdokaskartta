@@ -2,9 +2,7 @@ import {
   Component, 
   NgZone,
   OnDestroy, 
-  OnInit,
-  Inject,
-  LOCALE_ID
+  OnInit
 } from '@angular/core';
 import { 
   Router 
@@ -56,10 +54,8 @@ export class TitleScreenComponent
     private matcher: MatcherService,
     private ngZone: NgZone,
     private router: Router,
-    private shared: SharedService,
-    @Inject(LOCALE_ID) private locale: string,
+    private shared: SharedService
   ) {
-    console.log("Locale", locale);
     this.shared.reportPageOpen({
       currentPage: 'titleScreen',
       // hideTopBar: true,
@@ -123,7 +119,7 @@ export class TitleScreenComponent
   }
 
   public switchLanguage(): void {
-    throw new Error("Method not implemented.");
+    this.shared.switchLanguage();
   }
 
   // public onBackgroundClick(event: MouseEvent): void {

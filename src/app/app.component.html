@@ -98,6 +98,12 @@
           <ng-container i18n>Tietoja palvelusta</ng-container>
         </a>
 
+        <a mat-list-item 
+           (click)="switchLanguage()">
+          <mat-icon matListIcon>refresh</mat-icon>
+          {{ switchLanguageLabel }}
+        </a>
+
     </mat-nav-list>
   </mat-sidenav>
 

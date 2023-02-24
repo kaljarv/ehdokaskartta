@@ -1,7 +1,9 @@
 import { Component, 
          DoCheck,
          ViewChild,
-         ElementRef } from '@angular/core';
+         ElementRef,
+         Inject,
+         LOCALE_ID } from '@angular/core';
 import { Router, 
          NavigationStart } from '@angular/router';
 import { trigger,
@@ -184,7 +186,8 @@ export class AppComponent
     // private onboarding: OnboardingService,
     private router: Router,
     private shared: SharedService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    @Inject(LOCALE_ID) private locale: string
   ) {
 
     this.shared.loadingState.subscribe( state => {
@@ -521,6 +524,15 @@ export class AppComponent
 
   public updateContentTopMargin(): void {
     this.contentTopMargin = `${this.shared.topBarOffset.withExpansion.top}px`;
+  }
+
+  public switchLanguage(): void {
+    this.toggleSideNav({action: 'close'});
+    this.shared.switchLanguage();
+  }
+
+  get switchLanguageLabel(): string {
+    return this.locale == 'fi' ? 'På svenska' : 'Suomeksi';
   }
 
   get resultViewType(): ResultViewType {

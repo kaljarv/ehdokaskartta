@@ -2,6 +2,7 @@ import {
   Inject,
   Injectable, 
   InjectionToken, 
+  LOCALE_ID,
   EventEmitter 
 } from '@angular/core';
 import { BehaviorSubject  } from 'rxjs';
@@ -244,6 +245,7 @@ export class MatcherService {
     @Inject(MATCHER_CONFIG) config: MatcherConfig,
     private cookie: CookieService,
     private database: DatabaseService,
+    @Inject(LOCALE_ID) private locale: string,
   ) {
     this.config = {...DEFAULT_MATCHER_CONFIG, ...(config || {})};
     // Add subscriptions to take care of data status updates
@@ -1233,7 +1235,8 @@ export class MatcherService {
   public saveSessionStatistics(): void {
     if (this.statisticsSaved) return;
     const stats = {
-      answers: this.getAnswerableQuestions(true).map(q => q.voterAnswer)
+      answers: this.getAnswerableQuestions(true).map(q => q.voterAnswer),
+      locale: this.locale,
     };
     this.database.saveSessionStatistics(stats, () => {
       this.statisticsSaved = true;
