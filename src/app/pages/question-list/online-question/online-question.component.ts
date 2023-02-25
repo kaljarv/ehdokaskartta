@@ -138,7 +138,7 @@ export class OnlineQuestionComponent
 
     // this._initDistributionChart();
 
-    this.shared.logEvent('questions_show', {id: this.question.id});
+    // this.shared.logEvent('questions_show', {id: this.question.id});
   }
 
   ngAfterViewInit(): void {
@@ -174,7 +174,7 @@ export class OnlineQuestionComponent
 
   skip(event?: Event): void {
     this.matcher.setSkippedByVoter(this.question, true);
-    this.shared.logEvent('questions_skip', {id: this.question.id});
+    // this.shared.logEvent('questions_skip', {id: this.question.id});
     setTimeout(() => this.dismiss(event), CLOSE_DELAY);
   }
 
@@ -202,13 +202,13 @@ export class OnlineQuestionComponent
 
   set voterAnswer(value: string | number[]) {
     this.matcher.setVoterAnswer(this.question, Array.isArray(value) ? value : Number(value));
-    this.shared.logEvent('questions_answer', {id: this.question.id});
+    // this.shared.logEvent('questions_answer', {id: this.question.id});
     // setTimeout(() => this.dismiss(), CLOSE_DELAY);
   }
 
   public deleteVoterAnswer(): void {
     this.matcher.deleteVoterAnswer(this.question.id);
-    this.shared.logEvent('questions_delete_answer', {id: this.question.id});
+    // this.shared.logEvent('questions_delete_answer', {id: this.question.id});
     setTimeout(() => this.dismiss(), CLOSE_DELAY);
   }
 
@@ -232,8 +232,8 @@ export class OnlineQuestionComponent
    */
   public toggleAdditionalInfo(event?: Event): void {
     this.additionalInfoExpanded = !this.additionalInfoExpanded;
-    if (this.additionalInfoExpanded)
-      this.shared.logEvent('questions_show_additional_info');
+    // if (this.additionalInfoExpanded)
+    //   this.shared.logEvent('questions_show_additional_info');
     event?.preventDefault();
   }
 

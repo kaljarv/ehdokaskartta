@@ -337,8 +337,8 @@ export class DetailsCandidateComponent
 
   public toggle(): void {
     this.floatingCardRef.toggle();
-    if (!this.isMaximised)
-      this.shared.logEvent('candidate_maximise');
+    // if (!this.isMaximised)
+    //   this.shared.logEvent('candidate_maximise');
   }
 
   public peek(): void {
@@ -347,7 +347,7 @@ export class DetailsCandidateComponent
 
   public maximise(): void {
     this.floatingCardRef.maximise();
-    this.shared.logEvent('candidate_maximise');
+    // this.shared.logEvent('candidate_maximise');
   }
 
   public dismiss(event: MouseEvent = null): void {
@@ -376,11 +376,11 @@ export class DetailsCandidateComponent
       this.expanderDisagreed.expandAndScrollTo(elementId);
     }, delay);
 
-    this.shared.logEvent('candidate_maximise_and_goto');
+    // this.shared.logEvent('candidate_maximise_and_goto');
   }
 
   public logExpand(category: string, scrollTo: string = null): void {
-    this.shared.logEvent('candidate_expand_answers');
+    // this.shared.logEvent('candidate_expand_answers');
   }
 
   public getVoterAnswer(question: QuestionNumeric): number | number[] {
@@ -625,6 +625,6 @@ export class DetailsCandidateComponent
   }
   set lastOpenTab(value: number) {
     this.shared.lastOpenCandidateDetailsTab = value;
-    this.shared.logEvent('candidate_change_tab');
+    // this.shared.logEvent('candidate_change_tab');
   }
 }

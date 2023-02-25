@@ -1,14 +1,14 @@
 @import 'variables.scss'
 
-$titleHeight: 55vh
+$outerPadding: $margin-L
 
 :host
   display: flex
-  padding: $margin-L
+  padding: $outerPadding
   width: 100%
   min-height: 100vh
   background-color: $color-brandedBg
-  color: $color-primary
+  color: $color-text
   text-align: center
   flex-flow: column nowrap
   justify-content: space-between
@@ -22,38 +22,13 @@ $titleHeight: 55vh
   z-index: $zIndex-7
 
 .title
-  flex: 0 0 $titleHeight
-
-  h1 
-    position: relative
-    font-size: $fontSize-XXL
-    font-weight: bold
-    margin-top: 10vh
-    // To offset the badge
-    // padding-left: $fontSize-XS * 3
-    // text-shadow: -2px -2px 0 $color-primary, 2px -2px 0 $color-primary, -2px  2px 0 $color-primary, 2px 2px 0 $color-primary
-    
-    // .badgeAnchor
-    //   position: relative
-
-    // .betaBadge
-    //   @include allCaps
-    //   background-color: $color-nega
-    //   border-radius: $fontSize-XS
-    //   border: 2px solid $color-primary
-    //   color: $color-primary
-    //   font-size: $fontSize-XS
-    //   font-weight: bold
-    //   padding: $margin-XS $margin-S
-    //   position: absolute
-    //   text-shadow: none
-    //   top: 0px
-    //   right: 0px
-    //   transform: scale(0.8) translate(80%, -25%)
-
-    // .subtitle
-    //   @include allCaps
-    //   font-size: $fontSize-L
+  margin-top: 7rem // Balance out top-bar
+  margin-bottom: $margin-L
+  // h1 
+  //   position: relative
+  //   font-size: $fontSize-XXL
+  //   font-weight: bold
+  //   margin-top: 10vh
 
   #vignette
     max-width: min(100%, #{$maxWidth-S})
@@ -69,12 +44,28 @@ $titleHeight: 55vh
 
 .description
   flex: 1 1 auto
+  margin: 0 auto
 
   @media (min-width: $breakpoint-M)
-    column-count: 2
+    display: flex
+    flex-direction: row
+    width: 100%
+    max-width: 50rem
+    justify-content: space-around
+    align-items: flex-start
 
   > div
-    margin-bottom: $margin-L
+    margin: 0 auto $margin-L auto
+
+    > p
+      max-width: 22rem // $maxWidth-S
+      margin: 0 auto $margin-S auto
+
+      &:first-child
+        font-weight: bold
+
+      &:not(:first-child)
+        font-size: $fontSize-S
 
   .info
     font-size: $fontSize-S
@@ -111,6 +102,7 @@ $titleHeight: 55vh
 // .clickableArea:hover + * #nextButton
 //   background-color: $color-negaSelectedBg
 
+footer,
 .logos
   // position: absolute
   // text-align: center
@@ -118,15 +110,24 @@ $titleHeight: 55vh
   // bottom: 0
   // left: 0
   // width: 100%
+  background-color: $color-nega
+  color: $color-text
   flex: 0 1 auto
   display: flex
   flex-flow: column nowrap
   justify-content: center
   align-items: center
+  margin: -$outerPadding
   margin-top: $margin-L
+  padding: 1.5 * $outerPadding $outerPadding
+
+  #publisherLogo
+    max-width: min(14rem, 40vw)
 
   > p
     font-size: $fontSize-S
+    line-height: $lineHeight-S
+    margin-top: $margin-L
     text-align: center
 
   > div

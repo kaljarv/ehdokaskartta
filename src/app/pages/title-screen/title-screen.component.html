@@ -8,10 +8,6 @@
 <section class="title clickableArea"
          (click)="goForward()">
 
-    <h1 i18n>
-      Kielivaalikone 2023 Språkvalkompass
-    </h1>
-
     <img id="vignette"
          src="assets/images/vignette.png"
          i18n-alt
@@ -24,7 +20,10 @@
   <div class="description-primaryLanguage">
 
     <p i18n>
-      Onko sinulle tärkeää, että kansalliskielet suomi ja ruotsi säilyvät yhteisinä, täysimittaisina kielinämme Suomessa? <a href="https://omakieli.fi/" target="_blank">Oma kieli ry:n</a> toteuttamassa Kielivaalikoneessa pääset puntaroimaan omia ja eduskuntavaaliehdokkaiden kielipoliittisia näkemyksiä. Vastaa kysymyksiin ja löydä kansalliskielimyönteinen ehdokas!
+      Onko mielestäsi tärkeää, että suomi ja ruotsi säilyvät yhteisinä kielinämme? Pitääkö englannin käyttöä palveluiden ja koulutuksen kielenä lisätä?
+    </p>
+    <p i18n>
+      Oma kieli ry:n Kielivaalikoneessa pääset vertailemaan omia ja eduskuntavaaliehdokkaiden kantoja kielipoliittisiin kysymyksiin.
     </p>
 
     <button id="nextButton"
@@ -39,8 +38,11 @@
 
   <div class="description-secondaryLanguage">
 
-    <p i18n="Intro toisella kielellä">
-      XXX På svenska Onko sinulle tärkeää, että kansalliskielet suomi ja ruotsi säilyvät yhteisinä, täysimittaisina kielinämme Suomessa? <a href="https://omakieli.fi/" target="_blank">Oma kieli ry:n</a> toteuttamassa Kielivaalikoneessa pääset puntaroimaan omia ja eduskuntavaaliehdokkaiden kielipoliittisia näkemyksiä. Vastaa kysymyksiin ja löydä kansalliskielimyönteinen ehdokas!
+    <p i18n>
+      På svenska Onko mielestäsi tärkeää, että suomi ja ruotsi säilyvät yhteisinä kielinämme? Pitääkö englannin käyttöä palveluiden ja koulutuksen kielenä lisätä?
+    </p>
+    <p i18n>
+      På svenska Oma kieli ry:n Kielivaalikoneessa pääset vertailemaan omia ja eduskuntavaaliehdokkaiden kantoja kielipoliittisiin kysymyksiin.
     </p>
 
     <button id="nextButton"
@@ -55,9 +57,20 @@
 
 </section>
 
-<section class="logos">
-  <p i18n>Kielivaalikonetta ovat tukeneet</p>
-  <div>
+<footer>
+  <a mat-button
+     href="https://omakieli.fi/"
+     (click)="$event.stopPropagation()"
+     i18n-title
+     title="Oma Kieli ry"
+     target="_blank">
+    <img id="publisherLogo"
+        src="assets/images/oma-kieli-logo-primary.png"
+        i18n-alt 
+        alt="Oma Kieli ry:n logo" />
+  </a>
+  <p i18n>Kielivaalikone on toteutettu Suomen Kulttuurirahaston tuella.</p>
+  <!-- <div>
     <a mat-button
       href="https://www.skr.fi"
       (click)="$event.stopPropagation()"
@@ -67,13 +80,13 @@
       <img id="logos-skr"
           src="assets/images/logo-skr.svg" />
     </a>
-    <!-- <a mat-button
+    <a mat-button
       href="http://kaljarv.com/"
       (click)="$event.stopPropagation()"
       title="Kalle Järvenpää Design"
       target="_blank">
       <img id="logos-kaljarv"
           src="assets/images/kaljarv-logo-white.svg" />
-    </a> -->
-  </div>
-</section>
+    </a>
+  </div> -->
+</footer>

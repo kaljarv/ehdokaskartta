@@ -75,6 +75,9 @@
                 }
               ]
             },
+            "fi": {
+              "localize": ["fi"]
+            },
             "se": {
               "localize": ["se"]
             }
@@ -88,6 +91,9 @@
           "configurations": {
             "production": {
               "browserTarget": "candidate-map:build:production"
+            },
+            "fi": {
+              "browserTarget": "candidate-map:build:fi"
             },
             "se": {
               "browserTarget": "candidate-map:build:se"
