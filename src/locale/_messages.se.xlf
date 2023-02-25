@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="fi" datatype="plaintext" original="ng2.template">
     <body>
       <trans-unit id="f2de0aeb76746efe4a3ee2746e1e1df800c1daf3" datatype="html">
         <source> Palaa alkuun </source>
-        <target state="translated"> Tillbaka till start </target>
+        <target>SE Palaa alkuun </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">9,10</context>
@@ -12,7 +12,7 @@
       </trans-unit>
       <trans-unit id="84ac5998dd1c08148110929042475f243875b8c0" datatype="html">
         <source> Siirry vaalipiirin valintaan </source>
-        <target state="translated"> Gå till val av valkrets </target>
+        <target>SE Siirry vaalipiirin valintaan </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">15,16</context>
@@ -20,7 +20,7 @@
       </trans-unit>
       <trans-unit id="5bbc596efc802bebb83c4d6a5f0de4faeec21d42" datatype="html">
         <source> Siirry kysymyksiin </source>
-        <target state="translated"> Gå till frågorna </target>
+        <target>SE Siirry kysymyksiin </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">22,23</context>
@@ -32,7 +32,7 @@
       </trans-unit>
       <trans-unit id="64789e52e8d889b6bfb78026d47f7f676134c4be" datatype="html">
         <source>Vaalipiiri täytyy valita ennen kysymyksiin vastaamista</source>
-        <target state="translated">Välj först valkrets och svara sedan på frågorna</target>
+        <target>SEVaalipiiri täytyy valita ennen kysymyksiin vastaamista</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">27</context>
@@ -40,7 +40,7 @@
       </trans-unit>
       <trans-unit id="4b5829dec63e396480bb0933092ffc77819ab2d3" datatype="html">
         <source> Siirry tuloksiin </source>
-        <target state="translated"> Gå till resultaten </target>
+        <target>SE Siirry tuloksiin </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">37,38</context>
@@ -52,7 +52,7 @@
       </trans-unit>
       <trans-unit id="ee07b0c42bf6f74e55d3119e6f4b7828d4cd8b43" datatype="html">
         <source>Kysymyksiin täytyy vastata ennen tulosten esittämistä</source>
-        <target state="translated">Svara först på frågorna och välj sedan resultaten</target>
+        <target>SEKysymyksiin täytyy vastata ennen tulosten esittämistä</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">42</context>
@@ -60,7 +60,7 @@
       </trans-unit>
       <trans-unit id="32bc2662c41989943c1a4a14b749f56cd54d5374" datatype="html">
         <source> Selaa ehdokkaita vastaamatta kysymyksiin </source>
-        <target state="translated"> Bläddra bland kandidaterna utan att svara på frågorna </target>
+        <target>SE Selaa ehdokkaita vastaamatta kysymyksiin </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">52,53</context>
@@ -72,7 +72,7 @@
       </trans-unit>
       <trans-unit id="592236469bfa3ba3d717716f1dd465f1bc3c6171" datatype="html">
         <source>Vaalipiiri täytyy valita ennen ehdokkaiden selaamista</source>
-        <target state="translated">Välj först valkrets innan du bläddrar bland kandidaterna</target>
+        <target>SEVaalipiiri täytyy valita ennen ehdokkaiden selaamista</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">57</context>
@@ -80,10 +80,10 @@
       </trans-unit>
       <trans-unit id="0e53cf961eaee76ff1b93cf09aa324f776e2ec01" datatype="html">
         <source>Nollaa tallennetut vastaukset</source>
-        <target state="translated">Återställ svaren</target>
+        <target>SENollaa tallennetut vastaukset</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
-          <context context-type="line number">81</context>
+          <context context-type="linenumber">81</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
@@ -92,7 +92,7 @@
       </trans-unit>
       <trans-unit id="64e238295b2851c615662ef3a539b3f300641a56" datatype="html">
         <source>Tietoja palvelusta</source>
-        <target state="translated">Information om tjänsten</target>
+        <target>SETietoja palvelusta</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">98</context>
@@ -100,7 +100,7 @@
       </trans-unit>
       <trans-unit id="482c4f9cc503a77d311b8550cfd0fedad64ce7d4" datatype="html">
         <source>Kotikuntasi</source>
-        <target state="translated">Din hemkommun</target>
+        <target>SEKotikuntasi</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">120</context>
@@ -112,7 +112,7 @@
       </trans-unit>
       <trans-unit id="3a7603ec1573093d973879489bb3ef5e4523ea89" datatype="html">
         <source>Kysymykset</source>
-        <target state="translated">Frågor</target>
+        <target>SEKysymykset</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">121</context>
@@ -120,7 +120,7 @@
       </trans-unit>
       <trans-unit id="37d067b4b9b0b18f62f7f5a18fd057c8680e6cd9" datatype="html">
         <source>Ehdokkaat</source>
-        <target state="translated">Kandidater</target>
+        <target>SEEhdokkaat</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">122</context>
@@ -128,7 +128,7 @@
       </trans-unit>
       <trans-unit id="b5b263c332edb45a4eac0d868edd7c53075fb874" datatype="html">
         <source>Tulokset</source>
-        <target state="translated">Resultat</target>
+        <target>SETulokset</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">123</context>
@@ -136,7 +136,7 @@
       </trans-unit>
       <trans-unit id="e1bc4fdd5fe80ede578fa102188a650edc2d9c74" datatype="html">
         <source>Oma Kieli ry:n logo</source>
-        <target state="translated">Eget språk rf logo</target>
+        <target>SEOma Kieli ry:n logo</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">137</context>
@@ -144,7 +144,7 @@
       </trans-unit>
       <trans-unit id="0e026fa9d2de625952f0712ef6e7c647a8f8cc96" datatype="html">
         <source>Suodata ehdokkaita</source>
-        <target state="translated">Filtrera kandidater</target>
+        <target>SESuodata ehdokkaita</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">146</context>
@@ -160,7 +160,7 @@
       </trans-unit>
       <trans-unit id="57a02332cc4d900827ede314e9ef4deca6c44f2a" datatype="html">
         <source>Hae ehdokasta nimellä tai numerolla</source>
-        <target state="translated">Sök kandidat med namn eller nummer</target>
+        <target>SEHae ehdokasta nimellä tai numerolla</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">159</context>
@@ -180,7 +180,7 @@
       </trans-unit>
       <trans-unit id="dcb6266b09d648ac11cf6ff0a113944aa502aec4" datatype="html">
         <source>Avaa muistilista</source>
-        <target state="translated">Öppna minneslistan</target>
+        <target>SEAvaa muistilista</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">171</context>
@@ -192,7 +192,7 @@
       </trans-unit>
       <trans-unit id="43b4e3f86280be75386be4841bb5abed109f1a2b" datatype="html">
         <source>Kielivaalikone on hetkellisesti pois käytöstä huollon vuoksi</source>
-        <target state="translated">Valkompassen är tillfälligt ur bruk på grund av underhållsarbete</target>
+        <target>SEKielivaalikone on hetkellisesti pois käytöstä huollon vuoksi</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">264</context>
@@ -200,7 +200,7 @@
       </trans-unit>
       <trans-unit id="bdf12f998fed90e0d780855cab5537a29547ef5f" datatype="html">
         <source>Pahoittelemme vaivaa! Korjaamme ongelmaa parasta aikaa ja pyydämme palaamaan Kielivaalikoneeseen myöhemmin.</source>
-        <target state="translated">Vi ber om ursäkt för besväret! Problemet åtgärdas som bäst och vi ber dig återkomma till Valkompassen om språk lite senare.</target>
+        <target>SEPahoittelemme vaivaa! Korjaamme ongelmaa parasta aikaa ja pyydämme palaamaan Kielivaalikoneeseen myöhemmin.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">266</context>
@@ -208,7 +208,7 @@
       </trans-unit>
       <trans-unit id="2519510864956283764" datatype="html">
         <source>Ladataan…</source>
-        <target state="needs-translation">Hämtar data</target>
+        <target>SELadataan…</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.ts</context>
           <context context-type="linenumber">167</context>
@@ -216,7 +216,7 @@
       </trans-unit>
       <trans-unit id="1579173504821608597" datatype="html">
         <source>Seuraava</source>
-        <target state="needs-translation">Nästa</target>
+        <target>SESeuraava</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.ts</context>
           <context context-type="linenumber">602</context>
@@ -224,7 +224,7 @@
       </trans-unit>
       <trans-unit id="1508318804534372880" datatype="html">
         <source>Täysin eri mieltä</source>
-        <target state="translated">Helt av annan åsikt</target>
+        <target>SETäysin eri mieltä</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/services/database/question/question-likert-seven.ts</context>
           <context context-type="linenumber">12</context>
@@ -236,7 +236,7 @@
       </trans-unit>
       <trans-unit id="2731303256451601672" datatype="html">
         <source>Neutraali</source>
-        <target state="translated">Neutral</target>
+        <target>SENeutraali</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/services/database/question/question-likert-seven.ts</context>
           <context context-type="linenumber">15</context>
@@ -248,7 +248,7 @@
       </trans-unit>
       <trans-unit id="5352643505673900351" datatype="html">
         <source>Täysin samaa mieltä</source>
-        <target state="translated">Instämmer helt</target>
+        <target>SETäysin samaa mieltä</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/services/database/question/question-likert-seven.ts</context>
           <context context-type="linenumber">18</context>
@@ -260,7 +260,7 @@
       </trans-unit>
       <trans-unit id="6279215526528650912" datatype="html">
         <source>Vähintään</source>
-        <target state="translated">Minst</target>
+        <target>SEVähintään</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/services/matcher/candidate-filter/candidate-filter-number-range.ts</context>
           <context context-type="linenumber">35</context>
@@ -268,7 +268,7 @@
       </trans-unit>
       <trans-unit id="3561284530532452357" datatype="html">
         <source>Korkeintaan</source>
-        <target state="translated">Högst</target>
+        <target>SEKorkeintaan</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/services/matcher/candidate-filter/candidate-filter-number-range.ts</context>
           <context context-type="linenumber">36</context>
@@ -276,7 +276,7 @@
       </trans-unit>
       <trans-unit id="4055015103387378112" datatype="html">
         <source>Kynnyskysymyksen perusteella</source>
-        <target state="translated">Enligt avgörande frågor</target>
+        <target>SEKynnyskysymyksen perusteella</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/services/matcher/matcher.service.ts</context>
           <context context-type="linenumber">144</context>
@@ -284,7 +284,7 @@
       </trans-unit>
       <trans-unit id="924532486319852824" datatype="html">
         <source>Näytä vain ehdokkaat, jotka ovat samaa tai lähes samaa mieltä kanssasi valituista kysymyksistä.</source>
-        <target state="translated">Visa endast kandidater som är av samma åsikt eller nästan samma åsikt med dig i utvalda frågor.</target>
+        <target>SENäytä vain ehdokkaat, jotka ovat samaa tai lähes samaa mieltä kanssasi valituista kysymyksistä.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/services/matcher/matcher.service.ts</context>
           <context context-type="linenumber">145</context>
@@ -292,7 +292,7 @@
       </trans-unit>
       <trans-unit id="5066973225252860570" datatype="html">
         <source>Iän perusteella</source>
-        <target state="translated">Ålder</target>
+        <target>SEIän perusteella</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/services/matcher/matcher.service.ts</context>
           <context context-type="linenumber">153</context>
@@ -300,7 +300,7 @@
       </trans-unit>
       <trans-unit id="4316317252896165505" datatype="html">
         <source>vuotta</source>
-        <target state="translated">år</target>
+        <target>SEvuotta</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/services/matcher/matcher.service.ts</context>
           <context context-type="linenumber">154</context>
@@ -308,7 +308,7 @@
       </trans-unit>
       <trans-unit id="5208061403803107193" datatype="html">
         <source>Sukupuolen perusteella</source>
-        <target state="translated">Kön</target>
+        <target>SESukupuolen perusteella</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/services/matcher/matcher.service.ts</context>
           <context context-type="linenumber">164</context>
@@ -316,7 +316,7 @@
       </trans-unit>
       <trans-unit id="628414692420355197" datatype="html">
         <source>Puolueen perusteella</source>
-        <target state="translated">Parti</target>
+        <target>SEPuolueen perusteella</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/services/matcher/matcher.service.ts</context>
           <context context-type="linenumber">172</context>
@@ -324,7 +324,7 @@
       </trans-unit>
       <trans-unit id="2cc52f4aac89ac1f4a7ef7970e665f58e23c06c8" datatype="html">
         <source>Avaa valikko</source>
-        <target state="translated">Öppna meny</target>
+        <target>SEAvaa valikko</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/about-screen/about-screen.component.html</context>
           <context context-type="linenumber">5</context>
@@ -332,7 +332,7 @@
       </trans-unit>
       <trans-unit id="14702bff936f0adc23dc17df6d88bbeef8611436" datatype="html">
         <source>Palaa alkuun</source>
-        <target state="translated">Tillbaka till start</target>
+        <target>SEPalaa alkuun</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/about-screen/about-screen.component.html</context>
           <context context-type="linenumber">12</context>
@@ -348,15 +348,15 @@
       </trans-unit>
       <trans-unit id="d9369f5937a87fcc568b2fce40df7d59c2d42810" datatype="html">
         <source> Tietoa Kielivaalikoneesta </source>
-        <target state="translated"> Information om Valkompassen om språk </target>
+        <target>SE Tietoa Kielivaalikoneesta </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/about-screen/about-screen.component.html</context>
           <context context-type="linenumber">21,22</context>
         </context-group>
       </trans-unit>
       <trans-unit id="23e409cb1677af5747057d0061b8da0d2a4a369e" datatype="html">
-        <source> Onko mielestäsi tärkeää, että suomi ja ruotsi säilyvät yhteisinä kielinämme? Pitääkö englannin käyttöä palveluiden ja koulutuksen kielenä lisätä? <x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://omakieli.fi/&quot; target=&quot;_blank&quot;&gt;" />Oma kieli ry:n<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;" /> Kielivaalikoneessa pääset tutkimaan eduskuntavaaliehdokkaiden kantoja kielipoliittisiin kysymyksiin ja vertailemaan niitä omiisi. </source>
-        <target state="translated"> Anser du det vara viktigt att finskan och svenskan bevarar sin ställning som våra gemensamma språk? Borde vi ha mera engelska inom service och utbildning? <x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://omakieli.fi/&quot; target=&quot;_blank&quot;&gt;" />Eget språk rf<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;" /> genomför en Valkompass om språk där du kan gå igenom dina egna och riksdagskandidaternas språkpolitiska synpunkter. </target>
+        <source> Onko sinulle tärkeää, että kansalliskielet suomi ja ruotsi säilyvät yhteisinä, täysimittaisina kielinämme Suomessa? <x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://omakieli.fi/&quot; target=&quot;_blank&quot;&gt;"/>Oma kieli ry:n<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/> toteuttamassa Kielivaalikoneessa pääset puntaroimaan omia ja eduskuntavaaliehdokkaiden kielipoliittisia näkemyksiä. Vastaa kysymyksiin ja löydä kansalliskielimyönteinen ehdokas! </source>
+        <target>SE Onko sinulle tärkeää, että kansalliskielet suomi ja ruotsi säilyvät yhteisinä, täysimittaisina kielinämme Suomessa? <x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://omakieli.fi/&quot; target=&quot;_blank&quot;&gt;"/>Oma kieli ry:n<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/> toteuttamassa Kielivaalikoneessa pääset puntaroimaan omia ja eduskuntavaaliehdokkaiden kielipoliittisia näkemyksiä. Vastaa kysymyksiin ja löydä kansalliskielimyönteinen ehdokas! </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/about-screen/about-screen.component.html</context>
           <context context-type="linenumber">25,26</context>
@@ -364,7 +364,7 @@
       </trans-unit>
       <trans-unit id="2478afc30086dde141dd463ea41c514f42bf7cf2" datatype="html">
         <source>Tietosuoja</source>
-        <target state="translated">Dataskydd</target>
+        <target>SETietosuoja</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/about-screen/about-screen.component.html</context>
           <context context-type="linenumber">28</context>
@@ -372,23 +372,23 @@
       </trans-unit>
       <trans-unit id="d63e9e35f89518b54b3b0090725235b5202c1265" datatype="html">
         <source> Kielivaalikone käyttää vain teknisiä evästeitä, jotka parantavat palvelun toimivuutta eikä niiden tietoja tallenneta palvelimelle. Evästeiden avulla voit esimerkiksi jatkaa vaalikoneen käyttöä myöhemmin, jos joudut keskeyttämään sen. </source>
-        <target state="translated"> Valkompassen använder endast tekniska kakor som förbättrar tjänsten och de sparas inte på servern. Kakorna låter dig till exempel pausa och fortsätta använda valkompassen senare. </target>
+        <target>SE Kielivaalikone käyttää vain teknisiä evästeitä, jotka parantavat palvelun toimivuutta eikä niiden tietoja tallenneta palvelimelle. Evästeiden avulla voit esimerkiksi jatkaa vaalikoneen käyttöä myöhemmin, jos joudut keskeyttämään sen. </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/about-screen/about-screen.component.html</context>
           <context context-type="linenumber">31,32</context>
         </context-group>
       </trans-unit>
       <trans-unit id="403383b8185ec9c53e24062b1aa38c3a43ba9018" datatype="html">
-        <source> Tallennamme vastauksiin liittyvää tilastotietoa anonyymisti. Sitä ei voida yhdistää tiettyyn käyttäjään, sillä tietojen mukana ei tallenneta mitään tunnistetietoja, kuten IP-osoitetta. </source>
-        <target state="translated">Statistiska uppgifter från svaren sparas anonymt. De kan inte spåras till en enskild användare för tillsammans med svaren sparas inga identifieringsuppgifter, såsom IP-adress. </target>
+        <source> Tallennamme vastauksiin liittyvää tilastotietoa anonyymisti. Sitä ei voida yhdistää tiettyyn käyttäjään, sillä tietojen mukana ei tallenneta mitään tunnistetietoja, kuten IP-osoitetta tai edes ajankohtaa. </source>
+        <target>SE Tallennamme vastauksiin liittyvää tilastotietoa anonyymisti. Sitä ei voida yhdistää tiettyyn käyttäjään, sillä tietojen mukana ei tallenneta mitään tunnistetietoja, kuten IP-osoitetta tai edes ajankohtaa. </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/about-screen/about-screen.component.html</context>
           <context context-type="linenumber">35,36</context>
         </context-group>
       </trans-unit>
       <trans-unit id="492f0b9eae00dd4b70050b60b6117958ca8dbc61" datatype="html">
-        <source> Paina nappia ”<x id="INTERPOLATION" equiv-text="{{ nextButtonText }}" />” edetäksesi. </source>
-        <target state="translated">Tryck på ”<x id="INTERPOLATION" equiv-text="{{ nextButtonText }}" />” för att fortsätta. </target>
+        <source> Paina nappia ”<x id="INTERPOLATION" equiv-text="{{ nextButtonText }}"/>” edetäksesi. </source>
+        <target>SE Paina nappia ”<x id="INTERPOLATION" equiv-text="{{ nextButtonText }}"/>” edetäksesi. </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/constituency-picker/constituency-picker.component.html</context>
           <context context-type="linenumber">24,26</context>
@@ -396,7 +396,7 @@
       </trans-unit>
       <trans-unit id="4508520085140832860" datatype="html">
         <source>Siirry kysymyksiin</source>
-        <target state="translated">Gå till frågorna</target>
+        <target>SESiirry kysymyksiin</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/constituency-picker/constituency-picker.component.ts</context>
           <context context-type="linenumber">37</context>
@@ -404,7 +404,7 @@
       </trans-unit>
       <trans-unit id="1581558369076436773" datatype="html">
         <source>Valitse kotikuntasi</source>
-        <target state="translated">Din hemkommun</target>
+        <target>SEValitse kotikuntasi</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/constituency-picker/constituency-picker.component.ts</context>
           <context context-type="linenumber">171</context>
@@ -412,7 +412,7 @@
       </trans-unit>
       <trans-unit id="a13322be1fd66d8120b6e6b34e5d383a7f381db9" datatype="html">
         <source> Palaa alkuun </source>
-        <target state="translated">Tillbaka till start </target>
+        <target>SE Palaa alkuun </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/error-screen/error-screen.component.html</context>
           <context context-type="linenumber">13,14</context>
@@ -420,7 +420,7 @@
       </trans-unit>
       <trans-unit id="8987832811292903210" datatype="html">
         <source>Sovelluksessa tapahtui virhe, pahoittelut!</source>
-        <target state="translated">Ett fel har uppstått, vi ber om ursäkt!</target>
+        <target>SESovelluksessa tapahtui virhe, pahoittelut!</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/error-screen/error-screen.component.ts</context>
           <context context-type="linenumber">16</context>
@@ -428,7 +428,7 @@
       </trans-unit>
       <trans-unit id="d9a05d920cf50e31af4b5f8afcafa57ac1b972b5" datatype="html">
         <source>Siirry tuloksiin</source>
-        <target state="translated">Gå till resultaten</target>
+        <target>SESiirry tuloksiin</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/question-list/online-question-list.component.html</context>
           <context context-type="linenumber">31</context>
@@ -436,15 +436,15 @@
       </trans-unit>
       <trans-unit id="7371267873155364647" datatype="html">
         <source>Ladataan kysymyksiä…</source>
-        <target state="translated">Hämtar data...</target>
+        <target>SELadataan kysymyksiä…</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/question-list/online-question-list.component.ts</context>
           <context context-type="linenumber">100</context>
         </context-group>
       </trans-unit>
       <trans-unit id="493230003247442849" datatype="html">
-        <source>Valitettavasti yksikään vaalipiirin <x id="PH" equiv-text="this.matcher.constituency" /> ehdokkaista ei ole vastannut Kielivaalikoneen kysymyksiin</source>
-        <target state="translated">Tyvärr har ingen av valkretsens <x id="PH" equiv-text="this.matcher.constituency" /> kandidater svarat på frågorna i Valkompassen om språk</target>
+        <source>Valitettavasti yksikään vaalipiirin <x id="PH" equiv-text="this.matcher.constituency"/> ehdokkaista ei ole vastannut Kielivaalikoneen kysymyksiin</source>
+        <target>SEValitettavasti yksikään vaalipiirin <x id="PH" equiv-text="this.matcher.constituency"/> ehdokkaista ei ole vastannut Kielivaalikoneen kysymyksiin</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/question-list/online-question-list.component.ts</context>
           <context context-type="linenumber">134</context>
@@ -452,7 +452,7 @@
       </trans-unit>
       <trans-unit id="4acac31cb52b5492f72e0e62be377e5f3f4180c6" datatype="html">
         <source>Mistä on kyse?</source>
-        <target state="translated">Vad betyder det?</target>
+        <target>SEMistä on kyse?</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/question-list/online-question/online-question.component.html</context>
           <context context-type="linenumber">26</context>
@@ -460,7 +460,7 @@
       </trans-unit>
       <trans-unit id="40a72fe126868e8b3c3b4a44d2a520a5a5bced2a" datatype="html">
         <source>Ohita tämä kysymys</source>
-        <target state="translated">Hoppa över frågan</target>
+        <target>SEOhita tämä kysymys</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/question-list/online-question/online-question.component.html</context>
           <context context-type="linenumber">59</context>
@@ -468,7 +468,7 @@
       </trans-unit>
       <trans-unit id="35c3bb248a79a94dfad4c88b94cf3c0ddb6f6d92" datatype="html">
         <source>Poista vastauksesi tähän kysymykseen</source>
-        <target state="translated">Radera svaret på frågan</target>
+        <target>SEPoista vastauksesi tähän kysymykseen</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/question-list/online-question/online-question.component.html</context>
           <context context-type="linenumber">67</context>
@@ -476,7 +476,7 @@
       </trans-unit>
       <trans-unit id="5913844043411367744" datatype="html">
         <source>Vaalipiiri</source>
-        <target state="translated">Valkrets</target>
+        <target>SEVaalipiiri</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/question-list/online-question/online-question.component.ts</context>
           <context context-type="linenumber">216</context>
@@ -484,7 +484,7 @@
       </trans-unit>
       <trans-unit id="aaba2124d1ddc0896a3a23dde9e93bd75dba55e5" datatype="html">
         <source>Hae ehdokasta</source>
-        <target state="translated">Sök kandidat</target>
+        <target>SEHae ehdokasta</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/candidate-search/candidate-search.component.html</context>
           <context context-type="linenumber">3</context>
@@ -492,7 +492,7 @@
       </trans-unit>
       <trans-unit id="8cd77024a4b197c8ae45b1b3033e71be2afcfd66" datatype="html">
         <source> Jos ehdokas ei ole vastannut kysymykseen, oletamme hänen vastauksensa olevan vastakkainen sinun vastaukseesi nähden, kun ehdokkaan sopivuutta lasketaan. </source>
-        <target state="translated"> Om kandidaten inte svarat på frågan utgår vi från att personen är av motsatt åsikt vid kalkyleringen av kandidatens lämplighet.</target>
+        <target>SE Jos ehdokas ei ole vastannut kysymykseen, oletamme hänen vastauksensa olevan vastakkainen sinun vastaukseesi nähden, kun ehdokkaan sopivuutta lasketaan. </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/candidate-answer.component.html</context>
           <context context-type="linenumber">33,34</context>
@@ -500,7 +500,7 @@
       </trans-unit>
       <trans-unit id="7862440981953918037" datatype="html">
         <source>Ehdokas</source>
-        <target state="translated">Kandidat</target>
+        <target>SEEhdokas</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/candidate-answer.component.ts</context>
           <context context-type="linenumber">26</context>
@@ -512,7 +512,7 @@
       </trans-unit>
       <trans-unit id="7333032732530528325" datatype="html">
         <source>Puolue</source>
-        <target state="translated">Parti</target>
+        <target>SEPuolue</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/candidate-answer.component.ts</context>
           <context context-type="linenumber">32</context>
@@ -524,7 +524,7 @@
       </trans-unit>
       <trans-unit id="9b42af3ae9d7cdc4dbc625f634a777098af02e42" datatype="html">
         <source>Lisää muistilistalle</source>
-        <target state="translated">Lägg till minneslistan</target>
+        <target>SELisää muistilistalle</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/details-candidate.component.html</context>
           <context context-type="linenumber">36</context>
@@ -536,7 +536,7 @@
       </trans-unit>
       <trans-unit id="b1e7657addfea1e91da5e145b5a88f33322942d3" datatype="html">
         <source>Lisää muistilistalle -ikoni</source>
-        <target state="translated">ikonen Lägg till minneslistan</target>
+        <target>SELisää muistilistalle -ikoni</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/details-candidate.component.html</context>
           <context context-type="linenumber">37</context>
@@ -548,7 +548,7 @@
       </trans-unit>
       <trans-unit id="a0333fe37d98dd854f7d726023b812cbf2c4d67e" datatype="html">
         <source>Poista muistilistalta</source>
-        <target state="translated">Radera från minneslistan</target>
+        <target>SEPoista muistilistalta</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/details-candidate.component.html</context>
           <context context-type="linenumber">43</context>
@@ -560,7 +560,7 @@
       </trans-unit>
       <trans-unit id="d351c72aeb61d043edf50d0b147c1828e188db17" datatype="html">
         <source>Poista muistilistalta -ikoni</source>
-        <target state="translated">ikonen för Radera från minneslistan</target>
+        <target>SEPoista muistilistalta -ikoni</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/details-candidate.component.html</context>
           <context context-type="linenumber">44</context>
@@ -572,7 +572,7 @@
       </trans-unit>
       <trans-unit id="b4ffa2c2bc545524fb171da467bc79b2de4e4273" datatype="html">
         <source>Ehdokas ei ole vastannut Kielivaalikoneen kysymyksiin</source>
-        <target state="translated">Kandidaten har inte svarat på frågorna i Valkompassen om språk</target>
+        <target>SEEhdokas ei ole vastannut Kielivaalikoneen kysymyksiin</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/details-candidate.component.html</context>
           <context context-type="linenumber">62</context>
@@ -580,7 +580,7 @@
       </trans-unit>
       <trans-unit id="8fbc9ef6d45497e5d435ff9d81f68f0935d15b68" datatype="html">
         <source>Ikä ja sukupuoli</source>
-        <target state="translated">Ålder och kön</target>
+        <target>SEIkä ja sukupuoli</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/details-candidate.component.html</context>
           <context context-type="linenumber">107</context>
@@ -588,7 +588,7 @@
       </trans-unit>
       <trans-unit id="fc0e4a94de0033c580c85420f10da056bda1784d" datatype="html">
         <source>Äidinkieli</source>
-        <target state="translated">Modersmål</target>
+        <target>SEÄidinkieli</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/details-candidate.component.html</context>
           <context context-type="linenumber">118</context>
@@ -596,7 +596,7 @@
       </trans-unit>
       <trans-unit id="d9a09e699e676dd47ca9c98ca4284aebf30d383c" datatype="html">
         <source>Arvo, ammatti tai toimi</source>
-        <target state="translated">Titel, yrke eller syssla</target>
+        <target>SEArvo, ammatti tai toimi</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/details-candidate.component.html</context>
           <context context-type="linenumber">124</context>
@@ -604,7 +604,7 @@
       </trans-unit>
       <trans-unit id="58fa1147936ec30128587be16445511d1b7953c6" datatype="html">
         <source>Kotikunta</source>
-        <target state="translated">Hemkommun</target>
+        <target>SEKotikunta</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/details-candidate.component.html</context>
           <context context-type="linenumber">130</context>
@@ -612,7 +612,7 @@
       </trans-unit>
       <trans-unit id="2fec64deaaa91f9847b0fda9bc0d6671e8a4ee1f" datatype="html">
         <source>Puolue</source>
-        <target state="translated">Parti</target>
+        <target>SEPuolue</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/details-candidate.component.html</context>
           <context context-type="linenumber">136</context>
@@ -620,7 +620,7 @@
       </trans-unit>
       <trans-unit id="2b8b43d7f6ca7d8f6c8b0fce5baba628135c3cc9" datatype="html">
         <source>Ehdokasnumero</source>
-        <target state="translated">Kandidatens nummer</target>
+        <target>SEEhdokasnumero</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/details-candidate.component.html</context>
           <context context-type="linenumber">142</context>
@@ -628,7 +628,7 @@
       </trans-unit>
       <trans-unit id="62ef4c233c86ba4b3e4d6c754b7edfa784542a0c" datatype="html">
         <source>Vaalipiiri</source>
-        <target state="translated">Valkrets</target>
+        <target>SEVaalipiiri</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/details-candidate.component.html</context>
           <context context-type="linenumber">148</context>
@@ -636,7 +636,7 @@
       </trans-unit>
       <trans-unit id="7b7e470659a678c92e4768476dc1651913cb5511" datatype="html">
         <source>Muualla verkossa</source>
-        <target state="translated">Mer på webben</target>
+        <target>SEMuualla verkossa</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/details-candidate.component.html</context>
           <context context-type="linenumber">155</context>
@@ -644,15 +644,15 @@
       </trans-unit>
       <trans-unit id="5fbc08accc5c4cb10bc25cad0cb326ca001ef6c1" datatype="html">
         <source> Kampanjasivusto </source>
-        <target state="translated">Kampanjwebbplats </target>
+        <target>SE Kampanjasivusto </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/details-candidate.component.html</context>
           <context context-type="linenumber">162,163</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7110d820227d8cf266c0800fa0c4b7dd4a879487" datatype="html">
-        <source> Kampanjasivusto: <x id="INTERPOLATION" equiv-text="{{ campaignUrl }}" /> </source>
-        <target state="translated"> Kampanjwebbplats: <x id="INTERPOLATION" equiv-text="{{ campaignUrl }}" /> </target>
+        <source> Kampanjasivusto: <x id="INTERPOLATION" equiv-text="{{ campaignUrl }}"/> </source>
+        <target>SE Kampanjasivusto: <x id="INTERPOLATION" equiv-text="{{ campaignUrl }}"/> </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/details-candidate.component.html</context>
           <context context-type="linenumber">165,167</context>
@@ -660,7 +660,7 @@
       </trans-unit>
       <trans-unit id="d5cc623fab72b893cc80e0148e72d80cbbf0ac0b" datatype="html">
         <source>Vaalilupaus kansalliskieliin liittyen</source>
-        <target state="translated">Vallöfte om nationalspråken</target>
+        <target>SEVaalilupaus kansalliskieliin liittyen</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/details-candidate.component.html</context>
           <context context-type="linenumber">222</context>
@@ -668,7 +668,7 @@
       </trans-unit>
       <trans-unit id="518990001434b316f5c27ab1cd50fd4964b5beee" datatype="html">
         <source>Merkittävästi eri mieltä kanssasi</source>
-        <target state="translated">Helt av annan åsikt än du</target>
+        <target>SEMerkittävästi eri mieltä kanssasi</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/details-candidate.component.html</context>
           <context context-type="linenumber">264</context>
@@ -676,7 +676,7 @@
       </trans-unit>
       <trans-unit id="MUUTA" datatype="html">
         <source>muuta</source>
-        <target state="translated">annat</target>
+        <target>SEmuuta</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/details-candidate.component.html</context>
           <context context-type="linenumber">275</context>
@@ -685,12 +685,12 @@
           <context context-type="sourcefile">src/app/pages/results/details-candidate/details-candidate.component.html</context>
           <context context-type="linenumber">313</context>
         </context-group>
-        
-        
-      <note from="description" priority="3">99 muuta kysymystä</note><note from="meaning" priority="3">toista</note></trans-unit>
+        <note priority="1" from="description">99 muuta kysymystä</note>
+        <note priority="1" from="meaning">toista</note>
+      </trans-unit>
       <trans-unit id="aa68df3431a274808d9a6808e8190b1e2209343a" datatype="html">
         <source> Ei kysymyksiä, joista olette merkittävästi eri mieltä </source>
-        <target state="translated"> Inga frågor där ni är av helt olika åsikt </target>
+        <target>SE Ei kysymyksiä, joista olette merkittävästi eri mieltä </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/details-candidate.component.html</context>
           <context context-type="linenumber">280,281</context>
@@ -698,7 +698,7 @@
       </trans-unit>
       <trans-unit id="0bd0df7d07a970c4dc30c73e83dea1141c797032" datatype="html">
         <source>Samaa tai lähes samaa mieltä kanssasi</source>
-        <target state="translated">Samma eller nästan samma åsikt som du</target>
+        <target>SESamaa tai lähes samaa mieltä kanssasi</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/details-candidate.component.html</context>
           <context context-type="linenumber">302</context>
@@ -706,7 +706,7 @@
       </trans-unit>
       <trans-unit id="0376b5f4907bd538b3f1278ed8776c9f103c7593" datatype="html">
         <source> Ei kysymyksiä, joista olette samaa tai lähes samaa mieltä </source>
-        <target state="translated"> Inga frågor där ni är av helt eller nästan samma åsikt </target>
+        <target>SE Ei kysymyksiä, joista olette samaa tai lähes samaa mieltä </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/details-candidate.component.html</context>
           <context context-type="linenumber">318,319</context>
@@ -714,7 +714,7 @@
       </trans-unit>
       <trans-unit id="29b06b52e8f56ea0b4000a15ce48e2f64cd233c8" datatype="html">
         <source>Mielipiteet kysymyksiin, joihin et vielä ole vastannut</source>
-        <target state="translated">Åsikter i frågor som du ännu inte svarat på</target>
+        <target>SEMielipiteet kysymyksiin, joihin et vielä ole vastannut</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/details-candidate.component.html</context>
           <context context-type="linenumber">340</context>
@@ -722,7 +722,7 @@
       </trans-unit>
       <trans-unit id="bbd754ea90ae9b6636ec340cd701e5262c717a59" datatype="html">
         <source>kysymystä</source>
-        <target state="translated">frågor</target>
+        <target>SEkysymystä</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/details-candidate.component.html</context>
           <context context-type="linenumber">345</context>
@@ -730,7 +730,7 @@
       </trans-unit>
       <trans-unit id="7eea64a87ece7635351610c5c8892c292a3da491" datatype="html">
         <source> Ei kysymyksiä, joihin et olisi vastannut </source>
-        <target state="translated"> Inga obesvarade frågor </target>
+        <target>SE Ei kysymyksiä, joihin et olisi vastannut </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/details-candidate.component.html</context>
           <context context-type="linenumber">350,351</context>
@@ -738,7 +738,7 @@
       </trans-unit>
       <trans-unit id="7496535963978650155" datatype="html">
         <source>Ei vastausta</source>
-        <target state="translated">Inget svar</target>
+        <target>SEEi vastausta</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/details-candidate.component.ts</context>
           <context context-type="linenumber">46</context>
@@ -746,7 +746,7 @@
       </trans-unit>
       <trans-unit id="0925af03a94ece1f98ba54a2ed918907a42b6cab" datatype="html">
         <source>Sinä</source>
-        <target state="translated">Du</target>
+        <target>SESinä</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/likert-answer.component.html</context>
           <context context-type="linenumber">4</context>
@@ -754,7 +754,7 @@
       </trans-unit>
       <trans-unit id="b8299dafc2f21d411e508b4e8446d0c59c99c994" datatype="html">
         <source>Ei vastausta</source>
-        <target state="translated">Inget svar</target>
+        <target>SEEi vastausta</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/likert-answer.component.html</context>
           <context context-type="linenumber">9</context>
@@ -762,15 +762,15 @@
       </trans-unit>
       <trans-unit id="9e86a240ba2315e3e8c9224f4e75c6b1cdf6753f" datatype="html">
         <source>Sinä &amp; ehdokas</source>
-        <target state="translated">Du &amp; kandidaten</target>
+        <target>SESinä &amp; ehdokas</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/likert-answer.component.html</context>
           <context context-type="linenumber">13</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3dd2a5e9cb31ed44e3ffb1ead7d15303ab8b5805" datatype="html">
-        <source>Kaikkien <x id="INTERPOLATION" equiv-text="{{ partyName | genitive }}" /> ehdokkaiden vastausten keskiarvo on <x id="INTERPOLATION_1" equiv-text="{{ partyAnswer | number:'1.1-1':'fi-FI' }}" /></source>
-        <target state="translated"> Medeltalet av alla <x id="INTERPOLATION" equiv-text="{{ partyName | genitive }}" /> kandidaters svar är <x id="INTERPOLATION_1" equiv-text="{{ partyAnswer | number:'1.1-1':'fi-FI' }}" /></target>
+        <source>Kaikkien <x id="INTERPOLATION" equiv-text="{{ partyName | genitive }}"/> ehdokkaiden vastausten keskiarvo on <x id="INTERPOLATION_1" equiv-text="{{ partyAnswer | number:&apos;1.1-1&apos;:&apos;fi-FI&apos; }}"/></source>
+        <target>SEKaikkien <x id="INTERPOLATION" equiv-text="{{ partyName | genitive }}"/> ehdokkaiden vastausten keskiarvo on <x id="INTERPOLATION_1" equiv-text="{{ partyAnswer | number:&apos;1.1-1&apos;:&apos;fi-FI&apos; }}"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/likert-answer.component.html</context>
           <context context-type="linenumber">63</context>
@@ -778,7 +778,7 @@
       </trans-unit>
       <trans-unit id="e9f1a97630e0efd0367e330bb7a8b223160052c9" datatype="html">
         <source>Ehdokkaan vastaus</source>
-        <target state="translated">Kandidatens svar</target>
+        <target>SEEhdokkaan vastaus</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/likert-answer.component.html</context>
           <context context-type="linenumber">87</context>
@@ -786,7 +786,7 @@
       </trans-unit>
       <trans-unit id="1f5ed8c63b024d19fc11405e785f214420eec610" datatype="html">
         <source>Ehdokas ei ole vastannut tähän kysymykseen</source>
-        <target state="translated">Kandidaten har inte svarat på denna fråga</target>
+        <target>SEEhdokas ei ole vastannut tähän kysymykseen</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/likert-answer.component.html</context>
           <context context-type="linenumber">105</context>
@@ -794,7 +794,7 @@
       </trans-unit>
       <trans-unit id="06bf275f1150f39034383a4a424fdb15e20d73de" datatype="html">
         <source>Sinun vastauksesi</source>
-        <target state="translated">Ditt svar</target>
+        <target>SESinun vastauksesi</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/details-candidate/likert-answer.component.html</context>
           <context context-type="linenumber">123</context>
@@ -802,7 +802,7 @@
       </trans-unit>
       <trans-unit id="013fa56ff6a37e5c327115a5608ef4fd13d6e702" datatype="html">
         <source>Muistilistasi</source>
-        <target state="translated">Din minneslista</target>
+        <target>SEMuistilistasi</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/favourites-list/favourites-list.component.html</context>
           <context context-type="linenumber">4</context>
@@ -810,15 +810,15 @@
       </trans-unit>
       <trans-unit id="dc8d50788e77e741818fbed869fdc4f14b59429e" datatype="html">
         <source>Tyhjennä muistilista</source>
-        <target state="translated">Töm listan</target>
+        <target>SETyhjennä muistilista</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/favourites-list/favourites-list.component.html</context>
           <context context-type="linenumber">41</context>
         </context-group>
       </trans-unit>
       <trans-unit id="e862879241078a0d6610729667b8a581b05569e3" datatype="html">
-        <source> Muistilistallasi ei ole vielä yhtään ehdokasta.<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br&gt;" /> Voit lisätä ehdokkaita listalle klikkaamalla ehdokasnumeron alla olevaa <x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;" />star_border<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;" />-ikonia. </source>
-        <target state="translated"> Du har ännu inga kandidater på din minneslista.<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br&gt;" /> Du kan lägga till kandidater på listan genom att klicka på <x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;" />star_border<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;" />-ikonen under kandidatens nummer</target>
+        <source> Muistilistallasi ei ole vielä yhtään ehdokasta.<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br&gt;"/> Voit lisätä ehdokkaita listalle klikkaamalla ehdokasnumeron alla olevaa <x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>star_border<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/>-ikonia. </source>
+        <target>SE Muistilistallasi ei ole vielä yhtään ehdokasta.<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br&gt;"/> Voit lisätä ehdokkaita listalle klikkaamalla ehdokasnumeron alla olevaa <x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>star_border<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/>-ikonia. </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/favourites-list/favourites-list.component.html</context>
           <context context-type="linenumber">51,53</context>
@@ -826,7 +826,7 @@
       </trans-unit>
       <trans-unit id="3964ecc093638bce774366e990ceacac0a08f2a1" datatype="html">
         <source>Tämä suodatin ei ole käytössä, koska et ole vielä vastannut yhteenkään kysymykseen.</source>
-        <target state="translated">Detta filter är inte i bruk för du har inte svarat på en enda fråga.</target>
+        <target>SETämä suodatin ei ole käytössä, koska et ole vielä vastannut yhteenkään kysymykseen.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/filter-candidates/filter-candidates.component.html</context>
           <context context-type="linenumber">41</context>
@@ -834,7 +834,7 @@
       </trans-unit>
       <trans-unit id="VALITSETAIPOISTA" datatype="html">
         <source>Valitse tai poista valinta kaikista</source>
-        <target state="translated">Välj eller radera valet</target>
+        <target>SEValitse tai poista valinta kaikista</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/filter-candidates/filter-candidates.component.html</context>
           <context context-type="linenumber">59</context>
@@ -843,20 +843,20 @@
           <context context-type="sourcefile">src/app/pages/results/filter-candidates/filter-candidates.component.html</context>
           <context context-type="linenumber">92</context>
         </context-group>
-        
-      <note from="description" priority="3">Suodattimen vaihtoehdoissa</note></trans-unit>
+        <note priority="1" from="description">Suodattimen vaihtoehdoissa</note>
+      </trans-unit>
       <trans-unit id="3b960be42e00cf0164ea03f5a3493a7144a797c0" datatype="html">
         <source>Nollaa</source>
-        <target state="translated">Återställ</target>
+        <target>SENollaa</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/filter-candidates/filter-candidates.component.html</context>
           <context context-type="linenumber">109</context>
         </context-group>
-        
-      <note from="description" priority="3">Resetoi</note></trans-unit>
+        <note priority="1" from="description">Resetoi</note>
+      </trans-unit>
       <trans-unit id="bfff0109c40e5bb861baf986ccdea75221cb672c" datatype="html">
         <source>Tallenna kaikki suodattimet</source>
-        <target state="translated">Spara alla filter</target>
+        <target>SETallenna kaikki suodattimet</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/filter-candidates/filter-candidates.component.html</context>
           <context context-type="linenumber">113</context>
@@ -864,7 +864,7 @@
       </trans-unit>
       <trans-unit id="8179bf0f5873c3090161de3755479ba84ce7672b" datatype="html">
         <source>Poista kaikki suodattimet käytöstä</source>
-        <target state="translated">Slopa alla filter</target>
+        <target>SEPoista kaikki suodattimet käytöstä</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/filter-candidates/filter-candidates.component.html</context>
           <context context-type="linenumber">129</context>
@@ -872,7 +872,7 @@
       </trans-unit>
       <trans-unit id="8260910191803892478" datatype="html">
         <source>Valitse ainakin yksi vaihtoehdoista.</source>
-        <target state="translated">Välj minst ett alternativ.</target>
+        <target>SEValitse ainakin yksi vaihtoehdoista.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/filter-candidates/filter-candidates.component.ts</context>
           <context context-type="linenumber">47</context>
@@ -880,7 +880,7 @@
       </trans-unit>
       <trans-unit id="903763009662969879" datatype="html">
         <source>Jätä ainakin yksi vaihtoehdoista valitsematta.</source>
-        <target state="translated">Låt bli att välja minst ett alternativ.</target>
+        <target>SEJätä ainakin yksi vaihtoehdoista valitsematta.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/filter-candidates/filter-candidates.component.ts</context>
           <context context-type="linenumber">57</context>
@@ -888,7 +888,7 @@
       </trans-unit>
       <trans-unit id="2747373778142931064" datatype="html">
         <source>(ei rajausta)</source>
-        <target state="translated">(ingen avgränsning)</target>
+        <target>SE(ei rajausta)</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/filter-candidates/filter-candidates.component.ts</context>
           <context context-type="linenumber">345</context>
@@ -896,7 +896,7 @@
       </trans-unit>
       <trans-unit id="41074c37b0abbf0d1402ffb663936af91ed78654" datatype="html">
         <source>Tässä ovat vaalipiirisi ehdokkaat, jotka ovat vastanneet Kielivaalikoneen kysymyksiin. Voit halutessasi suodattaa ehdokkaita.</source>
-        <target state="translated">Här är kandidaterna i din valkrets som svarat på frågorna i Valkompassen om språk. Du kan filtrera kandidaterna om du vill.</target>
+        <target>SETässä ovat vaalipiirisi ehdokkaat, jotka ovat vastanneet Kielivaalikoneen kysymyksiin. Voit halutessasi suodattaa ehdokkaita.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/list/list.component.html</context>
           <context context-type="linenumber">18,19</context>
@@ -904,7 +904,7 @@
       </trans-unit>
       <trans-unit id="AVAASUODATIN" datatype="html">
         <source>Avaa suodatinvalikko</source>
-        <target state="translated">Öppna filtermenyn</target>
+        <target>SEAvaa suodatinvalikko</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/list/list.component.html</context>
           <context context-type="linenumber">22</context>
@@ -920,7 +920,7 @@
       </trans-unit>
       <trans-unit id="c2a142ff683630fb486f603600789376e82b0c43" datatype="html">
         <source>Listalta on suodatettu joitakin ehdokkaita.</source>
-        <target state="translated">En del kandidater har filtrerats från listan.</target>
+        <target>SEListalta on suodatettu joitakin ehdokkaita.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/list/list.component.html</context>
           <context context-type="linenumber">30</context>
@@ -928,7 +928,7 @@
       </trans-unit>
       <trans-unit id="0d9b99b7790c2fb38ba3cc87e1312efe8da043ad" datatype="html">
         <source>Suodattamisen jälkeen jäljelle ei jäänyt yhtään ehdokasta.</source>
-        <target state="translated">Inga kandidater kvar efter filtrering.</target>
+        <target>SESuodattamisen jälkeen jäljelle ei jäänyt yhtään ehdokasta.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/list/list.component.html</context>
           <context context-type="linenumber">41</context>
@@ -936,7 +936,7 @@
       </trans-unit>
       <trans-unit id="0f1b4b4e5f28f0b135557f8657fd1bdf7f236f85" datatype="html">
         <source>Yksikään vaalipiirin ehdokkaista ei ole vastannut Kielivaalikoneen kysymyksiin.</source>
-        <target state="translated">Inga kandidater i valkretsen har svarat på frågorna i Valkompassen om språk.</target>
+        <target>SEYksikään vaalipiirin ehdokkaista ei ole vastannut Kielivaalikoneen kysymyksiin.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/list/list.component.html</context>
           <context context-type="linenumber">52</context>
@@ -944,23 +944,23 @@
       </trans-unit>
       <trans-unit id="845bc3b7d6c5e8ed7cd437057350f432ebfb44d4" datatype="html">
         <source>Ehdokas piilotettu suodattimien vuoksi</source>
-        <target state="translated">Kandidaten dold på grund av filtrering</target>
+        <target>SEEhdokas piilotettu suodattimien vuoksi</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/list/list.component.html</context>
           <context context-type="linenumber">132</context>
         </context-group>
       </trans-unit>
       <trans-unit id="f5761bfdd689e113fb2800a487aab63628009747" datatype="html">
-        <source>Tämä ehdokas ei ole vastannut Kielivaalikoneen kysymyksiin</source>
-        <target state="needs-translation">Kandidaten har inte svarat på frågorna i Valkompassen om språk</target>
+        <source>Tämä ehdokas ei ole vastannut Ehdokaskartan kysymyksiin</source>
+        <target>SETämä ehdokas ei ole vastannut Ehdokaskartan kysymyksiin</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/list/list.component.html</context>
           <context context-type="linenumber">143</context>
         </context-group>
       </trans-unit>
       <trans-unit id="116ffba0f3dcbbbfed3fd8447a67ccda0e0e91a7" datatype="html">
-        <source> Merkittävästi eri mieltä <x id="INTERPOLATION" equiv-text="{{ disagreed[candidate.id]?.length }}" /> kysymyksestä </source>
-        <target state="translated"> Helt av annan åsikt med <x id="INTERPOLATION" equiv-text="{{ disagreed[candidate.id]?.length }}" /> i frågan</target>
+        <source> Merkittävästi eri mieltä <x id="INTERPOLATION" equiv-text="{{ disagreed[candidate.id]?.length }}"/> kysymyksestä </source>
+        <target>SE Merkittävästi eri mieltä <x id="INTERPOLATION" equiv-text="{{ disagreed[candidate.id]?.length }}"/> kysymyksestä </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/list/list.component.html</context>
           <context context-type="linenumber">176,178</context>
@@ -968,7 +968,7 @@
       </trans-unit>
       <trans-unit id="121ab56daf0981cfad14065dacb431dfd9092677" datatype="html">
         <source> Ei kysymyksiä, joista olette merkittävästi eri mieltä </source>
-        <target state="needs-translation"> Inga frågor där ni är av helt olika åsikt </target>
+        <target>SE Ei kysymyksiä, joista olette merkittävästi eri mieltä </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/list/list.component.html</context>
           <context context-type="linenumber">184,185</context>
@@ -976,7 +976,7 @@
       </trans-unit>
       <trans-unit id="9168684783462129942" datatype="html">
         <source>Ladataan tuloksia…</source>
-        <target state="translated">Hämtar data…</target>
+        <target>SELadataan tuloksia…</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/list/list.component.ts</context>
           <context context-type="linenumber">112</context>
@@ -987,8 +987,8 @@
         </context-group>
       </trans-unit>
       <trans-unit id="065145a5b6582d687eb77fdbe8c0ffa4a87af6c5" datatype="html">
-        <source> Kielivaalikone 2023 Valkompass om språk </source>
-        <target state="needs-translation">Kielivaalikone 2023 Valkompass om språk</target>
+        <source> Kielivaalikone 2023 Språkvalkompass </source>
+        <target>SE Kielivaalikone 2023 Språkvalkompass </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/title-screen/title-screen.component.html</context>
           <context context-type="linenumber">12,13</context>
@@ -996,15 +996,15 @@
       </trans-unit>
       <trans-unit id="a497d3df70b5251666031b7076ce880897866a90" datatype="html">
         <source>Kuvituskuva</source>
-        <target state="translated">illustration</target>
+        <target>SEKuvituskuva</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/title-screen/title-screen.component.html</context>
           <context context-type="linenumber">18</context>
         </context-group>
       </trans-unit>
       <trans-unit id="9fe353df2cc251d884764958dc97a0614ffc417e" datatype="html">
-        <source> Onko mielestäsi tärkeää, että suomi ja ruotsi säilyvät yhteisinä kielinämme? Pitääkö englannin käyttöä palveluiden ja koulutuksen kielenä lisätä? <x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://omakieli.fi/&quot; target=&quot;_blank&quot;&gt;" />Oma kieli ry:n<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;" /> Kielivaalikoneessa pääset tutkimaan eduskuntavaaliehdokkaiden kantoja kielipoliittisiin kysymyksiin ja vertailemaan niitä omiisi. </source>
-        <target state="translated"> Anser du det vara viktigt att finskan och svenskan bevarar sin ställning som våra gemensamma språk? <x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://omakieli.fi/&quot; target=&quot;_blank&quot;&gt;" />Eget språk rf<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;" /> genomför en Valkompass om språk där du kan gå igenom dina egna och riksdagskandidaternas språkpolitiska synpunkter. Svara på frågorna och hitta en kandidat som stöder nationalspråken!</target>
+        <source> Onko sinulle tärkeää, että kansalliskielet suomi ja ruotsi säilyvät yhteisinä, täysimittaisina kielinämme Suomessa? <x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://omakieli.fi/&quot; target=&quot;_blank&quot;&gt;"/>Oma kieli ry:n<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/> toteuttamassa Kielivaalikoneessa pääset puntaroimaan omia ja eduskuntavaaliehdokkaiden kielipoliittisia näkemyksiä. Vastaa kysymyksiin ja löydä kansalliskielimyönteinen ehdokas! </source>
+        <target>SE Onko sinulle tärkeää, että kansalliskielet suomi ja ruotsi säilyvät yhteisinä, täysimittaisina kielinämme Suomessa? <x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://omakieli.fi/&quot; target=&quot;_blank&quot;&gt;"/>Oma kieli ry:n<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/> toteuttamassa Kielivaalikoneessa pääset puntaroimaan omia ja eduskuntavaaliehdokkaiden kielipoliittisia näkemyksiä. Vastaa kysymyksiin ja löydä kansalliskielimyönteinen ehdokas! </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/title-screen/title-screen.component.html</context>
           <context context-type="linenumber">27,28</context>
@@ -1012,33 +1012,33 @@
       </trans-unit>
       <trans-unit id="c622fbdb40068300687d85cab838ef98ba225588" datatype="html">
         <source>Aloita</source>
-        <target state="translated">Börja</target>
+        <target>SEAloita</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/title-screen/title-screen.component.html</context>
           <context context-type="linenumber">34</context>
         </context-group>
       </trans-unit>
       <trans-unit id="e16d1015b32779da4141c3f8aaa2dd7a735dc427" datatype="html">
-        <source> Onko mielestäsi tärkeää, että suomi ja ruotsi säilyvät yhteisinä kielinämme? Pitääkö englannin käyttöä palveluiden ja koulutuksen kielenä lisätä? <x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://omakieli.fi/&quot; target=&quot;_blank&quot;&gt;" />Oma kieli ry:n<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;" /> Kielivaalikoneessa pääset tutkimaan eduskuntavaaliehdokkaiden kantoja kielipoliittisiin kysymyksiin ja vertailemaan niitä omiisi. </source>
-        <target state="translated">Anser du det vara viktigt att finskan och svenskan bevarar sin ställning som våra gemensamma språk? <x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://omakieli.fi/&quot; target=&quot;_blank&quot;&gt;" />Eget språk rf<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;" /> genomför en Valkompass om språk där du kan gå igenom dina egna och riksdagskandidaternas språkpolitiska synpunkter. Svara på frågorna och hitta en kandidat som stöder nationalspråken!</target>
+        <source> XXX På svenska Onko sinulle tärkeää, että kansalliskielet suomi ja ruotsi säilyvät yhteisinä, täysimittaisina kielinämme Suomessa? <x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://omakieli.fi/&quot; target=&quot;_blank&quot;&gt;"/>Oma kieli ry:n<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/> toteuttamassa Kielivaalikoneessa pääset puntaroimaan omia ja eduskuntavaaliehdokkaiden kielipoliittisia näkemyksiä. Vastaa kysymyksiin ja löydä kansalliskielimyönteinen ehdokas! </source>
+        <target>SE XXX På svenska Onko sinulle tärkeää, että kansalliskielet suomi ja ruotsi säilyvät yhteisinä, täysimittaisina kielinämme Suomessa? <x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://omakieli.fi/&quot; target=&quot;_blank&quot;&gt;"/>Oma kieli ry:n<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/> toteuttamassa Kielivaalikoneessa pääset puntaroimaan omia ja eduskuntavaaliehdokkaiden kielipoliittisia näkemyksiä. Vastaa kysymyksiin ja löydä kansalliskielimyönteinen ehdokas! </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/title-screen/title-screen.component.html</context>
           <context context-type="linenumber">43,44</context>
         </context-group>
-        
-      <note from="description" priority="3">Intro toisella kielellä</note></trans-unit>
+        <note priority="1" from="description">Intro toisella kielellä</note>
+      </trans-unit>
       <trans-unit id="29b00137d2f93ae21e8495c94f7c80c077e464a1" datatype="html">
         <source>Börja</source>
-        <target state="translated">Börja</target>
+        <target>SEBörja</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/title-screen/title-screen.component.html</context>
           <context context-type="linenumber">50</context>
         </context-group>
-        
-      <note from="description" priority="3">Aloita-nappi toisella kielellä</note></trans-unit>
+        <note priority="1" from="description">Aloita-nappi toisella kielellä</note>
+      </trans-unit>
       <trans-unit id="3165be63623233c0e834878286504b50340aed08" datatype="html">
         <source>Kielivaalikonetta ovat tukeneet</source>
-        <target state="needs-translation">Valkompassen om språk stöds av</target>
+        <target>SEKielivaalikonetta ovat tukeneet</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/title-screen/title-screen.component.html</context>
           <context context-type="linenumber">59</context>
@@ -1046,7 +1046,7 @@
       </trans-unit>
       <trans-unit id="ce6c5d5ce2d79d64306a9c558216d19109727379" datatype="html">
         <source>Suomen Kulttuurirahasto</source>
-        <target state="translated">Finska Kunturfonden</target>
+        <target>SESuomen Kulttuurirahasto</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/title-screen/title-screen.component.html</context>
           <context context-type="linenumber">65</context>
@@ -1054,7 +1054,7 @@
       </trans-unit>
       <trans-unit id="8467071622927858449" datatype="html">
         <source>Käytetään aiemmin syöttämiäsi vastauksia pohjana.</source>
-        <target state="translated">Dina tidigare svar används som grund.</target>
+        <target>SEKäytetään aiemmin syöttämiäsi vastauksia pohjana.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/title-screen/title-screen.component.ts</context>
           <context context-type="linenumber">105</context>
@@ -1062,7 +1062,7 @@
       </trans-unit>
       <trans-unit id="3747703053089413738" datatype="html">
         <source>Nollaa vastaukset</source>
-        <target state="translated">Återställ svaren</target>
+        <target>SENollaa vastaukset</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/title-screen/title-screen.component.ts</context>
           <context context-type="linenumber">106</context>

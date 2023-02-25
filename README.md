@@ -5,18 +5,14 @@ A simplified versin of Candidate Map for use by Oma Kieli ry in the Finnish Parl
 
 ## To Do
 
-1. Allow candidate showing on fragment by the list component
-   1. Also edit listOnRigth in ngOnInit
-2. SWE: Swedish
-   1. https://angular.io/guide/i18n-optional-manage-marked-text
-   2. app module locale
-   3. check all code for strings
-   4. incl. index.html
-3. CLEANUP: Remove unnecessary stuff
-4. DATA
+1. DATA
    1. Indepedent party
-   2. Min vals for mapping and missing values
-   3. Party colours
+   2. Party colours
+
+## Localisation
+
+* https://angular.io/guide/i18n-optional-manage-marked-text
+* https://github.com/daniel-sc/ng-extract-i18n-merge
 
 ## Deploying
 
