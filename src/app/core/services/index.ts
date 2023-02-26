@@ -3,3 +3,4 @@ export * from './database';
 export * from './matcher';
 export * from './cookie';
 export * from './shared';
+export * from './can-deactivate';

@@ -12,7 +12,9 @@ import { trigger,
          transition } from '@angular/animations';
 import { ActivatedRoute,
          Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { pipe, 
+         Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 import { MatcherService,
          QuestionNumeric,
@@ -102,21 +104,6 @@ export class OnlineQuestionListComponent
     });
   }
 
-  // TODO CLEANUP
-  // get minAnswersForMapping(): number {
-  //   return this.matcher.config.minValsForMapping;
-  // }
-
-  // get participatingCandidates(): number {
-  //   return this.matcher.totalParticipatingCandidates ?? 0;
-  // }
-
-  // get participationPercentage(): number {
-  //   if (this.totalCandidates === 0)
-  //     return 0;
-  //   return Math.round(this.participatingCandidates / this.totalCandidates * 100);
-  // }
-
   get showParticipationWarning(): boolean {
     return this.matcher.hasLowParticiation;
   }
@@ -136,8 +123,10 @@ export class OnlineQuestionListComponent
     }));
     // questionData includes voter answers
     // this._subscriptions.push(this.matcher.questionDataUpdated.subscribe(() =>  this._updateData()));
-    this._subscriptions.push(this.matcher.questionDataReady.subscribe(() => this._fetchQuestions()));
-    this._subscriptions.push(this.matcher.constituencyCookieRead.subscribe(() => {
+    this._subscriptions.push(this.matcher.questionDataReady.pipe(take(1)).subscribe(() => {
+      this._fetchQuestions();
+    }));
+    this._subscriptions.push(this.matcher.constituencyCookieRead.pipe(take(1)).subscribe(() => {
       // Make sure the constituency is defined, as if not, questionDataReady will never fire
       if (this.matcher.constituencyId == null)
         this.router.navigate([PATHS.constituencyPicker]);
@@ -184,12 +173,6 @@ export class OnlineQuestionListComponent
     }
   }
 
-  // public showQuestion(question: QuestionNumeric): void {
-  //   // this._closeOnboarding();
-  //   this.shared.showQuestion.emit(question.id);
-  //   this.hideInfos();
-  // }
-
   public goToNextQuestion(currentQuestion: QuestionNumeric): void {
     let found = false;
     for (const q of this.questionComponents) {
@@ -231,14 +214,6 @@ export class OnlineQuestionListComponent
     containerEl.style.scrollBehavior = oldBehavior;
   }
 
-  /*
-   * Check if this is the next recommend question. This is based crudely as the first question in the order
-   */
-  // public isRecommended(question: QuestionNumeric): boolean {
-  //   return this.informationValueOrder && this.informationValueOrder.length && 
-  //          this.informationValueOrder[0].id === question.id;
-  // }
-
   private _fetchQuestions(): void {
     // this._updateInformationValues();
     this.questions = this.matcher.getAnswerableQuestions(true);
@@ -247,38 +222,4 @@ export class OnlineQuestionListComponent
     this._scrollToCurrentQuestion();
   }
 
-  // private _updateData(): void {
-  //   // this._updateInformationValues();
-  //   this._checkEnableForward();
-  // }
-
-  // private _updateInformationValues(): void {
-  //   this.informationValueOrder = this.matcher.getInformationValueOrder();
-  //   this.shared.forwardProgress.emit(this.matcher.getTotalInformation() ** 2 * 100);
-  // }
-
-  // TODO CLEANUP
-  // private _checkEnableForward(): void {
-  //   if (this.matcher.hasEnoughAnswersForMapping) {
-
-  //     // Show the secong onboarding tour
-  //     // We add a bit of a delay for the bar to apper
-  //     // if (!this.onboardingTour?.getCurrentStep())
-  //     //   setTimeout(() => this.onboardingTourEnoughAnswers?.start(), ANIMATION_DURATION_MS * 2);
-
-  //     this.shared.enableForward.emit({
-  //       path: [PATHS.list],
-  //       title: 'Näytä tulokset',
-  //       progressTitle: 'Tuloskartan tarkkuus',
-  //       showProgress: true,
-  //     });
-  //   } else {
-  //     this.shared.disableForward.emit();
-  //   }
-  // }
-
-  // private _closeOnboarding(): void {
-  //   this.onboardingTour?.complete();
-  //   this.onboardingTourEnoughAnswers?.complete();
-  // }
 }

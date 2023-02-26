@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterModule } from '@angular/router';
+import { provideRoutes, RouterModule } from '@angular/router';
 
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,6 +16,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { AppComponent } from './app.component';
 import { 
+  CanDeactivateGuard,
   DatabaseModule,
   // D3Service,
   MatcherModule,
@@ -61,7 +62,6 @@ import localeSe from '@angular/common/locales/se';
 import localeSeExtra from '@angular/common/locales/extra/se';
 registerLocaleData(localeSe, 'se-SE', localeSeExtra);
 
-
 const paths = [
   { path: '', 
     component: TitleScreenComponent },
@@ -74,9 +74,11 @@ const paths = [
   { path: PATHS.questions, 
     component: OnlineQuestionListComponent },
   { path: PATHS.list,
-    component: ListComponent },
+    component: ListComponent,
+    canDeactivate: [CanDeactivateGuard] },
   { path: PATHS.browseList,
     component: ListComponent,
+    canDeactivate: [CanDeactivateGuard],
     data: {
       voterDisabled: true
     }},
@@ -134,6 +136,7 @@ const paths = [
   ],
   providers: [
     // D3Service,
+    CanDeactivateGuard,
     {
       provide: MATCHER_CONFIG,
       useValue: {

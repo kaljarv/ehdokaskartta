@@ -1029,7 +1029,7 @@
       <note from="description" priority="3">Intro toisella kielellä</note></trans-unit>
       <trans-unit id="29b00137d2f93ae21e8495c94f7c80c077e464a1" datatype="html">
         <source>Börja</source>
-        <target state="translated">Börja</target>
+        <target state="translated">Aloita</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/title-screen/title-screen.component.html</context>
           <context context-type="linenumber">50</context>
@@ -1066,6 +1066,71 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/title-screen/title-screen.component.ts</context>
           <context context-type="linenumber">106</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="f267034a7f44e365be9a845be4e56381ddfcb69a" datatype="html">
+        <source>Valkompass om språk</source>
+        <target state="translated">Kielivaalikone</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">138</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="d876abdae855850a35d51059972f92b79209721c" datatype="html">
+        <source>Oma Kieli ry</source>
+        <target state="translated">Eget språk rf</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/title-screen/title-screen.component.html</context>
+          <context context-type="linenumber">65</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="b8bcdfcdc330266c2a06d07b250ddaa8eb43e046" datatype="html">
+        <source> Oma kieli ry:n Kielivaalikoneessa pääset vertailemaan omia ja eduskuntavaaliehdokkaiden kantoja kielipoliittisiin kysymyksiin. </source>
+        <target state="needs-translation">Eget språk rf genomför en Valkompass om språk där du kan gå igenom dina egna och riksdagskandidaternas språkpolitiska synpunkter.
+</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/title-screen/title-screen.component.html</context>
+          <context context-type="linenumber">26,27</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="b649a8771534c2c7209035e3c3a84c930adb3365" datatype="html">
+        <source>Anser du det vara viktigt att finskan och svenskan bevarar sin ställning som våra gemensamma språk? Borde vi ha mera engelska inom service och utbildning?</source>
+        <target state="translated">Onko mielestäsi tärkeää, että suomi ja ruotsi säilyvät yhteisinä kielinämme? Pitääkö englannin käyttöä palveluiden ja koulutuksen kielenä lisätä?.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/title-screen/title-screen.component.html</context>
+          <context context-type="linenumber">42,43</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="0f6e57e046d17b7202dd7e2b550e20305b7f6fcc" datatype="html">
+        <source>Eget språk rf genomför en Valkompass om språk där du kan gå igenom dina egna och riksdagskandidaternas språkpolitiska synpunkter.</source>
+        <target state="translated">Oma kieli ry:n Kielivaalikoneessa pääset vertailemaan omia ja eduskuntavaaliehdokkaiden kantoja kielipoliittisiin kysymyksiin.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/title-screen/title-screen.component.html</context>
+          <context context-type="linenumber">45,46</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="c9702714089ed40ac4e3a143a9ec184e788cea9c" datatype="html">
+        <source> Onko mielestäsi tärkeää, että suomi ja ruotsi säilyvät yhteisinä kielinämme? Pitääkö englannin käyttöä palveluiden ja koulutuksen kielenä lisätä? </source>
+        <target state="needs-translation">Anser du det vara viktigt att finskan och svenskan bevarar sin ställning som våra gemensamma språk? Borde vi ha mera engelska inom service och utbildning?</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/title-screen/title-screen.component.html</context>
+          <context context-type="linenumber">23,24</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="b93c4ad7b1f5fd9bf396cf2a24836c02cae6b210" datatype="html">
+        <source>Kielivaalikone</source>
+        <target state="translated">Valkompass om språk</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">136</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2c3fab8f1be7a7933293338635bbf1946063a807" datatype="html">
+        <source>Kielivaalikone on toteutettu Suomen Kulttuurirahaston tuella.</source>
+        <target state="needs-translation">Valkompassen om språk genomförs med stöd av Finska Kulturfonden.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/title-screen/title-screen.component.html</context>
+          <context context-type="linenumber">72</context>
         </context-group>
       </trans-unit>
     </body>

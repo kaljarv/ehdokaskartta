@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import {
   ActivatedRoute,
+  NavigationStart,
   Router
 } from '@angular/router';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
@@ -21,6 +22,7 @@ import {
   first 
 } from 'rxjs/operators';
 import {
+  CanComponentDeactivate,
   Candidate,
   MatcherService,
   ProjectedMapping,
@@ -55,7 +57,7 @@ type ListPlaceholder = {
   },
 })
 export class ListComponent 
-  implements AfterViewInit, DoCheck, OnInit, OnDestroy {
+  implements AfterViewInit, DoCheck, OnInit, OnDestroy, CanComponentDeactivate {
 
   // @ViewChild(OnboardingTourComponent)
   // onboardingTour: OnboardingTourComponent;
@@ -85,6 +87,8 @@ export class ListComponent
   private _subscriptions: Subscription[] = [];
   // Fire on afterViewInit
   private _viewInitialized = new EventEmitter<boolean>();
+  // This is very hacky
+  private _candidateOverlayOpen = false;
 
 
   constructor(
@@ -168,22 +172,12 @@ export class ListComponent
         this.router.navigate([PATHS.constituencyPicker]);
     }));
 
-    // Onboarding
-    // Show only after data is loaded and the view is initialized
-    // First() will unsubscribe itself
-    // combineLatest([this.shared.loadingState, this._viewInitialized]).pipe(
-    //   filter(([ls, _]) => ls.type === 'loaded'),
-    //   first()
-    // ).subscribe(() => {
-    //   if (this.onboardingTour && !this.onboardingTour.active)
-    //     // We need a timeout to make sure the topTools div is rendered
-    //     setTimeout(() => this.onboardingTour.start(), 225);
-    // });
 
     // Move list if we are using landscape mode and viewing a candidate
-    this._subscriptions.push(this.shared.activeCandidateChanged.subscribe(() => 
-      this._doChanges.activeCandidateId = this.shared.activeCandidateId
-    ));
+    this._subscriptions.push(this.shared.activeCandidateChanged.subscribe(() => {
+      if (this.shared.activeCandidateId != null) this._candidateOverlayOpen = true;
+      this._doChanges.activeCandidateId = this.shared.activeCandidateId;
+    }));
 
     // Scroll to top when filters are changed
     this._subscriptions.push(this.matcher.filterDataUpdated.subscribe(() => 
@@ -228,10 +222,17 @@ export class ListComponent
     // Cancel subscriptions
     this._subscriptions.forEach(s => s.unsubscribe());
     this._subscriptions = null;
-      
     this.candidates = null;
     this.voter = null;
     this._viewInitialized = null;
+  }
+
+  public canDeactivate(): boolean {
+    // This is a very hacky way of cancelling navigation change when the candidate overlay is open
+    // bc we can't read the activeCandidateId any more at this stage
+    const deactivate = this._candidateOverlayOpen;
+    this._candidateOverlayOpen = false;
+    return !deactivate;
   }
 
   public onBgClick(): void {

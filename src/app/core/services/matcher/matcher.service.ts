@@ -221,7 +221,7 @@ export class MatcherService {
   };
   // Shorthands for the dataStatuses
   public constituencyDataReady =   this.dataStatus.constituencies.pipe(filter(     t => t !== DataStatus.NotReady ));
-  public questionDataReady =       this.dataStatus.questions.pipe(filter(          t => t === DataStatus.Ready ));
+  public questionDataReady =       this.dataStatus.questions.pipe(filter(          t => t !== DataStatus.NotReady ));
   public questionDataUpdated =     this.dataStatus.questions.pipe(filter(          t => t === DataStatus.Updated ));
   public candidateDataReady =      this.dataStatus.candidates.pipe(filter(         t => t !== DataStatus.NotReady ));
   public favouritesDataUpdated =   this.dataStatus.favourites.pipe(filter(         t => t !== DataStatus.NotReady ));
@@ -435,80 +435,6 @@ export class MatcherService {
     for (const id in this.parties)
       if (!partiesPresent.has(id))
         delete this.parties[id];
-
-    // DEBUG
-    // console.log("WARNING: Anonymizing candidates! REMEMBER to edit getCandidatePortraitUrl too!");
-    // const femaleNames = ["Maria", "Helena", "Anneli", "Johanna", "Kaarina", "Marjatta", "Hannele", "Kristiina", "Emilia", "Liisa", "Elina", "Sofia", "Tuulikki", "Maarit", "Susanna", "Annikki", "Leena", "Katariina", "Anna", "Marja", "Sinikka", "Inkeri", "Riitta", "Aino", "Kyllikki", "Anne", "Tuula", "Päivi", "Orvokki", "Ritva", "Maija", "Tellervo", "Karoliina", "Pauliina", "Pirjo", "Minna", "Sari", "Irmeli", "Tiina", "Eeva", "Eveliina", "Laura", "Marika", "Tarja", "Elisabet"],
-    //       maleNames = ["Juhani", "Olavi", "Antero", "Tapani", "Johannes", "Tapio", "Mikael", "Kalevi", "Matti", "Pekka", "Petteri", "Ilmari", "Sakari", "Matias", "Antti", "Juha", "Kristian", "Heikki", "Timo", "Mikko", "Kari", "Markus", "Jari", "Jukka", "Aleksi", "Markku", "Kalervo", "Jaakko", "Oskari", "Petri", "Mika", "Henrik", "Lauri", "Veikko", "Hannu"],
-    //       surnames = ["Korhonen", "Virtanen", "Mäkinen", "Nieminen", "Mäkelä", "Hämäläinen", "Laine", "Heikkinen", "Koskinen", "Järvinen", "Lehtonen", "Lehtinen", "Saarinen", "Salminen", "Heinonen", "Niemi", "Heikkilä", "Kinnunen", "Salonen", "Turunen", "Salo", "Laitinen", "Tuominen", "Rantanen", "Karjalainen", "Jokinen", "Mattila", "Savolainen", "Lahtinen", "Ahonen", "Ojala", "Leppänen", "Kallio", "Hiltunen", "Väisänen", "Leinonen", "Miettinen", "Pitkänen", "Aaltonen", "Manninen", "Koivisto", "Hakala", "Anttila", "Laaksonen", "Hirvonen", "Räsänen", "Lehto", "Laakso", "Toivonen"];
-    // let i = 0;
-    // for (const id in this.candidates) {
-    //   const c = this.candidates[id];
-    //   const gender = c.getAnswer('Q63');
-    //   c.givenName = gender === 'Mies' ? maleNames[i % maleNames.length] : femaleNames[i % femaleNames.length];
-    //   c.surname = surnames[i % surnames.length];
-    //   i++;
-    // }
-    // END: DEBUG
-        
-    // DEBUG
-    // Multiply candidates to test performance
-    // const qq = this.getAnswerableQuestions();
-    // const perturbProb = 0.25; // 0.5;
-    // const randomProb = 0.1;
-    // const multiplierRange = [0.25, 6];
-    // let multiplier = multiplierRange[0] + Math.random() * (multiplierRange[1] - multiplierRange[0]);
-    // if (multiplier > 1) multiplier = Math.round(multiplier);
-    // if (multiplier !== 1) {
-    //   for (const candidate in this.candidates) {
-    //     // Skip randomly if multiplier < 1
-    //     if (multiplier < 1 && Math.random() > multiplier) {
-    //       delete(this.candidates[candidate]);
-    //       continue;
-    //     }
-    //     // Otherwise create new objects
-    //     const c = this.candidates[candidate];
-    //     for (let i = 0; i < multiplier; i++) {
-    //       // Copy props
-    //       let {
-    //         id, number, surname, givenName, constituencyId, partyId, selected, detailsLoader, constituencyReference, partyReference,
-    //         ...rest
-    //       } = c;
-    //       const a = {...c.basicQuestions}
-    //       // Create faux replies
-    //       qq.forEach(q => {
-    //         const lid = q.id;
-    //         const rand = Math.random();
-    //         let val = c.getAnswer(lid);
-    //         if (rand < randomProb) {
-    //           // Full random
-    //           // Value should be 1, 2, 4 or 5
-    //           if (q instanceof QuestionPreferenceOrder) {
-    //             // Do nothing
-    //           } else {
-    //             val = Math.ceil(Math.random() * ((q as QuestionSingleNumber).maxAnswer - 1));
-    //             if (val >= q.neutralAnswer) val++;
-    //           }
-    //         } else if (rand < perturbProb && !(q instanceof QuestionPreferenceOrder)) {
-    //           // Perturb by one pt
-    //           val += [1,4].includes(val) ? 1 : -1;
-    //         }
-    //         a[lid] = val;
-    //       });
-    //       id = id + '_' + i
-    //       const o: CandidateOptions = {
-    //         id, number, surname, givenName, constituencyId, partyId, selected, detailsLoader, constituencyReference, partyReference,
-    //         basicQuestions: a
-    //       }
-    //       const n = new Candidate(o);
-    //       this.candidates[id] = n;
-    //     }
-    //   }
-    // }
-    // console.log("TEST: Added candidates for testing! Before culling, N = " + Object.keys(this.candidates).length);
-    
-    // console.log(this.candidates);
-    // END: DEBUG
 
     // Cull candidates with too many missing values
     // and flag candidates with missing values above the threshold
