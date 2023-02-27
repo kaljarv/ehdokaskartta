@@ -16,7 +16,7 @@
       </h2>
       <div class="numberAndParty">
         <span class="party">
-          <mat-icon class="party-{{ partyName | toClassName }}">flag</mat-icon>
+          <mat-icon class="party-{{ partyAbbreviation | toClassName }}">flag</mat-icon>
           {{ partyAbbreviation }}
         </span>
         <span class="number">
@@ -288,6 +288,7 @@
                                     [candidateAnswer]="getNumericAnswer(question)"
                                     [candidateAnswerOpen]="getRelated(question)"
                                     [partyName]="partyName"
+                                    [partyAbbreviation]="partyAbbreviation"
                                     [partyAnswer]="getPartyAverage(question)"></app-candidate-answer>
             </ng-container>
           </app-custom-expander>
@@ -326,6 +327,7 @@
                                     [candidateAnswer]="getNumericAnswer(question)"
                                     [candidateAnswerOpen]="getRelated(question)"
                                     [partyName]="partyName"
+                                    [partyAbbreviation]="partyAbbreviation"
                                     [partyAnswer]="getPartyAverage(question)"></app-candidate-answer>
             </ng-container>
           </app-custom-expander>
@@ -358,6 +360,7 @@
                                     [candidateAnswer]="getNumericAnswer(question)"
                                     [candidateAnswerOpen]="getRelated(question)"
                                     [partyName]="partyName"
+                                    [partyAbbreviation]="partyAbbreviation"
                                     [partyAnswer]="getPartyAverage(question)"></app-candidate-answer>
             </ng-container>
           </app-custom-expander>

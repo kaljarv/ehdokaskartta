@@ -32,8 +32,8 @@ export class FavouritesListComponent
   ngOnInit() {
     this.favourites = this.matcher.getFavouriteCandidates().sort( (a, b) => {
       // Sort favourites by name
-      const order = a.surname.localeCompare(b.surname);
-      return order !== 0 ? order : a.givenName.localeCompare(b.givenName);
+      const order = this.shared.compare(a.surname, b.surname);
+      return order !== 0 ? order : this.shared.compare(a.givenName, b.givenName);
     });
   }
 

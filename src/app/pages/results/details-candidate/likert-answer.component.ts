@@ -53,6 +53,7 @@ export class LikertAnswerComponent
   @Input() candidateAnswer: number;
   @Input() voterAnswer: number;
   @Input() partyAnswer: number;
+  @Input() partyAbbreviation: string = '';
   @Input() partyName: string = '';
   @Input() partyTitle: string = $localize `Puolue`;
   @Input() showValueLabels: boolean = true;

@@ -29,6 +29,7 @@ export class CandidateAnswerComponent
   @Input() voterAnswer: number | number[] = null;
   @Input() partyAnswer: number | number[] = null;
   @Input() partyName: string = '';
+  @Input() partyAbbreviation: string = '';
   @Input() partyTitle: string = $localize `Puolue`;
   @Input() showMissingInfo: boolean = true;
 
