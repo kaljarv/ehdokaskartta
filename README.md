@@ -9,6 +9,16 @@ A simplified versin of Candidate Map for use by Oma Kieli ry in the Finnish Parl
    1. Indepedent party
    2. Party colours
 
+## Debugging
+
+If localised, run `ng serve` with `-c fi`.
+
+To test on an iPhone, run `ng serve -c fi --host 172.20.10.3` where the IP is the one shown in Network settings.
+
+On the iPhone access, at `http://172.20.10.3:4200`.
+
+Open Safari on the Mac and access console from the Developer menu.
+
 ## Localisation
 
 * https://angular.io/guide/i18n-optional-manage-marked-text
