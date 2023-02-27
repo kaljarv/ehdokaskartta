@@ -14,7 +14,7 @@ import {
 export const QUESTION_LIKERT_DEFAULT_VALUES: QuestionNumericValue[] = [
   {key: 1, name: $localize `Täysin eri mieltä`},
   {key: 2, name: ''},
-  {key: 3, name: $localize `Neutraali`},
+  {key: 3, name: $localize `Ei samaa eikä eri mieltä`},
   {key: 4, name: ''},
   {key: 5, name: $localize `Täysin samaa mieltä`}
 ];
