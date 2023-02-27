@@ -363,7 +363,7 @@ export class MatcherService {
   }
 
   public getMunicipalitiesAsList(): Municipality[] {
-    return Object.values(this.municipalities);
+    return Object.values(this.municipalities).sort((a, b) => a.name.localeCompare(b.name, this.locale));
   }
 
   public async setMunicipality(id: string): Promise<void> {

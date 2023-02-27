@@ -339,6 +339,10 @@ export class SharedService {
     return Math.min(Math.max(min, value), max);
   }
 
+  public compare(a: string, b: string): number {
+    return a.localeCompare(b, this.locale);
+  }
+
   public logEvent(eventName: string, eventParams: any = {}): void {
     this.database.logEvent(eventName, {
       currentPage: this.currentPage,

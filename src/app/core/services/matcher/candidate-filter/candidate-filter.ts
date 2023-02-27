@@ -1,5 +1,7 @@
 import { 
-  EventEmitter 
+  EventEmitter,
+  Inject,
+  LOCALE_ID
 } from '@angular/core';
 
 import { 
@@ -64,14 +66,14 @@ export abstract class CandidateFilter {
 
   constructor(
     opts: CandidateFilterOptions,
-    values?: any[]
+    values: any[] = []
   ) {
     const {property, question, ...otherOpts} = opts;
 
     for (let key in otherOpts)
       this[key] = opts[key];
 
-    if (values)
+    if (values && values.length > 0)
       this.addValue(values);
 
     if (property != null)
@@ -98,7 +100,7 @@ export abstract class CandidateFilter {
     if (this.isNumeric)
       return a - b;
     else
-      return a.toString().localeCompare(b.toString());
+      return a.toString().localeCompare(b.toString(), $localize.locale);
   }
 
   // Called for each rule when clearing, default expects rules to be Sets
