@@ -60,7 +60,7 @@ import {
 
 export const ELECTION_ID = '2023-eduskuntavaalit'; // '2021-kuntavaalit'; // '2019-eduskuntavaalit';
 export const BASE_LOCALE = 'fi';
-export const ALLOWED_LOCALES = ['fi', 'se'];
+export const ALLOWED_LOCALES = ['fi', 'sv'];
 export const I18N_SUFFIX_RE = /_i18n_se$/;
 
 export type QuestionType = 'Likert' | 'Likert7' | 'Open' | 'OpenMultiple' | 'PreferenceOrder';

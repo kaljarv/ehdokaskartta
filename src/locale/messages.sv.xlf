@@ -1133,6 +1133,34 @@
           <context context-type="linenumber">72</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="8197508407928250047" datatype="html">
+        <source>Ei samaa eikä eri mieltä</source>
+        <target state="needs-translation">Neutral</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/services/database/question/question-likert-seven.ts</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/services/database/question/question-likert.ts</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+      </trans-unit>
+        <trans-unit id="7a8d233790956976911864f1d1ec5b7d77cbe100" datatype="html">
+        <source> Eget språk rf genomför en Valkompass om språk där du kan gå igenom dina egna och riksdagskandidaternas språkpolitiska synpunkter. </source>
+        <target> Oma kieli ry:n Kielivaalikoneessa pääset vertailemaan omia ja eduskuntavaaliehdokkaiden kantoja kielipoliittisiin kysymyksiin. </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/title-screen/title-screen.component.html</context>
+          <context context-type="linenumber">45,46</context>
+        </context-group>
+      </trans-unit>
+        <trans-unit id="9a1e0623f55014bf36810914f6bd0676637d65ed" datatype="html">
+        <source> Anser du det vara viktigt att finskan och svenskan bevarar sin ställning som våra gemensamma språk? Borde vi ha mera engelska inom service och utbildning? </source>
+        <target> Onko mielestäsi tärkeää, että suomi ja ruotsi säilyvät yhteisinä kielinämme? Pitääkö englannin käyttöä palveluiden ja koulutuksen kielenä lisätä? </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/title-screen/title-screen.component.html</context>
+          <context context-type="linenumber">42,43</context>
+        </context-group>
+      </trans-unit>
     </body>
   </file>
 </xliff>

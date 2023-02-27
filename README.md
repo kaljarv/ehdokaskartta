@@ -21,6 +21,10 @@ Open Safari on the Mac and access console from the Developer menu.
 
 ## Localisation
 
+Run: `ng extract-i18n`
+
+See:
+
 * https://angular.io/guide/i18n-optional-manage-marked-text
 * https://github.com/daniel-sc/ng-extract-i18n-merge
 

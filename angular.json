@@ -15,8 +15,8 @@
       "i18n": {
         "sourceLocale": "fi",
         "locales": {
-          "se": {
-            "translation": "src/locale/messages.se.xlf"
+          "sv": {
+            "translation": "src/locale/messages.sv.xlf"
           }
         }
       },
@@ -78,8 +78,8 @@
             "fi": {
               "localize": ["fi"]
             },
-            "se": {
-              "localize": ["se"]
+            "sv": {
+              "localize": ["sv"]
             }
           }
         },
@@ -95,8 +95,8 @@
             "fi": {
               "browserTarget": "candidate-map:build:fi"
             },
-            "se": {
-              "browserTarget": "candidate-map:build:se"
+            "sv": {
+              "browserTarget": "candidate-map:build:sv"
             }
           }
         },
