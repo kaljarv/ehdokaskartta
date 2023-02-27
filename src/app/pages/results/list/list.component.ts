@@ -176,6 +176,7 @@ export class ListComponent
     // Move list if we are using landscape mode and viewing a candidate
     this._subscriptions.push(this.shared.activeCandidateChanged.subscribe(() => {
       if (this.shared.activeCandidateId != null) this._candidateOverlayOpen = true;
+      else setTimeout(() => this._candidateOverlayOpen = false, 100); // Hacky!!!
       this._doChanges.activeCandidateId = this.shared.activeCandidateId;
     }));
 
