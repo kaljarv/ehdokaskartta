@@ -383,10 +383,8 @@ export class AppComponent
 //   }
 
   public clearDetailsCard(): void {
-
     if (this._floatingCardRef)
       this._floatingCardRef.close();
-
     this._floatingCardRef = null;
   }
 
@@ -430,7 +428,7 @@ export class AppComponent
     this.shared.showCandidateSearch.emit();
   }
 
-  public openFavourites(): void {
+  public openFavourites(event?: Event): void {
     // For the sake consistency, this is done in a silly way by routing via the shared component
     // Cf. subscription in the constructor
     this.shared.showFavourites.emit();

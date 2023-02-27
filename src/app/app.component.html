@@ -143,38 +143,23 @@
           <button id="filterButton"
                   mat-icon-button 
                   (click)="openCandidateFilters()"
-                  #filterButtonTooltip="matTooltip"
-                  i18n-matTooltip
                   i18n-aria-label
-                  matTooltip="Suodata ehdokkaita"
                   aria-label="Suodata ehdokkaita"
-                  matTooltipClass="tools-tooltip"
-                  matTooltipPosition="below"
                   [class.active]="hasActiveFilters">
             <mat-icon>filter_list</mat-icon>
           </button>
           <button id="searchButton"
                   mat-icon-button 
                   (click)="openCandidateSearch()"
-                  #filterButtonTooltip="matTooltip"
-                  i18n-matTooltip
                   i18n-aria-label
-                  matTooltip="Hae ehdokasta nimellä tai numerolla"
-                  aria-label="Hae ehdokasta nimellä tai numerolla"
-                  matTooltipClass="tools-tooltip"
-                  matTooltipPosition="below">
+                  aria-label="Hae ehdokasta nimellä tai numerolla">
             <mat-icon>person_search</mat-icon>
           </button>
           <button id="favouritesButton"
-                  mat-icon-button 
-                  (click)="openFavourites()"
-                  #favouritesButtonTooltip="matTooltip"
-                  i18n-matTooltip
+                  mat-icon-button
+                  (click)="openFavourites($event)"
                   i18n-aria-label
-                  matTooltip="Avaa muistilista"
-                  aria-label="Avaa muistilista"
-                  matTooltipClass="tools-tooltip"
-                  matTooltipPosition="below">
+                  aria-label="Avaa muistilista">
             <mat-icon style="margin-top: -2px;">
               <ng-container *ngIf="hasFavourites">
                 star
