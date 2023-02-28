@@ -372,7 +372,7 @@ export class SharedService {
   }
 
   public switchLanguage(): void {
-    const url = window.location.origin + (this.locale === 'fi' ? '/se' : '/fi') + '/' + PATHS.constituencyPicker;
+    const url = window.location.origin + (this.locale === 'fi' ? '/sv' : '/fi') + '/' + PATHS.constituencyPicker;
     window.location.href = url;
   }
 

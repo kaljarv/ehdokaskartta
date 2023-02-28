@@ -115,28 +115,31 @@
               id="topBar"
               [class.titleScreen]="currentPage == 'titleScreen'"
               #topBar>
-        <div id="topBar-menuButton">
-          <button mat-icon-button 
-                  aria-label="Avaa valikko"
-                  (click)="toggleSideNav()">
-            <mat-icon>menu</mat-icon>
-          </button>
+        <div id="topBar-menuAndTitle">
+          <div id="topBar-menuButton">
+            <button mat-icon-button 
+                    aria-label="Avaa valikko"
+                    (click)="toggleSideNav()">
+              <mat-icon>menu</mat-icon>
+            </button>
+          </div>
+          <div *ngIf="currentPage != 'titleScreen'"
+              class="title">
+            <!-- <span *ngIf="currentPage == 'titleScreen'">Kielivaalikone</span> -->
+            <span *ngIf="currentPage == 'constituencyPicker'" i18n>Kotikuntasi</span>
+            <span *ngIf="currentPage == 'questions'" i18n>Kysymykset</span>
+            <span *ngIf="currentPage == 'browse-list'" i18n>Ehdokkaat</span>
+            <span *ngIf="currentPage == 'list'" i18n>Tulokset</span>
+          </div>
         </div>
-        <div *ngIf="currentPage != 'titleScreen'"
-             class="title">
-          <!-- <span *ngIf="currentPage == 'titleScreen'">Kielivaalikone</span> -->
-          <span *ngIf="currentPage == 'constituencyPicker'" i18n>Kotikuntasi</span>
-          <span *ngIf="currentPage == 'questions'" i18n>Kysymykset</span>
-          <span *ngIf="currentPage == 'browse-list'" i18n>Ehdokkaat</span>
-          <span *ngIf="currentPage == 'list'" i18n>Tulokset</span>
-        </div>
-        <div *ngIf="currentPage == 'titleScreen'"
-             id="topBar-appTitle">
-            <h1>
+        <div id="topBar-appTitle">
+            <img src="/assets/images/kielivaalikone-logo-nega.png"
+                 alt="Kielivaalikone – Valkompass om språk"/>
+            <!-- <h1>
               <div i18n>Kielivaalikone</div>
               <div class="titleAddendum"
                    i18n>Valkompass om språk</div>
-            </h1>
+            </h1> -->
         </div>
         <div *ngIf="showListTools"
               id="topBar-tools">

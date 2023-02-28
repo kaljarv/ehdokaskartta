@@ -59,8 +59,8 @@ import localeFi from '@angular/common/locales/fi';
 import localeFiExtra from '@angular/common/locales/extra/fi';
 registerLocaleData(localeFi, 'fi-FI', localeFiExtra);
 import localeSe from '@angular/common/locales/se';
-import localeSeExtra from '@angular/common/locales/extra/se';
-registerLocaleData(localeSe, 'se-SE', localeSeExtra);
+import localeSeExtra from '@angular/common/locales/extra/sv';
+registerLocaleData(localeSe, 'sv-SE', localeSeExtra);
 
 const paths = [
   { path: '', 
