@@ -468,6 +468,9 @@ export class DetailsCandidateComponent
   get partyName(): string {
     return this.party.name;
   }
+  get partyId(): string {
+    return this.party.id;
+  }
   get partyAbbreviation(): string {
     return this.party.abbreviation;
   }

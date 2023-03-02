@@ -20,10 +20,10 @@
           class="name">{{ candidate.givenName }} {{ candidate.surname }}</div>
       <div mat-line
           class="party">
-        <mat-icon class="party-{{ candidate.partyAbbreviation | toClassName }}">flag</mat-icon>
+        <mat-icon class="party-{{ candidate.partyId | toClassName }}">flag</mat-icon>
         {{ candidate.partyName }}
       </div>
-      <div class="number party-{{ candidate.partyAbbreviation | toClassName }}">
+      <div class="number party-{{ candidate.partyId | toClassName }}">
         {{ candidate.number }}
       </div>
 

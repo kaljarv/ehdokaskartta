@@ -303,12 +303,13 @@ export class DatabaseService {
 
   public async getUnderMaintenance(): Promise<boolean> {
     return new Promise<boolean>(async (resolve, reject) => {
-      if (['localhost', 'kielivaalikone.web.app', 'kielivaalikone.firebaseapp.com'].includes(window.location.host))
+      if (['localhost:4200', 'kielivaalikone.web.app', 'kielivaalikone.firebaseapp.com']
+          .includes(window.location.host)) {
         resolve(false);
-      else
-        resolve(true);
-      const data = await this.getDocumentOnce();
-      resolve(data.underMaintenance === true);
+      } else {
+        const data = await this.getDocumentOnce();
+        resolve(data.underMaintenance === true);
+      }
     });
   }
 

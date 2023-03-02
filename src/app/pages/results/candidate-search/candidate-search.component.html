@@ -34,7 +34,7 @@
         {{ candidate.givenName }} {{ candidate.surname }}
       </span>
       <span class="party">
-        <mat-icon class="party-{{ candidate.partyName | toClassName }}">flag</mat-icon>
+        <mat-icon class="party-{{ candidate.partyId | toClassName }}">flag</mat-icon>
         {{ candidate.party.abbreviation }}
       </span>
     </mat-option>

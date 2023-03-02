@@ -87,7 +87,7 @@ export const DEFAULT_APP_STATE_OPTIONS_PAGE: AppStateOptionsPage = {
 }
 
 // TODO DATA
-export const INDEPENDENT_PARTY_ID: string = '19';
+export const INDEPENDENT_PARTY_ID: string = '_SIT';
 
 export const LANDSCAPE_BREAKPOINT_PX: number = 900;
 

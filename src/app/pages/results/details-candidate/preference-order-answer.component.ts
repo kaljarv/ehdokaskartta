@@ -44,6 +44,7 @@ export class PreferenceOrderAnswerComponent
   @Input() partyAnswer: number[];
   @Input() partyName: string = '';
   @Input() partyAbbreviation: string = '';
+  @Input() partyId: string = '';
   @Input() partyTitle: string = "Puolue";
 
   public candidatePreferences: PreferenceValue[];
