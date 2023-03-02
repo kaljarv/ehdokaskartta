@@ -1,16 +1,8 @@
 <section class="buttons">
-  <button id="menuButton"
-          mat-icon-button 
-          i18n-aria-label
-          aria-label="Avaa valikko"
-          (click)="toggleSideNav($event)">
+  <button id="menuButton" mat-icon-button i18n-aria-label aria-label="Avaa valikko" (click)="toggleSideNav($event)">
     <mat-icon>menu</mat-icon>
   </button>
-  <button id="closeButton"
-          mat-icon-button 
-          i18n-aria-label
-          aria-label="Palaa alkuun"
-          (click)="goToStart()">
+  <button id="closeButton" mat-icon-button i18n-aria-label aria-label="Palaa alkuun" (click)="goToStart()">
     <mat-icon>close</mat-icon>
   </button>
 </section>
@@ -18,27 +10,62 @@
 <section class="content">
 
   <h1 i18n>
-    Tietoa Kielivaalikoneesta
+    Tietoa Kielivaalikone-palvelusta
   </h1>
-
+  <h2 i18n>Näin palvelu toimii</h2>
   <p class="ingress" i18n>
-    Onko sinulle tärkeää, että kansalliskielet suomi ja ruotsi säilyvät yhteisinä, täysimittaisina kielinämme Suomessa? <a href="https://omakieli.fi/" target="_blank">Oma kieli ry:n</a> toteuttamassa Kielivaalikoneessa pääset puntaroimaan omia ja eduskuntavaaliehdokkaiden kielipoliittisia näkemyksiä. Vastaa kysymyksiin ja löydä kansalliskielimyönteinen ehdokas!
+    Kielivaalikone-palvelu on <a href="https://omakieli.fi/" target="_blank">Oma kieli ry – Eget språk rf:n</a> tarjoama
+    palvelu, jonka toteuttamista varten vuoden 2023 eduskuntavaalien ehdokkaat ovat vastanneet kielipoliittisiin
+    kysymyksiin ja antaneet kampanjaansa liittyviä henkilötietoja ja muita tietoja.
   </p>
-
-  <h2 i18n>Tietosuoja</h2>
-
   <p i18n>
-    Kielivaalikone käyttää vain teknisiä evästeitä, jotka parantavat palvelun toimivuutta eikä niiden tietoja tallenneta palvelimelle. Evästeiden avulla voit esimerkiksi jatkaa vaalikoneen käyttöä myöhemmin, jos joudut keskeyttämään sen.
+    Palvelun käyttäjät voivat vastata Kielivaalikoneen kysymyksiin ja saada suosituksia ehdokkaista sekä verrata
+    ehdokkaiden vastauksia omiinsa. Käyttäjät voivat käyttää palvelua myös vastaamatta kysymyksiin, selaamalla
+    ehdokkaita vaalipiireittäin. Palvelun kysymyksiin vastataan asteikolla 1–5. Palvelussa ei ole käyttäjille avoimia
+    vastauskenttiä. Käyttäjä valitsee alussa kunnan, jonka perusteella palvelu rajaa tarkastelun käyttäjän vaalipiirin
+    ehdokkaisiin. Lisäksi käyttäjä valitsee vastauskielensä ja voi tallentaa ehdokkaita evästepohjaiselle
+    muistilistalleen.
   </p>
-
-  <p i18n>
-    Tallennamme vastauksiin liittyvää tilastotietoa anonyymisti. Sitä ei voida yhdistää tiettyyn käyttäjään, sillä tietojen mukana ei tallenneta mitään tunnistetietoja, kuten IP-osoitetta tai edes ajankohtaa.
-  </p>
-
-  <button id="nextButton"
-          color="primary"
-          mat-stroked-button 
-          (click)="goToStart()">
+  <h2 i18n>Henkilötietojen käsittely ja tietosuoja</h2>
+  <h3 i18n>Henkilötietojen käsittely</h3>
+  <p i18n>Palvelussa ei tallenneta käyttäjien henkilötietoja.</p>
+  <p i18n>Kielivaalikoneessa käsitellään eduskuntavaaleissa 2023 ehdolla olevien henkilöiden henkilötietoja
+    toimituksellisen palvelun tuottamiseksi. Vaalikoneeseen vastanneet ehdokkaat ovat hyväksyneet erilliset käyttöehdot
+    ja tietosuojakuvauksen Kielivaalikone-palveluun osallistuessaan.</p>
+  <h3 i18n>Tallennettavat tiedot</h3>
+  <ul>
+    <li i18n>Palvelun tietokantaan tallennetaan käyttäjän vastaukset kysymyksiin sekä se, onko vastaamisessa käytetty palvelun suomen- vai ruotsinkielistä versiota. Tallennus tapahtuu käyttäjän siirtyessä vastaustuloksiin.</li>
+    <li i18n>Vastaustietojen tallentamisen yhteydessä ei tallenneta vastaajan IP-osoitetta eikä mitään muuta käyttäjää yksilöivää tietoa.</li>
+    <li><span i18n>Käyttöanalytiikkaa varten tallentuvat seuraavat tekniset tiedot, joita ei yhdistetä tallennettuihin vastauksiin:</span>
+      <ul>
+        <li i18n>sovelluksen käytön alku- ja loppuaika</li>
+        <li i18n>eri käyttöliittymätoimintojen käyttö, kuten muistilistan tai hakutoiminnon käyttö.</li>
+      </ul>
+    </li>
+    <li i18n>Tietokantaan tallentuneita anonyymejä vastaustietoja voidaan hyödyntää Oma kieli ry - Eget språk rf:n
+      omassa tutkimustoiminnassa ja tiedot voidaan luovuttaa hyödynnettäväksi tieteellisessä tutkimuksessa.</li>
+  </ul>
+  <h3 i18n>Evästeet</h3>
+  <ul>
+    <li i18n>Kielivaalikone-palvelussa käytetään ainoastaan ns. teknisiä evästeitä. Eväste tallennetaan käyttäjän
+      selaimeen ja se säilyy siellä 7 vuorokauden ajan.</li>
+    <li i18n>Evästeitä käytetään siihen, että käyttäjä voi halutessaan jatkaa vastaamista selainikkunan sulkemisen
+      jälkeen. Käyttämistä jatkettaessa sovellus tarjoaa myös mahdollisuuden nollata aikaisemmat vastaukset.</li>
+    <li i18n>Evästettä ei lueta palvelimelle, vaan se toimii ainoastaan sovellusta suoritettaessa käyttäjän omassa
+      selaimessa.</li>
+    <li><span i18n>Evästeeseen tallennetaan seuraavat tiedot:</span>
+      <ul>
+        <li i18n>valittu kotikunta</li>
+        <li i18n>vastaukset kysymyksiin</li>
+        <li i18n>muistilistalle tallennetut ehdokkaat</li>
+        <li i18n>tieto vastausten tallentumisesta tilastointia varten.</li>
+      </ul>
+    </li>
+  </ul>
+  <h2 i18n>Lisätiedot</h2>
+  <p i18n>Lisätietoja palvelusta: Oma kieli ry - Eget språk rf, <a
+      href="mailto:{{ adminEmail }}">{{ adminEmail }}</a>.</p>
+  <button id="nextButton" color="primary" mat-stroked-button (click)="goToStart()">
     <ng-container i18n>Palaa alkuun</ng-container>
     <mat-icon>navigate_next</mat-icon>
   </button>

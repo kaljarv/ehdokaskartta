@@ -62,7 +62,7 @@ export type TopBarExpansionState = 'open' | 'closed' | 'destroyed';
 export type PageName = 'about'| 'browse-list' | 'constituencyPicker' | 'error' | 'list' | 'questions' | 'titleScreen';
                        // | 'browse' | 'map';
 
-export const ADMIN_EMAIL = 'info@kaljarv.com';
+export const ADMIN_EMAIL = $localize `vaalikone@omakieli.fi`;
 
 export const ANIMATION_DURATION_MS = 225;
 

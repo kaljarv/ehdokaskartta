@@ -159,8 +159,8 @@
         </context-group>
       </trans-unit>
       <trans-unit id="57a02332cc4d900827ede314e9ef4deca6c44f2a" datatype="html">
-        <source>Hae ehdokasta nimellä tai numerolla</source>
-        <target state="translated">Sök kandidat med namn eller nummer</target>
+        <source>Hae vaalipiirisi ehdokasta nimellä tai numerolla</source>
+        <target state="translated">Sök kandidat inom din valkrets med namn eller nummer</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">159</context>
@@ -1159,6 +1159,249 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/title-screen/title-screen.component.html</context>
           <context context-type="linenumber">42,43</context>
+        </context-group>
+      </trans-unit>
+
+      <trans-unit id="31436ee57417e3a0be697536f70e52c5bb30591a" datatype="html">
+        <source>Näin palvelu toimii</source>
+        <target>Så här fungerar tjänsten</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/about-screen/about-screen.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5dd719b1c34594a5f33257547fcddb8a18334045" datatype="html">
+        <source> Kielivaalikone-palvelu on <x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://omakieli.fi/&quot; target=&quot;_blank&quot;&gt;"/>Oma kieli ry – Eget språk rf:n<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/> tarjoama palvelu, jonka toteuttamista varten vuoden 2023 eduskuntavaalien ehdokkaat ovat vastanneet kielipoliittisiin kysymyksiin ja antaneet kampanjaansa liittyviä henkilötietoja ja muita tietoja. </source>
+        <target>Valkompassen om språk är en tjänst som <x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://omakieli.fi/&quot; target=&quot;_blank&quot;&gt;"/>Oma kieli ry – Eget språk rf<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/> skapat. Kandidaterna i riksdagsvalet 2023 har bidragit med svar på språkpolitiska frågor och sina uppgifter i anslutning till valkampanjen.  </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/about-screen/about-screen.component.html</context>
+          <context context-type="linenumber">17,20</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="d2020c6ea744c41018d6970207fc07df0ef5b5e6" datatype="html">
+        <source> Palvelun käyttäjät voivat vastata Kielivaalikoneen kysymyksiin ja saada suosituksia ehdokkaista sekä verrata ehdokkaiden vastauksia omiinsa. Käyttäjät voivat käyttää palvelua myös vastaamatta kysymyksiin, selaamalla ehdokkaita vaalipiireittäin. Palvelun kysymyksiin vastataan asteikolla 1–5. Palvelussa ei ole käyttäjille avoimia vastauskenttiä. Käyttäjä valitsee alussa kunnan, jonka perusteella palvelu rajaa tarkastelun käyttäjän vaalipiirin ehdokkaisiin. Lisäksi käyttäjä valitsee vastauskielensä ja voi tallentaa ehdokkaita evästepohjaiselle muistilistalleen. </source>
+        <target>Användarna kan i sin tur svara på valkompassens språkfrågor och få förslag på kandidater samt jämföra sina svar med kandidaternas svar. Det går bra att använda tjänsten också utan att svara på frågorna och bläddra bland kandidaterna per valkrets. Frågornas påståenden bedöms på en skala från 1 till 5. Det finns inga öppna svarsfält för användaren. Användaren väljer först sin kommun, varvid sökningen avgränsas till kandidaterna i användarens valkrets. Användaren väljer också sitt språk och kan spara sina favoritkandidater i en minneslista.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/about-screen/about-screen.component.html</context>
+          <context context-type="linenumber">22,28</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="944138269ee604444ae58ac849f9be8ee56cdaef" datatype="html">
+        <source>Henkilötietojen käsittely ja tietosuoja</source>
+        <target>Behandling av personuppgifter och datasekretess</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/about-screen/about-screen.component.html</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="25aac51cda0bf13b1efb7e24e74d932a0a740a9f" datatype="html">
+        <source>Henkilötietojen käsittely</source>
+        <target>Behandling av personuppgifter</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/about-screen/about-screen.component.html</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ddcfe003f5cf4e312b66c923980cd13a2a0d64c9" datatype="html">
+        <source>Palvelussa ei tallenneta käyttäjien henkilötietoja.</source>
+        <target>Användarnas personuppgifter lagras inte i tjänsten.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/about-screen/about-screen.component.html</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4508c95d737388a122ef63b90e6c32b85768e246" datatype="html">
+        <source>Kielivaalikoneessa käsitellään eduskuntavaaleissa 2023 ehdolla olevien henkilöiden henkilötietoja toimituksellisen palvelun tuottamiseksi. Vaalikoneeseen vastanneet ehdokkaat ovat hyväksyneet erilliset käyttöehdot ja tietosuojakuvauksen Kielivaalikone-palveluun osallistuessaan.</source>
+        <target>I Valkompassen om språk hanteras personuppgifter för kandidaterna i riksdagsvalet 2023 i syfte att producera redaktionellt material. Kandidaterna som svarat på frågorna har separat godkänt både användarvillkoren och dataskyddspolicyn när de deltagit i Valkompassen om språk. </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/about-screen/about-screen.component.html</context>
+          <context context-type="linenumber">32,34</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4ab46835a910209316a5a58b680978f0da2cfd0b" datatype="html">
+        <source>Tallennettavat tiedot</source>
+        <target>Uppgifter som lagras</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/about-screen/about-screen.component.html</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="381697af3f78eb73439d9a65b78d1758e03a2ff6" datatype="html">
+        <source>Palvelun tietokantaan tallennetaan käyttäjän vastaukset kysymyksiin sekä se, onko vastaamisessa käytetty palvelun suomen- vai ruotsinkielistä versiota. Tallennus tapahtuu käyttäjän siirtyessä vastaustuloksiin.</source>
+        <target>I tjänstens databas lagras uppgifter om användarens svar på frågorna och huruvida den finsk- eller svenskspråkiga versionen av tjänsten använts. Lagringen sker när användaren vill se resultaten. </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/about-screen/about-screen.component.html</context>
+          <context context-type="linenumber">37</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="600b0a439cf2e3920d2ad2dd396e11730cb877c6" datatype="html">
+        <source>Vastaustietojen tallentamisen yhteydessä ei tallenneta vastaajan IP-osoitetta eikä mitään muuta käyttäjää yksilöivää tietoa.</source>
+        <target>Vid lagring av svaren lagras varken IP-adresser eller andra personuppgifter.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/about-screen/about-screen.component.html</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="75ea6f799e03c4bd43246db7358d6ebaf57a5ace" datatype="html">
+        <source>Käyttöanalytiikkaa varten tallentuvat seuraavat tekniset tiedot, joita ei yhdistetä tallennettuihin vastauksiin:</source>
+        <target>För analys av bruket lagras följande tekniska information, som inte kopplas ihop med de givna svaren:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/about-screen/about-screen.component.html</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="37364fea3f4fe8755bcf4fdee887fc26f10f4594" datatype="html">
+        <source>sovelluksen käytön alku- ja loppuaika</source>
+        <target>tidpunkt för när tjänsten öppnats och stängts</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/about-screen/about-screen.component.html</context>
+          <context context-type="linenumber">41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="20a274b34efdaf5ace1eb1847fe493205b88a158" datatype="html">
+        <source>eri käyttöliittymätoimintojen käyttö, kuten muistilistan tai hakutoiminnon käyttö.</source>
+        <target>användning av olika funktioner såsom minneslista och sökfunktioner.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/about-screen/about-screen.component.html</context>
+          <context context-type="linenumber">42</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8fad36e4005712adcbcec2734cf837705d9e4b9b" datatype="html">
+        <source>Tietokantaan tallentuneita anonyymejä vastaustietoja voidaan hyödyntää Oma kieli ry - Eget språk rf:n omassa tutkimustoiminnassa ja tiedot voidaan luovuttaa hyödynnettäväksi tieteellisessä tutkimuksessa.</source>
+        <target>Anonyma svar som lagrats i databasen kan användas av Oma kieli ry – Eget språk rf för egna undersökningar och informationen kan överlåtas för vetenskaplig forskning. </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/about-screen/about-screen.component.html</context>
+          <context context-type="linenumber">45,46</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2f57bbbd8128cd2dc7134f2709a5c4e1a528a3d9" datatype="html">
+        <source>Evästeet</source>
+        <target>Kakor</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/about-screen/about-screen.component.html</context>
+          <context context-type="linenumber">48</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="fb262841e08c209f80fbcc98bc5afdcdfa1188e1" datatype="html">
+        <source>Kielivaalikone-palvelussa käytetään ainoastaan ns. teknisiä evästeitä. Eväste tallennetaan käyttäjän selaimeen ja se säilyy siellä 7 vuorokauden ajan.</source>
+        <target>Valkompassen om språk använder enbart så kallade tekniska kakor. Kakorna lagras i användarens webbläsare i sju dygn.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/about-screen/about-screen.component.html</context>
+          <context context-type="linenumber">50,51</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="42292b2095d455ac9e280a0977bcefd347b3bd7f" datatype="html">
+        <source>Evästeitä käytetään siihen, että käyttäjä voi halutessaan jatkaa vastaamista selainikkunan sulkemisen jälkeen. Käyttämistä jatkettaessa sovellus tarjoaa myös mahdollisuuden nollata aikaisemmat vastaukset.</source>
+        <target>Kakorna används för att användaren ska kunna ta paus och återgå till Valkompassen senare. När tjänsten öppnas på nytt erbjuder den också en möjlighet att återställa tidigare svar.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/about-screen/about-screen.component.html</context>
+          <context context-type="linenumber">52,53</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7eaae0323070b5f1eb65d2dd7ad897b78883a11a" datatype="html">
+        <source>Evästettä ei lueta palvelimelle, vaan se toimii ainoastaan sovellusta suoritettaessa käyttäjän omassa selaimessa.</source>
+        <target>Kakorna läses inte in på servern utan de fungerar endast medan tjänsten är i bruk i användarens webbläsare.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/about-screen/about-screen.component.html</context>
+          <context context-type="linenumber">54,55</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="67fd56787c1e5cec217f047ef6909379fbd403c8" datatype="html">
+        <source>Evästeeseen tallennetaan seuraavat tiedot:</source>
+        <target>Följande uppgifter lagras i kakorna:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/about-screen/about-screen.component.html</context>
+          <context context-type="linenumber">56</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8e44816d40b16cab688b37dfcca253050f2734bb" datatype="html">
+        <source>valittu kotikunta</source>
+        <target>hemkommun</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/about-screen/about-screen.component.html</context>
+          <context context-type="linenumber">58</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="157e5efc82bdb46317f2cbf5ffba455dd4d32f8c" datatype="html">
+        <source>vastaukset kysymyksiin</source>
+        <target>svaren på frågorna</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/about-screen/about-screen.component.html</context>
+          <context context-type="linenumber">59</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2eed9ae68a0be513c79c6629efe90fff558fb793" datatype="html">
+        <source>muistilistalle tallennetut ehdokkaat</source>
+        <target>kandidaterna på minneslistan</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/about-screen/about-screen.component.html</context>
+          <context context-type="linenumber">60</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5db458d456c5d05016b1b88167ca36d674d8626e" datatype="html">
+        <source>tieto vastausten tallentumisesta tilastointia varten.</source>
+        <target>information om att svaren lagrats för statistikföringen.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/about-screen/about-screen.component.html</context>
+          <context context-type="linenumber">61</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6d3c0d633929cd99e1c0f4d6210bbd8bb31041fb" datatype="html">
+        <source>Lisätiedot</source>
+        <target>Närmare upplysningar</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/about-screen/about-screen.component.html</context>
+          <context context-type="linenumber">65</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4dc1469fba140e6ae7a0c47bdbb1dd2c88fec442" datatype="html">
+        <source> Tietoa Kielivaalikone-palvelusta </source>
+        <target>Information om Valkompassen om språk</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/about-screen/about-screen.component.html</context>
+          <context context-type="linenumber">13,14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="33fb29b4f74120150076e1d872fa427d4454b0fb" datatype="html">
+        <source>Lisätietoja palvelusta: Oma kieli ry - Eget språk rf, <x id="START_LINK" ctype="x-a" equiv-text="&lt;a
+      href=&quot;mailto:{{ adminEmail }}&quot;&gt;"/><x id="INTERPOLATION" equiv-text="{{ adminEmail }}"/><x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>.</source>
+        <target>Information om tjänsten: Oma kieli ry - Eget språk rf, <x id="START_LINK" ctype="x-a" equiv-text="&lt;a
+      href=&quot;mailto:{{ adminEmail }}&quot;&gt;"/><x id="INTERPOLATION" equiv-text="{{ adminEmail }}"/><x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/about-screen/about-screen.component.html</context>
+          <context context-type="linenumber">66,67</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="278419533701201292" datatype="html">
+        <source>vaalikone@omakieli.fi</source>
+        <target>valkompass@egetsprak.fi</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/services/shared/shared.service.ts</context>
+          <context context-type="linenumber">65</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="9c7e56ea0b8ccca2bc8bb4719c2d6f7a00cb45b9" datatype="html">
+        <source>Kielivaalikone on toteutettu Suomen Kulttuurirahaston tuella. • Valkompassen om språk genomförs med stöd av Finska Kulturfonden.</source>
+        <target>Valkompassen om språk genomförs med stöd av Finska Kulturfonden. • Kielivaalikone on toteutettu Suomen Kulttuurirahaston tuella.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/title-screen/title-screen.component.html</context>
+          <context context-type="linenumber">72</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="eb488128aca1d719d5975d9b8351f18e54d18f0b" datatype="html">
+        <source>Hae vaalipiirisi ehdokasta nimellä tai numerolla</source>
+        <target>Sök kandidat inom din valkrets med namn eller nummer</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">158</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/results/candidate-search/candidate-search.component.html</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/results/candidate-search/candidate-search.component.html</context>
+          <context context-type="linenumber">15</context>
         </context-group>
       </trans-unit>
     </body>

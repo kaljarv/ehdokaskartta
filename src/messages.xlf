@@ -159,7 +159,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="57a02332cc4d900827ede314e9ef4deca6c44f2a" datatype="html">
-        <source>Hae ehdokasta nimellä tai numerolla</source>
+        <source>Hae vaalipiirisi ehdokasta nimellä tai numerolla</source>
         <target state="translated">Sök kandidat med namn eller nummer</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
