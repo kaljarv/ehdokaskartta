@@ -58,6 +58,10 @@ export const DIALOG_CONFIG: MatDialogConfig = {
 export const SNACK_BAR_DURATION = 5000;
 export const SNACK_BAR_DURATION_WITH_ACTION = 5000;
 
+// These are used in a very hacky way of redirecting based on the domain...
+export const SWEDISH_HOSTS = ['kielivaalikone.firebaseapp.com', 'valkompassomsprak.fi'];
+export const SWEDISH_PATH = '/sv';
+
 /*
  * Handles main UI, tools, routing and opening of overlays.
  */
@@ -189,6 +193,10 @@ export class AppComponent
     private snackBar: MatSnackBar,
     @Inject(LOCALE_ID) private locale: string
   ) {
+
+    // This is a very hacky way of redirecting the app to the correct language version
+    if (SWEDISH_HOSTS.includes(window.location.host) && !window.location.pathname.startsWith(SWEDISH_PATH))
+      window.location.pathname = SWEDISH_PATH;
 
     this.shared.loadingState.subscribe( state => {
       this._doChanges.loadingState = state;
