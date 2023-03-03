@@ -1103,7 +1103,7 @@
       </trans-unit>
       <trans-unit id="0f6e57e046d17b7202dd7e2b550e20305b7f6fcc" datatype="html">
         <source>Eget språk rf genomför en Valkompass om språk där du kan gå igenom dina egna och riksdagskandidaternas språkpolitiska synpunkter.</source>
-        <target state="translated">Oma kieli ry:n Kielivaalikoneessa pääset vertailemaan omia ja eduskuntavaaliehdokkaiden kantoja kielipoliittisiin kysymyksiin.</target>
+        <target state="translated">Oma kieli ry:n Kielivaalikoneessa pääset tutkimaan eduskuntavaaliehdokkaiden kantoja kielipoliittisiin kysymyksiin ja vertailemaan niitä omiisi.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/title-screen/title-screen.component.html</context>
           <context context-type="linenumber">45,46</context>
@@ -1147,7 +1147,7 @@
       </trans-unit>
         <trans-unit id="7a8d233790956976911864f1d1ec5b7d77cbe100" datatype="html">
         <source> Eget språk rf genomför en Valkompass om språk där du kan gå igenom dina egna och riksdagskandidaternas språkpolitiska synpunkter. </source>
-        <target> Oma kieli ry:n Kielivaalikoneessa pääset vertailemaan omia ja eduskuntavaaliehdokkaiden kantoja kielipoliittisiin kysymyksiin. </target>
+        <target> Oma kieli ry:n Kielivaalikoneessa pääset tutkimaan eduskuntavaaliehdokkaiden kantoja kielipoliittisiin kysymyksiin ja vertailemaan niitä omiisi. </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/title-screen/title-screen.component.html</context>
           <context context-type="linenumber">45,46</context>
@@ -1402,6 +1402,14 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/results/candidate-search/candidate-search.component.html</context>
           <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2bdef7c1fb1184a9f49d51ee2535b0580b2662b3" datatype="html">
+        <source> Oma kieli ry:n Kielivaalikoneessa pääset tutkimaan eduskuntavaaliehdokkaiden kantoja kielipoliittisiin kysymyksiin ja vertailemaan niitä omiisi. </source>
+        <target> Eget språk rf genomför en Valkompass om språk där du kan gå igenom dina egna och riksdagskandidaternas språkpolitiska synpunkter. </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/title-screen/title-screen.component.html</context>
+          <context context-type="linenumber">26,27</context>
         </context-group>
       </trans-unit>
     </body>
