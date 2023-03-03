@@ -118,7 +118,7 @@ export class OnlineQuestionListComponent
       if (!this.matcher.hasCandidates)
         this.router.navigate([PATHS.error], {state: {
           icon: 'sentiment_very_dissatisfied',
-          title: $localize `Valitettavasti yksikään vaalipiirin ${this.matcher.constituency} ehdokkaista ei ole vastannut Kielivaalikoneen kysymyksiin`
+          title: $localize `Valitettavasti yksikään vaalipiirin ”${this.matcher.constituency}” ehdokkaista ei ole vastannut Kielivaalikoneen kysymyksiin`
         }});
     }));
     // questionData includes voter answers

@@ -128,7 +128,8 @@ export class DatabaseService {
       query.get().pipe(take(1)).subscribe((res: QuerySnapshot<DocumentData>) => {
         // We expect a result
         if (res.empty)
-          reject(`Couldn't retrieve collection '${path}' (where ${where ? where.join(' ') : '<none>'}) from database!`);
+          resolve({});
+          // reject(`Couldn't retrieve collection '${path}' (where ${where ? where.join(' ') : '<none>'}) from database!`);
         // Map output to an object (possibly converting ids to numbers)
         let output = {};
         res.forEach(d => output[d.id] = this.convertI18n(d.data()));

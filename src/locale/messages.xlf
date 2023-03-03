@@ -517,8 +517,8 @@
           <context context-type="linenumber">102</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="493230003247442849" datatype="html">
-        <source>Valitettavasti yksikään vaalipiirin <x id="PH" equiv-text="this.matcher.constituency"/> ehdokkaista ei ole vastannut Kielivaalikoneen kysymyksiin</source>
+      <trans-unit id="6730288087745272359" datatype="html">
+        <source>Valitettavasti yksikään vaalipiirin ”<x id="PH" equiv-text="this.matcher.constituency"/>” ehdokkaista ei ole vastannut Kielivaalikoneen kysymyksiin</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/question-list/online-question-list.component.ts</context>
           <context context-type="linenumber">121</context>

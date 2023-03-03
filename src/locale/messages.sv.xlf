@@ -442,14 +442,14 @@
           <context context-type="linenumber">100</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="493230003247442849" datatype="html">
-        <source>Valitettavasti yksikään vaalipiirin <x id="PH" equiv-text="this.matcher.constituency" /> ehdokkaista ei ole vastannut Kielivaalikoneen kysymyksiin</source>
-        <target state="translated">Tyvärr har ingen av valkretsens <x id="PH" equiv-text="this.matcher.constituency" /> kandidater svarat på frågorna i Valkompassen om språk</target>
+      <trans-unit id="6730288087745272359" datatype="html">
+        <source>Valitettavasti yksikään vaalipiirin ”<x id="PH" equiv-text="this.matcher.constituency"/>” ehdokkaista ei ole vastannut Kielivaalikoneen kysymyksiin</source>
+        <target state="translated">Tyvärr har ingen av valkretsens ”<x id="PH" equiv-text="this.matcher.constituency" />” kandidater svarat på frågorna i Valkompassen om språk</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/question-list/online-question-list.component.ts</context>
-          <context context-type="linenumber">134</context>
+          <context context-type="linenumber">121</context>
         </context-group>
-      </trans-unit>
+      </trans-unit>      
       <trans-unit id="4acac31cb52b5492f72e0e62be377e5f3f4180c6" datatype="html">
         <source>Mistä on kyse?</source>
         <target state="translated">Vad betyder det?</target>
