@@ -8,21 +8,22 @@
 
 <url>
   <loc>https://kielivaalikone.fi/</loc>
-  <xhtml:link rel="alternate" hreflang="sv" href="https://valkompassomsprak.fi/sv/"/>
-  <xhtml:link rel="alternate" hreflang="fi" href="https://kielivaalikone.fi/fi/"/>
-  <lastmod>2023-03-08T10:13:23+00:00</lastmod>
+  <lastmod>2023-03-10T10:13:23+00:00</lastmod>
   <priority>1.00</priority>
 </url>
 <url>
+  <loc>https://kielivaalikone.fi/fi/</loc>
+  <lastmod>2023-03-10T10:13:23+00:00</lastmod>
+  <priority>0.90</priority>
+</url>
+<url>
   <loc>https://kielivaalikone.fi/about/</loc>
-  <xhtml:link rel="alternate" hreflang="sv" href="https://valkompassomsprak.fi/sv/about/"/>
-  <xhtml:link rel="alternate" hreflang="fi" href="https://kielivaalikone.fi/fi/about/"/>
-  <lastmod>2023-03-08T10:13:23+00:00</lastmod>
+  <lastmod>2023-03-10T10:13:23+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://kielivaalikone.fi/fi/</loc>
-  <lastmod>2023-03-08T10:13:23+00:00</lastmod>
+  <loc>https://kielivaalikone.fi/fi/about/</loc>
+  <lastmod>2023-03-10T10:13:23+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 
